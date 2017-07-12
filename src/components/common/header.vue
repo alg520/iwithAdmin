@@ -99,7 +99,7 @@
          <el-col :xs="8" :sm="8" :md="2" >
             <div class="user-header">
                 <el-dropdown trigger="click" menu-align="start">
-                    <img src="../../../static/images/b_header.jpg" width="50px" />
+                    <img src="../../../static/images/b_header2.jpg" width="50px" />
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item >
                             <div class="setting-div">
