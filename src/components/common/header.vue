@@ -10,13 +10,13 @@
 
             <!--Search area-->    
             <el-col :xs="12" :sm="12" :md="8">
-                <div class="search">
+                <!-- <div class="search">
                     <el-input
                         size="small"
                         placeholder="Search for...">
                         <el-button slot="append" icon="search"></el-button>
                     </el-input>
-                </div> 
+                </div>  -->
             </el-col>
             <!-- header right area-->
             <el-col :xs="24" :sm="12" :md="4">

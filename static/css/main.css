@@ -40,3 +40,6 @@ a{text-decoration: none}
 .ql-toolbar{
     background-color: #fff;
 }
+.el-table th>.cell {
+    text-align: center;
+}

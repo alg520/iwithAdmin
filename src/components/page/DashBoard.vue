@@ -92,24 +92,6 @@
             </el-col>
         </el-row>
 
-
-
-        <el-row :gutter="20">
-            <el-col :xs="24" :sm="24" :md="24" :lg="12">
-                <el-card class="box-chart">
-                    <pieChart></pieChart>
-                </el-card>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="24" :lg="12">
-                <el-card class="box-chart">
-                    <lineChart></lineChart>
-                </el-card>
-            </el-col>
-            
-        </el-row>
-
-
-
         <!--todoList  & mail & table-->
         <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="8">
@@ -135,6 +117,15 @@
             </el-col>
             
         </el-row>
+        <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="6">
+                <el-card class="box-list">
+                    全部商品
+                   <hr>
+                   <tableL></tableL>
+                </el-card>
+            </el-col>
+        </el-row>
 
     </div>
 
@@ -152,6 +143,7 @@
     import TodoList from '../todoList/TodoList.vue';
     import borderTable from '../tables/borderTable.vue';
     import MessageList from '../message/MessageList.vue';
+    import tableL from '../common/tableL.vue';
     export default {
         data(){
            return{
@@ -159,7 +151,7 @@
            }
         },
         components:{
-            vPageTitle,barChart,pieChart,lineChart,radarChart,funnelChart,TodoList,borderTable,MessageList
+            vPageTitle,barChart,pieChart,lineChart,radarChart,funnelChart,TodoList,borderTable,MessageList,tableL
         }
     }
 </script>

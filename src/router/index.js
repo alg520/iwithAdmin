@@ -9,6 +9,8 @@ import BasicTables from '@/components/page/BasicTables';
 import EditorPage from '@/components/page/EditorPage';
 import MarkdownPage from '@/components/page/MarkdownPage';
 import TodoList from '@/components/page/TodoListPage';
+import Products from '@/components/page/Products';
+import shopTimeDuration from '@/components/page/shopTimeDuration';
 
 Vue.use(Router)
 
@@ -47,8 +49,13 @@ export default new Router({
         },{
           path:'/TodoList',
           component:TodoList
-        }
-        
+        },{
+          path:'/Products',
+          component:Products
+        },{
+          path:'/shopTimeDuration',
+          component:shopTimeDuration
+        }        
 
       ]
     }

@@ -7,6 +7,17 @@
                     <!--<span class="sb-cn">DashBoard</span>-->
                     <span class="sb-cn">主页</span>
             </el-menu-item>
+            <el-submenu index="1">
+                <template slot="title">
+                    <span class="sb-icon"><i class="material-icons">perm_data_setting</i></span>
+                    <span class="sb-cn">商品管理</span> 
+                </template>
+                <el-menu-item index="Products">全部商品</el-menu-item>
+                <el-menu-item index="MarkdownPage">商品分类</el-menu-item>
+                <el-menu-item index="TodoList">口味管理</el-menu-item>
+                <el-menu-item index="shopTimeDuration">销售时间管理</el-menu-item>
+                <el-menu-item index="TodoList">导入商品</el-menu-item>             
+            </el-submenu>
 
             <el-submenu index="2">
                 <template slot="title">
@@ -42,7 +53,6 @@
                     <span class="sb-icon"><i class="material-icons">content_paste</i></span>
                     <span class="sb-cn">商铺</span>
                 </template>               
-                
                 <el-menu-item index="FormLayouts">  菜品信息</el-menu-item>
                 <el-menu-item index="FormLayouts">  菜品同步相关操作</el-menu-item>
                 <el-menu-item index="FormLayouts">  机器人信息</el-menu-item>
@@ -57,13 +67,7 @@
                     <span class="sb-cn">Tables</span>
                 </template>
                 <el-menu-item index="BasicTables"> Basic Tables</el-menu-item>                
-            </el-submenu>
-
-
- 
-
- 
-            
+            </el-submenu>    
         </el-menu>
     </div>
 </template>
@@ -95,6 +99,6 @@
        font-size:14px;
      
    }
-   
+     
     .material-icons {font-size:12px;}
 </style>
