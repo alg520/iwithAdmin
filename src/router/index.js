@@ -11,6 +11,8 @@ import MarkdownPage from '@/components/page/MarkdownPage';
 import TodoList from '@/components/page/TodoListPage';
 import Products from '@/components/page/Products';
 import shopTimeDuration from '@/components/page/shopTimeDuration';
+import tasteManage from '@/components/page/tasteManage';
+import typeManage from '@/components/page/typeManage';
 
 Vue.use(Router)
 
@@ -55,8 +57,13 @@ export default new Router({
         },{
           path:'/shopTimeDuration',
           component:shopTimeDuration
-        }        
-
+        },{
+          path:'/tasteManage',
+          component:tasteManage
+        } ,{
+          path:'/typeManage',
+          component:typeManage
+        }
       ]
     }
   ]

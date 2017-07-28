@@ -1,13 +1,14 @@
 <template>
   <div>
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-form :inline="true">
       <el-form-item>
         <el-button type="primary" @click="dialogFormVisible = true">添加时间段</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="Name" label="名称" width="180"></el-table-column>
-      <el-table-column prop="Visits" label="时间段"></el-table-column>
+    <el-table :data="tableList" style="width: 100%">
+      <el-table-column prop="name" label="名称" width="180"></el-table-column>
+      <el-table-column prop="startTime" label="开始时间"></el-table-column>
+      <el-table-column prop="endTime" label="结束时间"></el-table-column>
       <el-table-column label="操作" width="240">
         <template scope="scope" width="240">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -38,22 +39,11 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
-    return {
-      tableData: [{
-        Name: '全天',
-        Visits: '00:00 - 24:00'
-      }, {
-        Name: '早餐',
-        Visits: '08:00 - 10:00'
-      }, {
-        Name: '午餐',
-        Visits: '11:00 - 14:00'
-      }, {
-        Name: '晚餐',
-        Visits: '17:00 - 23:00'
-      }],
+    return {      
+      tableList:[],
       dialogFormVisible: false,
       form: {
         name: '',
@@ -65,9 +55,19 @@ export default {
         resource: '',
         desc: ''
       },
-      formLabelWidth: '120px',      
+      formLabelWidth: '120px',
       timeRange: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)]
     }
+  },
+  created(){
+    axios.get('http://127.0.0.1:3003/rows')
+    .then(response => {        
+        this.tableList = response.data.body;        
+    })
+    .catch(error => {
+        console.log(error);
+        alert('网络错误，不能访问');
+    })
   }
 }
 </script>

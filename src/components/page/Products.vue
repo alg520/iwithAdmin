@@ -4,26 +4,37 @@
 
         <div class="clear"></div>
 
-        <el-row>
+        <el-row v-if="$store.state.status == 'alllist'">
             <el-col :span="24">
                 <div class="grid-content bg-purple-dark">
-                    <allList></allList>
+                    <transition mode="out-in">                                               
+                         <allList></allList> 
+                    </transition>                                    
                 </div>
             </el-col>
         </el-row>
 
-        <el-row>
+         <el-row v-if="$store.state.status == 'addlist'">
             <el-col :span="24">
                 <div class="grid-content bg-purple-dark">
                     <addList></addList>
                 </div>
             </el-col>
         </el-row>
+
+        <el-row v-if="status == 'updatelist'">
+            <el-col :span="24">
+                <div class="grid-content bg-purple-dark">
+                    <addList></addList>
+                </div>
+            </el-col>
+        </el-row> 
     </div>    
 
 </template>
 
 <script>
+    import store from '@/store/index';
     import vPageTitle from '../common/pageTitle.vue';
     import allList from '../products/allList.vue';
     import addList from '../products/addList.vue';
@@ -31,11 +42,22 @@
         data(){
            return{
               //percentage:10
+              status:'alllist',
+
            }
+        },
+        computed:{
+            count(){
+                return this.$store.this.state.status;
+            }
         },
         components:{
             vPageTitle,allList,addList
-        }
+        },
+        methods:{
+            //添加 根据当前页面的status 修改 vtitle 的值
+        },
+        store
     }
 </script>
 

@@ -28,7 +28,7 @@
                 </el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="dialogFormVisible = true">添加商品</el-button>
+                <el-button type="primary" @click="$store.commit('changeStatus','addlist')">添加商品</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="tableData6" ref="multipleTable" border tooltip-effect="dark" style="width: 100%">
@@ -56,7 +56,7 @@
             </el-table-column>
         </el-table>
     
-        <el-dialog title="添加菜品" :visible.sync="dialogFormVisible">
+        <!-- <el-dialog title="添加菜品" :visible.sync="dialogFormVisible">
             <el-form :model="form">
                 <el-form-item label="菜品顺序号" :label-width="formLabelWidth">
                     <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -99,11 +99,12 @@
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 
 <script>
+import store from '@/store/index';
 export default {
     data() {
         return {
@@ -167,6 +168,11 @@ export default {
         };
     },
     methods: {
+
+        addProduct(status){
+            console.log(store);            
+        },
+
         getSummaries(param) {
 
             const { columns, data } = param;
@@ -207,7 +213,8 @@ export default {
             console.log(this);
         }
 
-    }
+    },
+    store
 };
 </script>
 <style scoped>

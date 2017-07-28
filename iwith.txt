@@ -1,5 +1,113 @@
+http://10.10.0.246/
+
+
 2017-07-19
 页面实现想法
 1. 商品 列表页面和  添加  修改页面在同一个页面
 默认是 进入查询所有列表页面  当点击添加 或者修改按钮的时候   查询页面 上滑消失  出现 添加或者 修改页面 ，
 当点击  修改 或者 添加完成的时候 或者 面包屑导航的时候 页面重新滑回 列表查询页面
+
+需注重的问题 
+2. 关于页面国际化的 解决方法  ---- 待商榷 == （ ）
+
+关于前端页面国际化的问题    前端 配置  导航  类目项 文件 
+
+
+2017-07-20
+页面分类：
+分类管理  =》  添加分类 = 修改分类
+口味管理  =》  添加口味 = 修改口味
+时段管理  =》  添加时段 = 修改时段
+导入商品
+
+2017-07-21
+
+路由管理 ---  routes
+
+products (商品总页面) 
+
+products/allList    商品列表查询页面
+products/add   添加商品页面
+products/update   修改商品页面
+
+
+products/typeManage   包含列表查询  和 
+products/typeManage/add  分类管理添加 
+products/typeManage/update   分类管理修改
+
+
+products/tasteManage    口味查询 页面
+products/tasteManage/add   添加口味
+products/tasteManage/update   修改口味
+
+
+products/timeManage    时段查询 页面
+products/timeManage/add  时段添加
+products/timeManage/update  时段修改
+
+
+
+2017-07-24  
+
+本周工作安排：
+1.  简单的权限管理页面     附带  新建店铺 和 登陆页面 
+
+2.  商品页面的  增删改 接口对接  
+
+3.  前端路由逻辑的整改 
+
+
+2017-07-25
+vuex  是专为 vue.js 设计的集中状态管理架构。   
+ 
+
+2017-07-26
+
+ vuex  iwithAdmin 状态管理梳理
+
+ 商品列表 (status == 'allList')   商品添加（status == 'addlist'）   商品修改（status == ‘updatelist’）
+
+2017-07-27
+
+//nginx 配置文件位置
+    /usr/local/etc/nginx/nginx.conf
+//启动nginx 服务
+    sudo nginx
+//重新加载
+    sudo nginx -s reload
+//停止服务
+    sudo nginx -s stop
+
+
+
+
+cors  跨域资源共享
+
+两种请求simple request(简单请求) 和  not-so-simple request (非简单请求)
+
+简单请求满足一下两个条件
+1. 请求方法是以下三种方法  HEAD\GET\POST
+
+2. HTTP 请求头不超出一下几种字段:
+    Accept
+    Accept-language
+    Content-language
+    Last-Event-ID
+    Content-Type: 只限于三个值  application/x-www-form-urlencoded、multipart/form-data、text/plain
+
+凡是 不同时满足上面两个条件，就属于非简单请求。
+
+
+对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个Origin字段。
+
+
+ 
+
+
+
+
+
+
+
+
+

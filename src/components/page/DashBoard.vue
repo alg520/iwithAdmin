@@ -123,6 +123,16 @@
                     全部商品
                    <hr>
                    <tableL></tableL>
+                </el-card> 
+            </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24" :lg="6">
+                <el-card class="box-list">
+                    Vuex 计数
+                   <hr>
+                   <count></count>
                 </el-card>
             </el-col>
         </el-row>
@@ -144,6 +154,7 @@
     import borderTable from '../tables/borderTable.vue';
     import MessageList from '../message/MessageList.vue';
     import tableL from '../common/tableL.vue';
+    import count from '../common/count.vue';
     export default {
         data(){
            return{
@@ -151,7 +162,7 @@
            }
         },
         components:{
-            vPageTitle,barChart,pieChart,lineChart,radarChart,funnelChart,TodoList,borderTable,MessageList,tableL
+            vPageTitle,barChart,pieChart,lineChart,radarChart,funnelChart,TodoList,borderTable,MessageList,tableL,count
         }
     }
 </script>
