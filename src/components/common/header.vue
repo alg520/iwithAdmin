@@ -58,7 +58,7 @@
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                     </el-col>    
+                     </el-col>
                     <el-col :span="8">  
                         <el-dropdown menu-align="start"  >
                             <span >

@@ -12,10 +12,10 @@
                     <span class="sb-cn">商品管理</span> 
                 </template>
                 <el-menu-item index="Products">商品列表</el-menu-item>
-                <el-menu-item index="typeManage">分类管理</el-menu-item>
-                <el-menu-item index="tasteManage">口味管理</el-menu-item>
+                <el-menu-item index="typeManage">目录管理</el-menu-item>
+                <el-menu-item index="tasteManage">属性管理</el-menu-item>
                 <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>
-                <el-menu-item index="TodoList">导入商品</el-menu-item>             
+                <el-menu-item index="shopTimeDuration">导入商品</el-menu-item>
             </el-submenu>
 
             <el-submenu index="2">
@@ -58,13 +58,13 @@
                 <el-menu-item index="FormLayouts"> 相框管理</el-menu-item>
             </el-submenu>
 
-             <el-submenu index="5">
+             <!-- <el-submenu index="5">
                 <template slot="title">
                     <span class="sb-icon"><i class="material-icons">border_all</i></span>
                     <span class="sb-cn">Tables</span>
                 </template>
                 <el-menu-item index="BasicTables"> Basic Tables</el-menu-item>                
-            </el-submenu>    
+            </el-submenu>     -->
         </el-menu>
     </div>
 </template>

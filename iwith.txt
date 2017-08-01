@@ -79,8 +79,6 @@ vuex  是专为 vue.js 设计的集中状态管理架构。
     sudo nginx -s stop
 
 
-
-
 cors  跨域资源共享
 
 两种请求simple request(简单请求) 和  not-so-simple request (非简单请求)
@@ -99,6 +97,26 @@ cors  跨域资源共享
 
 
 对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个Origin字段。
+
+
+2017-07-31
+
+添加  全局过滤器  文件
+
+
+2017-08-01
+
+整合封装  axios
+    1. 配置通用项
+    2. 统一处理请求错误，进行提示
+    3. 请求流程 (http://upload-images.jianshu.io/upload_images/1567373-19a87cc33866af01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+    4. 拦截器 then() 处理响应  catch() 处理错误，通过拦截器可以提前判断，并返回二者之一
+    5.  --- 基本配置   包括请求方法，基础url,相对url, 参数，超时时间，请求头等。
+        --- checkStatus()  判断http 状态码是否正常，和拦截器一样，请求正常则返回响应，请求错误则返回错误，最后返回结果给checkCode()
+        --- checkCode()  处理上一步的结果，分别处理网络异常，以及后端返回的异常。
+
+
+ 面包屑 导航  、  通知提示
 
 
  
