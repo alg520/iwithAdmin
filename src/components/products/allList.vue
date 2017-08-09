@@ -67,7 +67,10 @@
                     <span>{{scope.row.isSale | parseIsSale}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="picUrl" label="图片">
+            <el-table-column label="图片">
+                <template scope="scope">
+                    <img :src="scope.row.picUrl" alt="图片">
+                </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
@@ -159,16 +162,14 @@ export default {
         };
     },
     created() {
-        axios.get('http://127.0.0.1:3003/rows')
+        axios.post('/coron-web/item/list',{})
             .then(response => {
+                
+                console.log(response.data);
 
-                console.log(response);
-                this.productsList = response.data.body;
-                // console.log(response.data);
+                !!response.data.rows && (this.productsList = response.data.rows);
 
-                // !!response.data.rows && (this.productsList = response.data.rows);
-
-                // console.log(this.productsList);
+                console.log(this.productsList);
 
             })
             .catch(error => {

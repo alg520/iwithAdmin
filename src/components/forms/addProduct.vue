@@ -1,24 +1,32 @@
 <template>
     <div class="addProductForm">
         <el-row>
-            <el-col :span="16">
+            <el-col :span="12">
                 <div class="grid-content bg-purple">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="编号">
                             <el-input v-model="form.name" placeholder="编号"></el-input>
                         </el-form-item>
                         <el-form-item label="名称">                            
-                                <el-input v-model="form.name" placeholder="中文"></el-input>
-                            <el-input v-model="form.name" placeholder="日文"></el-input>
-                            <el-input v-model="form.name" placeholder="英文"></el-input>
+                            <el-input v-model="form.name" placeholder="中文"></el-input>
+                            <!-- <el-input v-model="form.name" placeholder="日文"></el-input>
+                            <el-input v-model="form.name" placeholder="英文"></el-input> -->
                         </el-form-item>
                         <el-form-item label="描述">
                             <el-input v-model="form.name" placeholder="中文"></el-input>
-                            <el-input v-model="form.name" placeholder="日文"></el-input>
-                            <el-input v-model="form.name" placeholder="英文"></el-input>
+                            <!-- <el-input v-model="form.name" placeholder="日文"></el-input>
+                            <el-input v-model="form.name" placeholder="英文"></el-input> -->
                         </el-form-item>
                         <el-form-item label="原价">
                             <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="优惠">
+                            <template>
+                                <el-radio-group v-model="form.resource">
+                                    <el-radio label="价格"></el-radio>
+                                    <el-radio label="折扣"></el-radio>
+                                </el-radio-group>
+                            </template>                            
                         </el-form-item>
                         <el-form-item label="图片">
                             <el-card :body-style="{ padding: '0px' }" style="width:230px;">
@@ -38,7 +46,7 @@
                                 <el-option label="酒水" value="shanghai"></el-option>
                                 <el-option label="主食" value="beijing"></el-option>
                             </el-select>
-                        </el-form-item>                        
+                        </el-form-item>
                         <el-form-item label="商品位置">
                             <el-radio-group v-model="form.resource">
                                 <el-radio label="置顶"></el-radio>

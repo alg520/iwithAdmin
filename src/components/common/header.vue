@@ -32,7 +32,7 @@
                    <el-col :span="10">
 
                         <!--这是消息的下拉列表 用了element里的 dropdown组件-->                
-                        <el-dropdown menu-align="start" >
+                        <!-- <el-dropdown menu-align="start" >
                             <span>
                                 <el-badge :value="5" class="item">
                                     <i class="el-icon-message"></i>
@@ -57,10 +57,10 @@
                                     </div>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
-                        </el-dropdown>
+                        </el-dropdown> -->
                      </el-col>
                     <el-col :span="8">  
-                        <el-dropdown menu-align="start"  >
+                        <!-- <el-dropdown menu-align="start"  >
                             <span >
                                 <el-badge :value="3" class="item">
                                     <i class="el-icon-date"></i>
@@ -87,7 +87,7 @@
                                 </el-dropdown-item>
 
                             </el-dropdown-menu>
-                        </el-dropdown>
+                        </el-dropdown> -->
                      </el-col>   
 
 
@@ -173,8 +173,7 @@
         position: fixed;
         box-sizing: border-box;
         width: 100%;
-        height:66px;
-       
+        height:66px;       
         font-size: 14px;
         line-height: 66px;
         background-color:#324157;

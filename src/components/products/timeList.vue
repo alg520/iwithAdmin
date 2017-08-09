@@ -17,10 +17,10 @@
       </el-table-column>
     </el-table>
   
-    <el-dialog title="添加时间段" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加时段" :visible.sync="dialogFormVisible" class="addDialog">
       <el-form :model="timeDurationForm">
-        <el-form-item label="时间段" :label-width="formLabelWidth">
-          <el-input v-model="timeDurationForm.name" auto-complete="off"></el-input>
+        <el-form-item label="时段名称" :label-width="formLabelWidth">
+          <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
         </el-form-item>
         <el-form-item label="时间范围" :label-width="formLabelWidth">
           <!-- <el-time-picker
@@ -80,15 +80,17 @@ export default {
     }
   },
   created() {
+    
     axios.get('/coron-web/shopTimeDuration/list')
-      .then(response => {
-        console.log(response);
-        this.tableList = response.data.rows;
-      })
-      .catch(error => {
-        console.log(error);
-        alert('网络错误，不能访问');
-      })
+    .then(response => {
+      console.log(response);
+      this.tableList = response.data.rows;
+    })
+    .catch(error => {
+      console.log(error);
+      alert('网络错误，不能访问');
+    })
+
   },
   methods:{
     addTimeDuration(){
@@ -112,7 +114,6 @@ export default {
     delTimeDuration(itemId){
 
         console.log(itemId);
-
         axios.post('/coron-web/shopTimeDuration/del',{
           timeDurationId:itemId
         }).then(response => {
@@ -121,10 +122,11 @@ export default {
           console.log(error);
           alert('请求错误');
         })
+
     }
   }
 }
 </script>
 <style scoped>
-
+  
 </style>

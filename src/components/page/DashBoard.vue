@@ -37,7 +37,7 @@
 
 <style scoped>
     .el-col{
-        margin-bottom:16px;
+        /* margin-bottom:16px; */
         text-align:center;
     }
     .material-icons{

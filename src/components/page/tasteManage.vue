@@ -1,8 +1,8 @@
 <template>
     <div class="productLists">
-        <v-pageTitle vtitle="口味管理"></v-pageTitle>
+        <v-pageTitle vtitle="属性管理"></v-pageTitle>
 
-        <div class="clear"></div>
+        <div class="clear"></div> 
 
         <el-row>
             <el-col :span="24">

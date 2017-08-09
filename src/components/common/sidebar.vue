@@ -18,7 +18,7 @@
                 <el-menu-item index="shopTimeDuration">导入商品</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="2">
+            <!-- <el-submenu index="2">
                 <template slot="title">               
                     <span class="sb-icon"><i class="material-icons">perm_data_setting</i></span>
                     <span class="sb-cn">运维信息</span>                 
@@ -56,7 +56,7 @@
                 <el-menu-item index="FormLayouts"> 广告相关</el-menu-item>
                 <el-menu-item index="FormLayouts"> 电源管理</el-menu-item>
                 <el-menu-item index="FormLayouts"> 相框管理</el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
 
              <!-- <el-submenu index="5">
                 <template slot="title">
@@ -91,9 +91,9 @@
         height:100%;
     }
 
-   .el-menu-item, .el-submenu__title{
-       font-size:14px;     
-   }
+    .el-menu-item, .el-submenu__title{
+        font-size:14px;     
+    }
      
     .material-icons {font-size:12px;}
 </style>

@@ -16,10 +16,10 @@
       </el-table-column>
     </el-table>
   
-    <el-dialog title="添加分类" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加分类" :visible.sync="dialogFormVisible" class="addDialog">
       <el-form :model="form">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
-          <el-input v-model="form.taste" auto-complete="off"></el-input>
+          <el-input v-model="form.taste" auto-complete="off" class="input193"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

@@ -8,7 +8,6 @@ import FormLayouts from '@/components/page/FormLayouts';
 import BasicTables from '@/components/page/BasicTables';
 import EditorPage from '@/components/page/EditorPage';
 import MarkdownPage from '@/components/page/MarkdownPage';
-import TodoList from '@/components/page/TodoListPage';
 import Products from '@/components/page/Products';
 import shopTimeDuration from '@/components/page/shopTimeDuration';
 import tasteManage from '@/components/page/tasteManage';
@@ -50,11 +49,9 @@ export default new Router({
           path:'/BasicTables',
           component:BasicTables
         },{
-          path:'/TodoList',
-          component:TodoList
-        },{
           path:'/Products',
-          component:Products
+          component:Products,
+          meta: ['商品管理', '商品列表'],
         },{
           path:'/shopTimeDuration',
           component:shopTimeDuration
