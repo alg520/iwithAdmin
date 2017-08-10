@@ -4,38 +4,46 @@
     
         <div class="clear"></div>
     
-        <el-row>
-            <el-col :span="5">                
-                <attrList></attrList>
-            </el-col>
-            <el-col :span="19">
-                <el-row v-if="$store.state.status == 'alllist'">
-                    <el-col :span="24">
-                        <div class="grid-content bg-purple-dark">
-                            <transition mode="out-in">
-                                <allList></allList>
-                            </transition>
-                        </div>
-                    </el-col>
-                </el-row>
-            </el-col>
-        </el-row>
+        <div class="content-list">
+            <el-row v-if="$store.state.status == 'alllist'">
+                <el-col :sm="6" :md="5" :lg="4">
+                    <attrList></attrList>
+                </el-col>
+                <el-col :sm="18" :md="19" :lg="20">
+                    <transition mode="out-in">
+                        <allList></allList>
+                    </transition>
+                </el-col>
+            </el-row>
     
-        <el-row v-if="$store.state.status == 'addlist'">
-            <el-col :span="24">
-                <div class="grid-content bg-purple-dark">
-                    <addList></addList>
-                </div>
-            </el-col>
-        </el-row>
+            <el-row v-if="$store.state.status == 'updatelist'">
+                <el-col :span="5">
+                    <attrList></attrList>
+                </el-col>
+                <el-col :span="19">
+                    <transition mode="out-in">
+                        <allList></allList>
+                    </transition>
+                </el-col>
+            </el-row>
     
-        <el-row v-if="status == 'updatelist'">
-            <el-col :span="24">
-                <div class="grid-content bg-purple-dark">
-                    <addList></addList>
-                </div>
-            </el-col>
-        </el-row>
+            <el-row v-if="$store.state.status == 'addlist'">
+                <el-col :span="24">
+                    <div class="grid-content bg-purple-dark">
+                        <addList></addList>
+                    </div>
+                </el-col>
+            </el-row>
+    
+            <el-row v-if="status == 'updatelist'">
+                <el-col :span="24">
+                    <div class="grid-content bg-purple-dark">
+                        <addList></addList>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    
     </div>
 </template>
 
@@ -57,7 +65,7 @@ export default {
         }
     },
     components: {
-        vPageTitle, allList, addList,attrList
+        vPageTitle, allList, addList, attrList
     },
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值
@@ -67,7 +75,7 @@ export default {
 </script>
 
 <style scoped>
-.el-col {    
+.el-col {
     text-align: center;
 }
 
@@ -86,10 +94,6 @@ export default {
     font-size: 1.1rem;
 }
 
-.box-chart {
-    height: 420px;
-}
-
 .box-list {
     height: auto;
     text-align: left;
@@ -101,5 +105,10 @@ export default {
     border-top: 1px dashed #ccc;
     margin-bottom: 5px;
     margin-top: 6px;
+}
+
+.content-list {
+    border: 1px solid #ccc;    
+    background-color: #fff;
 }
 </style>

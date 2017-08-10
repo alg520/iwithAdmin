@@ -559,6 +559,10 @@ ul {
     list-style: none;
 }
 
+.inblock {
+    display: inline-block;
+}
+
 html,
 body,
 #app,

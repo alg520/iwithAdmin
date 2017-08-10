@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="item-list">
         <el-row>
             <el-col :span="24">
                 <div class="grid-content bg-purple-dark">
@@ -240,5 +240,8 @@ export default {
 <style scoped>
 .el-table th>.cell {
     text-align: center;
+}
+.item-list {
+    padding: 20px 10px;
 }
 </style>
