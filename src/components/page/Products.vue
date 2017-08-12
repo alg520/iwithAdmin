@@ -51,22 +51,25 @@
 import store from '@/store/index';
 import vPageTitle from '../common/pageTitle.vue';
 import allList from '../products/allList.vue';
-import addList from '../products/addList.vue';
 import attrList from '../products/itemAttr.vue';
+import addList from '../products/addList.vue';
 export default {
     data() {
         return {
             status: 'alllist'
         }
     },
+    
+    components: {
+        vPageTitle, allList, addList, attrList
+    },
+
     computed: {
         count() {
             return this.$store.this.state.status;
         }
-    },
-    components: {
-        vPageTitle, allList, addList, attrList
-    },
+    },    
+    
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值
     },

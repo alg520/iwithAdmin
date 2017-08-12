@@ -16,11 +16,7 @@ const mutations = {
         state.count--;
     },
     changeStatus(state,name){
-        
         state.status = name;
-        console.log(state);
-        
-
     }
 }
 
@@ -30,10 +26,14 @@ const getters = {
     }
 }
 
-console.log(state);
-
 export default new Vuex.Store({
     state,
     mutations,
     getters
 })
+
+
+
+
+
+

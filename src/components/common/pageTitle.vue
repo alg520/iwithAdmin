@@ -26,7 +26,6 @@
         height:55px;
         line-height: 55px;
         padding-left: 15px;        
-        
     }
     
     .el-breadcrumb {
