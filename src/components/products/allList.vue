@@ -39,8 +39,8 @@
         </el-row>
         <el-table :data="productsList" ref="multipleTable" border tooltip-effect="dark" 
         style="width: 100%" max-height="450">
-            <el-table-column type="selection" width="65">
-            </el-table-column>
+            <!-- <el-table-column type="selection" width="65">
+            </el-table-column> -->
             <el-table-column type="index" width="55">
             </el-table-column>
             <el-table-column prop="itemNameObject.zh" label="商品名称">
@@ -74,8 +74,14 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+                    <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">
+                            <i class="el-icon-edit"></i>
+                        </el-button>
+                        <el-button type="text" size="small" @click="handleDelete(scope.$index, scope.row)">
+                            <i class="el-icon-delete"></i>
+                        </el-button>
                 </template>
             </el-table-column>
         </el-table>
