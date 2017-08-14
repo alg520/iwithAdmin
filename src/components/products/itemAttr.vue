@@ -60,7 +60,12 @@ export default {
             attrName: '',
             attrNameUpdate:'', 
             itemAttrDatas: [],
-            shopId:''
+            shopId:'',
+            rules:{
+                attrName:[
+                    {required:true,message:'请输入活动名称',trigger:'blur'}
+                ]
+            }
         }
     },
     created() {
@@ -101,38 +106,42 @@ export default {
             // 商铺id 需要获取列表的时候 就要保存起来
             let params = {
                 shopId:this.shopId,
+                isDelete:false,
                 attrNameObject:{"zh":this.attrName}
-            };
+            };            
 
-            console.log(params);
-
-            axios.post("/coron-web/itemAttr/add",params).then( response => {
+            if(this.attrName == ''){
+                this.$message({
+                    type: 'info',
+                    message: '要添加的属性名不能为空！'
+                });
+            } else {
+                axios.post("/coron-web/itemAttr/add",params).then( response => {
                 
-                console.log(response);
-                this.cancelUpdate();
-                this.getItemAttrList();
+                    console.log(response);
+                    this.cancelUpdate();
+                    this.getItemAttrList();
 
-            }).catch(error => {
-                
-                console.log(error);
+                }).catch(error => {
+                    
+                    console.log(error);
 
-            })
+                })
+            }                        
+            
         },
 
         updateAttr: function (item) {
             
             this.updateattrinputVisible = item.itemAttrId;
             this.attrinputVisible = false;
-
             this.attrNameUpdate = item.attrNameObject.zh;
             
         },
 
         updateAttrPost:function(item){
             //更新列表请求
-
-            console.log(item);
-
+            
             let updateParams = {
                 itemAttrId:item.itemAttrId,
                 attrNameObject:{"zh":this.attrNameUpdate}
@@ -140,6 +149,13 @@ export default {
 
             axios.post("/coron-web/itemAttr/update",updateParams).then(response => {
                 console.log(response);
+
+                if(response.statusText == 'OK'){
+                    this.$message({
+                        type:'info',
+                        message:'更新成功'
+                    });
+                }
                 this.getItemAttrList();
                 this.cancelUpdate();
             }).catch(error => {
@@ -154,6 +170,7 @@ export default {
         cancelUpdate:function(item){            
             this.updateattrinputVisible = 0;
             this.attrinputVisible = false;
+            this.attrName = '';
         },
 
         delAttr: function (item) {

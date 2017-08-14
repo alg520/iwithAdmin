@@ -7,7 +7,8 @@
         <div class="content-list">
             <el-row v-if="$store.state.status == 'alllist'">
                 <el-col :sm="6" :md="5" :lg="4">
-                    <attrList></attrList>
+                    <!-- <attrList></attrList> -->
+                    <catalog></catalog>
                 </el-col>
                 <el-col :sm="18" :md="19" :lg="20">
                     <transition mode="out-in">
@@ -52,6 +53,7 @@ import store from '@/store/index';
 import vPageTitle from '../common/pageTitle.vue';
 import allList from '../products/allList.vue';
 import attrList from '../products/itemAttr.vue';
+import catalog from '../products/catalog.vue';
 import addList from '../products/addList.vue';
 export default {
     data() {
@@ -61,7 +63,7 @@ export default {
     },
     
     components: {
-        vPageTitle, allList, addList, attrList
+        vPageTitle, allList, addList, attrList,catalog
     },
 
     computed: {

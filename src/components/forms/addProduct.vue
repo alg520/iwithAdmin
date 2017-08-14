@@ -3,18 +3,18 @@
         <el-row>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <el-form ref="form" :model="productForm" label-width="80px">
-                        <el-form-item label="所属分类">  
-                            <el-select v-model="productForm.name" placeholder="请选择分类">
-                                <el-option label="酒水" value="shanghai"></el-option>
-                                <el-option label="主食" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
+                    <el-form ref="form" :model="productForm" label-width="80px">                        
                         <el-form-item label="类型">
                             <el-select v-model="productForm.itemType" placeholder="请选择菜品类型">
                                 <el-option label="单点" value="1"></el-option>
                                 <el-option label="套餐" value="2"></el-option>
                                 <el-option label="配菜" value="3"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属分类">  
+                            <el-select v-model="productForm.name" placeholder="请选择分类">
+                                <el-option label="酒水" value="shanghai"></el-option>
+                                <el-option label="主食" value="beijing"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="菜品名称">
@@ -29,15 +29,7 @@
                         </el-form-item>
                         <el-form-item label="折后价">
                             <el-input v-model="productForm.discountPrice"></el-input>
-                        </el-form-item>
-                        <el-form-item label="优惠">
-                            <template>
-                                <el-radio-group v-model="productForm.discount">
-                                    <el-radio label="价格"></el-radio>
-                                    <el-radio label="折扣"></el-radio>
-                                </el-radio-group>
-                            </template>
-                        </el-form-item>
+                        </el-form-item>                        
                         <el-form-item label="图片">
                             <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -54,7 +46,14 @@
                             </el-select>
                             <el-button type="primary" icon="plus" @click="dialogFormVisible = true"></el-button>
                         </el-form-item>
-                       
+                        <el-form-item label="商品属性">
+                            <el-select v-model="productForm.timeDurations" placeholder="请选择属性">
+                                <el-option label="全天" value="shanghai"></el-option>
+                                <el-option label="早餐" value="beijing"></el-option>
+                                <el-option label="中餐" value="beijing"></el-option>                                
+                            </el-select>
+                            <el-button type="primary" icon="plus" @click="dialogFormVisible = true"></el-button>
+                        </el-form-item>                       
                         <el-form-item label="商品位置">
                             <el-radio-group v-model="productForm.seq">                              
                                 <el-radio :label="0">置底</el-radio>

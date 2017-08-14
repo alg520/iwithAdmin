@@ -1,4 +1,4 @@
-import api from '../utils/api';
+import api from './api';
 import http from '../utils/http';
 
 export function loginByEmail(email, password) {

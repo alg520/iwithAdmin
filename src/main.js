@@ -24,9 +24,6 @@ Object.keys(filters).forEach(key => {
 
 
 
-
-
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
