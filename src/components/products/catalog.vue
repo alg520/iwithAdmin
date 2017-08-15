@@ -1,10 +1,10 @@
 <template>
     <div class="catalog-nav" id="catalog-nav">
         <ul class="catalog-list" id="catalog-list">
-            <li class="selected">
+            <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
                 <a href="javascript:;">全部</a>
             </li>
-            <li v-for="item in catalogDatas" :key="item.catalogId">
+            <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
                 <template v-if="updateCataloginputVisible == item.catalogId">
                     <el-input size="small" placeholder="请输入菜品分类" icon="close" v-model="catalogNameUpdate" :on-icon-click="cancelUpdate" style="width:80%;">
                     </el-input>
@@ -43,7 +43,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            isActive:true,
+            isActive:0,
             cataloginputVisible: false,
             updateCataloginputVisible: 0,
             catalogName: '',
@@ -62,7 +62,11 @@ export default {
         this.getCatalogList();
     },
     computed: {
-
+        selectedClass:function(){
+            return {
+                selected:this.isActive
+            }
+        }
     },
     mounted: function () {
 
@@ -97,11 +101,10 @@ export default {
             // 商铺id 需要获取列表的时候 就要保存起来
             let params = {
                 isDelete: false,
-                type: 2,
-                parentId: 11,
+                type: 2,                
                 shopId: this.shopId,
                 isVisible: true,
-                seq: 1,
+                seq: 0,
                 busiType: 1,
                 nameObject: { "zh": this.catalogName },
             };
@@ -223,7 +226,9 @@ export default {
             });
         },
 
-        changeSelected:function(){
+        changeSelected:function(itemId){
+            console.log(itemId);
+            this.isActive = itemId;
 
         }
     }

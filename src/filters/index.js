@@ -1,6 +1,5 @@
 //过滤菜品类型
-export function parseProductType(itemType){
-    console.log(itemType);
+export function parseProductType(itemType){    
     if(itemType == 1){
         return '单点';
     } else if(itemType == 2){
@@ -13,8 +12,8 @@ export function parseProductType(itemType){
 //过滤商品售卖状态
 export function parseIsSale(isSale){
     if(isSale == 0){
-        return '下架';
+        return '已下架';
     } else if(isSale == 1){
-        return '上架';
+        return '已上架';
     }
 }

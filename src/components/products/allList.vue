@@ -3,41 +3,42 @@
         <el-row>
             <el-col :span="24">
                 <div class="grid-content bg-purple-dark">
-                    <el-form :inline="true" :model="formItems">
+                    <el-form :inline="true" :model="itemsForm">
                         <el-form-item label="状态">
-                            <el-select v-model="formItems.state" placeholder="状态">
-                                <el-option label="全部" value="0"></el-option>
-                                <el-option label="未上架" value="1"></el-option>
-                                <el-option label="已上架" value="2"></el-option>
+                            <el-select v-model="itemsForm.isSale" placeholder="状态" size="small">
+                                <el-option label="全部" value="null"></el-option>
+                                <el-option label="未上架" value="false"></el-option>
+                                <el-option label="已上架" value="true"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="商品分类">
-                            <el-select v-model="formItems.type" placeholder="商品分类">
-                                <el-option label="推荐菜" value="0"></el-option>
-                                <el-option label="特价菜" value="1"></el-option>
+                        <el-form-item label="商品类型">
+                            <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small">
+                                <el-option label="单点" value="1"></el-option>
+                                <el-option label="套餐" value="2"></el-option>
+                                <el-option label="配菜" value="3"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="出售时间">
-                            <el-select v-model="formItems.sellTime" placeholder="出售时间">
+                        <!-- <el-form-item label="出售时间">
+                            <el-select v-model="itemsForm.sellTime" placeholder="出售时间">
                                 <el-option label="全天" value="00:00-24:00"></el-option>
                                 <el-option label="早餐" value="07:00-11:00"></el-option>
                                 <el-option label="中餐" value="11:00-13:00"></el-option>
                                 <el-option label="晚餐" value="17:00-20:00"></el-option>
                                 <el-option label="夜宵" value="20:00-04:00"></el-option>
                             </el-select>
-                        </el-form-item>
+                        </el-form-item> -->
                         <el-form-item label="">
-                            <el-input placeholder="请输入商品名称" icon="search" v-model="formItems.productName" :on-icon-click="handleIconClick">
+                            <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" :on-icon-click="handleIconClick">
                             </el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="$store.commit('changeStatus','addlist')">添加商品</el-button>
+                            <el-button size="small" type="primary" @click="$store.commit('changeStatus','addlist')">添加商品</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
             </el-col>
         </el-row>
-        <el-table :data="productsList" ref="multipleTable" border tooltip-effect="dark" 
+        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" 
         style="width: 100%" max-height="450">
             <!-- <el-table-column type="selection" width="65">
             </el-table-column> -->
@@ -52,7 +53,7 @@
                     <span>{{scope.row.itemType | parseProductType}}</span>
                 </template>
             </el-table-column>
-            <el-table-column sortable label="出售开始时间">
+            <!-- <el-table-column sortable label="出售开始时间">
                 <template scope="scope">
                     <span>{{scope.row.timeDurations[0].startTime}}</span>
                 </template>
@@ -61,7 +62,7 @@
                 <template scope="scope">
                     <span>{{scope.row.timeDurations[0].endTime}}</span>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="状态">
                 <template scope="scope">
                     <span>{{scope.row.isSale | parseIsSale}}</span>
@@ -150,6 +151,15 @@ export default {
                 itemType:1
             },
 
+            itemsForm:{                
+                itemName:'',
+                itemType:null,
+                busiType:1,   //1点餐系统2民宿3零售
+                isSale:null,
+                itemNo:'',
+                catalogId:null
+            },
+
             dialogFormVisible: false,
 
             form: {
@@ -190,6 +200,10 @@ export default {
         }
     },
     methods: {
+
+        getItemList:function(){
+
+        },
 
         addProduct(status) {
             console.log(store);
