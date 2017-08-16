@@ -14,8 +14,7 @@
                 <el-menu-item index="Products">商品列表</el-menu-item>
                 <el-menu-item index="typeManage">目录管理</el-menu-item>
                 <el-menu-item index="tasteManage">属性管理</el-menu-item>
-                <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>
-                <el-menu-item index="shopTimeDuration">导入商品</el-menu-item>
+                <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>                
             </el-submenu>
 
             <!-- <el-submenu index="2">

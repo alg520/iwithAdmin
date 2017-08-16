@@ -3,34 +3,34 @@
         <el-row>
             <el-col :span="12">
                 <div class="grid-content bg-purple">                    
-                    <el-form ref="form" :model="productForm" :rules="rules" label-width="100px">                        
-                        <el-form-item label="菜品编号">
+                    <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">                        
+                        <el-form-item label="菜品编号" prop="itemNo">
                             <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
                         </el-form-item>
-                        <el-form-item label="所属分类">  
+                        <el-form-item label="所属分类" prop="catalogId">  
                             <el-select v-model="productForm.catalogId" placeholder="请选择分类">
                                 <el-option label="酒水" value="shanghai"></el-option>
                                 <el-option label="主食" value="beijing"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="菜品名称">
-                            <el-input v-model="productForm.itemNameObject.zh" placeholder="菜品名称"></el-input>
+                        <el-form-item label="菜品名称" prop="itemName">
+                            <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
                         </el-form-item>
-                        <el-form-item label="菜品介绍">
-                            <el-input type="textarea" :rows="2" placeholder="请输入菜品介绍" v-model="productForm.itemDescObject.zh">
+                        <el-form-item label="菜品介绍" prop="itemDesc">
+                            <el-input type="textarea" :rows="2" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
                             </el-input>
                         </el-form-item>
-                        <el-form-item label="类型">                                                        
+                        <el-form-item label="类型">
                             <el-radio-group v-model="productForm.itemType" @change="changeItemTpye">
                                 <el-radio :label="1">单点</el-radio>
                                 <el-radio :label="2">套餐</el-radio>
                                 <el-radio :label="3">配菜</el-radio>
                             </el-radio-group>                            
                         </el-form-item>
-                        <el-form-item label="原价(元)">
+                        <el-form-item label="原价(元)" prop="originPrice">
                             <el-input v-model="productForm.originPrice"></el-input>
                         </el-form-item>
-                        <el-form-item label="折后价(元)">
+                        <el-form-item label="折后价(元)" prop="discountPrice">
                             <el-input v-model="productForm.discountPrice"></el-input>
                         </el-form-item>                        
                         <el-form-item label="图片">
@@ -39,8 +39,8 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="销售时段">
-                            <el-select v-model="productForm.timeDurations" placeholder="请选择时段">
+                        <el-form-item label="销售时段" prop="timeDuration">
+                            <el-select v-model="productForm.timeDuration" placeholder="请选择时段">
                                 <el-option label="全天" value="shanghai"></el-option>
                                 <el-option label="早餐" value="beijing"></el-option>
                                 <el-option label="中餐" value="beijing"></el-option>
@@ -49,18 +49,12 @@
                             </el-select>
                             <el-button type="primary" icon="plus" @click="dialogFormVisible = true"></el-button>
                         </el-form-item>
-                        <el-form-item label="商品属性">
-                            <el-select v-model="productForm.timeDurations" placeholder="请选择属性">
+                        <el-form-item label="商品属性" prop="itemAttr">
+                            <el-select v-model="productForm.itemAttr" placeholder="请选择属性">
                                 <el-option label="全天" value="shanghai"></el-option>                                                              
                             </el-select>
                             <el-button type="primary" icon="plus" @click="dialogFormVisible = true"></el-button>
-                        </el-form-item>                       
-                        <!-- <el-form-item label="商品位置">//默认置顶
-                            <el-radio-group v-model="productForm.seq">                              
-                                <el-radio :label="0">置底</el-radio>
-                                <el-radio :label="1">置顶</el-radio>
-                            </el-radio-group>
-                        </el-form-item> -->
+                        </el-form-item>                        
                         <el-form-item label="商品标签">
                             <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
                                 {{tag}}
@@ -69,17 +63,25 @@
                             </el-input>
                             <el-button v-else class="button-new-tag" size="small">添加</el-button>
                         </el-form-item>
+                        <el-form-item label="配菜设置">
+                            <el-select v-model="productForm.timeDurations" placeholder="配菜设置">
+                                <el-option label="全天" value="shanghai"></el-option>                                                              
+                            </el-select>
+                            <el-button type="primary" icon="plus" @click="dialogFormVisible = true"></el-button>
+                        </el-form-item>      
                         <!-- <el-form-item label="属性设置">
-                            <el-button type="primary">添加属性类型</el-button>
+                            <el-button type="primary" size="small">添加属性类型</el-button>
                         </el-form-item>
                         <el-form-item label="附属商品设置">
-                            <el-button type="primary">添加附属商品类型</el-button>
+                            <el-button type="primary" size="small">添加附属商品类型</el-button>
                         </el-form-item> -->
                         <el-form-item label="是否有配菜">
                             <el-select v-model="productForm.name" placeholder="是否有配菜">
                                 <el-option label="是" value="shanghai"></el-option>
                                 <el-option label="否" value="beijing"></el-option>
-                            </el-select>
+                            </el-select>                            
+                        </el-form-item>
+                        <el-form-item label="">
                             <template>
                                 <el-transfer
                                     filterable
@@ -91,6 +93,7 @@
                                 </el-transfer>
                             </template>
                         </el-form-item>
+
                         <el-form-item>
                             <el-button type="primary">立即添加</el-button>
                             <el-button>取消</el-button>
@@ -101,7 +104,32 @@
         </el-row>
 
 
-        <el-dialog title="添加时段" :visible.sync="dialogFormVisible" class="addDialog">
+        <el-dialog title="添加时段" :visible.sync="timeDialogVisible" class="addDialog">
+            <el-form :model="timeDurationForm">
+                <el-form-item label="时段名称" :label-width="formLabelWidth">
+                <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
+                </el-form-item>
+                <el-form-item label="时间范围" :label-width="formLabelWidth">    
+                    <template>
+                        <el-time-picker v-model="timeDurationForm.startTime" :picker-options="{
+                                            selectableRange: '06:30:00 - 22:30:00'
+                                            }" placeholder="开始时间">
+                        </el-time-picker>
+                    
+                        <el-time-picker v-model="timeDurationForm.endTime" :picker-options="{
+                                        selectableRange: '06:30:00 - 22:30:00'
+                                        }" placeholder="结束时间">
+                        </el-time-picker>
+                    </template>        
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary">立即添加</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="属性列表" :visible.sync="attrDialogVisible" class="addDialog">
             <el-form :model="timeDurationForm">
                 <el-form-item label="时段名称" :label-width="formLabelWidth">
                 <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
@@ -148,36 +176,65 @@ export default {
             data2: generateData2(),
             value2: [],
             filterMethod(query, item) {
-            return item.pinyin.indexOf(query) > -1;
+                return item.pinyin.indexOf(query) > -1;
             },
             imageUrl: '',
             dynamicTags: ["标签1"],
             inputVisible:false,
-            dialogFormVisible: false,
+            timeDialogVisible: false,   
+            attrDialogVisible:false,
             formLabelWidth:'120px',
             timeDurationForm: {
                 name: '',
                 startTime: '06:30:00',
                 endTime: '22:00:00'
             },
-            productForm: {
-                name: '',
-                itemNameObject: {zh:''},
-                itemNo: '',
-                shopId: '',
-                catalogId: '',
-                originPrice: '',
-                discountPrice: '',
-                discount: '',
-                itemNum: '',
-                picUrl: '',
+            productForm: {                
+                itemNameObject: {zh:''}, //必填
                 itemDescObject: {zh:''},
-                itemType: 1,
+                                
+                catalogId: '',   //必填                
+                itemType: 1, //必填
+                itemNo: '',    //必填
+                itemName:'',
+                itemDesc:'',
+                originPrice: '',    //必填
+
+                
+                discountPrice: '',
+                picUrl: '',  //必填
+                shopId: '',
+                timeDuration:'shanghai',     //可售时段
+                itemAttrs:[
+                    {
+                        gname:{zh:''},
+                        selectType:'single',  //multi
+                        seq:0,
+                        attrs:[
+                            {attrId:0}
+                        ]
+                    }
+                ],
+                itemAttr:'',
+                childItems:[
+                    {
+                        gname:{zh:''},
+                        selectType:'single',
+                        seq:0,
+                        items:[
+
+                        ]
+                    }
+                ],
+                seq: 1,  //必填
+                busiType: 1,  //必填
+
+
                 timeDurations: [{ "startTime": "06:21:00", "endTime": "12:30:00" }],
-                childItems: [{ "gname": { "zh": "中文商品组名", "en": "", "jp": "" }, "selectType": "single", "seq": "0", "items": [] }],
-                itemAttrs: [{ attrs: [{ attrGroupId: 2, attrId: 1, name: { zh: '' }, selected: true }], gname: { zh: '' }, selectType: "multi", seq: 1 }],
-                seq: 1,
-                busiType: 1
+                discount: '',
+                itemNum: '',                
+                childItems2: [{ "gname": { "zh": "中文商品组名", "en": "", "jp": "" }, "selectType": "single", "seq": "0", "items": [] }],
+                itemAttrs2: [{ attrs: [{ attrGroupId: 2, attrId: 1, name: { zh: '' }, selected: true }], gname: { zh: '' }, selectType: "multi", seq: 1 }]                
             },
             rules : {
                 itemNameObject: [

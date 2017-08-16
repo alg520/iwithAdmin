@@ -2,10 +2,10 @@
   <div>
     <el-form :inline="true">
       <el-form-item>
-        <el-button type="primary" @click="dialogFormVisible = true">添加时间段</el-button>
+        <el-button type="primary" @click="timeDialogVisible = true">添加时段</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="tableList" style="width: 100%">
+    <el-table :data="timeDatas" style="width: 100%">
       <el-table-column prop="nameGL.zh" label="名称" width="180"></el-table-column>
       <el-table-column prop="startTime" label="开始时间"></el-table-column>
       <el-table-column prop="endTime" label="结束时间"></el-table-column>
@@ -17,7 +17,7 @@
       </el-table-column>
     </el-table>
   
-    <el-dialog title="添加时段" :visible.sync="dialogFormVisible" class="addDialog">
+    <el-dialog title="添加时段" :visible.sync="timeDialogVisible" class="addDialog">
       <el-form :model="timeDurationForm">
         <el-form-item label="时段名称" :label-width="formLabelWidth">
           <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
@@ -66,8 +66,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      tableList: [],
-      dialogFormVisible: false,
+      timeDatas: [],
+      timeDialogVisible: false,
       timeDurationForm: {
         name: '',
         startTime: '',
@@ -81,23 +81,37 @@ export default {
   },
   created() {
     
-    axios.get('/coron-web/shopTimeDuration/list')
-    .then(response => {
-      console.log(response);
-      this.tableList = response.data.rows;
-    })
-    .catch(error => {
-      console.log(error);
-      alert('网络错误，不能访问');
-    })
+    this.getTimeList();
 
   },
   methods:{
-    addTimeDuration(){
-      let name = {"zh":this.timeDurationForm.name};
 
+    getTimeList(){
+
+      axios.get('/coron-web/shopTimeDuration/list')
+      .then(response => {        
+        
+        if(response.data.status){
+          response.data.rows && (this.timeDatas = response.data.rows);
+        } else {
+          this.$message({
+            type: 'info',
+            message: '数据错误'
+          });
+        }
+                
+        
+      })
+      .catch(error => {
+        console.log(error);
+        alert('网络错误，不能访问');
+      })
+    },
+
+    addTimeDuration(){
+      
       let timeParams = {        
-        nameGL:name,
+        nameGL:{zh:this.timeDurationForm.name},
         startTime:this.startTime,
         endTime:"20:00:00"
       };

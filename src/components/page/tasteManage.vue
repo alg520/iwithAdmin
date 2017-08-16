@@ -8,6 +8,7 @@
             <el-col :span="24">
                 <div class="grid-content bg-purple-dark">
                     <tasteList></tasteList>
+                    <!-- <itemAttr></itemAttr> -->
                 </div>
             </el-col>
         </el-row>
@@ -18,6 +19,7 @@
 <script>
     import vPageTitle from '../common/pageTitle.vue';
     import tasteList from '../products/tasteList.vue';
+    import itemAttr from '../products/itemAttr.vue';
     export default {
         data(){
            return{
@@ -25,7 +27,7 @@
            }
         },
         components:{
-            vPageTitle,tasteList
+            vPageTitle,tasteList,itemAttr
         }
     }
 </script>

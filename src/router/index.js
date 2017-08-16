@@ -42,10 +42,12 @@ export default new Router({
           meta: ['商品管理', '商品列表'],
         },{
           path:'/shopTimeDuration',
-          component:shopTimeDuration
+          component:shopTimeDuration,
+          meta: ['时段管理', '时段列表']
         },{
           path:'/tasteManage',
-          component:tasteManage
+          component:tasteManage,
+          meta: ['属性管理', '属性列表']
         } ,{
           path:'/typeManage',
           component:typeManage
