@@ -6,11 +6,11 @@
     
         <div class="content-list">
             <el-row v-if="$store.state.status == 'alllist'">
-                <el-col :sm="6" :md="5" :lg="4">
+                <el-col :sm="6" :md="6" :lg="5">
                     <!-- <attrList></attrList> -->
                     <catalog></catalog>
                 </el-col>
-                <el-col :sm="18" :md="19" :lg="20">
+                <el-col :sm="18" :md="18" :lg="19">
                     <transition mode="out-in">
                         <allList></allList>
                     </transition>

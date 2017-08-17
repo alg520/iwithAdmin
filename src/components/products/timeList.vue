@@ -11,51 +11,37 @@
       <el-table-column prop="endTime" label="结束时间"></el-table-column>
       <el-table-column label="操作" width="240">
         <template scope="scope" width="240">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="delTimeDuration(scope.row.timeDurationId)">删除</el-button>
+          <el-button size="mini" @click="updateTimeDuration(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
   
     <el-dialog title="添加时段" :visible.sync="timeDialogVisible" class="addDialog">
-      <el-form :model="timeDurationForm">
-        <el-form-item label="时段名称" :label-width="formLabelWidth">
+      <el-form :model="timeDurationForm" :rules="rules" ref="timeDurationForm">
+        <el-form-item label="时段名称" :label-width="formLabelWidth" prop="name">
           <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
         </el-form-item>
-        <el-form-item label="时间范围" :label-width="formLabelWidth">
-          <!-- <el-time-picker
-                is-range
-                v-model="timeRange"
-                placeholder="选择时间范围">
-              </el-time-picker> -->
-          <template>
-            <!-- <el-time-select placeholder="起始时间" format="HH:mm:ss" v-model="startTime" :picker-options="{
-                    start: '06:30',
-                    step: '00:30',
-                    end: '22:30'                    
-                  }">
-            </el-time-select> -->
-            <el-time-picker
-            v-model="startTime"
-            :picker-options="{
-              selectableRange: '06:30:00 - 22:30:00'
-            }"
-            placeholder="开始时间">
-          </el-time-picker>
-          <el-time-picker
-            v-model="endTime"
-            :picker-options="{
-              selectableRange: '06:30:00 - 22:30:00'
-            }"
-            placeholder="结束时间">
-          </el-time-picker>            
-          </template>
-  
+        <el-form-item label="时间范围" :label-width="formLabelWidth" required>          
+            <el-time-select placeholder="起始时间" v-model="timeDurationForm.startTime" :picker-options="{
+                start: '00:00',
+                step: '00:10',
+                end: '23:59'
+              }">
+            </el-time-select>
+            <el-time-select placeholder="结束时间" v-model="timeDurationForm.endTime" :picker-options="{
+                start: '00:00',
+                step: '00:10',
+                end: '23:59',
+                minTime: timeDurationForm.startTime
+              }">
+            </el-time-select>            
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addTimeDuration()">立即添加</el-button>
+        <el-button @click="timeDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTimeDuration('timeDurationForm')">立即添加</el-button>
+        <el-button type="primary" @click="updateTimeDurationPost()">立即修改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -68,79 +54,164 @@ export default {
     return {
       timeDatas: [],
       timeDialogVisible: false,
+      timeDurationId:'',
       timeDurationForm: {
         name: '',
         startTime: '',
         endTime: ''
       },
-      startTime: '',
-      endTime: '',   
-      formLabelWidth: '120px',
-      timeRange: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)]
+      rules: {
+        name: [
+          { required: true, message: '请输入属性名称', trigger: 'blur' }
+        ]
+      },     
+      formLabelWidth: '120px'
     }
   },
   created() {
-    
+
     this.getTimeList();
 
   },
-  methods:{
+  methods: {
 
-    getTimeList(){
+    getTimeList() {
 
       axios.get('/coron-web/shopTimeDuration/list')
-      .then(response => {        
-        
-        if(response.data.status){
-          response.data.rows && (this.timeDatas = response.data.rows);
+        .then(response => {
+
+          if (response.data.status) {
+            response.data.rows && (this.timeDatas = response.data.rows);
+          } else {
+            this.$message({
+              type: 'info',
+              message: '数据错误'
+            });
+          }
+
+        })
+        .catch(error => {
+          console.log(error);
+          alert('网络错误，不能访问');
+        })
+    },
+
+    addTimeDuration(formName) {
+
+      let timeParams = {
+        nameGL: { zh: this.timeDurationForm.name,jp:'',en:''},
+        startTime: this.timeDurationForm.startTime,
+        endTime: this.timeDurationForm.endTime
+      };
+
+      console.log("时段参数",timeParams);
+
+      this.$refs[formName].validate((valid) => {        
+
+        if (valid) {
+          
+          axios.post('/coron-web/shopTimeDuration/add', timeParams).then(response => {
+            
+            console.log(response);
+            this.timeDialogVisible = false;
+            this.getTimeList();
+
+          }).catch(error => {
+            console.log(error);
+            alert('网络错误不能访问');
+          })
+
         } else {
           this.$message({
             type: 'info',
-            message: '数据错误'
+            message: '要添加的的时段名不能为空！'
+          });
+          return false;
+        }
+      });
+
+      //return false;      
+
+    },
+
+    delTimeDuration(item) {
+      
+      axios.post('/coron-web/shopTimeDuration/del', {
+        
+        timeDurationId: item.timeDurationId
+
+      }).then(response => {
+        console.log(response);
+
+        if(response.data.status){
+          this.$message({
+            type:'success',
+            message:'删除成功'
           });
         }
-                
         
-      })
-      .catch(error => {
+        this.getTimeList();
+
+      }).catch(error => {
+        
         console.log(error);
-        alert('网络错误，不能访问');
+        alert('请求错误');
+
       })
+
     },
 
-    addTimeDuration(){
+    confirmDel(item) {
+        this.$confirm('确定要删除该时段吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            this.delTimeDuration(item);
+        }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消删除'
+            });
+        });
+    },
+
+    updateTimeDuration(item){
+
+      console.log(item);
       
-      let timeParams = {        
-        nameGL:{zh:this.timeDurationForm.name},
-        startTime:this.startTime,
-        endTime:"20:00:00"
+      this.timeDialogVisible = true;
+      this.timeDurationForm.name = item.nameGL.zh;
+      this.timeDurationForm.startTime = item.startTime;
+      this.timeDurationForm.endTime = item.endTime;
+      this.timeDurationId = item.timeDurationId;
+
+    },
+
+    updateTimeDurationPost(){
+
+      let updateParams = {
+        timeDurationId:this.timeDurationId,
+        nameGL:{zh:this.timeDurationForm.name,jp:'',en:''},
+        startTime:this.timeDurationForm.startTime,
+        endTime:this.timeDurationForm.endTime
       };
-      console.log(timeParams);
       
-      axios.post('/coron-web/shopTimeDuration/add',timeParams).then(response => {
-        console.log(response);
+      axios.post('/coron-web/shopTimeDuration/update',updateParams).then(response => {
+        
+        this.$message({
+          type:'success',
+          message:'修改成功'
+        });
+        this.timeDialogVisible = false;
+        this.getTimeList();
       }).catch(error => {
         console.log(error);
-        alert('网络错误不能访问');
       })
-    },
-
-    delTimeDuration(itemId){
-
-        console.log(itemId);
-        axios.post('/coron-web/shopTimeDuration/del',{
-          timeDurationId:itemId
-        }).then(response => {
-          console.log(response);
-        }).catch(error => {
-          console.log(error);
-          alert('请求错误');
-        })
-
     }
   }
 }
 </script>
 <style scoped>
-  
+
 </style>
