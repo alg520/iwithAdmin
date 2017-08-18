@@ -1,7 +1,7 @@
 <template>
     <div class="addProductForm">
         <el-row>
-            <el-col :span="12">
+            <el-col :span="18">
                 <div class="grid-content bg-purple">
                     <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
                         <el-form-item label="菜品编号" prop="itemNo">
@@ -28,10 +28,10 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="原价(元)" prop="originPrice">
-                            <el-input v-model="productForm.originPrice"></el-input>
+                            <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
                         </el-form-item>
                         <el-form-item label="折后价(元)" prop="discountPrice" v-if="productForm.itemType != 3">
-                            <el-input v-model="productForm.discountPrice"></el-input>
+                            <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
                         </el-form-item>
                         <el-form-item label="图片">
                             <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
@@ -50,39 +50,62 @@
                             <el-button type="primary" icon="plus" @click="timeDialogVisible = true"></el-button>
                         </el-form-item>
                         <el-form-item label="属性设置" prop="itemAttr" v-if="productForm.itemType != 3">
-                            <el-button type="text" @click="addAttr()">
-                                <i class="el-icon-plus"></i>添加属性设置
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item label="">
-                            <template>                                
-                                 <el-card class="box-card" v-for="(item,index) in attrGroups" :key="index">
+                            <!-- <el-button type="text" @click="addAttr()">
+                                    <i class="el-icon-plus"></i>添加属性设置
+                                </el-button> -->
+                            <template>
+                                <el-card class="box-card">
                                     <div slot="header" class="clearfix">
-                                        <span style="line-height: 24px;">属性组{{index+1}}</span>
-                                        <el-button style="float: right;" type="text" @click="closeAttrGroup(index)">
-                                            <i class="el-icon-close"></i>
+                                        <span style="line-height: 24px;">属性组添加</span>
+                                        <el-button style="float: right;" type="text" @click="addAttrGroup()">
+                                            <i class="el-icon-plus"></i>添加
                                         </el-button>
                                     </div>
-                                    <el-form label-width="100px">
+                                    <el-form label-width="100px" :inline="true">
                                         <el-form-item label="属性组名称">
-                                            <el-input style="width:50%;" size="small"></el-input>
+                                            <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.gname"></el-input>
                                         </el-form-item>
                                         <el-form-item label="类型">
-                                            <el-radio-group v-model="attrType" size="small">
+                                            <el-radio-group v-model="productForm.selectType" size="small">
                                                 <el-radio-button label="single">单选</el-radio-button>
                                                 <el-radio-button label="multi">多选</el-radio-button>
                                             </el-radio-group>
                                         </el-form-item>
+                                        <br>
                                         <el-form-item label="属性列表">
-                                            <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button>
+                                            <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
+                                            <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true"
+                                            :close-transition="false"
+                                            @close="handleClose(tag)">
+                                            {{tag}}
+                                            </el-tag>
+                                            <el-button class="button-new-tag" size="small" type="primary" @click="selectAttr()">选择属性</el-button>
                                         </el-form-item>
                                     </el-form>
-                                </el-card>
-                            </template>                                                       
+                                    <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
+                                        <el-table-column prop="gname" label="名称" width="120">
+                                        </el-table-column>
+                                        <el-table-column prop="selectType" label="类型" width="120">
+                                        </el-table-column>
+                                        <el-table-column prop="attrs" label="属性列表">
+                                            <template scope="scope">
+                                                <el-tag v-for="attr in scope.row.attrs" :key="attr.attrId" type="success">{{attr.name}}</el-tag>
+                                            </template>                                            
+                                        </el-table-column>                                        
+                                        <el-table-column label="操作" width="80">
+                                            <template scope="scope">
+                                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData4)" type="text" size="small">
+                                                    移除
+                                                </el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>  
+                                </el-card>                                                              
+                            </template>
                         </el-form-item>
                         <el-form-item label="附属商品设置" v-if="productForm.itemType == 1">
                             <el-button type="text">
-                                <i class="el-icon-plus"></i>添加附属商品设置                                
+                                <i class="el-icon-plus"></i>添加附属商品设置
                             </el-button>
                         </el-form-item>
                         <el-form-item label="" v-if="productForm.itemType == 1">
@@ -107,19 +130,19 @@
                                         <el-button :plain="true" type="info" size="small">选择附属商品</el-button>
                                     </el-form-item>
                                 </el-form>
-                            </el-card>                            
+                            </el-card>
                         </el-form-item>
                         <!-- <el-form-item label="商品标签">
-                                <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
-                                    {{tag}}
-                                </el-tag>
-                                <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
-                                </el-input>
-                                <el-button v-else class="button-new-tag" size="small">添加</el-button>
-                            </el-form-item> -->    
+                            <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
+                                {{tag}}
+                            </el-tag>
+                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="small">添加</el-button>
+                        </el-form-item> -->
                         <el-form-item>
                             <el-button type="primary">立即添加</el-button>
-                            <el-button>取消</el-button>
+                            <el-button>保存并添加下一个商品</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -145,7 +168,7 @@
                 </el-form-item>
                 <el-form-item label="时间范围" :label-width="formLabelWidth">
                     <template>
-                        
+    
                     </template>
                 </el-form-item>
             </el-form>
@@ -157,17 +180,30 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
-    data() {        
-        return {            
+    data() {
+        return {
             imageUrl: '',
             dynamicTags: ["标签1"],
-            attrGroups:[],
+            attrGroups: [
+                {
+                gname:'口味',
+                selectType: 'single',  //multi
+                seq: 0,
+                attrs: [
+                    { attrId: 0,name:'测试00' },
+                    { attrId: 1,name:'测试11' },
+                    { attrId: 2,name:'测试22' },
+                    { attrId: 3,name:'测试33' }
+                ]
+            }               
+            ],
             attrType: 'single',
             inputVisible: false,
             timeDialogVisible: false,
             attrDialogVisible: false,
-            attrListDialogVisible:false,
+            attrListDialogVisible: false,
             formLabelWidth: '120px',
             attrListForm: {
                 name: ''
@@ -178,6 +214,9 @@ export default {
                 endTime: '22:00'
             },
             productForm: {
+                gname: '',
+                selectType: 'single',
+
                 itemNameObject: { zh: '' }, //必填
                 itemDescObject: { zh: '' },
 
@@ -188,29 +227,20 @@ export default {
                 itemDesc: '',
                 originPrice: '',    //必填
 
-
                 discountPrice: '',
                 picUrl: '',  //必填
                 shopId: '',
                 timeDuration: 'shanghai',     //可售时段
                 itemAttrs: [
                     {
-                        title:'属性组',
+                        title: '属性组',
                         gname: { zh: '' },
                         selectType: 'single',  //multi
                         seq: 0,
                         attrs: [
                             { attrId: 0 }
                         ]
-                    },
-                    {
-                        gname: { zh: '' },
-                        selectType: 'single',  //multi
-                        seq: 0,
-                        attrs: [
-                            { attrId: 0 }
-                        ]
-                    }
+                    }                    
                 ],
                 itemAttr: '',
                 childItems: [
@@ -262,9 +292,9 @@ export default {
 
         },
 
-        addAttr(){
+        addAttr() {
 
-            let groupItem = {                        
+            let groupItem = {
                 gname: { zh: '' },
                 selectType: 'single',  //multi
                 seq: 0,
@@ -273,16 +303,38 @@ export default {
                 ]
             };
             this.attrGroups.push(groupItem);
-
             console.log(this.attrGroups);
 
         },
-        closeAttrGroup(index){
-            console.log("当前要删除的属性组索引",index);
-            this.attrGroups.splice(index,1);
+
+        selectAttr(){
+            axios.get('/coron-web/itemAttr/list').then(response => {
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+
+        addAttrGroup() {
+
+            let attrItem = {
+                gname: this.productForm.gname,
+                selectType: this.productForm.selectType,  //multi
+                seq: 0,
+                attrs: [
+                    { attrId: 0,name:'测试00' }
+                ]
+            };
+            this.attrGroups.push(attrItem);
+        },
+
+        delAttrGroup(){
             
-            console.log(this.attrGroups);
-        }     
+        },
+
+        closeAttrGroup(index) {
+            //this.attrGroups.splice(index,1);            
+        }
     }
 }
 </script>
@@ -316,5 +368,9 @@ export default {
 
 .el-card__header {
     padding: 2px 20px !important;
+}
+
+.el-tag {
+    margin-left: 8px;
 }
 </style>

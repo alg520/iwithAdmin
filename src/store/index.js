@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 //声明公共的状态管理
 const state = {
+    
     count:1,
     status:'alllist',
     itemType:[
@@ -17,6 +18,7 @@ const state = {
         {name:'民宿',value:2},
         {name:'零售',value:3}
     ]
+
 }
 
 const mutations = {
