@@ -7,10 +7,14 @@
                         <el-form-item label="菜品编号" prop="itemNo">
                             <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
                         </el-form-item>
-                        <el-form-item label="所属分类" prop="catalogId" v-if="productForm.itemType != 3">
+                        <el-form-item label="所属目录" prop="catalogId" v-if="productForm.itemType != 3">
                             <el-select v-model="productForm.catalogId" placeholder="请选择分类">
-                                <el-option label="酒水" value="shanghai"></el-option>
-                                <el-option label="主食" value="beijing"></el-option>
+                                <el-option
+                                v-for="item in catalogDatas"
+                                :key="item.catalogId"
+                                :label="item.nameObject.zh"
+                                :value="item.catalogId">
+                                </el-option>                                
                             </el-select>
                         </el-form-item>
                         <el-form-item label="菜品名称" prop="itemName">
@@ -27,6 +31,29 @@
                                 <el-radio :label="3">配菜</el-radio>
                             </el-radio-group>
                         </el-form-item>
+                        <el-form-item label="所含商品" v-if="productForm.itemType == 2">                            
+                            <el-button type="text">
+                                <i class="el-icon-plus"></i>添加套餐内商品
+                            </el-button>
+                            <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
+                                <el-table-column prop="gname" label="名称" width="120">
+                                </el-table-column>
+                                <el-table-column prop="selectType" label="类型" width="120">
+                                </el-table-column>
+                                <el-table-column prop="attrs" label="属性列表">
+                                    <template scope="scope">
+                                        <el-tag v-for="attr in scope.row.attrs" :key="attr.attrId" type="success">{{attr.name}}</el-tag>
+                                    </template>                                            
+                                </el-table-column>                                        
+                                <el-table-column label="操作" width="80">
+                                    <template scope="scope">
+                                        <el-button @click.native.prevent="deleteRow(scope.$index, tableData4)" type="text" size="small">
+                                            移除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-form-item>
                         <el-form-item label="原价(元)" prop="originPrice">
                             <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
                         </el-form-item>
@@ -39,20 +66,19 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="销售时段" prop="timeDuration" v-if="productForm.itemType != 3">
-                            <el-select v-model="productForm.timeDuration" placeholder="请选择时段">
-                                <el-option label="全天" value="shanghai"></el-option>
-                                <el-option label="早餐" value="beijing"></el-option>
-                                <el-option label="中餐" value="beijing"></el-option>
-                                <el-option label="晚餐" value="beijing"></el-option>
-                                <el-option label="夜宵" value="beijing"></el-option>
+                        <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
+                            <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
+                                <el-option
+                                v-for="item in timeDatas"
+                                :key="item.timeDuration"
+                                :label="item.name"
+                                :change="getT()"
+                                :value="item.timeDuration">
+                                </el-option> 
                             </el-select>
                             <el-button type="primary" icon="plus" @click="timeDialogVisible = true"></el-button>
                         </el-form-item>
-                        <el-form-item label="属性设置" prop="itemAttr" v-if="productForm.itemType != 3">
-                            <!-- <el-button type="text" @click="addAttr()">
-                                    <i class="el-icon-plus"></i>添加属性设置
-                                </el-button> -->
+                        <el-form-item label="属性设置" prop="itemAttr" v-if="productForm.itemType == 1">                            
                             <template>
                                 <el-card class="box-card">
                                     <div slot="header" class="clearfix">
@@ -61,20 +87,19 @@
                                             <i class="el-icon-plus"></i>添加
                                         </el-button>
                                     </div>
-                                    <el-form label-width="100px" :inline="true">
+                                    <el-form label-width="120px" :inline="true">
                                         <el-form-item label="属性组名称">
-                                            <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.gname"></el-input>
+                                            <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.attrGname"></el-input>
                                         </el-form-item>
                                         <el-form-item label="类型">
-                                            <el-radio-group v-model="productForm.selectType" size="small">
+                                            <el-radio-group v-model="productForm.attrGtype" size="small">
                                                 <el-radio-button label="single">单选</el-radio-button>
                                                 <el-radio-button label="multi">多选</el-radio-button>
                                             </el-radio-group>
                                         </el-form-item>
                                         <br>
-                                        <el-form-item label="属性列表">
-                                            <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
-                                            <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true"
+                                        <el-form-item label="属性列表">                                            
+                                            <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true"
                                             :close-transition="false"
                                             @close="handleClose(tag)">
                                             {{tag}}
@@ -103,12 +128,59 @@
                                 </el-card>                                                              
                             </template>
                         </el-form-item>
-                        <el-form-item label="附属商品设置" v-if="productForm.itemType == 1">
-                            <el-button type="text">
-                                <i class="el-icon-plus"></i>添加附属商品设置
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item label="" v-if="productForm.itemType == 1">
+                        <el-form-item label="附属商品设置" v-if="productForm.itemType == 1">                            
+                            <template>
+                                <el-card class="box-card">
+                                    <div slot="header" class="clearfix">
+                                        <span style="line-height: 24px;">附属商品组添加</span>
+                                        <el-button style="float: right;" type="text" @click="addAttrGroup()">
+                                            <i class="el-icon-plus"></i>添加
+                                        </el-button>
+                                    </div>
+                                    <el-form label-width="120px" :inline="true">
+                                        <el-form-item label="附属商品组名称">
+                                            <el-input style="width:100%;" size="small" placeholder="请输入附属商品组名称" v-model="productForm.itemGname"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="类型">
+                                            <el-radio-group v-model="productForm.itemGtype" size="small">
+                                                <el-radio-button label="single">单选</el-radio-button>
+                                                <el-radio-button label="multi">多选</el-radio-button>
+                                            </el-radio-group>
+                                        </el-form-item>
+                                        <br>
+                                        <el-form-item label="附属商品列表">
+                                            <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
+                                            <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true"
+                                            :close-transition="false"
+                                            @close="handleClose(tag)">
+                                            {{tag}}
+                                            </el-tag>
+                                            <el-button class="button-new-tag" size="small" type="primary" @click="selectAttr()">选择商品</el-button>
+                                        </el-form-item>
+                                    </el-form>
+                                    <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
+                                        <el-table-column prop="gname" label="名称" width="120">
+                                        </el-table-column>
+                                        <el-table-column prop="selectType" label="类型" width="120">
+                                        </el-table-column>
+                                        <el-table-column prop="attrs" label="属性列表">
+                                            <template scope="scope">
+                                                <el-tag v-for="attr in scope.row.attrs" :key="attr.attrId" type="success">{{attr.name}}</el-tag>
+                                            </template>                                            
+                                        </el-table-column>                                        
+                                        <el-table-column label="操作" width="80">
+                                            <template scope="scope">
+                                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData4)" type="text" size="small">
+                                                    移除
+                                                </el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>  
+                                </el-card>                                                              
+                            </template>
+                        </el-form-item>                        
+                        
+                        <!-- <el-form-item label="" v-if="productForm.itemType == 1">
                             <el-card class="box-card">
                                 <div slot="header" class="clearfix">
                                     <span style="line-height: 24px;">附属商品组1</span>
@@ -131,7 +203,7 @@
                                     </el-form-item>
                                 </el-form>
                             </el-card>
-                        </el-form-item>
+                        </el-form-item> -->
                         <!-- <el-form-item label="商品标签">
                             <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
                                 {{tag}}
@@ -141,15 +213,27 @@
                             <el-button v-else class="button-new-tag" size="small">添加</el-button>
                         </el-form-item> -->
                         <el-form-item>
-                            <el-button type="primary">立即添加</el-button>
+                            <el-button type="primary" @click="addItems()">立即添加</el-button>
                             <el-button>保存并添加下一个商品</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
             </el-col>
         </el-row>
-    
+
         <el-dialog title="属性列表" :visible.sync="attrListDialogVisible" class="addDialog">
+            <el-form :model="attrListForm">
+                <el-form-item label="时段名称" :label-width="formLabelWidth">
+                    <el-input v-model="attrListForm.name" auto-complete="off" class="input193"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="attrListDialogVisible = false">取 消</el-button>
+                <el-button type="primary">立即添加</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="商品列表" :visible.sync="itemListDialogVisible" class="addDialog">
             <el-form :model="attrListForm">
                 <el-form-item label="时段名称" :label-width="formLabelWidth">
                     <el-input v-model="attrListForm.name" auto-complete="off" class="input193"></el-input>
@@ -186,24 +270,27 @@ export default {
         return {
             imageUrl: '',
             dynamicTags: ["标签1"],
+            catalogDatas:[],
+            timeDatas:[{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}],
             attrGroups: [
                 {
-                gname:'口味',
-                selectType: 'single',  //multi
-                seq: 0,
-                attrs: [
-                    { attrId: 0,name:'测试00' },
-                    { attrId: 1,name:'测试11' },
-                    { attrId: 2,name:'测试22' },
-                    { attrId: 3,name:'测试33' }
-                ]
-            }               
+                    gname:'口味',
+                    selectType: 'single',  //multi
+                    seq: 0,
+                    attrs: [
+                        { attrId: 0,name:'测试00' },
+                        { attrId: 1,name:'测试11' },
+                        { attrId: 2,name:'测试22' },
+                        { attrId: 3,name:'测试33' }
+                    ]
+                }
             ],
             attrType: 'single',
             inputVisible: false,
             timeDialogVisible: false,
             attrDialogVisible: false,
             attrListDialogVisible: false,
+            itemListDialogVisible:false,
             formLabelWidth: '120px',
             attrListForm: {
                 name: ''
@@ -219,18 +306,29 @@ export default {
 
                 itemNameObject: { zh: '' }, //必填
                 itemDescObject: { zh: '' },
+                shopId: '',   //店铺id
+                                
+                itemNo: '',         //必填--菜品编号
+                catalogId: '',      //必填--所属分类
+                itemName: '',       //必填 -- 菜品名称
+                itemDesc: '',       //菜品描述
+                itemType: 1,        //必填  1单点 2套餐 3配菜
+                originPrice: '',    //必填  -- 原价
 
-                catalogId: '',   //必填                
-                itemType: 1, //必填  1单点 2套餐 3配菜
-                itemNo: '',    //必填
-                itemName: '',
-                itemDesc: '',
-                originPrice: '',    //必填
+                discountPrice: '',   //折扣价
+                picUrl: '',  //必填  -- 图片
+                timeDurationList:[],    //可售时段列表
+                timeDurations: [],     //可售时段
 
-                discountPrice: '',
-                picUrl: '',  //必填
-                shopId: '',
-                timeDuration: 'shanghai',     //可售时段
+                attrGname:'',           //属性组名称
+                attrGtype:'single',     //属性组类型
+                attrGlist:[],           //属性组列表
+
+                itemGname:'',           //附属商品组名称--配菜
+                itemGtype:'multi',      //附属商品组类型
+                itemGlist:[],           //配菜列表
+
+
                 itemAttrs: [
                     {
                         title: '属性组',
@@ -257,7 +355,7 @@ export default {
                 busiType: 1,  //必填
 
 
-                timeDurations: [{ "startTime": "06:21:00", "endTime": "12:30:00" }],
+                timeDurations2: [{ "startTime": "06:21:00", "endTime": "12:30:00" }],
                 discount: '',
                 itemNum: '',
                 childItems2: [{ "gname": { "zh": "中文商品组名", "en": "", "jp": "" }, "selectType": "single", "seq": "0", "items": [] }],
@@ -270,6 +368,11 @@ export default {
                 ],
             }
         }
+    },
+    created() {
+        //默认获取属性列表
+        this.getCatalogList();
+        this.getTimeList();
     },
     methods: {
         handleAvatarSuccess(res, file) {
@@ -288,8 +391,73 @@ export default {
             return isJPG && isLt2M;
         },
 
-        addItems: function () {
+        getT(){
+            console.log(this.productForm.timeDurations);
+        },
 
+        getCatalogList() {
+            axios.get('/coron-web/catalog/getCatalogs')
+                .then(response => {
+                    console.log(response);
+                    !!response.data.entry && (this.catalogDatas = response.data.entry);
+
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('网络错误，不能访问');
+                })
+        },
+        getTimeList() {
+
+            axios.get('/coron-web/shopTimeDuration/list')
+                .then(response => {
+
+                if (response.data.status) {
+
+                    //response.data.rows && (this.timeDatas = response.data.rows);
+                    //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
+                    if(response.data.rows && response.data.rows.length > 0){
+                        response.data.rows.forEach((item,index) => {
+                            let obj = {name:item.nameGL.zh,timeDuration:{startTime:item.startTime,endTime:item.endTime}};
+                            this.timeDatas.push(obj);                            
+                            console.log("哈哈哈",this.timeDatas);
+                        });
+
+                    }
+                    
+                } else {
+                    this.$message({
+                    type: 'info',
+                    message: '数据错误'
+                    });
+                }
+
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('网络错误，不能访问');
+                })
+            },
+
+        addItems () {
+            let addParams = {
+                itemNo:this.productForm.itemNo,
+                itemNameObject:{zh:this.productForm.itemName,jp:'',en:''},
+                catalogId:this.productForm.catalogId,
+                originPrice:this.productForm.originPrice,
+                picUrl:'http://imglf.nosdn.127.net/img/Q0RPNGd0czV3aEZQQ0lZMmtkbC9HVWRqcG9YekdtZWRXNS9qZG8vRkc4NldldlRNelYrM3F3PT0.jpg?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg%7Cwatermark&type=2&text=wqkg5bCP6KKr5Y2VIC8gaHVjaGVuc2kubG9mdGVyLmNvbQ==&font=bXN5aA==&gravity=southwest&dissolve=30&fontsize=240&dx=8&dy=10&stripmeta=0',
+                itemDescObject:{zh:this.productForm.itemDesc,jp:'',en:''},
+                itemType:this.productForm.itemType,
+                timeDurations:this.productForm.timeDurations,
+                seq:1,
+                busiType:1
+            };
+
+            axios.post('/coron-web/item/add',addParams).then(response => {
+                console.log(response);
+            }).catch(error => {
+                console.log(error);                
+            })
         },
 
         addAttr() {
@@ -318,14 +486,23 @@ export default {
         addAttrGroup() {
 
             let attrItem = {
-                gname: this.productForm.gname,
-                selectType: this.productForm.selectType,  //multi
+                gname: this.productForm.attrGname,
+                selectType: this.productForm.attrGtype,  //multi
                 seq: 0,
                 attrs: [
                     { attrId: 0,name:'测试00' }
                 ]
             };
-            this.attrGroups.push(attrItem);
+
+            if(this.productForm.attrGname != ''){
+                this.attrGroups.push(attrItem);
+            } else {
+                this.$message({
+                    type:'info',
+                    message:'属性组名称不能为空！'
+                });
+            }
+            
         },
 
         delAttrGroup(){

@@ -70,7 +70,7 @@
             </el-table-column>
             <el-table-column label="图片">
                 <template scope="scope">
-                    <img :src="scope.row.picUrl" alt="图片">
+                    <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
                 </template>
             </el-table-column>
             <el-table-column label="操作">

@@ -50,7 +50,8 @@ export default new Router({
           meta: ['属性管理', '属性列表']
         } ,{
           path:'/typeManage',
-          component:typeManage
+          component:typeManage,
+          meta: ['目录管理', '目录列表']
         }, 
         // {
         //   path:'/login',
