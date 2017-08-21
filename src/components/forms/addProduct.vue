@@ -43,7 +43,7 @@
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template scope="scope">
-                                        <el-button @click.native.prevent="deleteRow(scope.$index, tableData4)" type="text" size="small">
+                                        <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
                                             移除
                                         </el-button>
                                     </template>
@@ -69,7 +69,7 @@
                             </el-select>
                             <el-button type="primary" icon="plus" @click="timeDialogVisible = true"></el-button>
                         </el-form-item>
-                        <el-form-item label="属性设置" prop="itemAttr" v-if="productForm.itemType == 1">
+                        <el-form-item label="属性设置" v-if="productForm.itemType == 1">
                             <template>
                                 <el-card class="box-card">
                                     <div slot="header" class="clearfix">
@@ -91,19 +91,19 @@
                                         <br>
                                         <el-form-item label="属性列表">
                                             <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">
-                                                {{tag.name}}
+                                                {{tag.name.zh}}
                                             </el-tag>
                                             <el-button class="button-new-tag" size="small" type="primary" @click="selectAttr()">选择属性</el-button>
                                         </el-form-item>
                                     </el-form>
                                     <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
-                                        <el-table-column prop="gname" label="名称" width="120">
+                                        <el-table-column prop="gname.zh" label="名称" width="120">
                                         </el-table-column>
                                         <el-table-column prop="selectType" label="类型" width="120">
                                         </el-table-column>
                                         <el-table-column prop="attrs" label="属性列表">
                                             <template scope="scope">
-                                                <el-tag v-for="attr in scope.row.attrs" :key="attr.itemAttrId" type="success">{{attr.name}}</el-tag>
+                                                <el-tag v-for="attr in scope.row.attrs" :key="attr.itemAttrId" type="success">{{attr.name.zh}}</el-tag>
                                             </template>
                                         </el-table-column>
                                         <el-table-column label="操作" width="80">
@@ -122,7 +122,7 @@
                                 <el-card class="box-card">
                                     <div slot="header" class="clearfix">
                                         <span style="line-height: 24px;">附属商品组添加</span>
-                                        <el-button style="float: right;" type="text" @click="addAttrGroup()">
+                                        <el-button style="float: right;" type="text" @click="addItemGroup()">
                                             <i class="el-icon-plus"></i>添加
                                         </el-button>
                                     </div>
@@ -134,31 +134,30 @@
                                             <el-radio-group v-model="productForm.itemGtype" size="small">
                                                 <el-radio-button label="single">单选</el-radio-button>
                                                 <el-radio-button label="multi">多选</el-radio-button>
-
                                             </el-radio-group>
                                         </el-form-item>
                                         <br>
                                         <el-form-item label="附属商品列表">
                                             <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
                                             <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">
-                                                {{tag}}
+                                                {{tag.itemNameObject.zh}}
                                             </el-tag>
                                             <el-button class="button-new-tag" size="small" type="primary" @click="getSideDishes()">选择商品</el-button>
                                         </el-form-item>
                                     </el-form>
                                     <el-table :data="sideDishGroups" border style="width: 100%; margin-top:10px;" max-height="250">
-                                        <el-table-column prop="gname" label="名称" width="120">
+                                        <el-table-column prop="gname.zh" label="名称" width="120">
                                         </el-table-column>
                                         <el-table-column prop="selectType" label="类型" width="120">
                                         </el-table-column>
                                         <el-table-column label="配菜列表">
                                             <template scope="scope">
-                                                <el-tag v-for="item in scope.row.items" :key="item.itemId" type="success">{{item.name}}</el-tag>
+                                                <el-tag v-for="item in scope.row.items" :key="item.itemId" type="success">{{item.itemNameObject.zh}}</el-tag>
                                             </template>
                                         </el-table-column>
                                         <el-table-column label="操作" width="80">
                                             <template scope="scope">
-                                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData4)" type="text" size="small">
+                                                <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
                                                     移除
                                                 </el-button>
                                             </template>
@@ -212,7 +211,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="itemListDialogVisible = false">取 消</el-button>
-                <el-button type="primary">立即添加</el-button>
+                <el-button type="primary" @click="selectedSideDish()">立即添加</el-button>
             </div>
         </el-dialog>
 
@@ -247,28 +246,8 @@ export default {
             checkAttrList:[],
             sideDishDatas:[],
             checkSideDishList:[],
-            attrGroups: [
-                {
-                    gname: '口味',
-                    selectType: 'single',  //multi
-                    seq: 0,
-                    attrs: [
-                        { itemAttrId: 0, name: '测试00' },
-                        { itemAttrId: 1, name: '测试11' },
-                        { itemAttrId: 2, name: '测试22' }
-                    ]
-                }
-            ],
-            sideDishGroups:[
-                {
-                    gname:'香菜',
-                    selectType:'single',
-                    seq:0,
-                    items:[
-                        { itemId: 0, name: '测试00' }
-                    ]
-                }
-            ],
+            attrGroups: [],
+            sideDishGroups:[],
             inputVisible: false,
             timeDialogVisible: false,
             attrDialogVisible: false,
@@ -369,8 +348,9 @@ export default {
 
         handleCheckedAttrsChange(value) {
 
-            console.log(value);
-            
+            console.log("属性选中更改事件",value);
+
+            //console.log(value);            
             //console.log(this.checkAttrList);
             //this.productForm.attrGlist = value;
             
@@ -380,13 +360,13 @@ export default {
         },
 
         getT() {
-            console.log(this.productForm.timeDurations);
+            //console.log(this.productForm.timeDurations);
         },
 
         getCatalogList() {
             axios.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
-                    console.log(response);
+                    
                     !!response.data.entry && (this.catalogDatas = response.data.entry);
 
                 })
@@ -427,7 +407,7 @@ export default {
         getItemAttrList() {
             axios.get('/coron-web/itemAttr/list')
                 .then(response => {
-                    console.log(response.data.rows);
+                    
                     !!response.data.rows && (this.itemAttrDatas = response.data.rows);
                 })
                 .catch(error => {
@@ -444,6 +424,11 @@ export default {
                 this.sideDishDatas = response.data.entry;
 
             }).catch(error => {
+                
+                this.$message({
+                    type: 'info',
+                    message: '配菜列表请求失败！'
+                });
                 console.log(error);
             })
         },
@@ -454,16 +439,27 @@ export default {
                 itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
                 catalogId: this.productForm.catalogId,
                 originPrice: this.productForm.originPrice,
+                discountPrice:this.productForm.discountPrice,
                 picUrl: 'http://imglf.nosdn.127.net/img/Q0RPNGd0czV3aEZQQ0lZMmtkbC9HVWRqcG9YekdtZWRXNS9qZG8vRkc4NldldlRNelYrM3F3PT0.jpg?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg%7Cwatermark&type=2&text=wqkg5bCP6KKr5Y2VIC8gaHVjaGVuc2kubG9mdGVyLmNvbQ==&font=bXN5aA==&gravity=southwest&dissolve=30&fontsize=240&dx=8&dy=10&stripmeta=0',
                 itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }]: this.productForm.timeDurations,
+                childItems:this.attrGroups,
+                itemAttrs:this.sideDishGroups,
                 seq: 1,
                 busiType: 1
             };
 
             axios.post('/coron-web/item/add', addParams).then(response => {
-                console.log(response);
+                console.log("菜品添加成功",response);
+                if(response.data.status == true){
+                    this.$message({
+                        type:'info',
+                        message:'菜品添加成功'
+                    })
+                    //添加成功后需要跳转到菜品列表页
+                }
+
             }).catch(error => {
                 console.log(error);
             })
@@ -475,14 +471,16 @@ export default {
         // 选中属性列表
         selectedAttr(){
             var self = this;
-          
+
+            self.productForm.attrGlist = [];
+
             self.itemAttrDatas.forEach((item,index) => {
                 
                 self.checkAttrList.forEach((item2,index2) => {
                     
                     if(item.itemAttrId == item2) {
-                        //选中的数据结构  {itemAttrId:'',name:''}                        
-                        self.productForm.attrGlist.push({itemAttrId:item2,name:item.attrNameObject.zh});
+                        //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
+                        self.productForm.attrGlist.push({itemAttrId:item2,name:{zh:item.attrNameObject.zh}});
                     }
                 })
                 
@@ -490,9 +488,34 @@ export default {
             this.attrListDialogVisible = false;
 
         },
-        //删除已选中的标签
-        handleClose(tag) {
+
+        // 选中配菜列表
+        selectedSideDish(){
+            var self = this;
+
+            self.productForm.itemGlist = [];
+
+            self.sideDishDatas.forEach((item,index) => {
+                
+                self.checkSideDishList.forEach((item2,index2) => {
+                    
+                    if(item.itemId == item2) {
+                        //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
+                        self.productForm.itemGlist.push(item);
+                        
+                    }
+                })
+                
+            })
+            console.log("添加的配菜",this.productForm.itemGlist);
+            this.itemListDialogVisible = false;
+
+        },
+
+        //根据索引删除已选中的标签
+        handleClose(tag) {            
             this.productForm.attrGlist.splice(this.productForm.attrGlist.indexOf(tag), 1);
+            this.checkAttrList.splice(this.checkAttrList.indexOf(tag.itemAttrId),1);
         },        
 
         deleteRow(rowIndex){
@@ -500,20 +523,28 @@ export default {
             this.attrGroups.splice(rowIndex, 1);
         },
 
+        //选中配菜列表
+        selectedItems(){
+            
+        },
+
         addAttrGroup() {
 
             let attrItem = {
-                gname: this.productForm.attrGname,
+                gname: {zh:this.productForm.attrGname},
                 selectType: this.productForm.attrGtype == 'single' ? '单选':'多选',  //multi
                 seq: 0,
                 attrs: this.productForm.attrGlist
             };
 
             if (this.productForm.attrGname != '' && this.productForm.attrGlist.length > 0) {
+                
                 this.attrGroups.push(attrItem);
+                console.log("添加后的属性组",this.attrGroups);
                 this.productForm.attrGname = '';
                 this.productForm.attrGlist =[];
                 this.checkAttrList = [];
+
             } else {
                 this.$message({
                     type: 'info',
@@ -526,21 +557,21 @@ export default {
         addItemGroup(){
 
             let itemSideDish = {
-                gname: this.productForm.itemGname,
+                gname:{zh:this.productForm.itemGname},
                 selectType: this.productForm.itemGtype == 'single' ? '单选':'多选',  //multi
                 seq: 0,
-                attrs: this.productForm.itemGlist
+                items: this.productForm.itemGlist
             };
 
             if (this.productForm.itemGname != '' && this.productForm.itemGlist.length > 0) {
-                this.attrGroups.push(attrItem);
-                this.productForm.attrGname = '';
-                this.productForm.attrGlist =[];
-                this.checkAttrList = [];
+                this.sideDishGroups.push(itemSideDish);
+                this.productForm.itemGname = '';
+                this.productForm.itemGlist =[];
+                this.checkSideDishList = [];
             } else {
                 this.$message({
                     type: 'info',
-                    message: '属性组名称不能为空！'
+                    message: '附属商品组名称不能为空！'
                 });
             }
 
@@ -551,7 +582,7 @@ export default {
         },
 
         closeAttrGroup(index) {
-            //this.attrGroups.splice(index,1);            
+            
         }
     }
 }

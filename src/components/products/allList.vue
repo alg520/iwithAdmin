@@ -7,8 +7,8 @@
                         <el-form-item label="状态">
                             <el-select v-model="itemsForm.isSale" placeholder="状态" size="small">
                                 <el-option label="全部" value="null"></el-option>
-                                <el-option label="未上架" value="false"></el-option>
-                                <el-option label="已上架" value="true"></el-option>
+                                <el-option label="未上架" value="0"></el-option>
+                                <el-option label="已上架" value="1"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="商品类型">
@@ -17,16 +17,7 @@
                                 <el-option label="套餐" value="2"></el-option>
                                 <el-option label="配菜" value="3"></el-option>
                             </el-select>
-                        </el-form-item>
-                        <!-- <el-form-item label="出售时间">
-                            <el-select v-model="itemsForm.sellTime" placeholder="出售时间">
-                                <el-option label="全天" value="00:00-24:00"></el-option>
-                                <el-option label="早餐" value="07:00-11:00"></el-option>
-                                <el-option label="中餐" value="11:00-13:00"></el-option>
-                                <el-option label="晚餐" value="17:00-20:00"></el-option>
-                                <el-option label="夜宵" value="20:00-04:00"></el-option>
-                            </el-select>
-                        </el-form-item> -->
+                        </el-form-item>                        
                         <el-form-item label="">
                             <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" :on-icon-click="handleIconClick">
                             </el-input>
@@ -80,57 +71,23 @@
                     <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">
                         <i class="el-icon-edit" title="编辑"></i>
                     </el-button>
-                    <el-button type="text" size="small" @click="handleDelete(scope.$index, scope.row)">
+                    <el-button type="text" size="small" @click="confirmDel(scope.row)">
                         <i class="el-icon-delete" title="删除"></i>
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <div class="block" style="margin-top:10px;">            
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-size="10"
+            layout="total, prev, pager, next"
+            :total="50">
+            </el-pagination>
+        </div>
         
-        <!-- <el-dialog title="添加菜品" :visible.sync="dialogFormVisible">
-                    <el-form :model="form">
-                        <el-form-item label="菜品顺序号" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="中文名称" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="中文描述" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="英文名称" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="英文描述" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="日文名称" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="日文描述" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="中文菜品价格" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="日文菜品价格" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="英文菜品价格" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="特价时价格" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="菜品顺序" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" auto-complete="off"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-                    </div>
-                </el-dialog> -->
     </div>
 </template>
 
@@ -141,16 +98,7 @@ export default {
     data() {
         return {
             productsList: [],
-
-            formItems: {
-                user: '',
-                state: '0',
-                type: '0',
-                sellTime: '00:00-24:00',
-                productName: '',
-                itemType:1
-            },
-
+            currentPage:2,
             itemsForm:{                
                 itemName:'',
                 itemType:null,
@@ -159,39 +107,11 @@ export default {
                 itemNo:'',
                 catalogId:null
             },
-
-            dialogFormVisible: false,
-
-            form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
-            },
-
             formLabelWidth: '120px'
-
         };
     },
     created() {
-        axios.post('/coron-web/item/list',{})
-            .then(response => {
-                
-                console.log(response.data);
-
-                !!response.data.rows && (this.productsList = response.data.rows);
-
-                console.log(this.productsList);
-
-            })
-            .catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问');
-            })
+        this.getItemList();
     },
     computed: {
         typeName: function () {
@@ -200,9 +120,73 @@ export default {
         }
     },
     methods: {
+        handleSizeChange(size){
+            console.log(size);
+        },
 
-        getItemList:function(){
+        handleCurrentChange(page){
+            console.log(page);
+            console.log(this.currentPage);
+        },
 
+        getItemList(){
+
+            let getParams = {
+                itemName:'',
+                itemType:null,
+                catalogId:null,
+                isSale:0,
+                rp:10,
+                page:1
+            };
+
+            axios.post('/coron-web/item/list',{})
+            .then(response => {                
+                
+                !!response.data.rows && (this.productsList = response.data.rows);
+                console.log(this.productsList);
+
+            })
+            .catch(error => {
+                console.log(error);
+                alert('网络错误，不能访问,请刷新页面重试！');                
+            })
+        },
+        //删除菜品
+        delItem(item){
+            axios.post('/coron-web/item/del',{
+                itemId:item.itemId
+            }).then(response => {
+                console.log(response);
+                this.$message({
+                    type: 'info',
+                    message: '删除成功'
+                });
+                this.getItemList();
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+
+        confirmDel(item) {
+
+            this.$confirm('确定要删除这个菜品吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                closeOnClickModal:false,
+                type: 'warning'
+            }).then(() => {
+
+                this.delItem(item);
+
+            }).catch(() => {
+
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+
+            });
         },
 
         addProduct(status) {
