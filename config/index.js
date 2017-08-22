@@ -30,6 +30,7 @@ module.exports = {
     proxyTable: {
       '/coron-web': {
         target: 'http://10.10.0.249:8080/',
+        //target: 'http://192.168.31.172:8080/',
         changeOrigin: true,
         // pathRewrite: {
         //   '^/coron-web': '/coron-web'

@@ -104,7 +104,7 @@ export default {
                 type: 2,                
                 shopId: this.shopId,
                 isVisible: true,
-                seq: 0,
+                position:1,                
                 busiType: 1,
                 nameObject: { "zh": this.catalogName },
             };

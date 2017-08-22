@@ -9,6 +9,7 @@ import Products from '@/components/page/Products';
 import shopTimeDuration from '@/components/page/shopTimeDuration';
 import tasteManage from '@/components/page/tasteManage';
 import typeManage from '@/components/page/typeManage';
+import introduce from '@/components/page/introduce';
 //import login from '@/components/login/login';
 
 Vue.use(Router)
@@ -52,7 +53,11 @@ export default new Router({
           path:'/typeManage',
           component:typeManage,
           meta: ['目录管理', '目录列表']
-        }, 
+        },{
+          path:'/introduce',
+          component:introduce,
+          meta: ['提案管理', '提案列表']
+        }
         // {
         //   path:'/login',
         //   component:login

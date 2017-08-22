@@ -20,7 +20,7 @@
                             <el-input type="textarea" :rows="2" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
                             </el-input>
                         </el-form-item>
-                        <el-form-item label="类型">
+                        <el-form-item label="类型" prop="itemType">
                             <el-radio-group v-model="productForm.itemType">
                                 <el-radio :label="1">单点</el-radio>
                                 <el-radio :label="2">套餐</el-radio>
@@ -56,7 +56,7 @@
                         <el-form-item label="折后价(元)" prop="discountPrice" v-if="productForm.itemType != 3">
                             <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
                         </el-form-item>
-                        <el-form-item label="图片">
+                        <el-form-item label="图片" prop="picUrl">
                             <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -279,7 +279,7 @@ export default {
 
                 discountPrice: '',   //折扣价
                 picUrl: '',  //必填  -- 图片
-                timeDurationList: [],    //可售时段列表
+                timeDurationList: [],   //可售时段列表
                 timeDurations: [],     //可售时段
 
                 attrGname: '',           //属性组名称
@@ -315,11 +315,26 @@ export default {
                 seq: 1,  //必填
                 busiType: 1,  //必填
             },
-            rules: {
-                itemNameObject: [
-                    { required: true, message: '请输入活动名称', trigger: 'blur' },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+            rules: {                
+                itemNo:[
+                    { required: true, message: '请输入商品编号', trigger: 'blur' }
                 ],
+                catalogId:[
+                    {required:true, message:'请选择商品分类',trigger: 'blur'}
+                ],
+                itemName: [
+                    { required: true, message: '请输入商品名称', trigger: 'blur' }                    
+                ],
+                originPrice:[
+                    {required:true,message:'请输入商品原价',trigger:'blur'}
+                ],
+                itemType:[
+                    {required:true,message:'请选择商品类型',trigger:'blur'}
+                ],
+                picUrl:[
+                    {required:true,message:'请选择图片',trigger:'blur'}
+                ]
+
             }
         }
     },
@@ -457,11 +472,21 @@ export default {
                         type:'info',
                         message:'菜品添加成功'
                     })
+                    this.$notify({
+                        title: '成功',
+                        message: '菜品添加成功',
+                        type: 'success'
+                    });
                     //添加成功后需要跳转到菜品列表页
                 }
 
             }).catch(error => {
                 console.log(error);
+                this.$notify({
+                    title: '成功',
+                    message: '这是一条成功的提示消息',
+                    type: 'success'
+                });
             })
         },        
         //选取属性列表

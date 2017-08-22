@@ -17,21 +17,15 @@
                 <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>                
             </el-submenu>
 
-            <!-- <el-submenu index="2">
+            <el-submenu index="2">
                 <template slot="title">               
-                    <span class="sb-icon"><i class="material-icons">perm_data_setting</i></span>
-                    <span class="sb-cn">运维信息</span>                 
+                    <span class="sb-icon"><i class="material-icons">border_all</i></span>
+                    <span class="sb-cn">提案管理</span>                 
                 </template>
-                <el-menu-item index="EditorPage">OTA升级</el-menu-item>
-                <el-menu-item index="MarkdownPage">OTA版本分布统计</el-menu-item>
-                <el-menu-item index="TodoList">OTA下载成功率统计</el-menu-item>
-                <el-menu-item index="TodoList">OTA版本更新历史</el-menu-item>
-                <el-menu-item index="TodoList">测试机器人SN管理</el-menu-item>
-                <el-menu-item index="TodoList">APP升级</el-menu-item>
-                <el-menu-item index="TodoList">添加餐厅</el-menu-item>               
+                <el-menu-item index="introduce">提案分组</el-menu-item>                     
             </el-submenu>
 
-            <el-submenu index="3">
+            <!-- <el-submenu index="3">
                 <template slot="title">
                     <span class="sb-icon"><i class="material-icons">pie_chart</i></span>
                     <span class="sb-cn">餐饮集团</span>

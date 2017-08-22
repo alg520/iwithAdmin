@@ -5,14 +5,15 @@
                 <div class="grid-content bg-purple-dark">
                     <el-form :inline="true" :model="itemsForm">
                         <el-form-item label="状态">
-                            <el-select v-model="itemsForm.isSale" placeholder="状态" size="small">
-                                <el-option label="全部" value="null"></el-option>
-                                <el-option label="未上架" value="0"></el-option>
-                                <el-option label="已上架" value="1"></el-option>
+                            <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getItemList()">
+                                <el-option label="全部" value=""></el-option>
+                                <el-option label="未上架" value="true"></el-option>
+                                <el-option label="已上架" value="false"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="商品类型">
-                            <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small">
+                            <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small" @change="getItemList()">
+                                <el-option label="全部" value=""></el-option>
                                 <el-option label="单点" value="1"></el-option>
                                 <el-option label="套餐" value="2"></el-option>
                                 <el-option label="配菜" value="3"></el-option>
@@ -74,17 +75,23 @@
                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
                         <i class="el-icon-delete" title="删除"></i>
                     </el-button>
+                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
+                        <i class="el-icon-plus" title="上架"></i>
+                    </el-button>
+                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
+                        <i class="el-icon-minus" title="下架"></i>
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
         <div class="block" style="margin-top:10px;">            
             <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="10"
-            layout="total, prev, pager, next"
-            :total="50">
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-size="pageSize"
+                layout="total, prev, pager, next"
+                :total="totalItems">
             </el-pagination>
         </div>
         
@@ -97,16 +104,18 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            productsList: [],
-            currentPage:2,
+            productsList: [],            
             itemsForm:{                
                 itemName:'',
-                itemType:null,
+                itemType:'',
                 busiType:1,   //1点餐系统2民宿3零售
-                isSale:null,
+                isSale:'',
                 itemNo:'',
                 catalogId:null
             },
+            currentPage:1,
+            pageSize:4,
+            totalItems:0,
             formLabelWidth: '120px'
         };
     },
@@ -127,23 +136,23 @@ export default {
         handleCurrentChange(page){
             console.log(page);
             console.log(this.currentPage);
+            this.getItemList();
         },
 
         getItemList(){
 
-            let getParams = {
-                itemName:'',
-                itemType:null,
-                catalogId:null,
-                isSale:0,
-                rp:10,
-                page:1
+            let getParams = {                
+                itemType:this.itemsForm.itemType,
+                isSale:this.itemsForm.isSale,
+                rp:4,
+                page:this.currentPage
             };
 
-            axios.post('/coron-web/item/list',{})
+            axios.post('/coron-web/item/list',getParams)
             .then(response => {                
                 
                 !!response.data.rows && (this.productsList = response.data.rows);
+                this.totalItems = response.data.total;
                 console.log(this.productsList);
 
             })
@@ -155,7 +164,7 @@ export default {
         //删除菜品
         delItem(item){
             axios.post('/coron-web/item/del',{
-                itemId:item.itemId
+                itemId:this.item.itemId
             }).then(response => {
                 console.log(response);
                 this.$message({
@@ -166,7 +175,7 @@ export default {
             }).catch(error => {
                 console.log(error);
             })
-        },
+        },        
 
         confirmDel(item) {
 
@@ -189,6 +198,27 @@ export default {
             });
         },
 
+        switchSale(item){
+                       
+            axios.post('/coron-web/item/switchSale',{
+                itemId:item.itemId,
+                isSale:!item.isSale
+            }).then(response => {
+                console.log(response);
+                this.$message({
+                    type:'info',
+                    message:'状态更新成功'
+                });
+                this.getItemList();
+            }).catch(error => {
+                console.log(error);
+                this.$message({
+                    type:'error',
+                    message:'状态更新失败'
+                });
+            })
+        },
+
         addProduct(status) {
             console.log(store);
         },
@@ -197,46 +227,18 @@ export default {
             //获取状态查询
         },
 
-        getSummaries(param) {
-
-            const { columns, data } = param;
-            const sums = [];
-            columns.forEach((column, index) => {
-                if (index === 0) {
-                    sums[index] = '总价';
-                    return;
-                }
-                const values = data.map(item => Number(item[column.property]));
-                if (!values.every(value => isNaN(value))) {
-                    sums[index] = values.reduce((prev, curr) => {
-                        const value = Number(curr);
-                        if (!isNaN(value)) {
-                            return prev + curr;
-                        } else {
-                            return prev;
-                        }
-                    }, 0);
-                    sums[index] += ' 元';
-                } else {
-                    sums[index] = 'N/A';
-                }
-            });
-
-            return sums;
-        },
-
         onSubmit() {
             console.log('submit!');
         },
 
         handleIconClick(ev) {
             console.log(ev); 
+            console.log(this.itemsForm.itemName)
         },
 
         handleEdit() {
             console.log(this);
         }
-
     },
     store
 };
