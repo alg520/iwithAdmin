@@ -167,11 +167,23 @@ export default {
             axios.post('/coron-web/introduceGroup/delete',{
                 id:item.id
             }).then(response => {
-                this.$message({
-                    type:'success',
-                    message:'删除成功！'
-                });
-                this.getIntroGroupList();
+
+                console.log(response.data);
+                if(!response.data.status){
+                    this.$message({
+                        type:'warning',
+                        message:'该分组下有提案，请先删除分组下得提案！'
+                    });
+                } else {
+                    this.$message({
+                        type:'success',
+                        message:'删除成功！'
+                    });
+                    this.getIntroGroupList();
+                }
+
+
+                
             }).catch(error => {
                 console.log(error);
             })
