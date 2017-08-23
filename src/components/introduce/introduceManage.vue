@@ -1,135 +1,36 @@
 <template>
     <div class="intro-manage">
         <div class="intro-toolbar">
-            <el-button type="primary">新建提案</el-button>
+            <el-button type="primary" @click="newIntro()">新建提案</el-button>
         </div>
         <el-row>            
             <el-col :sm="4" :md="3" :lg="3">                
                 <div class="intro-nav" id="intro-nav">
-                    <ul class="intro-list" id="intro-list">
-                        <li class="selected">
-                            <a href="javascript:;">全部提案</a>
-                        </li>
-                        <li v-for="item in introGroupDatas" :key="item.id">
+                    <ul class="intro-list" id="intro-list">                        
+                        <li v-for="item in introGroupDatas" :key="item.id" @click="changeSelected(item.id)" :class="[isActive == item.id ? 'selected' :'']">
                             <a href="javascript:;">{{item.groupNamePojo.zh}}</a>
                         </li>                       
                     </ul>
                 </div>
             </el-col>
             <el-col :sm="20" :md="21" :lg="21">
-                <div class="content-list" id="content-list" style="display:none;">
+                <div class="content-list" id="content-list" v-if="!addTag">
                     <el-row>
-                        <el-col :sm="8" :md="8" :lg="8">
+                        <el-col :sm="8" :md="8" :lg="8" v-for="item in introDatas" :key="item.id">
                             <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
                                 <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
+                                    <span style="line-height: 36px;">{{item.titlePojo.zh}}</span>                                    
+                                    <el-button style="float: right; margin-left:10px;" type="text" @click="confirmDel(item)"><i class="el-icon-delete"></i></el-button>
+                                    <el-button style="float: right;" type="text" @click="updateIntro(item)"><i class="el-icon-edit"></i></el-button>
                                 </div>
                                 <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。
+                                    {{item.contentPojo.zh}}
                                 </p>
                             </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。我是一个不怎么好得提案，但是凑合的看吧。我就是测试数据。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">提案名称</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text"><i class="el-icon-edit"></i></el-button>
-                                </div>
-                                <p>
-                                    我是一个不怎么好得提案，但是凑合的看吧。
-                                </p>
-                            </el-card>
-                        </el-col>
+                        </el-col>                        
                     </el-row> 
                 </div>
-                <div class="add-intro-form">
+                <div class="add-intro-form" v-else>
                     <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
                         <el-form-item label="提案分组" prop="introGroup">
                             <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
@@ -150,7 +51,8 @@
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="addIntro()">立即创建</el-button>
-                            <el-button @click="resetForm('introForm')">重置</el-button>
+                            <el-button type="primary" @click="updateIntroPost()">修改</el-button>
+                            <el-button @click="cancelForm()">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -175,12 +77,15 @@ export default {
                 ],
                 content:[
                     { required: true, message: '请输入提案内容', trigger: 'blur' },
-                    { max: 10, message: '最多两百个字符', trigger: 'blur' }
+                    { max: 200, message: '最多两百个字符', trigger: 'blur' }
                 ]
             },
             introGroupDatas:[],
             introDatas:[],
-            whichGroup:''
+            whichGroup:'',
+            addTag:false,
+            isActive:0,
+            middleObj:{}
             
         }
     },
@@ -190,14 +95,13 @@ export default {
         //动态计算属性导航的高度
         var introduceHeight = document.body.clientHeight - 296;
         document.getElementById("intro-nav").style.height = introduceHeight + 'px';
-        document.getElementById("content-list").style.height = introduceHeight + 'px';
+        //document.getElementById("content-list").style.height = introduceHeight + 'px';
 
     },
 
     created() {
         //默认获取属性列表
-        this.getIntroGroupList();
-        this.getIntroList();        
+        this.getIntroGroupList();        
     },
 
     methods: {
@@ -206,7 +110,9 @@ export default {
             axios.get('/coron-web/introduceGroup/list').then(response => {
                 console.log("提案列表组",response);
                 
-                response.data.status && (this.introGroupDatas = response.data.entry);
+                response.data.status && (this.introGroupDatas = response.data.entry)
+                &&(this.isActive = response.data.entry[0].id) 
+                && (this.getIntroList(this.isActive));               
 
 
             }).catch(error => {
@@ -214,13 +120,24 @@ export default {
             })
         },
 
-        getIntroList(){
-            axios.get('/coron-web/introduce/list').then(response => {
+        getIntroList(itemId){
+
+            let getParams = {groupId:itemId};
+
+            axios.get('/coron-web/introduce/list',{
+                params:getParams
+            }).then(response => {
                 console.log("获取提案列表",response);
                 response.data.status && (this.introDatas = response.data.rows);
             }).catch(error => {
                 console.log(error);
             })
+        },
+
+        newIntro(){
+            this.addTag = true;
+            this.introForm.title = '';
+            this.introForm.content ='';
         },
 
         addIntro(){
@@ -233,11 +150,99 @@ export default {
             };
 
             axios.post('/coron-web/introduce/add',addParams).then(response => {
+                
                 console.log(response);
+                this.addTag = false;
+                this.getIntroList(this.whichGroup);
+
             }).catch(error => {
                 console.log(error);
             })            
 
+        },
+
+        updateIntro(item){
+            console.log(item);
+            this.addTag = true;
+            this.introForm.title = item.titlePojo.zh;
+            this.introForm.content = item.contentPojo.zh;
+            this.whichGroup = item.groupId;
+            this.middleObj = item;
+        },
+
+        updateIntroPost(){
+
+            let updateParams = {
+                id:this.middleObj.id,
+                titlePojo:{zh:this.introForm.title,jp:'',en:''},
+                contentPojo:{zh:this.introForm.content,jp:'',en:''}
+            };
+
+            axios.post('/coron-web/introduce/update',updateParams).then(response => {
+                console.log(response);
+                this.$message({
+                    type:'success',
+                    message:'修改成功！'
+                });
+                this.addTag = false;
+                this.getIntroList(this.whichGroup);
+            }).catch(error => {
+                console.log(error);
+
+                this.$message({
+                    type:'error',
+                    message:'请求错误'
+                });
+            })
+
+        },
+
+        delIntro(item){
+            axios.post('/coron-web/introduce/delete',{
+                id:item.id
+            }).then(response => {
+                console.log(response);
+                this.$message({
+                    type: 'success',
+                    message: '删除成功 '
+                });                
+                this.getIntroList(this.isActive);
+            }).catch(error => {
+
+                console.log(error);
+
+            })
+        },
+
+        confirmDel(item){
+            this.$confirm('确认要删除这个提案么?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                closeOnClickModal:false,
+                type: 'warning'
+            }).then(() => {
+
+                this.delIntro(item);
+
+            }).catch(() => {
+
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+
+            });
+        },
+
+        changeSelected:function(itemId){            
+            this.isActive = itemId;
+            this.whichGroup = itemId;            
+            this.getIntroList(itemId);
+        },
+
+        cancelForm(){
+            this.addTag = false;
+            this.getIntroList();
         }
 
 
@@ -281,8 +286,7 @@ li.selected {
 }
 
 .content-list {
-    padding: 8px;
-    overflow-y: scroll;
+    padding: 8px;    
 }
 
 .content-list .intro-card {

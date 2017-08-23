@@ -1,5 +1,5 @@
 <template>
-    <div class="introGroup-manage">
+    <div class="introGroup-manage" id="introGroup-manage">
         <div class="introGroup-toolbar">
             <el-button type="primary" @click="addIntroGroup()">新建分组</el-button>
         </div>
@@ -59,8 +59,8 @@ export default {
     mounted() {
 
         //动态计算属性导航的高度
-        // var introduceHeight = document.body.clientHeight - 296;
-        // document.getElementById("intro-nav").style.height = introduceHeight + 'px';
+        var introGroupHeight = document.body.clientHeight - 266;
+        document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
         // document.getElementById("content-list").style.height = introduceHeight + 'px';
 
     },
