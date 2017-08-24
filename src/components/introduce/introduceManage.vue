@@ -2,11 +2,12 @@
     <div class="intro-manage">
         <div class="intro-toolbar">
             <el-button type="primary" @click="newIntro()">新建提案</el-button>
+            <el-button type="primary" @click="introSort()">提案排序</el-button>
         </div>
         <el-row>            
-            <el-col :sm="4" :md="3" :lg="3">                
+            <el-col :sm="4" :md="3" :lg="3">
                 <div class="intro-nav" id="intro-nav">
-                    <ul class="intro-list" id="intro-list">                        
+                    <ul class="intro-list" id="intro-list">
                         <li v-for="item in introGroupDatas" :key="item.id" @click="changeSelected(item.id)" :class="[isActive == item.id ? 'selected' :'']">
                             <a href="javascript:;">{{item.groupNamePojo.zh}}</a>
                         </li>                       
@@ -14,8 +15,14 @@
                 </div>
             </el-col>
             <el-col :sm="20" :md="21" :lg="21">
-                <div class="content-list" id="content-list" v-if="!addTag">
+                <div v-if="!sortTag">
+                    <div class="content-list" id="content-list" v-if="!addTag">
                     <el-row>
+                        <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
+                            <div style="text-align:center; padding-top:80px;">
+                               <h3>当前提案组下没有提案，请添加!!!</h3>
+                            </div>
+                        </el-col>
                         <el-col :sm="8" :md="8" :lg="8" v-for="item in introDatas" :key="item.id">
                             <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
                                 <div slot="header" class="clearfix">
@@ -56,6 +63,25 @@
                         </el-form-item>
                     </el-form>
                 </div>
+                </div>
+                
+
+                <div class="introSort" v-else>
+                    <div><el-button @click="cancelSort()">取消</el-button></div>
+                    <div class="drapSortList">
+                        <div class="drapSortList-list">                            
+                            <draggable :list="introDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
+                                <div class="list-complete-item" v-for="element in introDatas" :key='element'>
+                                    <div class="list-complete-item-handle">{{element.titlePojo.zh}} => {{element.seq}}
+                                        <span class="pull-right">
+                                            <i class="el-icon-d-caret"></i>
+                                        </span>
+                                    </div>                            
+                                </div>
+                            </draggable>
+                        </div>
+                    </div>                    
+                </div>
             </el-col>
         </el-row>
     </div>
@@ -63,7 +89,11 @@
 
 <script>
 import axios from 'axios';
+import draggable from 'vuedraggable';
 export default {
+    components:{
+        draggable
+    },
     data() {
         return {
             introForm:{
@@ -84,6 +114,7 @@ export default {
             introDatas:[],
             whichGroup:'',
             addTag:false,
+            sortTag:false,
             isActive:0,
             middleObj:{}
             
@@ -243,7 +274,72 @@ export default {
         cancelForm(){
             this.addTag = false;
             this.getIntroList();
+        },
+
+        introSort(){
+            this.sortTag = true;
+        },
+        cancelSort(){
+            this.sortTag = false;
+        },
+
+        sortIntro(itemParams){
+            
+            axios.post('/coron-web/introduce/sort',itemParams).then(response => {
+
+                this.$message({
+                    type:'success',
+                    message:'更新成功'
+                });
+                this.getIntroList();
+
+            }).catch(error => {
+                this.$message({
+                    type:'error',
+                    message:'更新失败'
+                });
+            })
+        },
+
+        moved(evt) {
+
+            let newIndex = evt.moved.newIndex;
+            let oldIndex = evt.moved.oldIndex;
+
+            console.log(evt);
+            console.log(this.introDatas[evt.moved.newIndex+1]);
+            console.log(this.introDatas[evt.moved.newIndex]);
+
+            if(newIndex > oldIndex){
+                let oldItem = this.introDatas[evt.moved.newIndex],
+                    newItem = this.introDatas[evt.moved.newIndex-1];
+                
+                const item = {
+                    id: oldItem.id,
+                    groupId:newItem.groupId,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
+                };
+                
+                this.sortIntroGroup(item);
+
+            } else {
+
+                let oldItem = this.introDatas[evt.moved.newIndex],
+                    newItem = this.introDatas[evt.moved.newIndex+1];
+
+                const item = {
+                    id: oldItem.id,
+                    groupId:newItem.groupId,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
+                };
+
+                this.sortIntro(item);
+            }
+
         }
+
 
 
     }
@@ -298,6 +394,7 @@ li.selected {
     margin: 10px 0;
     height:180px;
     text-indent:2em;
+    overflow-y: auto;
 }
 
 .add-intro-form {

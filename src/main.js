@@ -10,7 +10,9 @@ import 'element-ui/lib/theme-default/index.css';
 import * as filters from './filters/index';
 
 
+
 Vue.use(ElementUI);
+
 Vue.config.productionTip = false;
 
 

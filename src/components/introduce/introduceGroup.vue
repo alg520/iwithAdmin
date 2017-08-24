@@ -2,9 +2,12 @@
     <div class="introGroup-manage" id="introGroup-manage">
         <div class="introGroup-toolbar">
             <el-button type="primary" @click="addIntroGroup()">新建分组</el-button>
+            <el-button type="primary" @click="addIntroGroup()">分组排序</el-button>
         </div>
         <div class="introGroup-body">
             <el-table :data="introGroupDatas" stripe style="width: 100%">
+                <el-table-column type="index" width="55" align="center">
+                </el-table-column>
                 <el-table-column prop="groupNamePojo.zh" label="提案组名称" align="center">
                 </el-table-column>
                 <el-table-column label="操作" width="100">
@@ -18,6 +21,22 @@
                     </template>
                 </el-table-column>
             </el-table>
+            
+            <div class="drapSortList">
+                <div class="drapSortList-list">
+                    <h3>{{list1Title}}</h3>
+                    <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
+                        <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>
+                            <div class="list-complete-item-handle">{{element.groupNamePojo.zh}} => {{element.seq}} => {{element.id}}
+                                <span class="pull-right">
+                                    <i class="el-icon-d-caret"></i>
+                                </span>
+                            </div>                            
+                        </div>
+                    </draggable>
+                </div>
+            </div>
+
         </div>
 
         <el-dialog title="提案组添加" :visible.sync="introGroupDialogVisible" class="addDialog">
@@ -38,12 +57,17 @@
 
 <script>
 import axios from 'axios';
+import draggable from 'vuedraggable';
 export default {
+    components:{
+        draggable
+    },
     data() {
         return {
             introGroupDialogVisible:false,
             introGroupDatas: [],
             middleObj:{},
+            sortPage:true,            
             introGroupForm:{
                 name:''
             },
@@ -51,8 +75,9 @@ export default {
                 name: [
                     { required: true, message: '请输入提案组名称', trigger: 'blur' }                    
                 ]                
-            }
-            
+            },
+            list1:[],
+            list1Title:'提案组排序'            
         }
     },
 
@@ -187,9 +212,67 @@ export default {
             }).catch(error => {
                 console.log(error);
             })
+        },
+
+        sortIntroGroup(itemParams){
+            
+            axios.post('/coron-web/introduceGroup/sort',itemParams).then(response => {
+
+                this.$message({
+                    type:'success',
+                    message:'更新成功'
+                });
+                this.getIntroGroupList();
+
+            }).catch(error => {
+                this.$message({
+                    type:'error',
+                    message:'更新失败'
+                });
+            })
+        },
+
+        checkMove(evt){
+            //console.log(evt);
+        },
+
+
+        moved(evt) {
+
+            let newIndex = evt.moved.newIndex;
+            let oldIndex = evt.moved.oldIndex;
+
+            console.log(evt);
+            console.log(this.introGroupDatas[evt.moved.newIndex+1]);
+            console.log(this.introGroupDatas[evt.moved.newIndex]);
+
+            if(newIndex > oldIndex){
+                let oldItem = this.introGroupDatas[evt.moved.newIndex],
+                    newItem = this.introGroupDatas[evt.moved.newIndex-1];
+                
+                const item = {
+                    id: oldItem.id,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
+                };
+                
+                this.sortIntroGroup(item);
+
+            } else {
+
+                let oldItem = this.introGroupDatas[evt.moved.newIndex],
+                    newItem = this.introGroupDatas[evt.moved.newIndex+1];
+
+                const item = {
+                    id: oldItem.id,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
+                };
+
+                this.sortIntroGroup(item);
+            }
+
         }
-
-
 
     }
 
@@ -197,13 +280,35 @@ export default {
 </script>
 
 <style>
-.introGroup-toolbar {
-    /* background: #f8f8f9; */
+.introGroup-toolbar {    
     padding: 8px 0 20px 20px;
     text-align: center;
 }
 
 .introGroup-body {
     padding: 10px 30px;
+}
+
+.drapSortList {}
+.drapSortList-list {
+    width: 330px;
+}
+.dragArea {
+    margin-top: 15px;
+    min-height: 50px;
+    padding-bottom: 30px;
+}
+.list-complete-item {
+    cursor: move;
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    padding: 5px 12px;
+    margin-top: 4px;
+    border: 1px solid #bfcbd9;
+    transition: all 1s;
+    font-weight: bold;
+    background: #FAFAFA;
 }
 </style>
