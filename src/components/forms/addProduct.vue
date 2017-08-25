@@ -177,6 +177,7 @@
                         <el-form-item>
                             <el-button type="primary" @click="addItems()">立即添加</el-button>
                             <el-button>保存并添加下一个商品</el-button>
+                            <el-button @click="$store.commit('changeStatus','alllist')">返回</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -234,6 +235,7 @@
     </div>
 </template>
 <script>
+import store from '@/store/index';
 import axios from 'axios';
 export default {
     data() {

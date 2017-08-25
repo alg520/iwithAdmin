@@ -12,7 +12,7 @@
                     <span class="sb-cn">商品管理</span> 
                 </template>
                 <el-menu-item index="Products">商品列表</el-menu-item>
-                <el-menu-item index="typeManage">目录管理</el-menu-item>
+                <!-- <el-menu-item index="typeManage">目录管理</el-menu-item> -->
                 <el-menu-item index="tasteManage">属性管理</el-menu-item>
                 <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>                
             </el-submenu>
@@ -31,6 +31,7 @@
                     <span class="sb-cn">运营管理</span>                 
                 </template>
                 <el-menu-item index="introduce">店铺管理</el-menu-item>
+                <el-menu-item index="introduce">用户管理</el-menu-item>
             </el-submenu>
 
             <!-- <el-submenu index="3">
