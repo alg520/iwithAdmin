@@ -2,9 +2,6 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from '@/components/common/Home';
 import DashBoard from '@/components/page/DashBoard';
-import FormInput from '@/components/page/FormInput';
-import FormLayouts from '@/components/page/FormLayouts';
-import BasicTables from '@/components/page/BasicTables';
 import Products from '@/components/page/Products';
 import shopTimeDuration from '@/components/page/shopTimeDuration';
 import tasteManage from '@/components/page/tasteManage';
@@ -28,15 +25,6 @@ export default new Router({
         },{
           path:'/DashBoard',
           component:DashBoard
-        },{
-          path:'/FormInput',
-          component:FormInput
-        },{
-          path:'/FormLayouts',
-          component:FormLayouts
-        },{
-          path:'/BasicTables',
-          component:BasicTables
         },{
           path:'/Products',
           component:Products,

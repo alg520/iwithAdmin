@@ -67,7 +67,7 @@
                 
 
                 <div class="introSort" v-else>
-                    <div><el-button @click="cancelSort()">取消</el-button></div>
+                    <div><el-button @click="cancelSort()">返回</el-button></div>
                     <div class="drapSortList">
                         <div class="drapSortList-list">                            
                             <draggable :list="introDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
@@ -402,6 +402,10 @@ li.selected {
 }
 .input440 {
     width: 440px;
+}
+
+.introSort {
+    padding: 30px 0 0 20px;
 }
 
 </style>

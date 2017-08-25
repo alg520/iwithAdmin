@@ -14,6 +14,6 @@ export function parseIsSale(isSale){
     if(isSale == 0){
         return '已上架';
     } else if(isSale == 1){
-        return '已下架';
+        return '未上架';
     }
 }

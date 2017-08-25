@@ -172,3 +172,14 @@ cors  跨域资源共享
 
 提案的分组 和增删改查
 
+
+
+2017-08-25
+
+http://api.fanyi.baidu.com/api/trans/product/apidoc
+百度翻译接口文档
+
+APP ID: 20170825000076961
+密钥: Tpx_Gek5zh5CIJ6OJFOY
+
+
