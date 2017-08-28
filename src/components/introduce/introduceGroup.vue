@@ -2,10 +2,10 @@
     <div class="introGroup-manage" id="introGroup-manage">
         <div class="introGroup-toolbar">
             <el-button type="primary" @click="addIntroGroup()">新建分组</el-button>
-            <el-button type="primary" @click="addIntroGroup()">分组排序</el-button>
+            <el-button type="primary" @click="addIntroSort()">分组排序</el-button>
         </div>
-        <div class="introGroup-body">
-            <el-table :data="introGroupDatas" stripe style="width: 100%">
+        <div class="introGroup-body" >
+            <el-table :data="introGroupDatas" stripe style="width: 100%" v-if="!sortPage">
                 <el-table-column type="index" width="55" align="center">
                 </el-table-column>
                 <el-table-column prop="groupNamePojo.zh" label="提案组名称" align="center">
@@ -22,9 +22,10 @@
                 </el-table-column>
             </el-table>
             
-            <div class="drapSortList">
+            <div class="drapSortList" v-if="sortPage">
                 <div class="drapSortList-list">
                     <h3>{{list1Title}}</h3>
+                    <div><el-button @click="cancelSort()">返回</el-button></div>
                     <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                         <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>
                             <div class="list-complete-item-handle">{{element.groupNamePojo.zh}} => {{element.seq}} => {{element.id}}
@@ -67,7 +68,7 @@ export default {
             introGroupDialogVisible:false,
             introGroupDatas: [],
             middleObj:{},
-            sortPage:true,            
+            sortPage:false,            
             introGroupForm:{
                 name:''
             },
@@ -84,9 +85,9 @@ export default {
     mounted() {
 
         //动态计算属性导航的高度
-        var introGroupHeight = document.body.clientHeight - 266;
+        var introGroupHeight = document.body.clientHeight - 226;
         document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
-        // document.getElementById("content-list").style.height = introduceHeight + 'px';
+        // document.getElementById("content-list").style.height = introGroupHeight + 'px';
 
     },
 
@@ -234,6 +235,14 @@ export default {
 
         checkMove(evt){
             //console.log(evt);
+        },
+
+        addIntroSort(){
+            this.sortPage = true;
+        },
+
+        cancelSort(){
+            this.sortPage = false;
         },
 
 

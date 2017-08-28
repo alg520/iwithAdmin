@@ -33,6 +33,6 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
-    console.log('beforeCreated.....');
+    console.log('beforeCreated.....');    
   }
 })

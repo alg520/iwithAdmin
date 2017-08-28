@@ -1,25 +1,25 @@
 <template>
     <div class="sidebar">
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-            <el-menu-item index="DashBoard">               
-                    <span class="sb-icon"><i class="material-icons">home</i></span>
+            <el-menu-item index="dashboard">               
+                    <span class="sb-icon"><i class="iconfont icon-zhuye"></i></span>
                     <!--<span class="sb-cn">DashBoard</span>-->
                     <span class="sb-cn">主页</span>
             </el-menu-item>
             <el-submenu index="1">
                 <template slot="title">
-                    <span class="sb-icon"><i class="material-icons">perm_data_setting</i></span>
+                    <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>
                     <span class="sb-cn">商品管理</span> 
                 </template>
-                <el-menu-item index="Products">商品列表</el-menu-item>
+                <el-menu-item index="products">商品列表</el-menu-item>
                 <!-- <el-menu-item index="typeManage">目录管理</el-menu-item> -->
-                <el-menu-item index="tasteManage">属性管理</el-menu-item>
-                <el-menu-item index="shopTimeDuration">时段管理</el-menu-item>                
+                <el-menu-item index="tastemanage">属性管理</el-menu-item>
+                <el-menu-item index="shoptimeduration">时段管理</el-menu-item>                
             </el-submenu>
 
             <el-submenu index="2">
                 <template slot="title">               
-                    <span class="sb-icon"><i class="material-icons">border_all</i></span>
+                    <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
                     <span class="sb-cn">提案管理</span>                 
                 </template>
                 <el-menu-item index="introduce">提案分组</el-menu-item>                     
@@ -27,11 +27,11 @@
 
             <el-submenu index="3">
                 <template slot="title">               
-                    <span class="sb-icon"><i class="material-icons">border_all</i></span>
+                    <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">运营管理</span>                 
                 </template>
-                <el-menu-item index="introduce">店铺管理</el-menu-item>
-                <el-menu-item index="introduce">用户管理</el-menu-item>
+                <el-menu-item index="operation">店铺管理</el-menu-item>
+                <el-menu-item index="operation">用户管理</el-menu-item>
             </el-submenu>
 
             <!-- <el-submenu index="3">
