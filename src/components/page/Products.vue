@@ -1,48 +1,21 @@
 <template>
     <div class="productLists">
-        <v-pageTitle vtitle="全部商品"></v-pageTitle>
+        <!-- <v-pageTitle vtitle="全部商品"></v-pageTitle> -->
+        <el-menu :default-active="activeIndex" class="el-menu-product" mode="horizontal" @select="handleSelect" router>
+            <el-menu-item index="list">商品列表</el-menu-item>
+            <el-menu-item index="catalog">类目管理</el-menu-item>
+            <el-menu-item index="attrlist">属性管理</el-menu-item>
+            <el-menu-item index="timeduration">时段管理</el-menu-item>            
+        </el-menu>        
     
         <div class="clear"></div>
     
-        <div class="content-list">
-            <el-row v-if="$store.state.status == 'alllist'">
-                <el-col :sm="6" :md="6" :lg="5">
-                    <!-- <attrList></attrList> -->
-                    <catalog></catalog>
-                </el-col>
-                <el-col :sm="18" :md="18" :lg="19">
-                    <transition mode="out-in">
-                        <allList></allList>
-                    </transition>
-                </el-col>
-            </el-row>
-    
-            <el-row v-if="$store.state.status == 'updatelist'">
-                <el-col :span="5">
-                    <attrList></attrList>
-                </el-col>
-                <el-col :span="19">
-                    <transition mode="out-in">
-                        <allList></allList>
-                    </transition>
-                </el-col>
-            </el-row>
-    
-            <el-row v-if="$store.state.status == 'addlist'">
-                <el-col :span="24">
-                    <div class="grid-content bg-purple-dark">
-                        <addList></addList>
-                    </div>
-                </el-col>
-            </el-row>
-    
-            <el-row v-if="status == 'updatelist'">
-                <el-col :span="24">
-                    <div class="grid-content bg-purple-dark">
-                        <addList></addList>
-                    </div>
-                </el-col>
-            </el-row>
+        <div class="content-list" id="content-list">
+
+            <transition name="move" mode="out-in">
+                <router-view></router-view>
+            </transition>
+           
         </div>
     
     </div>
@@ -51,29 +24,40 @@
 <script>
 import store from '@/store/index';
 import vPageTitle from '../common/pageTitle.vue';
-import allList from '../products/allList.vue';
-import attrList from '../products/itemAttr.vue';
-import catalog from '../products/catalog.vue';
-import addList from '../products/addList.vue';
 export default {
     data() {
         return {
-            status: 'alllist'
+            status: 'alllist',
+            activeIndex: 'list',
         }
     },
     
     components: {
-        vPageTitle, allList, addList, attrList,catalog
+        vPageTitle
     },
 
     computed: {
         count() {
             return this.$store.this.state.status;
+        },
+        onRoutes(){
+            return this.$route.path.replace('/dashboard','/products/list');
         }
-    },    
+    }, 
+    
+    mounted: function () {
+
+        //动态计算属性导航的高度
+        var contentHeight = document.body.clientHeight - 151;
+        document.getElementById("content-list").style.height = contentHeight + 'px';
+
+    },
     
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值
+        handleSelect(key, keyPath) {
+            console.log(key, keyPath);
+        }
     },
     store
 }
@@ -112,8 +96,12 @@ export default {
     margin-top: 6px;
 }
 
-.content-list {
-    border: 1px solid #ccc;    
+.content-list {    
+    border: none;    
     background-color: #fff;
+}
+
+.el-menu-product .is-active {
+    border-bottom: solid 5px #20a0ff;
 }
 </style>

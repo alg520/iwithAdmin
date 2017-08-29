@@ -9,6 +9,14 @@ import typeManage from "@/components/page/typeManage";
 import introduce from "@/components/page/introduce";
 import operation from "@/components/operation/operation";
 
+//import ItemList from "@/components/products/itemList";
+
+import ItemList from "@/components/products/list/itemList";
+import AddList from "@/components/products/list/addList";
+import Catalog from "@/components/products/catalog/catalogList";
+import AttrList from "@/components/products/attr/attrList";
+import TimeDuration from "@/components/products/time/timeList";
+
 Vue.use(Router);
 
 export default new Router({
@@ -31,7 +39,15 @@ export default new Router({
         {
           path: "/products",
           component: Products,
-          meta: ["商品管理", "商品列表"]
+          redirect: '/products/list',
+          meta: ["商品管理", "商品列表"],
+          children: [            
+            { path: "list", component: ItemList },
+            { path: "add", component: AddList },
+            { path: "catalog", component: Catalog },
+            { path: "timeduration", component: TimeDuration },
+            { path: "attrlist", component: AttrList }
+          ]
         },
         {
           path: "/shoptimeduration",
