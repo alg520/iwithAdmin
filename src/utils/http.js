@@ -3,8 +3,8 @@ import { Message } from "element-ui";
 
 //创建 axios 实例
 const http = axios.create({
-  baseURL: process.env.BASE_API,
-  timeout: 5000
+  baseURL: process.env.BASE_API,  //api的base_url
+  timeout: 5000    //请求超时时间
 });
 
 //request 拦截器

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import vPageTitle from '../common/pageTitle.vue';      
+    import vPageTitle from '../common/pageTitle.vue';
     import count from '../common/count.vue';
     export default {
         data(){

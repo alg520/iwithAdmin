@@ -1,5 +1,5 @@
 <template>
-    <div class="productLists">
+    <div class="introduceLists">
         <v-pageTitle vtitle="全部提案"></v-pageTitle>
     
         <div class="clear"></div>

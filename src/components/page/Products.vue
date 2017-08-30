@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import store from '@/store/index';
 import vPageTitle from '../common/pageTitle.vue';
 export default {
     data() {
@@ -37,9 +36,7 @@ export default {
     },
 
     computed: {
-        count() {
-            return this.$store.this.state.status;
-        },
+        
         onRoutes(){
             return this.$route.path.replace('/dashboard','/products/list');
         }
@@ -58,8 +55,7 @@ export default {
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
         }
-    },
-    store
+    }    
 }
 </script>
 

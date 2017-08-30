@@ -79,15 +79,14 @@
                                         action="/coron-web/upload/itemUpload"
                                         list-type="picture-card"
                                         class="avatar-uploader"
-                                        :on-success="handleAvatarSuccess"
-                                        :on-error="itemUploadError" 
+                                        :on-success="handleAvatarSuccess" 
                                         :before-upload="beforeAvatarUpload"
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="el-icon-plus"></i>
                                         </el-upload>
                                         <el-dialog v-model="dialogVisible" size="tiny">
-                                            <img width="100%" :src="dialogImageUrl" alt="">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
                                         </el-dialog>
 
                                     </el-form-item>
@@ -193,7 +192,15 @@
                                                 </el-table>
                                             </el-card>
                                         </template>
-                                    </el-form-item>                                    
+                                    </el-form-item>
+                                    <!-- <el-form-item label="商品标签">
+                                            <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
+                                                {{tag}}
+                                            </el-tag>
+                                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
+                                            </el-input>
+                                            <el-button v-else class="button-new-tag" size="small">添加</el-button>
+                                            </el-form-item> -->
                                     <el-form-item>
                                         <el-button type="primary" @click="addItems()">立即添加</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
@@ -287,7 +294,8 @@ export default {
             imageUrl: '',
 
             dialogImageUrl: '',
-            dialogVisible: false,            
+            dialogVisible: false,
+            dynamicTags: ["标签1"],
             catalogDatas: [],
             timeDatas: [{ name: '全天', timeDuration: { startTime: '00:00', endTime: '23:59' } }],
             itemAttrDatas: [],
@@ -312,6 +320,11 @@ export default {
             itemsForm: {
                 itemName: '',
                 itemType: ''
+            },
+            timeDurationForm: {
+                name: '',
+                startTime: '06:30',
+                endTime: '22:00'
             },
             productForm: {
                 gname: '',
@@ -398,29 +411,10 @@ export default {
     },
     methods: {
         handleAvatarSuccess(res, file) {
-
-            if(file.response.status){
-
-                this.imageUrl = URL.createObjectURL(file.raw);
-                this.productForm.picUrl = file.response.entry;
-                this.$message({
-                    type:'success',
-                    message:'图片上传成功！'
-                })
-            }
-            
-            console.log(file.response);
-
+            this.imageUrl = URL.createObjectURL(file.raw);
+            console.log(file);
+            console.log(this.imageUrl);
         },
-
-        itemUploadError(file){
-            console.log("文件上传失败",file);
-            this.$message({
-                type:'error',
-                message:'图片上传失败'
-            })
-        },
-
         beforeAvatarUpload(file) {
             const isJPG = file.type === 'image/jpeg';
             const isLt2M = file.size / 1024 / 1024 < 2;
@@ -437,7 +431,7 @@ export default {
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
-        handlePictureCardPreview(file) {            
+        handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
         },
@@ -560,7 +554,7 @@ export default {
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
-                picUrl: this.productForm.picUrl ? this.productForm.picUrl:null,
+                picUrl: 'http://imglf.nosdn.127.net/img/Q0RPNGd0czV3aEZQQ0lZMmtkbC9HVWRqcG9YekdtZWRXNS9qZG8vRkc4NldldlRNelYrM3F3PT0.jpg?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg%7Cwatermark&type=2&text=wqkg5bCP6KKr5Y2VIC8gaHVjaGVuc2kubG9mdGVyLmNvbQ==&font=bXN5aA==&gravity=southwest&dissolve=30&fontsize=240&dx=8&dy=10&stripmeta=0',
                 itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
@@ -816,6 +810,9 @@ export default {
 .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px !important;
     text-align: center;
 }
 

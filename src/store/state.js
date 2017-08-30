@@ -1,5 +1,9 @@
+
 const state = {
-    shop:{}
+    shop:{},
+    user:{
+        name:'zhangpengbin'
+    }
 }
 
 

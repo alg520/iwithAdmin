@@ -11,13 +11,7 @@
     
             <!--Search area-->
             <el-col :xs="12" :sm="12" :md="8">
-                 <!-- <div class="search">
-                    <el-input
-                        size="small"
-                        placeholder="Search for...">
-                        <el-button slot="append" icon="search"></el-button>
-                    </el-input>
-                </div>   -->
+                 
             </el-col>
             <!-- header right area-->
             <el-col :xs="24" :sm="12" :md="{span:8,offset: 4}">
@@ -29,67 +23,10 @@
     
             <el-col :xs="8" :sm="8" :md="{span:2,offset: 4}">
                 <div class="header-right">
-                    <el-col :span="10">
-    
-                        <!--这是消息的下拉列表 用了element里的 dropdown组件-->
-                        <!-- <el-dropdown menu-align="start" >
-                                <span>
-                                    <el-badge :value="5" class="item">
-                                        <i class="el-icon-message"></i>
-                                    </el-badge>
-                                </span>
-                                <el-dropdown-menu slot="dropdown" >
-                                    <el-dropdown-item >
-                                    <span class="pop-title">You have new messages! </span>
-                                    </el-dropdown-item>
-    
-                                    <el-dropdown-item  v-for="dialog in dialogs" :key="dialog.time" divided>
-                                        <div class="pop-div">
-                                            <span class="pop-image">
-                                                <img :src="dialog.header" width="50px" >
-                                            </span>
-                                            <span class="pop-content">
-                                            {{dialog.content}}
-                                            </span>
-                                            <span class="pop-time">
-                                                {{dialog.time}}分钟前
-                                            </span>
-                                        </div>
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown> -->
+                    <el-col :span="10">                               
                     </el-col>
-                    <el-col :span="8">
-                        <!-- <el-dropdown menu-align="start"  >
-                                <span >
-                                    <el-badge :value="3" class="item">
-                                        <i class="el-icon-date"></i>
-                                    </el-badge>
-                                </span>
-                                <el-dropdown-menu slot="dropdown" >
-                                    <el-dropdown-item >
-                                    <span class="pop-title">You have new tasks! </span>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item v-for="task in tasks" :key="task.id" divided>
-                                        <div class="task-div">
-                                            <span class="task-span task-tag">
-                                            <el-tag type="danger" v-if="task.rank==1">紧急</el-tag>
-                                            <el-tag type="warning" v-if="task.rank==2">重要</el-tag>
-                                            <el-tag type="success" v-if="task.rank==3">正常</el-tag>
-                                            </span>
-                                            <span class="task-span task-content">
-                                            {{task.content}}<br/>
-                                            <span class="task-time">截止：{{task.overTime}}</span>
-                                            </span>
-                                            
-                                            <span class="task-span task-btn"><el-button type="primary" size="mini">完成</el-button></span>
-                                        </div>
-                                    </el-dropdown-item>
-    
-                                </el-dropdown-menu>
-                            </el-dropdown> -->
-                    </el-col>
-    
+                    <el-col :span="8">                        
+                    </el-col>    
                 </div>
     
             </el-col>
@@ -141,20 +78,7 @@
 export default {
     data() {
         return {
-            name: 'linxin',
-            dialogs: [
-                { header: '../../static/images/b_header2.jpg', content: '我有一个Style样式需要您帮忙处理以下。', time: '3' },
-                { header: '../../static/images/b_header3.jpg', content: '中午一起吃个饭吧，我请客。', time: '15' },
-                { header: '../../static/images/b_header.jpg', content: '需要处理一下POP展示的白边样式。', time: '18' },
-                { header: '../../static/images/b_header2.jpg', content: '下午3点开需求会议，准时参加。', time: '24' },
-                { header: '../../static/images/b_header3.jpg', content: '晚上我开车送你回家，你请我吃晚饭。', time: '45' },
-            ],
-            tasks: [
-                { id: 1, rank: 1, content: '完成JSPangAdmin头部头部组件的编写。', overTime: '2017/3/9' },
-                { id: 2, rank: 2, content: '完成GitHub仓库的初始化工作。', overTime: '2017/3/15' },
-                { id: 3, rank: 3, content: '在阿里云进行网站备案，完成后通知组长。', overTime: '2017/3/20' }
-
-            ]
+            name: 'linxin'            
         }
     },
     methods: {

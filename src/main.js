@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import store from './store';
 import ElementUI from 'element-ui';
 //引入element-ui的默认CSS样式
 import 'element-ui/lib/theme-default/index.css';
@@ -16,8 +17,6 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
 
-
-
 //Register global utility filters
 Object.keys(filters).forEach(key => {
   console.log("注册全局过滤器",key);
@@ -25,11 +24,11 @@ Object.keys(filters).forEach(key => {
 })
 
 
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
   beforeCreate:function(){

@@ -73,10 +73,8 @@
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作">
-                                <template scope="scope">
-                                    <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                                            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
-                                    <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">
+                                <template scope="scope">                                    
+                                    <el-button type="text" size="small" @click="updateItem(scope.row)">
                                         <i class="el-icon-edit" title="编辑"></i>
                                     </el-button>
                                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
@@ -208,6 +206,11 @@ export default {
                 alert('网络错误，不能访问,请刷新页面重试！');
             })
         },
+
+        updateItem(item){
+            console.log("更新数据",item);
+
+        },
         //删除菜品
         delItem(item) {
             axios.post('/coron-web/item/del', {
@@ -269,10 +272,6 @@ export default {
         handleIconClick(ev) {
             console.log(ev);
             console.log(this.itemsForm.itemName)
-        },
-
-        handleEdit() {
-            console.log(this);
         },
 
         goAdd(){

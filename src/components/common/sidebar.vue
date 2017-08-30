@@ -1,11 +1,11 @@
 <template>
     <div class="sidebar">
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-            <el-menu-item index="dashboard">               
+            <el-menu-item index="/dashboard">               
                     <span class="sb-icon"><i class="iconfont icon-zhuye"></i></span>
                     <span class="sb-cn">主页</span>
             </el-menu-item>
-            <el-menu-item index="products">
+            <el-menu-item index="/products">
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
                 <span class="sb-cn">商品管理</span>
             </el-menu-item>
@@ -25,7 +25,7 @@
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
                     <span class="sb-cn">提案管理</span>                 
                 </template>
-                <el-menu-item index="introduce">提案分组</el-menu-item>                     
+                <el-menu-item index="/introduce">提案分组</el-menu-item>                     
             </el-submenu>
 
             <el-submenu index="3">
@@ -33,8 +33,8 @@
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">运营管理</span>                 
                 </template>
-                <el-menu-item index="operation">店铺管理</el-menu-item>
-                <el-menu-item index="operation">订单管理</el-menu-item>
+                <el-menu-item index="/operation">店铺管理</el-menu-item>
+                <el-menu-item index="/operation">订单管理</el-menu-item>
             </el-submenu>
 
             <el-submenu index="4">
@@ -42,8 +42,8 @@
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">商家管理</span>                 
                 </template>
-                <el-menu-item index="operation">信息管理</el-menu-item>
-                <el-menu-item index="operation">订单管理</el-menu-item>
+                <el-menu-item index="/shop">信息管理</el-menu-item>
+                <el-menu-item index="/shop">订单管理</el-menu-item>
             </el-submenu>
 
             <!-- <el-submenu index="3">
