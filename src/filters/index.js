@@ -17,3 +17,14 @@ export function parseIsSale(isSale){
         return '未上架';
     }
 }
+
+//过滤语言类型
+export function languageType(language){
+    if(language === 0){
+        return '中文';
+    } else if(language === 1){
+        return '英文';
+    } else if(language === 2){
+        return '日文'
+    }
+}

@@ -2,7 +2,8 @@
 const state = {
     shop:{},
     user:{
-        name:'zhangpengbin'
+        name:'',
+        uid:''
     }
 }
 

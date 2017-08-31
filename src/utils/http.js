@@ -1,28 +1,57 @@
 import axios from "axios";
 import { Message } from "element-ui";
+import router from "../router";
 
 //创建 axios 实例
-const http = axios.create({
-  baseURL: process.env.BASE_API,  //api的base_url
-  timeout: 5000    //请求超时时间
+const $http = axios.create({
+  baseURL: process.env.BASE_API, //api的base_url
+  timeout: 5000, //请求超时时间
+  responseType: "json",
+  headers: {
+    "Content-Type": "application/json"
+  }
 });
 
 //request 拦截器
-http.interceptors.request.use(
+$http.interceptors.request.use(
   config => {
     return config;
   },
   error => {
+    Message({
+      showClose: true,
+      message: error
+      
+    });
+
     return Promise.reject(error);
   }
 );
 
 //response 拦截器
-http.interceptors.response.use(
+$http.interceptors.response.use(
   response => {
+    checkStatus(response);
     return response;
   },
   error => {
+    //用户登录的时候会拿到一个基础信息，比如用户名，token,过期时间戳
+    if (true) {
+      //若访问接口的时候没有发现鉴权的基础信息，直接返回登录页
+    } else {
+      //如果有基础信息，判断当前时间戳和当前时间，若当前时间大于服务器时间请重新登录
+    }
+
+    //错误页判断
+    if (error.response.status == 403) {
+    }
+    if (error.response.status == 500) {
+    }
+    if (error.response.status == 502) {
+    }
+    if (error.response.status == 404) {
+    }
+
     return Promise.resolve(error);
   }
 );
@@ -38,6 +67,7 @@ function checkStatus(response) {
     response.status === 304 ||
     response.status === 400
   ) {
+
     return response;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据
   }
@@ -63,30 +93,17 @@ function checkCode(res) {
 
 export default {
   post(url, data) {
-    return axios({
+    return $http({
       method: "post",
       url,
       data: data
-    })
-      .then(response => {
-        return checkStatus(response);
-      })
-      .then(res => {
-        return checkCode(res);
-      });
+    });
   },
-
   get(url, params) {
-    return axios({
+    return $http({
       method: "get",
       url,
       params
-    })
-      .then(response => {
-        return checkStatus(response);
-      })
-      .then(res => {
-        return checkCode(res);
-      });
+    });
   }
 };

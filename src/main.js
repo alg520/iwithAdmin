@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
+import VueCookie from 'vue-cookie';
 import router from './router';
 import store from './store';
 import ElementUI from 'element-ui';
@@ -9,13 +10,14 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 //引入项目中自定义过滤器
 import * as filters from './filters/index';
+import * as auth from './api/auth'
 
 
 
 Vue.use(ElementUI);
+Vue.use(VueCookie);
 
 Vue.config.productionTip = false;
-
 
 //Register global utility filters
 Object.keys(filters).forEach(key => {
@@ -32,6 +34,10 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
-    console.log('beforeCreated.....');    
+    console.log('beforeCreated.....');
+    console.log("cookie",this.$cookie.get('Admin-Token'));
+    auth.getLoginUser().then(res => {
+      console.log(res);
+    });
   }
 })

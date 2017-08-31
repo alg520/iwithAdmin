@@ -42,8 +42,8 @@
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">商家管理</span>                 
                 </template>
-                <el-menu-item index="/shop">信息管理</el-menu-item>
-                <el-menu-item index="/shop">订单管理</el-menu-item>
+                <el-menu-item index="/shop/info">信息管理</el-menu-item>
+                <el-menu-item index="/shop/order">订单管理</el-menu-item>
             </el-submenu>
 
             <!-- <el-submenu index="3">

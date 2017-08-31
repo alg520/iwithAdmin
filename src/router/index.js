@@ -5,9 +5,12 @@ import DashBoard from "@/components/page/DashBoard";
 import Products from "@/components/page/Products";
 
 import Introduce from "@/components/page/introduce";
-import Shop from "@/components/page/shop";
-import Operation from "@/components/operation/operation";
 
+import Shop from "@/components/page/shop";
+import Shopinfo from "@/components/shop/info";
+import Shoporder from "@/components/shop/order";
+
+import Operation from "@/components/operation/operation";
 
 import ItemList from "@/components/products/list/itemList";
 import AddList from "@/components/products/list/addList";
@@ -37,16 +40,16 @@ export default new Router({
         {
           path: "/products",
           component: Products,
-          redirect: '/products/list',
+          redirect: "/products/list",
           meta: ["商品管理", "商品列表"],
-          children: [            
+          children: [
             { path: "list", component: ItemList },
             { path: "add", component: AddList },
             { path: "catalog", component: Catalog },
             { path: "timeduration", component: TimeDuration },
             { path: "attrlist", component: AttrList }
           ]
-        },        
+        },
         {
           path: "/introduce",
           component: Introduce,
@@ -58,10 +61,13 @@ export default new Router({
           meta: ["运营管理", "店铺管理"]
         },
         {
-          path:"/shop",
-          component:Shop,
-          meta:["商家管理","订单管理"],
-          children:[]
+          path: "/shop",
+          component: Shop,
+          redirect: "/shop/info",
+          children: [
+            { path: "info", component: Shopinfo, meta: ["商家管理", "信息管理"] },
+            { path: "order", component: Shoporder, meta: ["商家管理", "订单管理"] }
+          ]
         },
         // catch all redirect
         { path: "*", redirect: "/dashboard" }

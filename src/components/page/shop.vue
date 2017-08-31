@@ -17,6 +17,7 @@
 
 <script>
 import vPageTitle from '../common/pageTitle.vue'
+import * as user from '../../api/user'
 import {mapMutations} from 'vuex'
 import { mapGetters } from 'vuex'
 export default {
@@ -28,6 +29,13 @@ export default {
             
         }
     },
+    mounted: function() {
+
+        //动态计算属性导航的高度
+        var contentHeight = document.body.clientHeight - 151;
+        document.getElementById("content-list").style.height = contentHeight + 'px';
+
+    },
     computed:{
         ...mapGetters([
             'user'
@@ -35,8 +43,16 @@ export default {
     },
     created(){
         console.log(this.user);
+        this.getUserList();
     },
     methods :{
+
+        getUserList(){
+            user.getUserList().then(response => {
+                console.log(response);
+            })
+        },
+
         ...mapMutations({
             getUser:'GET_USER'
         })
@@ -45,5 +61,9 @@ export default {
 </script>
 
 <style>
-
+.content-list {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    overflow-y: auto;
+}
 </style>
