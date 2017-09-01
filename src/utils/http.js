@@ -21,7 +21,6 @@ $http.interceptors.request.use(
     Message({
       showClose: true,
       message: error
-      
     });
 
     return Promise.reject(error);
@@ -31,8 +30,7 @@ $http.interceptors.request.use(
 //response 拦截器
 $http.interceptors.response.use(
   response => {
-    checkStatus(response);
-    return response;
+    return checkStatus(response);
   },
   error => {
     //用户登录的时候会拿到一个基础信息，比如用户名，token,过期时间戳
@@ -62,13 +60,15 @@ $http.interceptors.response.use(
 function checkStatus(response) {
   //loading
   //如果状态码正常，则直接返回数据
+
+  
   if (
     (response && response.status === 200) ||
     response.status === 304 ||
     response.status === 400
   ) {
 
-    return response;
+    return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据
   }
 

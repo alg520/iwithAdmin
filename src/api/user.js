@@ -33,6 +33,3 @@ export function getUserInfoById(userId){
 
     return $http.get('/coron-web/user/getById',params)
 }
-
-
-console.log($http);

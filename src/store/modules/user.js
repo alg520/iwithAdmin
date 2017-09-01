@@ -1,6 +1,12 @@
-
+import { getLoginUser } from '../../api/user'
+import * as types from '../mutation-types'
 const user = {
-    state:{        
+    state:{
+        loginInfo:{
+            uname:'zhangpengbin'
+        },
+        userList:[],
+        shopInfo:{},
         userId:'',
         uname:'',
         userType:'',
@@ -18,11 +24,23 @@ const user = {
         }
     },
 
-    mutations:{
+    getters:{
 
     },
 
+    mutations:{
+        [types.SET_LOGININFO](state,loginer){
+            state.loginInfo = loginer;
+        },
+        [types.SET_USERLIST](state,userList){
+            state.userList = userList;
+        }
+    },
+
     actions:{
+
+
+
 
     }
 }

@@ -18,8 +18,7 @@
 <script>
 import vPageTitle from '../common/pageTitle.vue'
 import * as user from '../../api/user'
-import {mapMutations} from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         vPageTitle
@@ -42,19 +41,24 @@ export default {
         ])
     },
     created(){
-        console.log(this.user);
+        console.log(this.user.userList);
         this.getUserList();
-    },
+    },    
     methods :{
 
         getUserList(){
-            user.getUserList().then(response => {
-                console.log(response);
+            user.getUserList({}).then(response => {
+                
+                
+                console.log("用户列表",response);
+                this.setUserList(response.rows)
+
             })
         },
 
         ...mapMutations({
-            getUser:'GET_USER'
+            getUser:'GET_USER',
+            setUserList:'SET_USERLIST'
         })
     }
 }

@@ -10,8 +10,6 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 //引入项目中自定义过滤器
 import * as filters from './filters/index';
-import * as auth from './api/auth'
-
 
 
 Vue.use(ElementUI);
@@ -34,10 +32,9 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
+
     console.log('beforeCreated.....');
     console.log("cookie",this.$cookie.get('Admin-Token'));
-    auth.getLoginUser().then(res => {
-      console.log(res);
-    });
+    
   }
 })

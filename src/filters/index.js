@@ -19,12 +19,13 @@ export function parseIsSale(isSale){
 }
 
 //过滤语言类型
-export function languageType(language){
+export function languageType(language){    
+    
     if(language === 0){
         return '中文';
     } else if(language === 1){
-        return '英文';
+        return 'ENGLISH';
     } else if(language === 2){
-        return '日文'
+        return '日本語'
     }
 }

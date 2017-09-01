@@ -1,4 +1,3 @@
-import api from './api';
 import http from '../utils/http';
 
 export function loginByEmail(email, password) {
@@ -28,7 +27,3 @@ export function getInfo(token) {
   });
 }
 
-
-
-console.log(api);
-console.log(http);
