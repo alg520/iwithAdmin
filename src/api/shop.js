@@ -21,6 +21,11 @@ export function updateShop(data){
     return $http.post('/coron-web/shop/update',data)
 }
 
+export function getRobotByShop(){
+    return $http.get('/coron-web/robot/getByShop')
+}
+
+
 export function delShop(shopId){
 
     var data = {

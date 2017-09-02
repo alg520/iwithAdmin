@@ -29,13 +29,14 @@
                             <h3>设备信息</h3>
                         </el-col>
                         <el-col :span="24">
-                            <el-table :data="tableData" style="width: 100%; text-align:center;">
-                                <el-table-column prop="date" label="设备类型" width="180">
+                            <el-table :data="equipmentInfos" style="width: 100%; text-align:center;" max-height=200>
+                                <el-table-column label="设备类型">
+                                   <template scope="scope">
+                                       <span>机器人</span>
+                                   </template>
                                 </el-table-column>
-                                <el-table-column prop="name" label="SN号" width="180">
-                                </el-table-column>
-                                <el-table-column prop="address" label="名称">
-                                </el-table-column>
+                                <el-table-column prop="sn" label="SN号">
+                                </el-table-column>                                
                             </el-table>
                         </el-col>
                         <el-col :span="24">
@@ -45,16 +46,11 @@
                             </h3>
                         </el-col>
                         <el-col :span="24">
-                            <el-table :data="accountLists" style="width: 100%; text-align:center;">
+                            <el-table :data="accountLists" style="width: 100%; text-align:center;" max-height=200>
                                 <el-table-column prop="uname" label="账号">
-                                </el-table-column>
-                                <el-table-column prop="upassword" label="密码">
-                                </el-table-column>
+                                </el-table-column>                                
                                 <el-table-column label="操作" width="100">
-                                    <template scope="scope">                                    
-                                    <el-button type="text" size="small" @click="updateItem(scope.row)">
-                                        <i class="el-icon-edit" title="编辑"></i>
-                                    </el-button>
+                                    <template scope="scope">                                                                       
                                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
                                         <i class="el-icon-delete" title="删除"></i>
                                     </el-button>                                    
@@ -86,6 +82,7 @@
 
 <script>
 import * as user from '../../api/user'
+import { getRobotByShop } from '../../api/shop'
 export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
@@ -116,34 +113,14 @@ export default {
                     { validator: validateNumLetter , trigger:'blur'}
                 ]
             },
-            accountLists:[
-                {
-                    uname:'zpb',
-                    upassword:'123456'
-                }
-            ],
-            tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
-            }]
+            accountLists:[]
         }
     },
     created(){
         this.getLoginInfo();
         this.getUserList();
+        this.getRobot();
+        this.getShopUser();
     },
     methods:{
         getLoginInfo(){
@@ -159,6 +136,21 @@ export default {
 
             user.getUserList({}).then(res => {
                 console.log("用户列表",res);
+                
+            })
+        },
+
+        getRobot(){
+            getRobotByShop().then(res => {
+                console.log("店铺里的机器人",res);
+                this.equipmentInfos = res.entry;
+            })
+        },
+
+        getShopUser(){
+            user.getShopUser().then(res => {
+                console.log("当前店铺的用户",res);
+                this.accountLists = res.entry;
             })
         },
 
@@ -174,20 +166,64 @@ export default {
             }
 
             user.addUser(userData).then(res => {
-                console.log(res);
+
+                if(res.status){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功！'
+                    });
+                    this.getShopUser();
+                    this.addUserDialogVisible = false;
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:res.cnMessage
+                    })    
+                }
+                
             })
         },
 
-        submitForm(formName){
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    alert('submit!');
-                    this.addUserPost();
+        delUser(item){
+            const delData = {
+                userId:item.userId
+            };
+            user.delUser(delData).then(res => {
+                if(res.status){
+                    this.$message({
+                        type:'success',
+                        message:'删除成功'
+                    });
+                    this.getShopUser();
                 } else {
-                    console.log('error submit!!');
+                    this.$message({
+                        type:'error',
+                        message:'删除失败'
+                    });
                     return false;
                 }
+            })
+        },
+
+        confirmDel(item){
+            this.$confirm('确认删除？','提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                closeOnClickModal: false,
+                type: 'warning'})
+            .then(_ => {
+                this.delUser(item);
+            })
+            .catch(_ => {
+                this.$message({
+                    type:'warning',
+                    message:'已取消删除'
+                });
             });
+        },
+
+        submitForm(formName){
+            this.addUserPost();
         },
 
         resetForm(formName) {

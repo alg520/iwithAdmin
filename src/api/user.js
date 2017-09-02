@@ -25,6 +25,10 @@ export function delUser(data){
     return $http.post('/coron-web/user/del',data)
 }
 
+export function getShopUser(){
+    return $http.get('/coron-web/user/getByShop',{})
+}
+
 export function getUserInfoById(userId){
 
     const params = {

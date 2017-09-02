@@ -9,6 +9,7 @@
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
                 <span class="sb-cn">商品管理</span>
             </el-menu-item>
+
             <!-- <el-submenu index="1">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>
@@ -29,18 +30,18 @@
             </el-submenu>
 
             <el-submenu index="3">
-                <template slot="title">               
+                <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">运营管理</span>                 
                 </template>
-                <el-menu-item index="/operation">店铺管理</el-menu-item>
-                <el-menu-item index="/operation">订单管理</el-menu-item>
+                <el-menu-item index="/operation/shopmanage">店铺管理</el-menu-item>
+                <el-menu-item index="/operation/ordermanage">订单管理</el-menu-item>
             </el-submenu>
 
             <el-submenu index="4">
-                <template slot="title">               
+                <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
-                    <span class="sb-cn">商家管理</span>                 
+                    <span class="sb-cn">商家管理</span>
                 </template>
                 <el-menu-item index="/shop/info">信息管理</el-menu-item>
                 <el-menu-item index="/shop/order">订单管理</el-menu-item>
