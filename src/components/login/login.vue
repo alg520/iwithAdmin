@@ -12,10 +12,10 @@
         <span class="svg-container">
           <i class="iconfont icon-password"></i>
         </span>
-        <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="密码"></el-input>
+        <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
+        <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           登录
         </el-button>
       </el-form-item>
@@ -29,29 +29,35 @@ export default {
   data() {    
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'zpb',
+        upassword: '123456'
       },
       loginRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' },],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' },]
+        upassword: [{ required: true, message: '请输入密码', trigger: 'blur' },]
       }      
     }
   },
   methods: {
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {          
-          this.$store.dispatch('Login', this.loginForm).then(() => {            
-            this.$router.push({ path: '/' })
-          }).catch(() => {
+      console.log("登录");
+      console.log(this.loginForm.upassword);
+      if(this.loginForm.username =='zpb' && this.loginForm.upassword == '123456'){
+          this.$router.push({ path: '/dashboard' })
+      }
+      // this.$refs.loginForm.validate(valid => {
+      //   if (valid) {          
+          
+      //     this.$store.dispatch('Login', this.loginForm).then(() => {            
+      //       this.$router.push({ path: '/' })
+      //     }).catch(() => {
             
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      //     })
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     }
   }
 }

@@ -15,6 +15,8 @@ import Shoporder from "@/components/shop/order";
 import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
 import Ordermanage from "@/components/operation/ordermanage";
+import Addshop from "@/components/operation/addShop";
+import Shopdetail from "@/components/operation/shopdetail";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -25,7 +27,9 @@ import TimeDuration from "@/components/products/time/timeList";
 
 Vue.use(Router);
 
-export default new Router({
+
+
+const router = new Router({
   mode: "history",
   base: __dirname,
   //base:'/coron-web',
@@ -33,10 +37,16 @@ export default new Router({
     {
       path: "/",
       component: Home,
+      meta:{
+        requireAuth:true
+      },
       children: [
         {
           path: "",
-          component: DashBoard
+          component: DashBoard,
+          meta:{
+            requireAuth:true
+          },
         },
         {
           path: "/dashboard",
@@ -68,7 +78,18 @@ export default new Router({
             { 
               path: "shopmanage", 
               component: Shopmanage, 
-              meta: ["运营管理", " 店铺管理"] 
+              meta: ["运营管理", "店铺管理"]
+            },
+            { 
+              path: "addshop", 
+              component: Addshop, 
+              meta: ["运营管理", "店铺管理", "店铺添加"]
+            },
+            { 
+              path: "shopdetail",
+              name: "shopdetail", 
+              component: Shopdetail, 
+              meta: ["运营管理", " 店铺详情"]
             },
             { 
               path: "ordermanage", 
@@ -96,3 +117,31 @@ export default new Router({
     { path: "*", redirect: "/dashboard" }
   ]
 });
+
+
+//路由的钩子函数  控制当前的权限
+router.beforeEach((to,from,next) => {
+  console.log(to);
+    
+  let token = false;
+
+  if(to.meta.requireAuth){
+    if(token){
+      next()
+    } else {
+      next({
+        path:'/login',
+        query: { redirect: to.fullPath }
+      });
+    }
+  } else {
+    next();
+  }
+
+
+
+})
+
+
+
+export default router;
