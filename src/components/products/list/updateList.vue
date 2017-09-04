@@ -1,7 +1,7 @@
 <template>
     <div class="addProducts">
         <el-tabs v-model="activeName">
-            <el-tab-pane label="商品添加" name="first">
+            <el-tab-pane label="商品修改" name="first">
 
                 <div class="addProductForm">
                     <el-row>
@@ -202,7 +202,7 @@
                                             <el-button v-else class="button-new-tag" size="small">添加</el-button>
                                             </el-form-item> -->
                                     <el-form-item>
-                                        <el-button type="primary" @click="addItems()">立即添加</el-button>
+                                        <el-button type="primary" @click="updateItems()">立即修改</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
                                         <el-button @click="gobackList()">返回</el-button>
                                     </el-form-item>
@@ -285,14 +285,13 @@
 </template>
 
 <script>
-import store from '@/store/index';
 import axios from 'axios';
+import Lockr from 'lockr';
 export default {
     data() {
         return {
             activeName: 'first',
             imageUrl: '',
-
             dialogImageUrl: '',
             dialogVisible: false,
             dynamicTags: ["标签1"],
@@ -402,19 +401,41 @@ export default {
         }
 
     },
+    computed:{
+        accepDatas(){
+            return Lockr.get("itemUpdateData");
+        }
+    },
     created() {
         //获取默认列表
+        this.getUpdateData();
         this.getCatalogList();
         this.getTimeList();
         this.getItemAttrList();
-        this.getItemList();
+        this.getItemList();        
     },
     methods: {
+        getUpdateData(){
+            console.log("接受的数据",this.accepDatas);
+            const data = this.accepDatas;
+            this.productForm.itemName = data.itemNameObject.zh;
+            this.productForm.catalogId = data.catalogId;
+            this.productForm.itemNo = data.itemNo;
+            this.productForm.itemDesc = data.itemDescObject.zh;
+            this.productForm.itemType = data.itemType;
+            this.productForm.originPrice = data.originPrice;
+            this.productForm.discountPrice = data.discountPrice;
+            this.timeDurations = data.timeDurations;
+            this.attrGroups = data.itemAttrs;            
+            data.itemType == 1 ? (this.sideDishGroups = data.childItems):(this.setmealList = data.childItems);
+        },
+
         handleAvatarSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
             console.log(file);
             console.log(this.imageUrl);
         },
+
         beforeAvatarUpload(file) {
             const isJPG = file.type === 'image/jpeg';
             const isLt2M = file.size / 1024 / 1024 < 2;
@@ -547,9 +568,10 @@ export default {
             })
         },
 
-        addItems() {
-            let addParams = {
-                itemNo: this.productForm.itemNo,
+        updateItems() {
+            let updateParams = {
+                itemId:this.accepDatas.itemId,
+                itemNo:this.productForm.itemNo,
                 itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
@@ -558,16 +580,16 @@ export default {
                 itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
-                childItems: this.attrGroups,
-                itemAttrs: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
+                itemAttrs: this.attrGroups,
+                childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
                 seq: 1,
                 busiType: 1
             };
 
             axios({
-                url: '/coron-web/item/add',
+                url: '/coron-web/item/update',
                 method: 'post',
-                data: addParams,
+                data: updateParams,
                 headers: {
                     Language: 0
                 }
@@ -576,11 +598,11 @@ export default {
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
-                        message: '菜品添加成功'
+                        message: '菜品修改成功'
                     })
                     this.$notify({
                         title: '成功',
-                        message: '菜品添加成功',
+                        message: '菜品修改成功',
                         type: 'success'
                     });
                     //添加成功后需要跳转到菜品列表页

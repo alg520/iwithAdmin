@@ -11,6 +11,7 @@ import Introduce from "@/components/page/introduce";
 import Shop from "@/components/page/shop";
 import Shopinfo from "@/components/shop/info";
 import Shoporder from "@/components/shop/order";
+import Orderdetail from "@/components/shop/orderDetail";
 
 import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
@@ -21,6 +22,7 @@ import Shopdetail from "@/components/operation/shopdetail";
 
 import ItemList from "@/components/products/list/itemList";
 import AddList from "@/components/products/list/addList";
+import UpdateList from "@/components/products/list/updateList";
 import Catalog from "@/components/products/catalog/catalogList";
 import AttrList from "@/components/products/attr/attrList";
 import TimeDuration from "@/components/products/time/timeList";
@@ -60,6 +62,7 @@ const router = new Router({
           children: [
             { path: "list", component: ItemList },
             { path: "add", component: AddList },
+            { path: "update", component: UpdateList },
             { path: "catalog", component: Catalog },
             { path: "timeduration", component: TimeDuration },
             { path: "attrlist", component: AttrList }
@@ -104,7 +107,8 @@ const router = new Router({
           redirect: "/shop/info",
           children: [
             { path: "info", component: Shopinfo, meta: ["商家管理", "信息管理"] },
-            { path: "order", component: Shoporder, meta: ["商家管理", "订单管理"] }
+            { path: "order", component: Shoporder, meta: ["商家管理", "订单管理"] },
+            { path: "orderdetail", component: Orderdetail, meta: ["商家管理", "订单管理","订单详情"] }
           ]
         }
       ]

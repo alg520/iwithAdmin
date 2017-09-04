@@ -70,11 +70,11 @@ export default {
 
     getShopDetail(item){
       console.log(item);
-      this.setShopInfo(item);
+      
       this.$router.push({
         name:'shopdetail',
         params:{
-          item:item
+          item:item.id
         }
       })
     },

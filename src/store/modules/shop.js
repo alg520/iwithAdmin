@@ -17,12 +17,6 @@ const shop = {
         }
     },
 
-    getters:{
-        shopInfo : state => state.shopInfo,
-        shopId: state => state.shopId,
-        shopList : state => state.shopList
-    },
-
     actions:{
 
     }

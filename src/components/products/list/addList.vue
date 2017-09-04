@@ -564,8 +564,8 @@ export default {
                 itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
-                childItems: this.attrGroups,
-                itemAttrs: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
+                itemAttrs : this.attrGroups,
+                childItems : this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
                 seq: 1,
                 busiType: 1
             };

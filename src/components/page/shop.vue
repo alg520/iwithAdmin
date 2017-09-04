@@ -18,7 +18,7 @@
 <script>
 import vPageTitle from '../common/pageTitle.vue'
 import * as user from '../../api/user'
-import { mapGetters,mapMutations} from 'vuex'
+import { mapGetters,mapMutations,mapActions} from 'vuex'
 export default {
     components:{
         vPageTitle
@@ -41,14 +41,14 @@ export default {
         ])
     },
     created(){
-        console.log(this.user.userList);
+        console.log("vuex user",this.user);
         this.getUserList();
+        this.getLoginInfo();
     },    
     methods :{
 
         getUserList(){
             user.getUserList({}).then(response => {
-                
                 
                 console.log("用户列表",response);
                 this.setUserList(response.rows)
@@ -59,12 +59,16 @@ export default {
         ...mapMutations({
             getUser:'GET_USER',
             setUserList:'SET_USERLIST'
+        }),
+
+        ...mapActions({
+            getLoginInfo:'GetLoginInfo'
         })
     }
 }
 </script>
 
-<style>
+<style scoped>
 .content-list {
     border: 1px solid #ccc;
     background-color: #fff;

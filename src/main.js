@@ -2,8 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
+import Lockr from 'lockr'
 import VueCookie from 'vue-cookie';
-import VueLocalStorage from 'vue-localstorage'
 import router from './router';
 import store from './store';
 import ElementUI from 'element-ui';
@@ -15,9 +15,7 @@ import * as filters from './filters/index';
 
 Vue.use(ElementUI);
 Vue.use(VueCookie);
-Vue.use(VueLocalStorage, {
-  name: 'vueLocal'
-})
+
 
 Vue.config.productionTip = false;
 
@@ -36,7 +34,8 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
-
+    Lockr.set("username",'zhangpengbin');
+        
     console.log('beforeCreated.....');
     console.log("cookie",this.$cookie.get('Admin-Token'));
     

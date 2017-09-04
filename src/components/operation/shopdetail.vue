@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import * as user from '../../api/user'
 import { getRobotByShop } from '../../api/shop'
 import { mapGetters,mapMutations} from 'vuex'
@@ -134,14 +135,22 @@ export default {
     },
     methods:{
         getShopInfo(){
-            this.shop = this.shopInfo;            
+
+            console.log(this.$route.params);
+            //this.shop = this.shopInfo;
+
+            axios.get('/coron-web/shop/getById',{
+                id:this.$route.params.item
+            }).then(res => {
+                console.log("hahah",res);
+                this.shop = res.data.entry;
+            })
         },
 
         getUserList(){            
 
             user.getUserList({}).then(res => {
-                console.log("用户列表",res);
-                
+                console.log("用户列表",res);                
             })
         },
 

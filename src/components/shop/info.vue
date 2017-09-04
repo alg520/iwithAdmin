@@ -81,8 +81,10 @@
 </template>
 
 <script>
-import * as user from '../../api/user'
+import * as userApi from '../../api/user'
 import { getRobotByShop } from '../../api/shop'
+import { mapGetters,mapMutations,mapActions} from 'vuex'
+import Lockr from 'lockr'
 export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
@@ -104,7 +106,7 @@ export default {
             adduserRules:{
                 uname: [
                     { required: true, message: '请输入账号', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' },
                     { validator: validateNumLetter , trigger:'blur'}
                 ],
                 upassword:[
@@ -117,26 +119,28 @@ export default {
         }
     },
     created(){
-        this.getLoginInfo();
-        this.getUserList();
+        this.getLoginInfo();        
         this.getRobot();
-        this.getShopUser();
+        this.getShopUser(); 
+        console.log("本地缓存",Lockr.get('username'));        
+    },
+    computed:{
+        ...mapGetters([
+            'user'
+        ])
     },
     methods:{
         getLoginInfo(){
-            user.getLoginUser().then(res => {
-                this.shop = res.shop;
-                //这里会根据language来判断显示的语言
+            userApi.getLoginUser().then(res => {
+                this.shop = res.shop;                
                 this.shopname = res.shop.name.zh;
-
             });
         },
 
-        getUserList(){            
-
-            user.getUserList({}).then(res => {
-                console.log("用户列表",res);
-                
+        getUserList(){
+            
+            userApi.getUserList({}).then(res => {
+                console.log("用户列表",res);                
             })
         },
 
@@ -148,7 +152,7 @@ export default {
         },
 
         getShopUser(){
-            user.getShopUser().then(res => {
+            userApi.getShopUser().then(res => {
                 console.log("当前店铺的用户",res);
                 this.accountLists = res.entry;
             })
@@ -165,7 +169,7 @@ export default {
                 userType:4
             }
 
-            user.addUser(userData).then(res => {
+            userApi.addUser(userData).then(res => {
 
                 if(res.status){
                     this.$message({
@@ -188,7 +192,7 @@ export default {
             const delData = {
                 userId:item.userId
             };
-            user.delUser(delData).then(res => {
+            userApi.delUser(delData).then(res => {
                 if(res.status){
                     this.$message({
                         type:'success',
@@ -232,7 +236,16 @@ export default {
 
         cancelDialog(){
             this.addUserDialogVisible = false;
-        }
+        },
+
+        ...mapMutations({
+            getUser:'GET_USER',
+            setUserList:'SET_USERLIST'
+        }),
+
+        ...mapActions({
+            vxGetLoginInfo:'GetLoginInfo'
+        })
     }
 }
 </script>

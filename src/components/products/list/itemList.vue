@@ -52,7 +52,7 @@
                                 </div>
                             </el-col>
                         </el-row>
-                        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">                            
+                        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
                             <el-table-column prop="itemNameObject.zh" label="商品名称">
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable label="价格">
@@ -61,7 +61,7 @@
                                 <template scope="scope">
                                     <span>{{scope.row.itemType | parseProductType}}</span>
                                 </template>
-                            </el-table-column>                            
+                            </el-table-column>
                             <el-table-column label="状态">
                                 <template scope="scope">
                                     <span>{{scope.row.isSale | parseIsSale}}</span>
@@ -73,7 +73,7 @@
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作">
-                                <template scope="scope">                                    
+                                <template scope="scope">
                                     <el-button type="text" size="small" @click="updateItem(scope.row)">
                                         <i class="el-icon-edit" title="编辑"></i>
                                     </el-button>
@@ -102,11 +102,10 @@
 
 <script>
 import axios from 'axios';
-import store from '@/store/index';
+import Lockr from 'lockr';
 export default {
     data() {
         return {
-            status: 'alllist',
             isActive: 0,
             catalogDatas: [],
             productsList: [],
@@ -136,9 +135,7 @@ export default {
     },
 
     computed: {
-        count() {
-            return this.$store.this.state.status;
-        }
+
     },
 
     mounted: function() {
@@ -154,8 +151,6 @@ export default {
         getCatalogList: function() {
             axios.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
-
-                    console.log(response);
 
                     !!response.data.entry && (this.catalogDatas = response.data.entry);
 
@@ -194,27 +189,31 @@ export default {
             };
 
             axios.post('/coron-web/item/list', getParams)
-            .then(response => {
+                .then(response => {
 
-                !!response.data.rows && (this.productsList = response.data.rows);
-                this.totalItems = response.data.total;
-                console.log(this.productsList);
+                    !!response.data.rows && (this.productsList = response.data.rows);
+                    this.totalItems = response.data.total;
+                    console.log(this.productsList);
 
-            })
-            .catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问,请刷新页面重试！');
-            })
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('网络错误，不能访问,请刷新页面重试！');
+                })
         },
 
-        updateItem(item){
-            console.log("更新数据",item);
+        updateItem(item) {
+            console.log("更新数据", item);
+            Lockr.set("itemUpdateData", item);
+            this.$router.push({
+                path: '/products/update'
+            });
 
         },
         //删除菜品
         delItem(item) {
             axios.post('/coron-web/item/del', {
-                itemId: this.item.itemId
+                itemId: item.itemId
             }).then(response => {
                 console.log(response);
                 this.$message({
@@ -227,8 +226,7 @@ export default {
             })
         },
 
-        confirmDel(item) {
-
+        confirmDel(item) {            
             this.$confirm('确定要删除这个菜品吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -241,11 +239,11 @@ export default {
             }).catch(() => {
 
                 this.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                type: 'info',
+                message: '已取消删除'
                 });
 
-            });
+            });            
         },
 
         switchSale(item) {
@@ -274,14 +272,14 @@ export default {
             console.log(this.itemsForm.itemName)
         },
 
-        goAdd(){
+        goAdd() {
             this.$router.push({
-                path:'/products/add'
+                path: '/products/add'
             })
         }
 
-    },
-    store
+    }
+
 }
 </script>
 
@@ -358,7 +356,8 @@ ul.catalog-list li.selected {
 .item-list {
     padding: 20px 10px;
 }
+
 .turn-page {
-    margin-top: 10px;    
+    margin-top: 10px;
 }
 </style>
