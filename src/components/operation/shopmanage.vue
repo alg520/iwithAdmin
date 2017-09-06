@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios';
+import Lockr from 'lockr';
 import { mapGetters,mapMutations} from 'vuex'
 export default {
   data() {
@@ -68,8 +69,9 @@ export default {
       })
     },
 
-    getShopDetail(item){
-      console.log(item);
+    getShopDetail(item){     
+
+      Lockr.set('shopDetailData',item);
       
       this.$router.push({
         name:'shopdetail',

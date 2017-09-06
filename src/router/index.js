@@ -17,18 +17,19 @@ import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
 import Ordermanage from "@/components/operation/ordermanage";
 import Addshop from "@/components/operation/addShop";
+import Updateshop from "@/components/operation/updateShop";
 import Shopdetail from "@/components/operation/shopdetail";
 
 
 import ItemList from "@/components/products/list/itemList";
 import AddList from "@/components/products/list/addList";
 import UpdateList from "@/components/products/list/updateList";
+import SortList from "@/components/products/list/sortList";
 import Catalog from "@/components/products/catalog/catalogList";
 import AttrList from "@/components/products/attr/attrList";
 import TimeDuration from "@/components/products/time/timeList";
 
 Vue.use(Router);
-
 
 
 const router = new Router({
@@ -63,6 +64,7 @@ const router = new Router({
             { path: "list", component: ItemList },
             { path: "add", component: AddList },
             { path: "update", component: UpdateList },
+            { path: "sort", component: SortList },
             { path: "catalog", component: Catalog },
             { path: "timeduration", component: TimeDuration },
             { path: "attrlist", component: AttrList }
@@ -87,6 +89,11 @@ const router = new Router({
               path: "addshop", 
               component: Addshop, 
               meta: ["运营管理", "店铺管理", "店铺添加"]
+            },
+            { 
+              path: "updateshop", 
+              component: Updateshop, 
+              meta: ["运营管理", "店铺管理", "店铺修改"]
             },
             { 
               path: "shopdetail",

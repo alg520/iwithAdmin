@@ -41,7 +41,7 @@
                                             <el-table-column prop="originPrice" label="单品价格">
                                             </el-table-column>
                                             <el-table-column prop="childItems" label="配菜列表">
-                                                 <template scope="scope">
+                                                <template scope="scope">
                                                     <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
                                                 </template>
                                             </el-table-column>
@@ -67,34 +67,40 @@
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <!-- <el-upload class="avatar-uploader"                                        
-                                        action="/coron-web/upload/itemUpload" 
-                                        :show-file-list="false" 
-                                        :on-success="handleAvatarSuccess" 
-                                        :before-upload="beforeAvatarUpload">
-                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                        </el-upload> -->
+                                            action="/coron-web/upload/itemUpload" 
+                                            :show-file-list="false" 
+                                            :on-success="handleAvatarSuccess" 
+                                            :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload> -->
 
-                                        <el-upload
-                                        action="/coron-web/upload/itemUpload"
-                                        list-type="picture-card"
-                                        class="avatar-uploader"
-                                        :on-success="handleAvatarSuccess" 
-                                        :before-upload="beforeAvatarUpload"
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                            <i class="el-icon-plus"></i>
                                         </el-upload>
                                         <el-dialog v-model="dialogVisible" size="tiny">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                            <img width="100%" :src="dialogImageUrl" alt="">
                                         </el-dialog>
 
                                     </el-form-item>
-                                    <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
-                                        <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
-                                            <el-option v-for="item in timeDatas" :key="item.timeDuration" :label="item.name" :change="getT()" :value="item.timeDuration">
-                                            </el-option>
-                                        </el-select>
+                                    <el-form-item label="销售时段" v-if="productForm.itemType != 3">
+                                        <el-tag v-for="tag in timeLists" :key="tag" :closable="true" type="primary" @close="timeTagClose(tag)">
+                                            {{tag.startTime}}~{{tag.endTime}}
+                                        </el-tag>
+                                        <el-popover ref="popoverTime" placement="right" width="160" v-model="timeSelectVisible">
+                                            <p>
+                                                <template>                                                    
+                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedTimesChange">
+                                                        <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
+                                                    </el-checkbox-group>
+                                                </template>
+                                            </p>
+                                            <div style="text-align: right; margin: 0">
+                                                <el-button size="mini" type="text" @click="timeSelectVisible = false">取消</el-button>
+                                                <el-button type="primary" size="mini" @click="okTime()">确定</el-button>
+                                            </div>
+                                        </el-popover>
+                                        <el-button type="text" v-popover:popoverTime>请选择时段</el-button>
                                     </el-form-item>
                                     <el-form-item label="属性设置" v-if="productForm.itemType == 1">
                                         <template>
@@ -126,7 +132,10 @@
                                                 <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
                                                     <el-table-column prop="gname.zh" label="名称" width="120">
                                                     </el-table-column>
-                                                    <el-table-column prop="selectType" label="类型" width="120">
+                                                    <el-table-column label="类型" width="120">
+                                                        <template scope="scope">
+                                                            <span>{{scope.row.selectType | itemToType}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column prop="attrs" label="属性列表">
                                                         <template scope="scope">
@@ -175,7 +184,10 @@
                                                 <el-table :data="sideDishGroups" border style="width: 100%; margin-top:10px;" max-height="250">
                                                     <el-table-column prop="gname.zh" label="名称" width="120">
                                                     </el-table-column>
-                                                    <el-table-column prop="selectType" label="类型" width="120">
+                                                    <el-table-column label="类型" width="120">
+                                                        <template scope="scope">
+                                                            <span>{{scope.row.selectType | itemToType}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column label="配菜列表">
                                                         <template scope="scope">
@@ -194,13 +206,13 @@
                                         </template>
                                     </el-form-item>
                                     <!-- <el-form-item label="商品标签">
-                                            <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
-                                                {{tag}}
-                                            </el-tag>
-                                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
-                                            </el-input>
-                                            <el-button v-else class="button-new-tag" size="small">添加</el-button>
-                                            </el-form-item> -->
+                                                <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
+                                                    {{tag}}
+                                                </el-tag>
+                                                <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
+                                                </el-input>
+                                                <el-button v-else class="button-new-tag" size="small">添加</el-button>
+                                                </el-form-item> -->
                                     <el-form-item>
                                         <el-button type="primary" @click="updateItems()">立即修改</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
@@ -292,11 +304,15 @@ export default {
         return {
             activeName: 'first',
             imageUrl: '',
+            timeSelectVisible: false,
+            timeLists: [],            
+            checkAll: true,
+
             dialogImageUrl: '',
             dialogVisible: false,
             dynamicTags: ["标签1"],
             catalogDatas: [],
-            timeDatas: [{ name: '全天', timeDuration: { startTime: '00:00', endTime: '23:59' } }],
+            timeDatas: [],
             itemAttrDatas: [],
             checkAttrList: [],
             sideDishDatas: [],
@@ -305,7 +321,7 @@ export default {
             sideDishGroups: [],
             productsList: [],
             setmealList: [],
-            setmealGroup:[],
+            setmealGroup: [],
             inputVisible: false,
             timeDialogVisible: false,
             setmealDialogVisible: false,
@@ -353,28 +369,24 @@ export default {
                 itemGtype: 'multi',      //附属商品组类型
                 itemGlist: [],           //配菜列表
 
-                setmealGlist:[],       //套餐列表
+                setmealGlist: [],       //套餐列表
 
                 itemAttrs: [
                     {
                         title: '属性组',
-                        gname: { zh: '' },
+                        gname: { zh: '', jp: '', en: '' },
                         selectType: 'single',  //multi
                         seq: 0,
-                        attrs: [
-                            { attrId: 0 }
-                        ]
+                        attrs: []
                     }
                 ],
                 itemAttr: '',
                 childItems: [
                     {
-                        gname: { zh: '' },
+                        gname: { zh: '', jp: '', en: '' },
                         selectType: 'single',
                         seq: 0,
-                        items: [
-
-                        ]
+                        items: []
                     }
                 ],
                 seq: 1,  //必填
@@ -401,22 +413,23 @@ export default {
         }
 
     },
-    computed:{
-        accepDatas(){
+    computed: {
+        accepDatas() {
             return Lockr.get("itemUpdateData");
         }
     },
     created() {
-        //获取默认列表
-        this.getUpdateData();
+        //获取默认列表        
         this.getCatalogList();
         this.getTimeList();
         this.getItemAttrList();
-        this.getItemList();        
+        this.getItemList();
+        this.getUpdateData();
     },
     methods: {
-        getUpdateData(){
-            console.log("接受的数据",this.accepDatas);
+        getUpdateData() {
+            console.log("接受的数据", this.accepDatas);
+            console.log(this.accepDatas.timeDurations);
             const data = this.accepDatas;
             this.productForm.itemName = data.itemNameObject.zh;
             this.productForm.catalogId = data.catalogId;
@@ -425,9 +438,9 @@ export default {
             this.productForm.itemType = data.itemType;
             this.productForm.originPrice = data.originPrice;
             this.productForm.discountPrice = data.discountPrice;
-            this.timeDurations = data.timeDurations;
-            this.attrGroups = data.itemAttrs;            
-            data.itemType == 1 ? (this.sideDishGroups = data.childItems):(this.setmealList = data.childItems);
+            this.timeLists = data.timeDurations;
+            this.attrGroups = data.itemAttrs;
+            data.itemType == 1 ? (this.sideDishGroups = data.childItems) : (this.setmealList = data.childItems);
         },
 
         handleAvatarSuccess(res, file) {
@@ -466,12 +479,25 @@ export default {
             console.log("选取的配菜", value);
         },
 
-        getT() {
-            //console.log(this.productForm.timeDurations);
+        timeTagClose(tag) {
+            this.timeLists.splice(this.timeLists.indexOf(tag), 1);
+            console.log("当前选择的时间段", this.timeLists);
+        },
+
+        handleCheckedTimesChange(value) {
+
+            console.log("选择的值",value);
+        
+            console.log(this.timeLists);
         },
 
         getSetmeal() {
             this.setmealDialogVisible = true;
+        },
+
+        okTime() {
+            console.log("当前选择的时间",this.timeLists);
+            this.timeSelectVisible = false;
         },
 
         getItemList() {
@@ -479,7 +505,7 @@ export default {
             let getParams = {
                 itemType: 1,
                 rp: 10,
-                page: 1               
+                page: 1
             };
 
             axios.post('/coron-web/item/list', getParams)
@@ -515,13 +541,14 @@ export default {
                 .then(response => {
 
                     if (response.data.status) {
-
+                        
                         //response.data.rows && (this.timeDatas = response.data.rows);
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
                         if (response.data.rows && response.data.rows.length > 0) {
                             response.data.rows.forEach((item, index) => {
-                                let obj = { name: item.nameGL.zh, timeDuration: { startTime: item.startTime, endTime: item.endTime } };
+                                let obj = { startTime: item.startTime, endTime: item.endTime };
                                 this.timeDatas.push(obj);
+                                console.log("时段列表", this.timeDatas);
                             });
                         }
 
@@ -570,8 +597,8 @@ export default {
 
         updateItems() {
             let updateParams = {
-                itemId:this.accepDatas.itemId,
-                itemNo:this.productForm.itemNo,
+                itemId: this.accepDatas.itemId,
+                itemNo: this.productForm.itemNo,
                 itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
@@ -581,7 +608,7 @@ export default {
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
                 itemAttrs: this.attrGroups,
-                childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
+                childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
                 seq: 1,
                 busiType: 1
             };
@@ -594,7 +621,7 @@ export default {
                     Language: 0
                 }
             }).then(response => {
-                
+
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
@@ -620,9 +647,9 @@ export default {
         },
 
 
-        gobackList(){
+        gobackList() {
             this.$router.push({
-                path:'/products/list'
+                path: '/products/list'
             })
         },
         //选取属性列表
@@ -641,7 +668,7 @@ export default {
 
                     if (item.itemAttrId == item2) {
                         //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
-                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh,jp:'',en:'' } });
+                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh, jp: '', en: '' } });
                     }
                 })
 
@@ -687,7 +714,6 @@ export default {
         deleteSetmealRow(rowIndex) {
             //根据索引删除数据
 
-            console.log();
             this.setmealList.splice(rowIndex, 1);
         },
 
@@ -746,57 +772,57 @@ export default {
         },
 
         //类型切换
-        itemTypeChange(){
-            console.log(this.productForm.itemType);            
+        itemTypeChange() {
+            //console.log(this.productForm.itemType);
         },
 
         //选取套餐中的单品
         handleSelectionChange(val) {
 
-            this.setmealList = val;            
-            console.log("选取的单品",val);
+            this.setmealList = val;
+            console.log("选取的单品", val);
 
         },
 
-        addSetmealList() {            
+        addSetmealList() {
 
             this.setmealGroup = [];
             let setmealItem = {
-                gname:{zh:'',en:'',jp:''},                
+                gname: { zh: '', en: '', jp: '' },
                 selectType: 'single',
                 seq: 0,
-                items: this.setmealList 
+                items: this.setmealList
             };
 
-            if(this.setmealList.length < 2 ){
+            if (this.setmealList.length < 2) {
                 this.$message({
-                    type:'warning',
-                    message:'请至少选择2个单品！'
+                    type: 'warning',
+                    message: '请至少选择2个单品！'
                 });
             } else {
-                
+
                 this.setmealDialogVisible = false;
                 this.setmealGroup.push(setmealItem);
 
                 console.log(this.setmealGroup);
 
             }
-            
+
         },
-        
+
         //查询单品事件
         handleIconClick(ev) {
-            console.log(ev);            
+            console.log(ev);
         },
 
         //添加表单重置
-        addFromReset(){
+        addFromReset() {
             this.productForm.itemNo = '';
-            this.productForm.catalogId ='';
-            this.productForm.itemName ='';
-            this.productForm.itemDesc = '';            
+            this.productForm.catalogId = '';
+            this.productForm.itemName = '';
+            this.productForm.itemDesc = '';
             this.productForm.originPrice = '';
-            this.productForm.discountPrice ='';
+            this.productForm.discountPrice = '';
             this.productForm.picUrl = '';
             this.productForm.timeDurations = [];
             this.setmealGroup = [];

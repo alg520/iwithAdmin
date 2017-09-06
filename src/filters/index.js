@@ -29,3 +29,12 @@ export function languageType(language){
         return '日本語'
     }
 }
+
+//过滤itemType single  mutli
+export function itemToType(itemType){
+    if(itemType == 'single'){
+        return '单选'
+    } else {
+        return '多选'
+    }
+}

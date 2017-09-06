@@ -2,7 +2,6 @@
     <div class="addProducts">
         <el-tabs v-model="activeName">
             <el-tab-pane label="商品添加" name="first">
-
                 <div class="addProductForm">
                     <el-row>
                         <el-col :span="18">
@@ -21,7 +20,7 @@
                                         <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
                                     </el-form-item>
                                     <el-form-item label="菜品介绍" prop="itemDesc">
-                                        <el-input type="textarea" :rows="2" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
+                                        <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
                                         </el-input>
                                     </el-form-item>
                                     <el-form-item label="类型" prop="itemType">
@@ -41,7 +40,7 @@
                                             <el-table-column prop="originPrice" label="单品价格">
                                             </el-table-column>
                                             <el-table-column prop="childItems" label="配菜列表">
-                                                 <template scope="scope">
+                                                <template scope="scope">
                                                     <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
                                                 </template>
                                             </el-table-column>
@@ -67,35 +66,77 @@
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <!-- <el-upload class="avatar-uploader"                                        
-                                        action="/coron-web/upload/itemUpload" 
-                                        :show-file-list="false" 
-                                        :on-success="handleAvatarSuccess" 
-                                        :before-upload="beforeAvatarUpload">
-                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                        </el-upload> -->
+                                            action="/coron-web/upload/itemUpload" 
+                                            :show-file-list="false" 
+                                            :on-success="handleAvatarSuccess" 
+                                            :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload> -->
 
-                                        <el-upload
-                                        action="/coron-web/upload/itemUpload"
-                                        list-type="picture-card"
-                                        class="avatar-uploader"
-                                        :on-success="handleAvatarSuccess"
-                                        :on-error="itemUploadError" 
-                                        :before-upload="beforeAvatarUpload"
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :on-error="itemUploadError" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                            <i class="el-icon-plus"></i>
                                         </el-upload>
                                         <el-dialog v-model="dialogVisible" size="tiny">
                                             <img width="100%" :src="dialogImageUrl" alt="">
                                         </el-dialog>
-
                                     </el-form-item>
                                     <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
-                                        <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
+                                        <!-- <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
                                             <el-option v-for="item in timeDatas" :key="item.timeDuration" :label="item.name" :change="getT()" :value="item.timeDuration">
                                             </el-option>
-                                        </el-select>
+                                        </el-select> -->
+                                        <el-tag
+                                        v-for="tag in timeLists"
+                                        :key="tag.id"
+                                        :closable="true"
+                                        type="primary"
+                                        @close="timeTagClose(tag)"
+                                        >
+                                        {{tag.startTime}}~{{tag.endTime}}
+                                        </el-tag>
+                                        <el-popover
+                                        ref="popover5"
+                                        placement="top"
+                                        width="160"
+                                        v-model="timeSelectVisible">
+                                        <p>
+                                            <template>
+                                                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                                                <div style="margin: 15px 0;"></div>
+                                                <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange">
+                                                    <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
+                                                </el-checkbox-group>
+                                                 <!-- <el-table
+                                                    ref="multipleTable"
+                                                    :data="timeDatas"
+                                                    border
+                                                    tooltip-effect="dark"
+                                                    style="width: 100%"
+                                                    @selection-change="timeChange">
+                                                    <el-table-column
+                                                    type="selection"
+                                                    width="55">
+                                                    </el-table-column>                                                    
+                                                    <el-table-column
+                                                    prop="startTime"
+                                                    label="开始时间"
+                                                    width="120">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                    prop="endTime"
+                                                    label="结束时间"
+                                                    show-overflow-tooltip>
+                                                    </el-table-column>
+                                                </el-table> -->
+                                            </template>
+                                        </p>
+                                        <div style="text-align: right; margin: 0">
+                                            <el-button size="mini" type="text" @click="timeSelectVisible = false">取消</el-button>
+                                            <el-button type="primary" size="mini" @click="okTime()">确定</el-button>
+                                        </div>
+                                        </el-popover>
+                                        <el-button type="text" v-popover:popover5>请选择时段</el-button>
                                     </el-form-item>
                                     <el-form-item label="属性设置" v-if="productForm.itemType == 1">
                                         <template>
@@ -124,10 +165,13 @@
                                                         <el-button class="button-new-tag" size="small" type="primary" @click="selectAttr()">选择属性</el-button>
                                                     </el-form-item>
                                                 </el-form>
-                                                <el-table :data="attrGroups" border style="width: 100%; margin-top:10px;" max-height="250">
+                                                <el-table :data="attrGroups" border style="width: 100%; text-align:center; margin-top:10px;" max-height="250">
                                                     <el-table-column prop="gname.zh" label="名称" width="120">
                                                     </el-table-column>
-                                                    <el-table-column prop="selectType" label="类型" width="120">
+                                                    <el-table-column label="类型" width="120">
+                                                        <template scope="scope">
+                                                            <span>{{scope.row.selectType | itemToType}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column prop="attrs" label="属性列表">
                                                         <template scope="scope">
@@ -173,10 +217,13 @@
                                                         <el-button class="button-new-tag" size="small" type="primary" @click="getSideDishes()">选择商品</el-button>
                                                     </el-form-item>
                                                 </el-form>
-                                                <el-table :data="sideDishGroups" border style="width: 100%; margin-top:10px;" max-height="250">
+                                                <el-table :data="sideDishGroups" border style="width: 100%; text-align:center; margin-top:10px;" max-height="250">
                                                     <el-table-column prop="gname.zh" label="名称" width="120">
                                                     </el-table-column>
-                                                    <el-table-column prop="selectType" label="类型" width="120">
+                                                    <el-table-column label="类型" width="120">
+                                                        <template scope="scope">
+                                                            <span>{{scope.row.selectType | itemToType}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column label="配菜列表">
                                                         <template scope="scope">
@@ -193,7 +240,7 @@
                                                 </el-table>
                                             </el-card>
                                         </template>
-                                    </el-form-item>                                    
+                                    </el-form-item>
                                     <el-form-item>
                                         <el-button type="primary" @click="addItems()">立即添加</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
@@ -205,7 +252,7 @@
                     </el-row>
 
                     <el-dialog title="属性列表" :visible.sync="attrListDialogVisible" class="addDialog">
-                        <el-form :model="attrListForm">
+                        <el-form>
                             <el-form-item label="属性列表名称:" :label-width="formLabelWidth">
                                 <template>
                                     <el-checkbox-group v-model="checkAttrList" @change="handleCheckedAttrsChange">
@@ -283,13 +330,18 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            
             activeName: 'first',
             imageUrl: '',
+            timeSelectVisible: false,
+            timeLists:[],
+            isIndeterminate: true,
+            checkAll: true,
 
             dialogImageUrl: '',
-            dialogVisible: false,            
+            dialogVisible: false,
             catalogDatas: [],
-            timeDatas: [{ name: '全天', timeDuration: { startTime: '00:00', endTime: '23:59' } }],
+            timeDatas: [],
             itemAttrDatas: [],
             checkAttrList: [],
             sideDishDatas: [],
@@ -298,7 +350,7 @@ export default {
             sideDishGroups: [],
             productsList: [],
             setmealList: [],
-            setmealGroup:[],
+            setmealGroup: [],
             inputVisible: false,
             timeDialogVisible: false,
             setmealDialogVisible: false,
@@ -306,9 +358,6 @@ export default {
             attrListDialogVisible: false,
             itemListDialogVisible: false,
             formLabelWidth: '120px',
-            attrListForm: {
-                name: ''
-            },
             itemsForm: {
                 itemName: '',
                 itemType: ''
@@ -341,7 +390,7 @@ export default {
                 itemGtype: 'multi',      //附属商品组类型
                 itemGlist: [],           //配菜列表
 
-                setmealGlist:[],       //套餐列表
+                setmealGlist: [],       //套餐列表
 
                 itemAttrs: [
                     {
@@ -350,11 +399,11 @@ export default {
                         selectType: 'single',  //multi
                         seq: 0,
                         attrs: [
-                            { attrId: 0 }
+                            
                         ]
                     }
                 ],
-                itemAttr: '',
+
                 childItems: [
                     {
                         gname: { zh: '' },
@@ -399,25 +448,25 @@ export default {
     methods: {
         handleAvatarSuccess(res, file) {
 
-            if(file.response.status){
+            if (file.response.status) {
 
                 this.imageUrl = URL.createObjectURL(file.raw);
                 this.productForm.picUrl = file.response.entry;
                 this.$message({
-                    type:'success',
-                    message:'图片上传成功！'
+                    type: 'success',
+                    message: '图片上传成功！'
                 })
             }
-            
+
             console.log(file.response);
 
         },
 
-        itemUploadError(file){
-            console.log("文件上传失败",file);
+        itemUploadError(file) {
+            console.log("文件上传失败", file);
             this.$message({
-                type:'error',
-                message:'图片上传失败'
+                type: 'error',
+                message: '图片上传失败'
             })
         },
 
@@ -437,7 +486,8 @@ export default {
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
-        handlePictureCardPreview(file) {            
+
+        handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
         },
@@ -451,20 +501,43 @@ export default {
             console.log("选取的配菜", value);
         },
 
-        getT() {
-            //console.log(this.productForm.timeDurations);
+        timeChange(val){
+            this.timeLists = val;
+            console.log("所选择的时段",this.timeLists);
+        },
+
+        okTime() {
+            console.log("当前选择的时间",this.timeLists);
+            this.timeSelectVisible = false;
+        },
+
+        timeTagClose(tag){
+            this.timeLists.splice(this.timeLists.indexOf(tag), 1);
+            console.log("当前选择的时间段",this.timeLists);           
+        },
+
+        handleCheckAllChange(event) {
+            this.timeLists = event.target.checked ? this.timeDatas : [];
+            this.isIndeterminate = false;
+            console.log(this.timeLists);
+        },
+        handleCheckedCitiesChange(value) {
+            let checkedCount = value.length;
+            this.checkAll = checkedCount === this.timeDatas.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.timeDatas.length;
+            console.log(this.timeLists);
         },
 
         getSetmeal() {
             this.setmealDialogVisible = true;
         },
-
+        //会存放在vuex
         getItemList() {
             //因为是套餐内商品所以默认查询所有单品
             let getParams = {
                 itemType: 1,
                 rp: 10,
-                page: 1               
+                page: 1
             };
 
             axios.post('/coron-web/item/list', getParams)
@@ -480,7 +553,7 @@ export default {
                     alert('网络错误，不能访问,请刷新页面重试！');
                 })
         },
-
+        //会存放在vuex
         getCatalogList() {
             axios.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
@@ -493,20 +566,21 @@ export default {
                     alert('网络错误，不能访问');
                 })
         },
-
+        //会存放在vuex
         getTimeList() {
 
             axios.get('/coron-web/shopTimeDuration/list')
                 .then(response => {
 
                     if (response.data.status) {
-
+                        console.log("时段列表",response.data);
                         //response.data.rows && (this.timeDatas = response.data.rows);
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
                         if (response.data.rows && response.data.rows.length > 0) {
                             response.data.rows.forEach((item, index) => {
-                                let obj = { name: item.nameGL.zh, timeDuration: { startTime: item.startTime, endTime: item.endTime } };
-                                this.timeDatas.push(obj);
+                                let obj = {startTime: item.startTime, endTime: item.endTime};
+                                this.timeDatas.push(obj); 
+                                console.log("时段列表",this.timeDatas);                               
                             });
                         }
 
@@ -523,7 +597,7 @@ export default {
                     alert('网络错误，不能访问');
                 })
         },
-
+        //会存放在vuex
         getItemAttrList() {
             axios.get('/coron-web/itemAttr/list')
                 .then(response => {
@@ -557,15 +631,15 @@ export default {
             let addParams = {
                 itemNo: this.productForm.itemNo,
                 itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
+                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
-                picUrl: this.productForm.picUrl ? this.productForm.picUrl:null,
-                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,  
                 itemType: this.productForm.itemType,
-                timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
-                itemAttrs : this.attrGroups,
-                childItems : this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup:null),
+                timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
+                itemAttrs: this.attrGroups,
+                childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
                 seq: 1,
                 busiType: 1
             };
@@ -578,7 +652,7 @@ export default {
                     Language: 0
                 }
             }).then(response => {
-                
+
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
@@ -604,9 +678,9 @@ export default {
         },
 
 
-        gobackList(){
+        gobackList() {
             this.$router.push({
-                path:'/products/list'
+                path: '/products/list'
             })
         },
         //选取属性列表
@@ -625,7 +699,7 @@ export default {
 
                     if (item.itemAttrId == item2) {
                         //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
-                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh,jp:'',en:'' } });
+                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh, jp: '', en: '' } });
                     }
                 })
 
@@ -683,8 +757,8 @@ export default {
         addAttrGroup() {
 
             let attrItem = {
-                gname: { zh: this.productForm.attrGname },
-                selectType: this.productForm.attrGtype == 'single' ? '单选' : '多选',  //multi
+                gname: { zh: this.productForm.attrGname,jp:'',en:'' },
+                selectType: this.productForm.attrGtype,  //multi
                 seq: 0,
                 attrs: this.productForm.attrGlist
             };
@@ -709,8 +783,8 @@ export default {
         addItemGroup() {
 
             let itemSideDish = {
-                gname: { zh: this.productForm.itemGname },
-                selectType: this.productForm.itemGtype == 'single' ? '单选' : '多选',  //multi
+                gname: { zh: this.productForm.itemGname, jp:'', en:'' },
+                selectType: this.productForm.itemGtype,  //multi
                 seq: 0,
                 items: this.productForm.itemGlist
             };
@@ -730,57 +804,57 @@ export default {
         },
 
         //类型切换
-        itemTypeChange(){
-            console.log(this.productForm.itemType);            
+        itemTypeChange() {
+            //console.log(this.productForm.itemType);            
         },
 
         //选取套餐中的单品
         handleSelectionChange(val) {
 
-            this.setmealList = val;            
-            console.log("选取的单品",val);
+            this.setmealList = val;
+            console.log("选取的单品", val);
 
         },
 
-        addSetmealList() {            
+        addSetmealList() {
 
             this.setmealGroup = [];
             let setmealItem = {
-                gname:{zh:'',en:'',jp:''},                
+                gname: { zh: '', en: '', jp: '' },
                 selectType: 'single',
                 seq: 0,
-                items: this.setmealList 
+                items: this.setmealList
             };
 
-            if(this.setmealList.length < 2 ){
+            if (this.setmealList.length < 2) {
                 this.$message({
-                    type:'warning',
-                    message:'请至少选择2个单品！'
+                    type: 'warning',
+                    message: '请至少选择2个单品！'
                 });
             } else {
-                
+
                 this.setmealDialogVisible = false;
                 this.setmealGroup.push(setmealItem);
 
                 console.log(this.setmealGroup);
 
             }
-            
+
         },
-        
+
         //查询单品事件
         handleIconClick(ev) {
-            console.log(ev);            
+            console.log(ev);
         },
 
         //添加表单重置
-        addFromReset(){
+        addFromReset() {
             this.productForm.itemNo = '';
-            this.productForm.catalogId ='';
-            this.productForm.itemName ='';
-            this.productForm.itemDesc = '';            
+            this.productForm.catalogId = '';
+            this.productForm.itemName = '';
+            this.productForm.itemDesc = '';
             this.productForm.originPrice = '';
-            this.productForm.discountPrice ='';
+            this.productForm.discountPrice = '';
             this.productForm.picUrl = '';
             this.productForm.timeDurations = [];
             this.setmealGroup = [];

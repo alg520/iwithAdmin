@@ -39,24 +39,24 @@
                             <el-dropdown-item>
                                 <div class="setting-div">
                                     <span class="setting-icon">
-                                        <i class="material-icons">account_box</i>
+                                        <i class="iconfont icon-user"></i>
                                     </span>
-                                    <span class="setting-string"> Profile 个人</span>
+                                    <span class="setting-string">个人信息</span>
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item divided>
                                 <div class="setting-div">
                                     <span class="setting-icon">
-                                        <i class="material-icons">settings</i>
+                                        <i class="iconfont icon-tuichu"></i>
                                     </span>
-                                    <span class="setting-string"> Settings 设置</span>
+                                    <span class="setting-string">设置</span>
                                 </div>
     
                             </el-dropdown-item>
                             <el-dropdown-item divided>
                                 <div class="setting-div">
                                     <span class="setting-icon">
-                                        <i class="material-icons">assignment_return</i>
+                                        <i class="iconfont icon-tuichu"></i>
                                     </span>
                                     <span class="setting-string"> Sign out 退出</span>
                                 </div>

@@ -1,7 +1,7 @@
 <template>
     <div class="shop-info">
         <div style="text-align:right;">
-            <el-button type="primary" @click="submitForm('addUserForm')">编辑</el-button>
+            <el-button type="primary" @click="goUpdate()">编辑</el-button>
             <el-button type="primary" @click="submitForm('addUserForm')">查看商品</el-button>
         </div>
         <el-row>
@@ -54,11 +54,14 @@
                                 <el-table-column prop="uname" label="账号">
                                 </el-table-column>                                
                                 <el-table-column label="操作" width="100">
-                                    <template scope="scope">                                                                       
-                                    <el-button type="text" size="small" @click="confirmDel(scope.row)">
-                                        <i class="el-icon-delete" title="删除"></i>
-                                    </el-button>                                    
-                                </template>
+                                    <template scope="scope">
+                                        <el-button type="text" size="small" @click="confirmDel(scope.row)">
+                                            <i class="el-icon-edit" title="修改"></i>
+                                        </el-button>                                                                       
+                                        <el-button type="text" size="small" @click="confirmDel(scope.row)">
+                                            <i class="el-icon-delete" title="删除"></i>
+                                        </el-button>                                    
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </el-col>
@@ -86,6 +89,7 @@
 
 <script>
 import axios from 'axios'
+import Lockr from 'lockr'
 import * as user from '../../api/user'
 import { getRobotByShop } from '../../api/shop'
 import { mapGetters,mapMutations} from 'vuex'
@@ -124,47 +128,64 @@ export default {
     },
     created(){
         this.getShopInfo();
-        this.getUserList();
-        this.getRobot();
-        this.getShopUser();
+        //this.getUserList();
+        //this.getRobot();
+        //this.getShopUser();
     },
     computed:{
         ...mapGetters([
             'shopInfo'
-        ])
+        ]),
+        rShopDetailData(){
+            return Lockr.get('shopDetailData');
+        }
     },
     methods:{
         getShopInfo(){
-
-            console.log(this.$route.params);
+            
             //this.shop = this.shopInfo;
+            console.log(this.rShopDetailData);
+            this.shop = this.rShopDetailData;
 
-            axios.get('/coron-web/shop/getById',{
-                id:this.$route.params.item
-            }).then(res => {
-                console.log("hahah",res);
-                this.shop = res.data.entry;
-            })
+            this.getShopUser(this.shop.id);
+            this.getRobot(this.shop.id);
+
+            // axios.get('/coron-web/shop/getById',{
+            //     id:this.$route.params.item
+            // }).then(res => {
+            //     console.log("hahah",res);
+            //     this.shop = res.data.entry;
+            // })
         },
 
-        getUserList(){            
+        getUserList(){
 
             user.getUserList({}).then(res => {
                 console.log("用户列表",res);                
             })
+
         },
 
-        getRobot(){
-            getRobotByShop().then(res => {
+        getRobot(id){
+
+            getRobotByShop(id).then(res => {
                 console.log("店铺里的机器人",res);
-                this.equipmentInfos = res.entry;
+                if(res.status){
+                    this.equipmentInfos = res.entry;
+                }
+                
             })
+
         },
 
-        getShopUser(){
-            user.getShopUser().then(res => {
+        getShopUser(id){
+
+            user.getShopUser(id).then(res => {
                 console.log("当前店铺的用户",res);
-                this.accountLists = res.entry;
+                if(res.status){
+                    this.accountLists = res.entry;
+                }
+                
             })
         },
 
@@ -234,6 +255,12 @@ export default {
                     message:'已取消删除'
                 });
             });
+        },
+
+        goUpdate(){
+            this.$router.push({
+                path:'/operation/updateshop'
+            })
         },
 
         submitForm(formName){
