@@ -53,7 +53,10 @@ const router = new Router({
         },
         {
           path: "/dashboard",
-          component: DashBoard
+          component: DashBoard,
+          meta:{
+            requireAuth:true
+          },
         },
         {
           path: "/products",
@@ -132,6 +135,7 @@ const router = new Router({
 
 //路由的钩子函数  控制当前的权限
 router.beforeEach((to,from,next) => {
+  
   console.log(to);
     
   let token = false;

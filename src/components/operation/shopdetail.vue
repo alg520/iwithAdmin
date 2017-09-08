@@ -52,10 +52,16 @@
                         <el-col :span="24">
                             <el-table :data="accountLists" style="width: 100%; text-align:center;" max-height=200>
                                 <el-table-column prop="uname" label="账号">
-                                </el-table-column>                                
+                                </el-table-column>
+                                <el-table-column prop="uname" label="账号类型">
+                                    <template scope="scope">
+                                        <el-tag type="danger" v-if="scope.row.userType == 3">店长</el-tag>
+                                        <el-tag type="danger" v-if="scope.row.userType == 4">店员</el-tag>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column label="操作" width="100">
                                     <template scope="scope">
-                                        <el-button type="text" size="small" @click="confirmDel(scope.row)">
+                                        <el-button type="text" size="small" @click="updatePassword(scope.row)">
                                             <i class="el-icon-edit" title="修改"></i>
                                         </el-button>                                                                       
                                         <el-button type="text" size="small" @click="confirmDel(scope.row)">
@@ -76,11 +82,29 @@
                     <el-input type="text" v-model="addUserForm.uname" ></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="upassword">
-                    <el-input type="text" v-model="addUserForm.upassword" ></el-input>
+                    <el-input type="password" v-model="addUserForm.upassword" ></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('addUserForm')">确认添加</el-button>                    
                     <el-button @click="cancelDialog()">取消</el-button>
+                </el-form-item>
+            </el-form>            
+        </el-dialog>
+
+        <el-dialog title="密码修改" :visible.sync="updatePWDDialogVisible" class="addDialog" size="tiny">
+            <el-form :model="updatepwdForm" :rules="updatepwdRules" ref="updatepwdForm" label-width="100px">
+                <el-form-item label="账号">
+                    <el-input type="text" v-model="updatepwdForm.uname" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="原密码" prop="oldupassword">
+                    <el-input type="password" v-model="updatepwdForm.oldupassword" ></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="newupassword">
+                    <el-input type="password" v-model="updatepwdForm.newupassword" ></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="updatePasswordPost('updatepwdForm')">确认修改</el-button>                    
+                    <el-button @click="updatePWDDialogVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>            
         </el-dialog>
@@ -89,7 +113,9 @@
 
 <script>
 import axios from 'axios'
+import $http from '../../utils/http'
 import Lockr from 'lockr'
+import MD5 from 'js-md5'
 import * as user from '../../api/user'
 import { getRobotByShop } from '../../api/shop'
 import { mapGetters,mapMutations} from 'vuex'
@@ -107,6 +133,7 @@ export default {
             shopname:'',
             equipmentInfos:[],
             addUserDialogVisible:false,
+            updatePWDDialogVisible:false,
             addUserForm:{
                 uname:'',
                 upassword:''
@@ -123,12 +150,27 @@ export default {
                     { validator: validateNumLetter , trigger:'blur'}
                 ]
             },
-            accountLists:[]
+            updatepwdForm:{
+                uname:'',
+                oldupassword:'',
+                newupassword:'' 
+            },
+            updatepwdRules:{                
+                oldupassword:[
+                    { required: true, message: '请输入原密码', trigger: 'blur' }                    
+                ],
+                newupassword:[
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' },
+                    { validator: validateNumLetter , trigger:'blur'}
+                ]
+            },
+            accountLists:[],
+            middleItem:''
         }
     },
     created(){
-        this.getShopInfo();
-        //this.getUserList();
+        this.getShopInfo();        
         //this.getRobot();
         //this.getShopUser();
     },
@@ -138,6 +180,9 @@ export default {
         ]),
         rShopDetailData(){
             return Lockr.get('shopDetailData');
+        },
+        MD5password(){
+            return MD5(this.addUserForm.upassword)
         }
     },
     methods:{
@@ -157,15 +202,7 @@ export default {
             //     this.shop = res.data.entry;
             // })
         },
-
-        getUserList(){
-
-            user.getUserList({}).then(res => {
-                console.log("用户列表",res);                
-            })
-
-        },
-
+        
         getRobot(id){
 
             getRobotByShop(id).then(res => {
@@ -196,8 +233,9 @@ export default {
         addUserPost(){
             const userData = {
                 uname:this.addUserForm.uname,
-                upassword:this.addUserForm.upassword,
-                userType:4
+                upassword: this.MD5password,
+                userType:3,
+                shopId:this.shop.id
             }
 
             user.addUser(userData).then(res => {
@@ -207,12 +245,12 @@ export default {
                         type:'success',
                         message:'添加成功！'
                     });
-                    this.getShopUser();
+                    this.getShopUser(this.shop.id);
                     this.addUserDialogVisible = false;
                 } else {
                     this.$message({
                         type:'error',
-                        message:res.cnMessage
+                        message:res.message
                     })    
                 }
                 
@@ -229,7 +267,7 @@ export default {
                         type:'success',
                         message:'删除成功'
                     });
-                    this.getShopUser();
+                    this.getShopUser(this.shop.id);
                 } else {
                     this.$message({
                         type:'error',
@@ -273,6 +311,42 @@ export default {
 
         cancelDialog(){
             this.addUserDialogVisible = false;
+        },
+
+        updatePassword(item){
+
+            this.updatePWDDialogVisible = true;            
+            this.middleItem = item;
+            this.updatepwdForm.uname = item.uname;
+            
+        },
+
+        updatePasswordPost(formName){
+
+            const data = {
+                targetUserId:this.middleItem.id,
+                oldPassword:this.updatepwdForm.oldupassword,
+                newPassword:this.updatepwdForm.newupassword
+            };
+            
+            this.$refs[formName].validate((valid) => {
+                
+                if (valid) {
+                    
+                    $http.post('/coron-web/user/updatePassword',data).then(res => {
+                
+                        if(res.status){
+                            console.log("密码修改成功",res);
+                        }
+
+                    })
+
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+
         }
     }
 }

@@ -143,7 +143,7 @@ export default {
         },
 
         sortItem(data){            
-            axios.post('/coron-web/item/switchPosition',data).then( res => {
+            axios.post('/coron-web/item/sort',data).then( res => {
                 if(res.data.status){
                     this.$message({
                         type:'success',
@@ -171,9 +171,11 @@ export default {
                 let oldItem = this.productsList[evt.moved.newIndex],
                     newItem = this.productsList[evt.moved.newIndex-1];
                 
-                const data = {                    
-                    itemId:oldItem.itemId,
-                    itemIdS:newItem.itemId
+                const data = {
+                    id: oldItem.itemId,
+                    catalogId: this.isActive,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
                 };
 
                 this.sortItem(data);                
@@ -185,8 +187,10 @@ export default {
                     newItem = this.productsList[evt.moved.newIndex+1];
 
                 const data = {
-                    itemId:oldItem.itemId,
-                    itemIdS:newItem.itemId
+                    id: oldItem.itemId,
+                    catalogId: this.isActive,
+                    oldIndex: oldItem.seq,
+                    newIndex: newItem.seq
                 };
 
                 this.sortItem(data); 

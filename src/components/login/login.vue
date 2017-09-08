@@ -14,6 +14,13 @@
         </span>
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
       </el-form-item>
+      <el-form-item prop="authCode" class="authCode-Form">
+        <span class="svg-container">
+          <i class="iconfont icon-password"></i>
+        </span>
+        <el-input class="authCode-input" name="authCode" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.authCode" placeholder="验证码"></el-input>
+        <a href="javascript:;" @click="getAuthCode()" style="display:inline-block;height:30px;" class="pull-right"><img :src="authCodeSrc" alt="验证码" style="margin:0px 0 0 15px;"></a>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           登录
@@ -24,27 +31,76 @@
 </template>
 
 <script>
+import $http from '../../utils/http'
+import MD5 from 'js-md5'
 export default {
   name: 'login',
   data() {    
     return {
+      authCodeSrc:'',
       loginForm: {
         username: 'zpb',
-        upassword: '123456'
+        upassword: '123456',
+        authCode:''
       },
       loginRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' },],
-        upassword: [{ required: true, message: '请输入密码', trigger: 'blur' },]
+        upassword: [{ required: true, message: '请输入密码', trigger: 'blur' },],
+        authCode:[{ required: true, message: '请输入验证码', trigger: 'blur' },]
       }      
     }
   },
+
+  computed : {
+    MD5password(){
+        return MD5(this.loginForm.upassword)
+    }
+  },
+
+  created(){
+    this.getAuthCode();
+  }, 
+
   methods: {
+
+    getAuthCode(){
+      $http.get('/coron-web/getPicValidateCode').then(res => {
+        console.log("验证码2",res);
+        this.authCodeSrc = res.imgData;
+      })
+    },
+
     handleLogin() {
       console.log("登录");
       console.log(this.loginForm.upassword);
-      if(this.loginForm.username =='zpb' && this.loginForm.upassword == '123456'){
-          this.$router.push({ path: '/dashboard' })
-      }
+
+      // if(this.loginForm.username =='zpb' && this.loginForm.upassword == '123456'){
+      //     this.$router.push({ path: '/dashboard' })
+      // }
+        //Md5.encode(Md5.encode(upassword)+captcha)，
+      const data = {
+        uname: this.loginForm.username,
+        upassword: MD5(this.MD5password + this.loginForm.authCode),
+        captcha: this.loginForm.authCode
+      };
+
+      this.$refs.loginForm.validate(valid => {
+        if(valid){
+          $http.post('/coron-web/login',data).then( res => {
+            console.log(res);
+            if(res.status){
+               this.$router.push({ path: '/dashboard' })
+            }
+
+          })
+        } else {
+          console.log("error commit");
+          return false;
+        }
+      })
+
+
+
       // this.$refs.loginForm.validate(valid => {
       //   if (valid) {          
           
@@ -86,10 +142,16 @@ export default {
     height: 47px;
     width: 260px;
 }
+.login-container .authCode-Form input {
+  width: 160px;
+}
 .login-container .el-input {
     display: inline-block;
     height: 47px;
     width: 85%;
+}
+.login-container .authCode-Form  .el-input {
+  width: 50%;    
 }
 .login-container .tips {
     font-size: 14px;

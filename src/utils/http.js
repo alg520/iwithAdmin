@@ -30,6 +30,7 @@ $http.interceptors.request.use(
 //response 拦截器
 $http.interceptors.response.use(
   response => {
+    console.log("全局2",response);
     return checkStatus(response);
   },
   error => {
@@ -60,14 +61,14 @@ $http.interceptors.response.use(
 function checkStatus(response) {
   //loading
   //如果状态码正常，则直接返回数据
-
+  
   
   if (
     (response && response.status === 200) ||
     response.status === 304 ||
     response.status === 400
   ) {
-
+    console.log("全局",response);
     return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据
   }

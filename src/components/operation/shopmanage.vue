@@ -2,7 +2,7 @@
   <div class="shopmanage-page">
     <el-form :inline="true" :model="shopFrom">
       <el-form-item label="店铺名称">
-        <el-input v-model="shopFrom.name" placeholder="请输入店铺名称"></el-input>
+        <el-input v-model="shopFrom.name" placeholder="请输入店铺名称" @keyup.enter="getShopList()"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getShopList()">查询</el-button>
@@ -58,7 +58,7 @@ export default {
 
     getShopList(){
       const data ={
-        shopName:'',
+        shopName:this.shopFrom.name,
         page:this.currentPage,
         rp:this.pageSize
       };
