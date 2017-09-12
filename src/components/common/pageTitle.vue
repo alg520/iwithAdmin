@@ -9,7 +9,7 @@
         <div class="breadcrumb-nav pull-left">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item :to="{ path: '/dashboard' }">主页</el-breadcrumb-item>
-                <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="(item, index) in $route.meta.breadNav" :key="index">{{item.name}}</el-breadcrumb-item>
             </el-breadcrumb> 
         </div>
                

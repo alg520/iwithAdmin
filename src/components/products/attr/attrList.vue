@@ -34,6 +34,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../../utils/http';
 export default {
   data() {
     return {
@@ -65,11 +66,10 @@ export default {
   },
   methods: {
     getItemAttrList() {
-      axios.get('/coron-web/itemAttr/list')
+      $http.get('/coron-web/itemAttr/list')
         .then(response => {
-
-          console.log(response.data);
-          !!response.data.rows && (this.itemAttrDatas = response.data.rows) && (this.shopId = response.data.rows[0].shopId);
+          
+          !!response.rows && (this.itemAttrDatas = response.rows) && (this.shopId = response.rows[0].shopId);
 
         })
         .catch(error => {
@@ -96,9 +96,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
 
-          axios.post("/coron-web/itemAttr/add", addParams).then(response => {
+          $http.post("/coron-web/itemAttr/add", addParams).then(response => {
 
-            if(response.data.status == true){
+            if(response.status){
               this.$message({
                 type: 'success',
                 message: '添加成功！'
@@ -141,9 +141,9 @@ export default {
 
         if (valid) {
 
-          axios.post("/coron-web/itemAttr/update", updateParams).then(response => {
+          $http.post("/coron-web/itemAttr/update", updateParams).then(response => {
 
-            if(response.data.status == true){
+            if(response.status){
               this.$message({
                 type: 'success',
                 message: '修改成功！'
@@ -169,7 +169,7 @@ export default {
     },
 
     delAttr(item) {
-      axios.post('/coron-web/itemAttr/del',{itemAttrId:item.itemAttrId}).then(response => {                
+      $http.post('/coron-web/itemAttr/del',{itemAttrId:item.itemAttrId}).then(response => {                
           this.$message({
               type: 'success',
               message: '删除成功!'

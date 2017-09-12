@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../../utils/http';
 export default {
   data() {
     return {
@@ -62,12 +63,12 @@ export default {
   },
   methods: {
     getCatalogList() {
-      axios.get('/coron-web/catalog/getCatalogs')
+      $http.get('/coron-web/catalog/getCatalogs')
         .then(response => {
 
           console.log(response);
 
-          !!response.data.entry && (this.catalogDatas = response.data.entry);
+          !!response.entry && (this.catalogDatas = response.entry);
 
         })
         .catch(error => {
@@ -110,7 +111,7 @@ export default {
 
       } else {
 
-        axios.post("/coron-web/catalog/add", params).then(response => {
+        $http.post("/coron-web/catalog/add", params).then(response => {
 
           this.cancelDialog();
           this.$message({
@@ -153,12 +154,10 @@ export default {
           message: '类目名不能为空！'
         });
       } else {
-        axios.post("/coron-web/catalog/update", updateParams).then(response => {
+        $http.post("/coron-web/catalog/update", updateParams).then(response => {
+          
 
-
-          console.log("分类修改", response.data);
-
-          if (response.statusText == 'OK') {
+          if (response.status) {
             this.$message({
               type: 'info',
               message: '更新成功'
@@ -178,9 +177,9 @@ export default {
     },
 
     delCatalog: function(item) {
-      axios.post('/coron-web/catalog/del', { catalogId: item.catalogId }).then(response => {
+      $http.post('/coron-web/catalog/del', { catalogId: item.catalogId }).then(response => {
 
-        if (response.data.status == true) {
+        if (response.status) {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -190,7 +189,7 @@ export default {
 
           this.$message({
             type: 'error',
-            message: response.data.message
+            message: response.message
           })
         }
 

@@ -327,6 +327,7 @@
 <script>
 import store from '@/store/index';
 import axios from 'axios';
+import $http from '../../../utils/http';
 export default {
     data() {
         return {
@@ -540,11 +541,11 @@ export default {
                 page: 1
             };
 
-            axios.post('/coron-web/item/list', getParams)
+            $http.post('/coron-web/item/list', getParams)
                 .then(response => {
 
-                    !!response.data.rows && (this.productsList = response.data.rows);
-                    this.totalItems = response.data.total;
+                    !!response.rows && (this.productsList = response.rows);
+                    this.totalItems = response.total;
                     console.log(this.productsList);
 
                 })
@@ -555,10 +556,10 @@ export default {
         },
         //会存放在vuex
         getCatalogList() {
-            axios.get('/coron-web/catalog/getCatalogs')
+            $http.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
 
-                    !!response.data.entry && (this.catalogDatas = response.data.entry);
+                    !!response.entry && (this.catalogDatas = response.entry);
 
                 })
                 .catch(error => {
@@ -569,15 +570,15 @@ export default {
         //会存放在vuex
         getTimeList() {
 
-            axios.get('/coron-web/shopTimeDuration/list')
+            $http.get('/coron-web/shopTimeDuration/list')
                 .then(response => {
 
-                    if (response.data.status) {
-                        console.log("时段列表",response.data);
+                    if (response.status) {
+                        console.log("时段列表",response);
                         //response.data.rows && (this.timeDatas = response.data.rows);
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
-                        if (response.data.rows && response.data.rows.length > 0) {
-                            response.data.rows.forEach((item, index) => {
+                        if (response.rows && response.rows.length > 0) {
+                            response.rows.forEach((item, index) => {
                                 let obj = {startTime: item.startTime, endTime: item.endTime};
                                 this.timeDatas.push(obj); 
                                 console.log("时段列表",this.timeDatas);                               
@@ -599,10 +600,10 @@ export default {
         },
         //会存放在vuex
         getItemAttrList() {
-            axios.get('/coron-web/itemAttr/list')
+            $http.get('/coron-web/itemAttr/list')
                 .then(response => {
 
-                    !!response.data.rows && (this.itemAttrDatas = response.data.rows);
+                    !!response.rows && (this.itemAttrDatas = response.rows);
                 })
                 .catch(error => {
                     console.log(error);
@@ -613,9 +614,9 @@ export default {
         getSideDishes() {
             this.itemListDialogVisible = true;
 
-            axios.get('/coron-web/item/getSideDishes').then(response => {
-                console.log("配菜列表", response.data.entry);
-                this.sideDishDatas = response.data.entry;
+            $http.get('/coron-web/item/getSideDishes').then(response => {
+                console.log("配菜列表", response.entry);
+                this.sideDishDatas = response.entry;
 
             }).catch(error => {
 

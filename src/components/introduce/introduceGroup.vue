@@ -58,6 +58,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../utils/http';
 import draggable from 'vuedraggable';
 export default {
     components:{
@@ -99,10 +100,10 @@ export default {
     methods: {
 
         getIntroGroupList() {
-            axios.get('/coron-web/introduceGroup/list').then(response => {
+            $http.get('/coron-web/introduceGroup/list').then(response => {
                 console.log("提案列表组", response);
 
-                response.data.status && (this.introGroupDatas = response.data.entry);
+                response.status && (this.introGroupDatas = response.entry);
 
 
             }).catch(error => {
@@ -121,9 +122,9 @@ export default {
                 position:1
             }
 
-            axios.post('/coron-web/introduceGroup/add',addParams).then(response => {
+            $http.post('/coron-web/introduceGroup/add',addParams).then(response => {
 
-                if(response.data.status){
+                if(response.status){
                     this.$message({
                         type:'success',
                         message:'提案组添加成功！'
@@ -155,7 +156,7 @@ export default {
                 position:1
             }; 
 
-            axios.post('/coron-web/introduceGroup/update',updateParams).then(response => {
+            $http.post('/coron-web/introduceGroup/update',updateParams).then(response => {
                 this.$message({
                     type:'success',
                     message:'修改成功'
@@ -190,12 +191,11 @@ export default {
         },
 
         delIntroGroup(item){
-            axios.post('/coron-web/introduceGroup/delete',{
+            $http.post('/coron-web/introduceGroup/delete',{
                 id:item.id
             }).then(response => {
-
-                console.log(response.data);
-                if(!response.data.status){
+                
+                if(!response.status){
                     this.$message({
                         type:'warning',
                         message:'该分组下有提案，请先删除分组下得提案！'
@@ -217,7 +217,7 @@ export default {
 
         sortIntroGroup(itemParams){
             
-            axios.post('/coron-web/introduceGroup/sort',itemParams).then(response => {
+            $http.post('/coron-web/introduceGroup/sort',itemParams).then(response => {
 
                 this.$message({
                     type:'success',

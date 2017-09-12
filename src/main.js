@@ -26,6 +26,30 @@ Object.keys(filters).forEach(key => {
 })
 
 
+//路由的钩子函数  控制当前的权限
+router.beforeEach((to,from,next) => {
+  
+  console.log(to);
+    
+  let token = true;
+
+  if(to.meta.requireAuth){
+    if(token){
+      next()
+    } else {
+      next({
+        path:'/loginIn',
+        query: { redirect: to.fullPath }
+      });
+    }
+  } else {
+    next();
+  }
+
+
+})
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -34,8 +58,8 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
-    Lockr.set("username",'zhangpengbin');
-        
+    
+    Lockr.set("username",'zhangpengbin');        
     console.log('beforeCreated.....');
     console.log("cookie",this.$cookie.get('Admin-Token'));
     

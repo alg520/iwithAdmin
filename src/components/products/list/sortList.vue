@@ -61,6 +61,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../../utils/http';
 import draggable from 'vuedraggable';
 export default {    
     data() {
@@ -97,10 +98,10 @@ export default {
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值 
         getCatalogList: function() {
-            axios.get('/coron-web/catalog/getCatalogs')
+            $http.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
 
-                    !!response.data.entry && (this.catalogDatas = response.data.entry)
+                    !!response.entry && (this.catalogDatas = response.entry)
                     && (this.isActive = this.catalogDatas[0].catalogId) && this.getItemList();
 
                 })
@@ -124,11 +125,11 @@ export default {
                 catalogId: !!this.isActive ? this.isActive : null
             };
 
-            axios.post('/coron-web/item/list', getParams)
+            $http.post('/coron-web/item/list', getParams)
                 .then(response => {
 
-                    !!response.data.rows && (this.productsList = response.data.rows);
-                    this.totalItems = response.data.total;
+                    !!response.rows && (this.productsList = response.rows);
+                    this.totalItems = response.total;
                     console.log(this.productsList);
 
                 })
@@ -143,8 +144,8 @@ export default {
         },
 
         sortItem(data){            
-            axios.post('/coron-web/item/sort',data).then( res => {
-                if(res.data.status){
+            $http.post('/coron-web/item/sort',data).then( res => {
+                if(res.status){
                     this.$message({
                         type:'success',
                         message:'交换成功'

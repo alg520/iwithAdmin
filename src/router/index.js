@@ -63,6 +63,13 @@ const router = new Router({
           component: Products,
           redirect: "/products/list",
           meta: ["商品管理", "商品列表"],
+          meta:{
+            requireAuth:true,
+            breadNav:[
+              {name:'商品管理',path:''},
+              {name:'商品列表',path:''}
+            ]
+          },
           children: [
             { path: "list", component: ItemList },
             { path: "add", component: AddList },
@@ -76,7 +83,14 @@ const router = new Router({
         {
           path: "/introduce",
           component: Introduce,
-          meta: ["提案管理", "提案列表"]
+          meta: ["提案管理", "提案列表"],
+          meta:{
+            requireAuth:true,
+            breadNav:[
+              {name:'提案管理',path:''},
+              {name:'提案列表',path:''}
+            ]
+          },
         },
         {
           path: "/operation",
@@ -86,28 +100,65 @@ const router = new Router({
             { 
               path: "shopmanage", 
               component: Shopmanage, 
-              meta: ["运营管理", "店铺管理"]
+              meta: ["运营管理", "店铺管理"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'店铺管理',path:''}
+                ]
+              },
             },
             { 
               path: "addshop", 
               component: Addshop, 
-              meta: ["运营管理", "店铺管理", "店铺添加"]
+              meta: ["运营管理", "店铺管理", "店铺添加"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'店铺管理',path:''},
+                  {name:'店铺添加',path:''}
+                ]
+              },
             },
             { 
               path: "updateshop", 
               component: Updateshop, 
-              meta: ["运营管理", "店铺管理", "店铺修改"]
+              meta: ["运营管理", "店铺管理", "店铺修改"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'店铺管理',path:''},
+                  {name:'店铺修改',path:''}
+                ]
+              },
             },
             { 
               path: "shopdetail",
               name: "shopdetail", 
               component: Shopdetail, 
-              meta: ["运营管理", " 店铺详情"]
+              meta: ["运营管理", " 店铺详情"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'店铺详情',path:''}                 
+                ]
+              },
             },
             { 
               path: "ordermanage", 
               component: Ordermanage, 
-              meta: ["运营管理", "订单管理"] 
+              meta: ["运营管理", "订单管理"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'订单管理',path:''}                 
+                ]
+              },
             }
           ]
         },
@@ -116,47 +167,56 @@ const router = new Router({
           component: Shop,
           redirect: "/shop/info",
           children: [
-            { path: "info", component: Shopinfo, meta: ["商家管理", "信息管理"] },
-            { path: "order", component: Shoporder, meta: ["商家管理", "订单管理"] },
-            { path: "orderdetail", component: Orderdetail, meta: ["商家管理", "订单管理","订单详情"] }
+            { 
+              path: "info", 
+              component: Shopinfo, 
+              meta: ["商家管理", "信息管理"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'商家管理',path:''},
+                  {name:'信息管理',path:''}                 
+                ]
+              },
+            },
+            { 
+              path: "order", 
+              component: Shoporder, 
+              meta: ["商家管理", "订单管理"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'商家管理',path:''},
+                  {name:'订单管理',path:''}                 
+                ]
+              },
+            },
+            { 
+              path: "orderdetail", 
+              component: Orderdetail, 
+              meta: ["商家管理", "订单管理","订单详情"],
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'商家管理',path:''},
+                  {name:'订单管理',path:''},
+                  {name:'订单详情',path:''}                 
+                ]
+              },
+              
+            }
           ]
         }
       ]
     },
     {
-      path: "/login",
+      path: "/loginIn",
       component: Login
     },
     // catch all redirect
     { path: "*", redirect: "/dashboard" }
   ]
 });
-
-
-//路由的钩子函数  控制当前的权限
-router.beforeEach((to,from,next) => {
-  
-  console.log(to);
-    
-  let token = false;
-
-  if(to.meta.requireAuth){
-    if(token){
-      next()
-    } else {
-      next({
-        path:'/login',
-        query: { redirect: to.fullPath }
-      });
-    }
-  } else {
-    next();
-  }
-
-
-
-})
-
 
 
 export default router;

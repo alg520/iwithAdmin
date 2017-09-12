@@ -32,7 +32,7 @@
 <script>
 import axios from 'axios';
 import Lockr from 'lockr';
-import { mapGetters,mapMutations} from 'vuex'
+import { mapGetters,mapMutations} from 'vuex';
 export default {
   data() {
     return {

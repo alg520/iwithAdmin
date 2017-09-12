@@ -49,6 +49,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../../utils/http';
 export default {
   data() {
     return {
@@ -79,11 +80,11 @@ export default {
 
     getTimeList() {
 
-      axios.get('/coron-web/shopTimeDuration/list')
+      $http.get('/coron-web/shopTimeDuration/list')
         .then(response => {
 
-          if (response.data.status) {
-            response.data.rows && (this.timeDatas = response.data.rows);
+          if (response.status) {
+            response.rows && (this.timeDatas = response.rows);
           } else {
             this.$message({
               type: 'info',
@@ -117,7 +118,7 @@ export default {
 
         if (valid) {
           
-          axios.post('/coron-web/shopTimeDuration/add', timeParams).then(response => {            
+          $http.post('/coron-web/shopTimeDuration/add', timeParams).then(response => {            
             
             this.timeDialogVisible = false;
             this.getTimeList();            
@@ -145,14 +146,14 @@ export default {
 
     delTimeDuration(item) {
       
-      axios.post('/coron-web/shopTimeDuration/del', {
+      $http.post('/coron-web/shopTimeDuration/del', {
         
         timeDurationId: item.timeDurationId
 
       }).then(response => {
         console.log(response);
 
-        if(response.data.status){
+        if(response.status){
           this.$message({
             type:'success',
             message:'删除成功'
@@ -206,7 +207,7 @@ export default {
         endTime:this.timeDurationForm.endTime
       };
       
-      axios.post('/coron-web/shopTimeDuration/update',updateParams).then(response => {
+      $http.post('/coron-web/shopTimeDuration/update',updateParams).then(response => {
         
         this.$message({
           type:'success',

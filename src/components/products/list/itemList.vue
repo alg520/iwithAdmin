@@ -42,7 +42,7 @@
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">
-                                            <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" :on-icon-click="handleIconClick">
+                                            <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
@@ -103,6 +103,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../../utils/http';
 import Lockr from 'lockr';
 export default {
     data() {
@@ -150,10 +151,10 @@ export default {
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值 
         getCatalogList: function() {
-            axios.get('/coron-web/catalog/getCatalogs')
+            $http.get('/coron-web/catalog/getCatalogs')
                 .then(response => {
 
-                    !!response.data.entry && (this.catalogDatas = response.data.entry);
+                    !!response.entry && (this.catalogDatas = response.entry);
 
                 })
                 .catch(error => {
@@ -182,6 +183,7 @@ export default {
         getItemList() {
 
             let getParams = {
+                itemName:this.itemsForm.itemName,
                 itemType: this.itemsForm.itemType,
                 isSale: this.itemsForm.isSale,
                 rp: 10,
@@ -189,11 +191,11 @@ export default {
                 catalogId: !!this.isActive ? this.isActive : null
             };
 
-            axios.post('/coron-web/item/list', getParams)
+            $http.post('/coron-web/item/list', getParams)
                 .then(response => {
 
-                    !!response.data.rows && (this.productsList = response.data.rows);
-                    this.totalItems = response.data.total;
+                    !!response.rows && (this.productsList = response.rows);
+                    this.totalItems = response.total;
                     console.log(this.productsList);
 
                 })
@@ -213,7 +215,7 @@ export default {
         },
         //删除菜品
         delItem(item) {
-            axios.post('/coron-web/item/del', {
+            $http.post('/coron-web/item/del', {
                 itemId: item.itemId
             }).then(response => {
                 console.log(response);
@@ -249,7 +251,7 @@ export default {
 
         switchSale(item) {
 
-            axios.post('/coron-web/item/switchSale', {
+            $http.post('/coron-web/item/switchSale', {
                 itemId: item.itemId,
                 isSale: !item.isSale
             }).then(response => {
@@ -270,7 +272,8 @@ export default {
 
         handleIconClick(ev) {
             console.log(ev);
-            console.log(this.itemsForm.itemName)
+            console.log(this.itemsForm.itemName);
+            this.getItemList();
         },
 
         goAdd() {
