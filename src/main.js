@@ -16,7 +16,6 @@ import * as filters from './filters/index';
 Vue.use(ElementUI);
 Vue.use(VueCookie);
 
-
 Vue.config.productionTip = false;
 
 //Register global utility filters
@@ -24,7 +23,6 @@ Object.keys(filters).forEach(key => {
   console.log("注册全局过滤器",key);
   Vue.filter(key,filters[key])
 })
-
 
 //路由的钩子函数  控制当前的权限
 router.beforeEach((to,from,next) => {
@@ -58,10 +56,10 @@ new Vue({
   template: '<App/>',
   components: { App },
   beforeCreate:function(){
-    
+    console.log('beforeCreated.....');    
     Lockr.set("username",'zhangpengbin');        
-    console.log('beforeCreated.....');
-    console.log("cookie",this.$cookie.get('Admin-Token'));
+
+    console.log("cookie",this.$cookie.get('VT'));
     
   }
 })

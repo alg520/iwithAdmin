@@ -30,9 +30,11 @@
                                     <el-button style="float: right; margin-left:10px;" type="text" @click="confirmDel(item)"><i class="el-icon-delete"></i></el-button>
                                     <el-button style="float: right;" type="text" @click="updateIntro(item)"><i class="el-icon-edit"></i></el-button>
                                 </div>
-                                <p>
-                                    {{item.contentPojo.zh}}
-                                </p>
+                                <div class="card-body">
+                                    <p>
+                                        {{item.contentPojo.zh}}
+                                    </p>
+                                </div>                                
                             </el-card>
                         </el-col>                        
                     </el-row> 
@@ -127,7 +129,7 @@ export default {
         //动态计算属性导航的高度
         var introduceHeight = document.body.clientHeight - 296;
         document.getElementById("intro-nav").style.height = introduceHeight + 'px';
-        //document.getElementById("content-list").style.height = introduceHeight + 'px';
+        document.getElementById("content-list").style.height = introduceHeight + 'px';
 
     },
 
@@ -385,15 +387,19 @@ li.selected {
 }
 
 .content-list .intro-card {
-    margin:0 8px 8px 0;
+    margin:0 8px 8px 0;    
+}
+
+.card-body {
+    height:200px;
+    overflow-y: auto;
 }
 
 .content-list .intro-card p {
     padding: 8px 10px;
-    margin: 10px 0;
-    height:180px;
+    margin: 10px 0;    
     text-indent:2em;
-    overflow-y: auto;
+    
 }
 
 .add-intro-form {

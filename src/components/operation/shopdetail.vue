@@ -2,7 +2,7 @@
     <div class="shop-info">
         <div style="text-align:right;">
             <el-button type="primary" @click="goUpdate()">编辑</el-button>
-            <el-button type="primary" @click="submitForm('addUserForm')">查看商品</el-button>
+            <el-button type="primary" @click="goItemList()">查看商品</el-button>
         </div>
         <el-row>
             <el-col :sm="24" :md="24" :lg="24">
@@ -298,6 +298,12 @@ export default {
         goUpdate(){
             this.$router.push({
                 path:'/operation/updateshop'
+            })
+        },
+
+        goItemList(){
+            this.$router.push({
+                path:'/operation/itemlist'
             })
         },
 

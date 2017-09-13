@@ -209,36 +209,7 @@ export default {
     text-align: center;
 }
 
-.material-icons {
-    font-size: 80px;
-    color: #ddd;
-}
-
-.box-card {
-    height: 110px;
-}
-
-.cart-string {
-    height: 100px;
-    padding-top: 10px;
-    font-size: 1.1rem;
-}
-
-.box-list {
-    height: auto;
-    text-align: left;
-}
-
-.box-list hr {
-    height: 1px;
-    border: none;
-    border-top: 1px dashed #ccc;
-    margin-bottom: 5px;
-    margin-top: 6px;
-}
-
-.content-list {
-    border: 1px solid #ccc;
+.content-list {    
     background-color: #fff;
 }
 

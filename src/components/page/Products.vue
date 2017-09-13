@@ -69,30 +69,7 @@ export default {
     color: #ddd;
 }
 
-.box-card {
-    height: 110px;
-}
-
-.cart-string {
-    height: 100px;
-    padding-top: 10px;
-    font-size: 1.1rem;
-}
-
-.box-list {
-    height: auto;
-    text-align: left;
-}
-
-.box-list hr {
-    height: 1px;
-    border: none;
-    border-top: 1px dashed #ccc;
-    margin-bottom: 5px;
-    margin-top: 6px;
-}
-
-.content-list {    
+.content-list {
     border: none;    
     background-color: #fff;
 }

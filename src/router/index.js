@@ -16,9 +16,12 @@ import Orderdetail from "@/components/shop/orderDetail";
 import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
 import Ordermanage from "@/components/operation/ordermanage";
+import OOrderdetail from "@/components/operation/orderdetail";
 import Addshop from "@/components/operation/addShop";
 import Updateshop from "@/components/operation/updateShop";
 import Shopdetail from "@/components/operation/shopdetail";
+import ywItemList from "@/components/operation/itemlist";
+import Robot from "@/components/operation/robotmanage";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -149,6 +152,19 @@ const router = new Router({
               },
             },
             { 
+              path: "itemlist",
+              name: "itemlist", 
+              component: ywItemList,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'店铺详情',path:'/operation/shopdetail'},
+                  {name:'商品列表',path:''}                
+                ]
+              },
+            },
+            { 
               path: "ordermanage", 
               component: Ordermanage, 
               meta: ["运营管理", "订单管理"],
@@ -159,7 +175,31 @@ const router = new Router({
                   {name:'订单管理',path:''}                 
                 ]
               },
+            },
+            { 
+              path: "orderdetail", 
+              component:OOrderdetail,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'订单管理',path:'/operation/ordermanage'},
+                  {name:'订单详情',path:''}
+                ]
+              }              
+            },
+            { 
+              path: "robot", 
+              component:Robot,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'机器人管理',path:''}                  
+                ]
+              }
             }
+
           ]
         },
         {
@@ -199,7 +239,7 @@ const router = new Router({
                 requireAuth:true,
                 breadNav:[
                   {name:'商家管理',path:''},
-                  {name:'订单管理',path:''},
+                  {name:'订单管理',path:'/shop/order'},
                   {name:'订单详情',path:''}                 
                 ]
               },

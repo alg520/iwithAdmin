@@ -26,7 +26,7 @@
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
                                     <el-form :inline="true" :model="itemsForm">
-                                        <el-form-item label="状态">
+                                        <!-- <el-form-item label="状态">
                                             <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getItemList()">
                                                 <el-option label="全部" value=""></el-option>
                                                 <el-option label="未上架" value="true"></el-option>
@@ -40,14 +40,14 @@
                                                 <el-option label="套餐" value="2"></el-option>
                                                 <el-option label="配菜" value="3"></el-option>
                                             </el-select>
-                                        </el-form-item>
+                                        </el-form-item> -->
                                         <el-form-item label="">
                                             <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button size="small" type="primary" @click="goAdd()">添加商品</el-button>
-                                            <el-button size="small" type="primary" @click="goSort()">商品排序</el-button>
+                                            <el-button size="small" type="primary" @click="goAdd()"> 查询</el-button>
+                                            <el-button size="small" type="primary" @click="goSort()">翻译</el-button>
                                         </el-form-item>
                                     </el-form>
                                 </div>
@@ -103,7 +103,7 @@
 
 <script>
 import axios from 'axios';
-import $http from '../../../utils/http';
+import $http from '../../utils/http';
 import Lockr from 'lockr';
 export default {
     data() {
@@ -130,14 +130,13 @@ export default {
         //默认获取属性列表
         this.getCatalogList();
         this.getItemList();
-    },
-
-    components: {
-
+        console.log("店铺信息",this.rShopDetailData);
     },
 
     computed: {
-
+        rShopDetailData(){
+            return Lockr.get('shopDetailData');
+        },
     },
 
     mounted: function() {
@@ -151,7 +150,7 @@ export default {
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值 
         getCatalogList: function() {
-            $http.get('/coron-web/catalog/getCatalogs')
+            $http.get('/coron-web/catalog/getCatalogs',{shopId:this.rShopDetailData.id})
                 .then(response => {
 
                     !!response.entry && (this.catalogDatas = response.entry);
@@ -293,10 +292,7 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-col {
-    text-align: center;
-}
+<style>
 
 .material-icons {
     font-size: 80px;
@@ -306,6 +302,7 @@ export default {
 .content-list {    
     background-color: #fff;
 }
+
 
 .catalog-nav {
     border-right: 1px solid #ccc;

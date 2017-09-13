@@ -40,7 +40,7 @@
 
         </div>
 
-        <el-dialog title="提案组添加" :visible.sync="introGroupDialogVisible" class="addDialog">
+        <el-dialog title="提案组添加" :visible.sync="introGroupDialogVisible" class="addDialog" size="tiny">
             <el-form :model="introGroupForm" :rules="rules" ref="introGroupForm">
                 <el-form-item label="属性列表名称:" label-width="120px" prop="name">
                    <el-input v-model="introGroupForm.name"></el-input>
@@ -48,8 +48,8 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="introGroupDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addIntroGroupPost()">立即添加</el-button>
-                <el-button type="primary" @click="updateIntroGroupPost()">确认修改</el-button>
+                <el-button type="primary" @click="addIntroGroupPost()" v-if="addTag">立即添加</el-button>
+                <el-button type="primary" @click="updateIntroGroupPost()" v-else>确认修改</el-button>
             </div>
         </el-dialog>      
   </div>
@@ -69,7 +69,8 @@ export default {
             introGroupDialogVisible:false,
             introGroupDatas: [],
             middleObj:{},
-            sortPage:false,            
+            sortPage:false,
+            addTag:true,
             introGroupForm:{
                 name:''
             },
@@ -112,6 +113,7 @@ export default {
         },
 
         addIntroGroup(){
+            this.addTag = true;
             this.introGroupDialogVisible = true;
         },
 
@@ -139,6 +141,7 @@ export default {
         },
 
         updateIntroGroup(item){
+            this.addTag = false;
             this.introGroupDialogVisible = true;
             this.introGroupForm.name = item.groupNamePojo.zh;
 
@@ -298,7 +301,6 @@ export default {
     padding: 10px 30px;
 }
 
-.drapSortList {}
 .drapSortList-list {
     width: 330px;
 }

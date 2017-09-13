@@ -43,7 +43,7 @@
       </el-form-item>      
       <el-form-item>
         <el-button type="primary" @click="submitForm('addShopFrom')">立即添加</el-button>
-        <el-button @click="resetForm('addShopFrom')">重置</el-button>
+        <!-- <el-button @click="resetForm('addShopFrom')">重置</el-button> -->
       </el-form-item>
     </el-form>
   </div>
@@ -127,7 +127,7 @@ export default {
             message:'店铺添加成功！'
           });
           this.$router.push({
-            path:'/operation/list'
+            path:'/operation/shopmanage'
           });
         } else {
           this.$message({

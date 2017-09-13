@@ -2,9 +2,14 @@
   <div class="orderPage">
     <el-form :inline="true" :model="orderFrom">
       <el-form-item label="店铺列表">
-        <el-select v-model="tradeStatus" placeholder="订单状态">
-          <el-option label="全部" value=""></el-option>
-        </el-select>
+        <el-select v-model="selectedShopID" filterable placeholder="请选择" @change="changeShop()">
+          <el-option
+            v-for="item in allShopLists"
+            :key="item.id"
+            :label="item.name.zh"
+            :value="item.id">
+          </el-option>
+        </el-select>        
       </el-form-item>
       <el-form-item label="下单时段">
         <el-date-picker v-model="startTrade" type="datetime" placeholder="选择开始日期时间" align="right" format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerTradetime">
@@ -53,8 +58,9 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../utils/http';
 import Lockr from 'lockr';
-import formatDate from '../../utils/formatDate'
+import formatDate from '../../utils/formatDate';
 export default {
   data() {
     return {
@@ -67,6 +73,8 @@ export default {
       },
       tradeStatus:'',
       tradeLists: [],
+      allShopLists:[],
+      selectedShopID:'',
       tradeDetailInfo:'',
       pickerTradetime: {
         shortcuts: [{
@@ -96,10 +104,21 @@ export default {
   },
   created() {
     this.getTrade();
+    this.getAllShopList();
   },
   methods: {
+    getAllShopList(){
+      //获取所有店铺列表，绑定到可搜索的下拉列表
+      $http.get('/coron-web/shop/getAll',{}).then(res => {
+        console.log("所有店铺列表",res);
+        this.allShopLists = res.entry;
+        this.selectedShopID = res.entry[0].id;
+      })
+    },
+
     getTrade() {
       const getData = {
+        shopId:this.selectedShopID,
         startTime: this.startTrade == '' ? '' : formatDate(this.startTrade,'yyyy-MM-dd h:m:s'),
         endTime: this.endTrade == '' ? '' : formatDate(this.endTrade,'yyyy-MM-dd h:m:s'),
         tradeStatus: this.tradeStatus,
@@ -107,10 +126,10 @@ export default {
         rp: 10,
       };
 
-      axios.post('/coron-web/trade/getByShop', getData).then(res => {
+      $http.post('/coron-web/trade/getByShop', getData).then(res => {
         console.log("获取交易记录", res.data);
-        this.tradeLists = res.data.rows;
-        this.totalItems = res.data.total;
+        this.tradeLists = res.rows;
+        this.totalItems = res.total;
 
       })
     },
@@ -119,16 +138,16 @@ export default {
 
       var self = this;
 
-      axios.post('/coron-web/trade/getTradeInfo', {
+      $http.post('/coron-web/trade/getTradeInfo', {
         tradeId: item.tradeId
       }).then(res => {
-        console.log("交易详情", res.data.entry);
-        self.tradeDetailInfo = res.data.entry;
+        console.log("交易详情", res.entry);
+        self.tradeDetailInfo = res.entry;
 
         Lockr.set("tradeDetailInfo",self.tradeDetailInfo);
 
         this.$router.push({
-          path:'/shop/orderdetail'
+          path:'/operation/orderdetail'
         });
       })
     },
@@ -145,9 +164,12 @@ export default {
 
 
     getSomeThing() {      
-      
-      this.getTrade();            
+      this.getTrade();
+    },
 
+    changeShop(){
+      console.log(this.selectedShopID);
+      this.getTrade();
     }
 
   }

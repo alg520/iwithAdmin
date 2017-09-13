@@ -63,7 +63,7 @@ export default {
 }
 
 .content-list {
-    border: 1px solid #ccc;    
+    /* border: 1px solid #ccc;     */
     background-color: #fff;
 }
 
