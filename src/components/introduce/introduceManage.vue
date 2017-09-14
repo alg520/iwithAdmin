@@ -5,7 +5,7 @@
             <el-button type="primary" @click="introSort()">提案排序</el-button>
         </div>
         <el-row>            
-            <el-col :sm="4" :md="3" :lg="3">
+            <el-col :sm="4" :md="4" :lg="4">
                 <div class="intro-nav" id="intro-nav">
                     <ul class="intro-list" id="intro-list">
                         <li v-for="item in introGroupDatas" :key="item.id" @click="changeSelected(item.id)" :class="[isActive == item.id ? 'selected' :'']">
@@ -14,57 +14,57 @@
                     </ul>
                 </div>
             </el-col>
-            <el-col :sm="20" :md="21" :lg="21">
+            <el-col :sm="20" :md="20" :lg="20">
                 <div v-if="!sortTag">
                     <div class="content-list" id="content-list" v-if="!addTag">
-                    <el-row>
-                        <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
-                            <div style="text-align:center; padding-top:80px;">
-                               <h3>当前提案组下没有提案，请添加!!!</h3>
-                            </div>
-                        </el-col>
-                        <el-col :sm="8" :md="8" :lg="8" v-for="item in introDatas" :key="item.id">
-                            <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                <div slot="header" class="clearfix">
-                                    <span style="line-height: 36px;">{{item.titlePojo.zh}}</span>                                    
-                                    <el-button style="float: right; margin-left:10px;" type="text" @click="confirmDel(item)"><i class="el-icon-delete"></i></el-button>
-                                    <el-button style="float: right;" type="text" @click="updateIntro(item)"><i class="el-icon-edit"></i></el-button>
+                        <el-row>
+                            <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
+                                <div style="text-align:center; padding-top:80px;">
+                                <h3>当前提案组下没有提案，请添加!!!</h3>
                                 </div>
-                                <div class="card-body">
-                                    <p>
-                                        {{item.contentPojo.zh}}
-                                    </p>
-                                </div>                                
-                            </el-card>
-                        </el-col>                        
-                    </el-row> 
-                </div>
-                <div class="add-intro-form" v-else>
-                    <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
-                        <el-form-item label="提案分组" prop="introGroup">
-                            <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
-                            <el-select v-model="whichGroup" placeholder="请选择">
-                                <el-option
-                                v-for="item in introGroupDatas"
-                                :key="item.id"
-                                :label="item.groupNamePojo.zh"
-                                :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item> 
-                        <el-form-item label="提案名称" prop="title">
-                            <el-input v-model="introForm.title" class="input440"></el-input>
-                        </el-form-item>                        
-                        <el-form-item label="提案内容" prop="content">
-                            <el-input type="textarea" class="input440" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="addIntro()">立即创建</el-button>
-                            <el-button type="primary" @click="updateIntroPost()">修改</el-button>
-                            <el-button @click="cancelForm()">取消</el-button>
-                        </el-form-item>
-                    </el-form>
-                </div>
+                            </el-col>
+                            <el-col :sm="8" :md="8" :lg="8" v-for="item in introDatas" :key="item.id">
+                                <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
+                                    <div slot="header" class="clearfix">
+                                        <span style="line-height: 36px;">{{item.titlePojo.zh}}</span>                                    
+                                        <el-button style="float: right; margin-left:10px;" type="text" @click="confirmDel(item)"><i class="el-icon-delete"></i></el-button>
+                                        <el-button style="float: right;" type="text" @click="updateIntro(item)"><i class="el-icon-edit"></i></el-button>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            {{item.contentPojo.zh}}
+                                        </p>
+                                    </div>                                
+                                </el-card>
+                            </el-col>                        
+                        </el-row> 
+                    </div>
+                    <div class="add-intro-form" v-else>
+                        <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
+                            <el-form-item label="提案分组" prop="introGroup">
+                                <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
+                                <el-select v-model="whichGroup" placeholder="请选择">
+                                    <el-option
+                                    v-for="item in introGroupDatas"
+                                    :key="item.id"
+                                    :label="item.groupNamePojo.zh"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item> 
+                            <el-form-item label="提案名称" prop="title">
+                                <el-input v-model="introForm.title" class="input440"></el-input>
+                            </el-form-item>                        
+                            <el-form-item label="提案内容" prop="content">
+                                <el-input type="textarea" class="input440" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="addIntro()" v-if="addBtn">立即创建</el-button>
+                                <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
+                                <el-button @click="cancelForm()">取消</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
                 </div>
                 
 
@@ -117,6 +117,7 @@ export default {
             introDatas:[],
             whichGroup:'',
             addTag:false,
+            addBtn:true,
             sortTag:false,
             isActive:0,
             middleObj:{}
@@ -168,6 +169,7 @@ export default {
 
         newIntro(){
             this.addTag = true;
+            this.addBtn = true;
             this.introForm.title = '';
             this.introForm.content ='';
         },
@@ -196,6 +198,7 @@ export default {
         updateIntro(item){
             console.log(item);
             this.addTag = true;
+            this.addBtn = false;
             this.introForm.title = item.titlePojo.zh;
             this.introForm.content = item.contentPojo.zh;
             this.whichGroup = item.groupId;

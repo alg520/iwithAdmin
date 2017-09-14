@@ -55,7 +55,7 @@
                                 </el-table-column>
                                 <el-table-column prop="uname" label="账号类型">
                                     <template scope="scope">
-                                        <el-tag type="danger" v-if="scope.row.userType == 3">店长</el-tag>
+                                        <el-tag type="danger" v-if="scope.row.userType == 3">管理员</el-tag>
                                         <el-tag type="danger" v-if="scope.row.userType == 4">店员</el-tag>
                                     </template>
                                 </el-table-column>

@@ -30,14 +30,12 @@ $http.interceptors.request.use(
 //response 拦截器
 $http.interceptors.response.use(
   response => {
-    
     return checkStatus(response);
   },
   error => {
     //用户登录的时候会拿到一个基础信息，比如用户名，token,过期时间戳
     if (true) {
       //若访问接口的时候没有发现鉴权的基础信息，直接返回登录页
-
     } else {
       //如果有基础信息，判断当前时间戳和当前时间，若当前时间大于服务器时间请重新登录
     }
@@ -61,29 +59,25 @@ $http.interceptors.response.use(
 
 function checkStatus(response) {
   //loading
-  //如果状态码正常，则直接返回数据  
-  
+  //如果状态码正常，则直接返回数据
+
   if (
     (response && response.status === 200) ||
     response.status === 304 ||
     response.status === 400
   ) {
-    console.log("全局",response);
+    //console.log("全局",response);
 
-    if(!response.data.status && response.data.responseCode == '10212'){      
-      
+    if (!response.data.status && response.data.responseCode == "10212") {
       Message({
-        type:'error',
-        message:response.data.message
-      })
-
-      router.push({
-        path:'/loginIn'
+        type: "error",
+        message: response.data.message
       });
 
+      router.push({
+        path: "/loginIn"
+      });
     }
-
-
 
     return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据

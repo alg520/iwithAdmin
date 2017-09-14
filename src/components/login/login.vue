@@ -34,6 +34,9 @@
 import $http from '../../utils/http'
 import { getLoginUser } from '../../api/user'
 import MD5 from 'js-md5'
+import Lockr from "lockr"
+import Cookies from 'js-cookie'
+import { getToken } from "../../utils/auth"
 export default {
   name: 'login',
   data() {    
@@ -60,24 +63,19 @@ export default {
 
   created(){
     this.getAuthCode();
+    this.getLoginUserInfo();
   }, 
 
   methods: {
-
+    
     getAuthCode(){
-      $http.get('/coron-web/getPicValidateCode').then(res => {
-        console.log("验证码2",res);
+      $http.get('/coron-web/getPicValidateCode').then(res => {        
         this.authCodeSrc = res.imgData;
       })
     },
 
     handleLogin() {
       
-      // if(this.loginForm.username =='zpb' && this.loginForm.upassword == '123456'){
-      //     this.$router.push({ path: '/dashboard' })
-      // }
-      
-      //Md5.encode(Md5.encode(upassword)+captcha)，
       const data = {
         uname: this.loginForm.username,
         upassword: MD5(this.MD5password + this.loginForm.authCode),
@@ -86,10 +84,12 @@ export default {
 
       this.$refs.loginForm.validate(valid => {
         if(valid){
+
           $http.post('/coron-web/login',data).then( res => {
             console.log(res);
             if(res.status){
                this.getLoginUserInfo();
+               Cookies.set('Token',res.entry);
                this.$router.push({ path: '/dashboard' })
             }
 
@@ -99,8 +99,6 @@ export default {
           return false;
         }
       })
-
-
 
       // this.$refs.loginForm.validate(valid => {
       //   if (valid) {          
@@ -118,8 +116,21 @@ export default {
     },
 
     getLoginUserInfo(){
-      getLoginUser().then(res => {
-        console.log("登录用户信息",res);
+      getLoginUser().then(res => {        
+        
+        if(res.status){
+
+          if(getToken()){
+            this.$router.push({
+              path:'/dashboard'
+            })
+          } else {
+            return false;
+          }
+
+          Lockr.set("USERINFO",res.entry);
+        }        
+        
       })
     }
   }

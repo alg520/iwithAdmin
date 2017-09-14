@@ -32,6 +32,8 @@ import Catalog from "@/components/products/catalog/catalogList";
 import AttrList from "@/components/products/attr/attrList";
 import TimeDuration from "@/components/products/time/timeList";
 
+import { getToken } from "../utils/auth";
+
 Vue.use(Router);
 
 
@@ -120,7 +122,7 @@ const router = new Router({
                 requireAuth:true,
                 breadNav:[
                   {name:'运营管理',path:''},
-                  {name:'店铺管理',path:''},
+                  {name:'店铺管理',path:'/operation/shopmanage'},
                   {name:'店铺添加',path:''}
                 ]
               },
@@ -133,7 +135,7 @@ const router = new Router({
                 requireAuth:true,
                 breadNav:[
                   {name:'运营管理',path:''},
-                  {name:'店铺管理',path:''},
+                  {name:'店铺管理',path:'/operation/shopmanage'},
                   {name:'店铺修改',path:''}
                 ]
               },
@@ -251,12 +253,41 @@ const router = new Router({
     },
     {
       path: "/loginIn",
-      component: Login
+      name:'login',
+      component: Login      
     },
     // catch all redirect
     { path: "*", redirect: "/dashboard" }
   ]
 });
+
+//路由的钩子函数  控制当前的权限
+router.beforeEach((to, from, next) => {
+  //let token = getToken();
+  let token = getToken();
+
+  console.log("ROUTER",token);
+
+  if (to.meta.requireAuth) {
+
+    if (token) {
+      next();
+    } else {
+      next({
+        path: "/loginIn",
+        query: { redirect: to.fullPath }
+      });
+
+      return false;
+    }
+
+  } else {
+    next();
+    return false;
+  }
+
+});
+
 
 
 export default router;

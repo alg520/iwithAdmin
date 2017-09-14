@@ -9,7 +9,7 @@
         <el-button type="primary" @click="goAddShop()">添加店铺</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="shopLists" border style="width: 100%; text-align:center;" max-height=360>
+    <el-table :data="shopLists" border style="width: 100%; text-align:center;">
       <el-table-column prop="name.zh" label="店铺名称">
       </el-table-column>
       <el-table-column prop="address" label="地址">

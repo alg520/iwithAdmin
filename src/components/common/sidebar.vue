@@ -5,6 +5,7 @@
                     <span class="sb-icon"><i class="iconfont icon-zhuye"></i></span>
                     <span class="sb-cn">主页</span>
             </el-menu-item>
+            <!-- v-if="authType == 3 || authType == 4" -->
             <el-menu-item index="/products">
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
                 <span class="sb-cn">商品管理</span>
@@ -20,7 +21,7 @@
                 <el-menu-item index="tastemanage">属性管理</el-menu-item>
                 <el-menu-item index="shoptimeduration">时段管理</el-menu-item>                
             </el-submenu> -->
-
+            <!-- v-if="authType == 3" -->
             <el-submenu index="2">
                 <template slot="title">               
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
@@ -28,8 +29,8 @@
                 </template>
                 <el-menu-item index="/introduce">提案分组</el-menu-item>                     
             </el-submenu>
-
-            <el-submenu index="3">
+            <!-- v-if="authType == 3" -->
+            <el-submenu index="3" >
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">商家管理</span>
@@ -38,7 +39,7 @@
                 <el-menu-item index="/shop/order">订单管理</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="4">
+            <el-submenu index="4" v-if="authType == 1 || authType == 2">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
                     <span class="sb-cn">运营管理</span>                 
@@ -55,19 +56,36 @@
 import $http from '../../utils/http'
 import { getLoginUser } from '../../api/user'
     export default {
+        data(){
+            return {
+                authType:''
+            }
+        },
         computed:{
             onRoutes(){
                 return this.$route.path.replace('/','');
             }
         },
         created(){
-            this.getLoginUserInfo();
+            this.getLoginUserInfo();            
         },
         methods:{
             //获取登录信息
             getLoginUserInfo(){
                 getLoginUser().then( res => {
                     console.log("用户登录信息",res);
+
+                    if(res.status){
+
+                        console.log("用户登录信息",res.entry);
+                        this.authType = res.entry.userType;
+
+                    } else {
+                        this.$router.push({
+                            path:'/loginIn'
+                        });
+                    }
+
                 })
             }
         }

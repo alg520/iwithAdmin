@@ -1,73 +1,56 @@
 <template>
     <div class="header">
-        <el-row :gutter="10">
+        <el-row :gutter="5">
             <!--Logo area-->
             <el-col :xs="12" :sm="12" :md="4">
                 <div class="logo">
                     <span class="logo_prefix">iWith</span>
                     <span class="logo_suffix">Admin</span>
                 </div>
-            </el-col>
-    
-            <!--Search area-->
-            <el-col :xs="12" :sm="12" :md="8">
-                 
-            </el-col>
+            </el-col>    
+            
             <!-- header right area-->
             <el-col :xs="24" :sm="12" :md="{span:8,offset: 4}">
                 <div class="website" style="text-align:center;">
                     <span>Website:</span>
                     <span>www.iWith.com</span>
                 </div>
-            </el-col>
+            </el-col>            
     
-            <el-col :xs="8" :sm="8" :md="{span:2,offset: 4}">
-                <div class="header-right">
-                    <el-col :span="10">                               
-                    </el-col>
-                    <el-col :span="8">                        
-                    </el-col>    
-                </div>
-    
-            </el-col>
-    
-            <el-col :xs="8" :sm="8" :md="2">
-                <div class="user-header">
+            <el-col :xs="8" :sm="8" :md="8">
+                <div class="user-header pull-right">
                     <el-dropdown trigger="click" menu-align="start">
                         <img src="../../../static/images/b_header2.jpg" width="50px" />
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
                                 <div class="setting-div">
-                                    <span class="setting-icon">
+                                    <!-- <span class="setting-icon">
                                         <i class="iconfont icon-user"></i>
-                                    </span>
-                                    <span class="setting-string">个人信息</span>
+                                    </span> -->
+                                    <span class="setting-string">当前用户：{{USERINFO.uname}}</span>
                                 </div>
                             </el-dropdown-item>
-                            <el-dropdown-item divided>
+                            <!-- <el-dropdown-item divided>
                                 <div class="setting-div">
                                     <span class="setting-icon">
                                         <i class="iconfont icon-tuichu"></i>
                                     </span>
                                     <span class="setting-string">设置</span>
-                                </div>
-    
-                            </el-dropdown-item>
+                                </div>    
+                            </el-dropdown-item> -->
                             <el-dropdown-item divided>
-                                <div class="setting-div">
-                                    <span class="setting-icon">
+                                <div class="setting-div" @click="userLogout()">
+                                    <!-- <span class="setting-icon">
                                         <i class="iconfont icon-tuichu"></i>
-                                    </span>
-                                    <span class="setting-string"> Sign out 退出</span>
+                                    </span> -->
+                                    <span class="setting-string"> 退出</span>
                                 </div>
     
                             </el-dropdown-item>
     
                         </el-dropdown-menu>
-                    </el-dropdown>
-    
-                </div>
-    
+                    </el-dropdown>                        
+                </div>                   
             </el-col>
         </el-row>
     
@@ -75,14 +58,34 @@
 </template>
 
 <script>
+import Lockr from 'lockr'
+import Cookies from 'js-cookie'
+import { logout } from '../../api/user'
 export default {
     data() {
         return {
-            name: 'linxin'            
+            name: 'linxin'
         }
     },
-    methods: {
+    computed : {
 
+        USERINFO(){
+            return Lockr.get("USERINFO");
+        }
+        
+    },
+    methods: {
+        userLogout(){
+            logout().then(res => {                
+                if(res.status){
+                    Cookies.remove('Token');
+                    Cookies.remove('TY');
+                    this.$router.push({
+                        path:'/loginIn'
+                    });
+                }
+            })
+        }
     }
 }
 </script>
@@ -128,25 +131,6 @@ export default {
 
 .website span:first-child {
     color: #fff;
-}
-
-.header-right {
-    padding-top: 25px;
-    line-height: 10px;
-}
-
-.header-right span {
-    display: inline-block;
-    margin-left: 14px;
-    font-size: 18px;
-    color: #fff;
-    line-height: 1px;
-    height: 18px;
-    cursor: pointer;
-}
-
-.header-right span:hover {
-    color: #209e91;
 }
 
 .user-header {

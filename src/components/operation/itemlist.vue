@@ -150,7 +150,7 @@ export default {
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值 
         getCatalogList: function() {
-            $http.get('/coron-web/catalog/getCatalogs',{shopId:this.rShopDetailData.id})
+            $http.get('/coron-web/catalog/getByShop',{shopId:this.rShopDetailData.id})
                 .then(response => {
 
                     !!response.entry && (this.catalogDatas = response.entry);
@@ -182,6 +182,7 @@ export default {
         getItemList() {
 
             let getParams = {
+                shopId:this.rShopDetailData.id,
                 itemName:this.itemsForm.itemName,
                 itemType: this.itemsForm.itemType,
                 isSale: this.itemsForm.isSale,

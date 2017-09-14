@@ -51,6 +51,3 @@ export function getShopInfo(shopId){
 
     return $http.get('/coron-web/shop/getById',params)
 }
-
-
-console.log($http);
