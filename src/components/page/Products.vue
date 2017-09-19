@@ -5,7 +5,8 @@
             <el-menu-item index="list">商品列表</el-menu-item>
             <el-menu-item index="catalog">类目管理</el-menu-item>
             <el-menu-item index="attrlist">属性管理</el-menu-item>
-            <el-menu-item index="timeduration">时段管理</el-menu-item>            
+            <el-menu-item index="timeduration">时段管理</el-menu-item>
+            <el-menu-item index="sidedishes">配菜管理</el-menu-item>
         </el-menu>        
     
         <div class="clear"></div>

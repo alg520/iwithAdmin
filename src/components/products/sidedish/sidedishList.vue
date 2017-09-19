@@ -1,0 +1,414 @@
+<template>
+    <div class="timeForm">
+        <el-form :inline="true" :model="itemsForm">
+            <el-form-item label="状态">
+                <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getSideDishList()">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option label="未上架" value="true"></el-option>
+                    <el-option label="已上架" value="false"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="">
+                <el-input size="small" placeholder="请输入商品名称" v-model="itemsForm.itemName">
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button size="small" type="primary" @click="getSideDishList()">查询</el-button>
+                <el-button size="small" type="primary" @click="addsideDishDialog()">添加配菜</el-button>
+                <!-- <el-button size="small" type="primary" @click="goSort()">商品排序</el-button> -->
+            </el-form-item>
+        </el-form>
+        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
+            <el-table-column prop="itemNameObject.zh" label="商品名称">
+            </el-table-column>
+            <el-table-column prop="originPrice" sortable label="价格">
+            </el-table-column>
+            <el-table-column label="商品类别">
+                <template scope="scope">
+                    <span>{{scope.row.itemType | parseProductType}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="状态">
+                <template scope="scope">
+                    <span>{{scope.row.isSale | parseIsSale}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="图片">
+                <template scope="scope">
+                    <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template scope="scope">
+                    <el-button type="text" size="small" @click="updatesideDishDialog(scope.row)">
+                        <i class="el-icon-edit" title="编辑"></i>
+                    </el-button>
+                    <el-button type="text" size="small" @click="confirmDel(scope.row)">
+                        <i class="el-icon-delete" title="删除"></i>
+                    </el-button>
+                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
+                        <i class="el-icon-plus" title="上架"></i>
+                    </el-button>
+                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
+                        <i class="el-icon-minus" title="下架"></i>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="block turn-page" style="margin-top:10px;">
+            <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
+            </el-pagination>
+        </div>
+
+        <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="titleTag">
+
+            <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
+                <el-form-item label="菜品编号" prop="itemNo">
+                    <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
+                </el-form-item>
+                <el-form-item label="菜品名称" prop="itemName">
+                    <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
+                </el-form-item>
+                <el-form-item label="菜品介绍" prop="itemDesc">
+                    <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="原价(元)" prop="originPrice">
+                    <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
+                </el-form-item>
+                <el-form-item label="图片" prop="picUrl">
+                    <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="false" :on-success="handleItemPicSuccess" :before-upload="beforeItemPicUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                    <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button>
+                </el-form-item>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="sidedishDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addSideDish()" v-if="btnTag == 'add'">立即添加</el-button>
+                <el-button type="primary" @click="updateSideDish()" v-else>立即修改</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+import $http from '../../../utils/http';
+export default {
+    data() {
+        return {
+            productsList: [],
+            itemsForm: {
+                itemName: '',
+                itemType: '',
+                busiType: 1,   //1点餐系统2民宿3零售
+                isSale: '',
+                itemNo: '',
+                catalogId: null
+            },
+            currentPage: 1,
+            pageSize: 10,
+            totalItems: 0,
+            formLabelWidth: '120px',
+            sidedishDialogVisible: false,
+            dialogVisible: false,
+            btnTag: '',
+            titleTag: '',
+            imageUrl: '',
+            productForm: {
+                itemNo: '',         //必填--菜品编号                
+                itemName: '',       //必填 -- 菜品名称
+                itemDesc: '',       //菜品描述
+                originPrice: '',    //必填  -- 原价
+                picUrl: '',         // -- 图片
+                catalogId: -1,      //必填--所属分类
+                itemType: 3,        //必填  1单点 2套餐 3配菜                                     
+                seq: 1,  //必填
+                busiType: 1,  //必填
+            },
+            rules: {
+                itemNo: [
+                    { required: true, message: '请输入菜品编号', trigger: 'blur' }
+                ],
+                itemName: [
+                    { required: true, message: '请输入菜品名称', trigger: 'blur' }
+                ],
+                originPrice: [
+                    { required: true, message: '请输入配菜价格', trigger: 'blur' }
+                ]
+            },
+            formLabelWidth: '120px',
+            midObj: {}
+        }
+    },
+    created() {
+
+        this.getSideDishList();
+
+    },
+    methods: {
+
+        // 翻页
+        handleCurrentChange(page) {
+            this.getSideDishList();
+        },
+
+        beforeItemPicUpload(file) {
+
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isJPG && isLt2M;
+        },
+
+        handleItemPicSuccess(res, file, fileList) {
+
+            console.log(fileList);
+
+            if (!res.status) {
+                this.$message.error("上传失败：" + res.message);
+            }
+            this.imageUrl = URL.createObjectURL(file.raw);
+            this.productForm.picUrl = res.entry;
+            console.log(this.imageUrl);
+            console.log(this.productForm.picUrl);
+        },
+
+        cancelUpload() {
+            this.imageUrl = '';
+            this.productForm.picUrl = '';
+        },
+
+        getSideDishList() {
+
+            let getParams = {
+                itemName: this.itemsForm.itemName,
+                itemType: 3,
+                isSale: this.itemsForm.isSale,
+                rp: 10,
+                page: this.currentPage,
+                catalogId: -1
+            };
+
+            $http.post('/coron-web/item/list', getParams)
+                .then(response => {
+
+                    !!response.rows && (this.productsList = response.rows);
+                    this.totalItems = response.total;
+                    console.log(this.productsList);
+
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('网络错误，不能访问,请刷新页面重试！');
+                })
+        },
+
+        addsideDishDialog() {
+            this.btnTag = 'add';
+            this.titleTag = "添加配菜";
+            this.sidedishDialogVisible = true;
+        },
+
+        addSideDish() {
+            const addParams = {
+                itemNo: this.productForm.itemNo,
+                itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
+                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                catalogId: this.productForm.catalogId,
+                originPrice: this.productForm.originPrice,
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
+                itemType: this.productForm.itemType,
+                timeDurations: [{ startTime: '00:00', endTime: '24:00' }],
+                seq: 1,
+                busiType: 1
+            };
+
+            axios({
+                url: '/coron-web/item/add',
+                method: 'post',
+                data: addParams,
+                headers: {
+                    Language: 0
+                }
+            }).then(response => {
+
+                if (response.data.status == true) {
+                    this.$message({
+                        type: 'info',
+                        message: '菜品添加成功'
+                    })
+                    this.$notify({
+                        title: '成功',
+                        message: '菜品添加成功',
+                        type: 'success'
+                    });
+                    this.sidedishDialogVisible = false;                    
+                    this.getSideDishList();
+                    this.clearForm();
+                } else {
+                    this.$message.error(response.data.cnMessage)
+                }
+
+            }).catch(error => {
+                console.log(error);
+                this.$notify({
+                    title: '失败',
+                    message: '这是一条错误的提示消息',
+                    type: 'error'
+                });
+            })
+        },
+
+        updatesideDishDialog(item) {
+            this.btnTag = 'update';
+            this.titleTag = '修改配菜';
+            this.sidedishDialogVisible = true;
+
+            this.productForm.itemNo = item.itemNo;
+            this.productForm.itemName = item.itemNameObject.zh;
+            this.productForm.itemDesc = item.itemDescObject.zh;
+            this.productForm.originPrice = item.originPrice;
+
+            this.imageUrl = this.productForm.picUrl = item.picUrl;
+            this.midObj = item;
+        },
+
+        updateSideDish() {
+            const updateParams = {
+                itemId: this.midObj.itemId,
+                itemNo: this.productForm.itemNo,
+                itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
+                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                catalogId: this.productForm.catalogId,
+                originPrice: this.productForm.originPrice,
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
+                itemType: this.productForm.itemType,
+                timeDurations: [{ startTime: '00:00', endTime: '24:00' }],
+                seq: 1,
+                busiType: 1
+            };
+
+            axios({
+                url: '/coron-web/item/update',
+                method: 'post',
+                data: updateParams,
+                headers: {
+                    Language: 0
+                }
+            }).then(response => {
+
+                if (response.data.status == true) {
+                    this.$message({
+                        type: 'info',
+                        message: '菜品修改成功'
+                    })
+                    this.$notify({
+                        title: '成功',
+                        message: '菜品修改成功',
+                        type: 'success'
+                    });
+                    this.sidedishDialogVisible = false;                    
+                    this.getSideDishList();
+                    this.clearForm();
+                } else {
+                    this.$message.error(response.data.cnMessage)
+                }
+
+            }).catch(error => {
+                console.log(error);
+                this.$notify({
+                    title: '失败',
+                    message: '这是一条错误的提示消息',
+                    type: 'error'
+                });
+            })
+
+
+        },
+
+        delSideDish(item) {
+            $http.post('/coron-web/item/del', {
+                itemId: item.itemId
+            }).then(response => {
+                console.log(response);
+                this.$message({
+                    type: 'info',
+                    message: '删除成功'
+                });
+                this.getSideDishList();
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+
+        confirmDel(item) {
+            this.$confirm('确定要删除这个菜品吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                closeOnClickModal: false,
+                type: 'warning'
+            }).then(() => {
+
+                this.delSideDish(item);
+
+            }).catch(() => {
+
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+
+            });
+        },
+
+        switchSale(item) {
+
+            $http.post('/coron-web/item/switchSale', {
+                itemId: item.itemId,
+                isSale: !item.isSale
+            }).then(response => {
+                console.log(response);
+                this.$message({
+                    type: 'info',
+                    message: '状态更新成功'
+                });
+                this.getSideDishList();
+            }).catch(error => {
+                console.log(error);
+                this.$message({
+                    type: 'error',
+                    message: '状态更新失败'
+                });
+            })
+        },
+
+        clearForm(){
+            this.productForm.itemNo ='';
+            this.productForm.itemName ='';
+            this.productForm.itemDesc ='';
+            this.productForm.originPrice ='';
+            this.productForm.picUrl ='';
+            this.imageUrl ='';        
+        }
+
+    }
+}
+</script>
+<style scoped>
+.timeForm {
+    width: 98%;
+    text-align: center;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+</style>

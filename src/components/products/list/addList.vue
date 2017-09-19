@@ -64,6 +64,27 @@
                                     <el-form-item label="折后价(元)" prop="discountPrice" v-if="productForm.itemType != 3">
                                         <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
                                     </el-form-item>
+                                    <el-form-item label="标签" prop="discountPrice">
+                                        <el-tag
+                                        :key="tag"
+                                        type="primary"
+                                        v-for="tag in itemTags"
+                                        :closable="true"
+                                        :close-transition="false"
+                                        @close="itemTagClose(tag)">
+                                        {{tag}}
+                                        </el-tag>
+                                        <el-input
+                                        class="input-new-tag"
+                                        v-if="inputVisible"
+                                        v-model="tagValue"
+                                        ref="saveTagInput"
+                                        size="mini"
+                                        @keyup.enter.native="handleTagInputConfirm"
+                                        @blur="handleTagInputConfirm">
+                                        </el-input>
+                                        <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">添加标签</el-button>
+                                    </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <!-- <el-upload class="avatar-uploader"                                        
                                             action="/coron-web/upload/itemUpload" 
@@ -339,6 +360,9 @@ export default {
             isIndeterminate: true,
             checkAll: true,
 
+            itemTags: [],
+            tagValue: '',
+
             dialogImageUrl: '',
             dialogVisible: false,
             catalogDatas: [],
@@ -472,11 +496,11 @@ export default {
         },
 
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
+                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
             }
             if (!isLt2M) {
                 this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -628,6 +652,28 @@ export default {
             })
         },
 
+        itemTagClose(tag) {
+            this.itemTags.splice(this.itemTags.indexOf(tag), 1);
+        },
+
+        showInput() {
+            this.inputVisible = true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+
+        handleTagInputConfirm() {
+            let inputValue = this.tagValue;
+            if (inputValue) {
+                this.itemTags.push(inputValue);
+            }
+            this.inputVisible = false;
+            this.tagValue = '';
+
+            console.log(this.itemTags);
+        },
+
         addItems() {
             let addParams = {
                 itemNo: this.productForm.itemNo,
@@ -636,6 +682,7 @@ export default {
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
+                tagsObj:{zh:this.itemTags,jp:[],en:[]},
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,  
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
@@ -906,5 +953,9 @@ export default {
 
 .el-tag {
     margin-left: 8px;
+}
+
+.input-new-tag {    
+    width: 100px !important;
 }
 </style>

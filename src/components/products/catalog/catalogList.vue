@@ -113,12 +113,20 @@ export default {
 
         $http.post("/coron-web/catalog/add", params).then(response => {
 
-          this.cancelDialog();
-          this.$message({
-            type: 'success',
-            message: '类目添加成功！'
-          });
-          this.getCatalogList();
+          if(response.status){
+            this.$message({
+              type: 'success',
+              message: '类目添加成功！'
+            });
+            this.getCatalogList();
+            this.cancelDialog();
+          } else {
+            this.$message({
+              type: 'error',
+              message: '类目添加失败:'+ response.responseCode
+            });
+          }
+          
 
         }).catch(error => {
 

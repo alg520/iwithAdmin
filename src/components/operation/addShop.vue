@@ -3,10 +3,7 @@
     <el-form :model="addShopFrom" :rules="addShopFromRules" ref="addShopFrom" label-width="120px" class="addshopForm">
       <el-form-item label="店铺名称" prop="name">
         <el-input v-model="addShopFrom.name" placeholder="请输入店铺名称"></el-input>
-      </el-form-item>
-      <el-form-item label="店铺地址" prop="address">
-        <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址"></el-input>
-      </el-form-item>
+      </el-form-item>      
       <el-form-item label="店铺联系人" prop="contactPerson">
         <el-input v-model="addShopFrom.contactPerson" placeholder="请输入店铺联系人"></el-input>
       </el-form-item>
@@ -20,7 +17,23 @@
           <el-radio label="2">日文</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否收税" prop="haveRadioFee">
+      <el-form-item label="邮编" prop="postcode" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.postcode" placeholder="请输入邮编" class="percentage-width"></el-input>        
+        <el-button type="primary" icon="search" @click="getjpAddress()">搜索</el-button>
+      </el-form-item>
+      <el-form-item label="省" prop="province" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.province" placeholder="请输入省" class="percentage-width"></el-input>        
+      </el-form-item>
+      <el-form-item label="市" prop="city" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.city" placeholder="请输入市" class="percentage-width"></el-input>        
+      </el-form-item>
+      <el-form-item label="街道" prop="street" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.street" placeholder="请输入街道" class="percentage-width"></el-input>        
+      </el-form-item>
+      <el-form-item label="详细地址" prop="address">
+        <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址" class="percentage-width"></el-input>        
+      </el-form-item>
+      <el-form-item label="是否收税" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
         <el-radio-group v-model="addShopFrom.haveRadioFee">
           <el-radio label='0'>不收税</el-radio>
           <el-radio label='1'>收税</el-radio>
@@ -51,6 +64,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../utils/http';
 export default {
   data() {
     return {
@@ -64,7 +78,11 @@ export default {
         wxMerchantId: '',
         wxPrivateKey: '',
         language: "0",
-        isTest: "true"
+        isTest: "true",
+        postcode:'',
+        province:'',
+        city:'',
+        street:''
       },
       addShopFromRules: {
         name: [
@@ -77,6 +95,18 @@ export default {
           { required: true, message: '请选择是否有税率', trigger: 'blur' }
         ],
         address: [
+          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+        ],
+        postcode: [
+          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+        ],
+        province: [
+          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+        ],
+        city: [
+          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+        ],
+        street: [
           { required: true, message: '请输入店铺地址', trigger: 'blur' }
         ],
         isTest: [
@@ -104,7 +134,11 @@ export default {
       this.$refs[formName].resetFields();
     },
 
-    addShop() {
+    addShop() {      
+
+      if(this.addShopFrom.language == '2'){
+        this.addShopFrom.address = this.addShopFrom.province + '  ' + this.addShopFrom.city + '  ' + this.addShopFrom.street + '  ' + this.addShopFrom.address;
+      }
 
       const data = {
         name: { zh: this.addShopFrom.name, jp: '', en: '' },
@@ -119,9 +153,9 @@ export default {
         isTest: true
       };
 
-      axios.post('/coron-web/shop/add', data).then(res => {        
+      $http.post('/coron-web/shop/add', data).then(res => {
 
-        if(res.data.status){
+        if(res.status){
           this.$message({
             type:'success',
             message:'店铺添加成功！'
@@ -132,11 +166,46 @@ export default {
         } else {
           this.$message({
             type:'success',
-            message:res.data.cnMessage
+            message:res.cnMessage
           });
         }
 
       })
+    },
+
+
+    getjpAddress(){
+
+      if(this.addShopFrom.postcode != ''){
+        $http.post('/coron-web/jpaddress/getByPostcode',{
+          postcode:this.addShopFrom.postcode
+        }).then(res => {
+
+          console.log("获取的地址信息",res);
+          if(res.status){
+            this.addShopFrom.province = res.entry[0].province;
+            this.addShopFrom.city = res.entry[0].city;
+            this.addShopFrom.street = res.entry[0].street;
+          } else {
+            console.log("返回错误！");
+          }
+
+          
+        }).catch(res => {
+          this.$message({
+            type:'error',
+            message:'请求错误！'
+          });
+        })
+      } else {
+        this.$message({
+          type:'warning',
+          message:'请输入邮编！'
+        });
+      }
+
+
+      
     }
   }
 
@@ -151,5 +220,8 @@ export default {
 .addshopForm {
   width: 50%;
   margin: 0 auto;
+}
+.addshopForm .percentage-width {
+  width: 50%;
 }
 </style>

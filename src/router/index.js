@@ -31,6 +31,7 @@ import SortList from "@/components/products/list/sortList";
 import Catalog from "@/components/products/catalog/catalogList";
 import AttrList from "@/components/products/attr/attrList";
 import TimeDuration from "@/components/products/time/timeList";
+import SideDishes from "@/components/products/sidedish/sidedishList";
 
 import { getToken } from "../utils/auth";
 
@@ -66,8 +67,7 @@ const router = new Router({
         {
           path: "/products",
           component: Products,
-          redirect: "/products/list",
-          meta: ["商品管理", "商品列表"],
+          redirect: "/products/list",          
           meta:{
             requireAuth:true,
             breadNav:[
@@ -82,7 +82,8 @@ const router = new Router({
             { path: "sort", component: SortList },
             { path: "catalog", component: Catalog },
             { path: "timeduration", component: TimeDuration },
-            { path: "attrlist", component: AttrList }
+            { path: "attrlist", component: AttrList },
+            { path: "sidedishes", component: SideDishes }
           ]
         },
         {

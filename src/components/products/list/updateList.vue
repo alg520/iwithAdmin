@@ -65,6 +65,27 @@
                                     <el-form-item label="折后价(元)" prop="discountPrice" v-if="productForm.itemType != 3">
                                         <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
                                     </el-form-item>
+                                    <el-form-item label="标签" prop="discountPrice">
+                                        <el-tag
+                                        :key="tag"
+                                        type="primary"
+                                        v-for="tag in itemTags"
+                                        :closable="true"
+                                        :close-transition="false"
+                                        @close="itemTagClose(tag)">
+                                        {{tag}}
+                                        </el-tag>
+                                        <el-input
+                                        class="input-new-tag"
+                                        v-if="inputVisible"
+                                        v-model="tagValue"
+                                        ref="saveTagInput"
+                                        size="mini"
+                                        @keyup.enter.native="handleTagInputConfirm"
+                                        @blur="handleTagInputConfirm">
+                                        </el-input>
+                                        <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">添加标签</el-button>
+                                    </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <!-- <el-upload class="avatar-uploader"                                        
                                             action="/coron-web/upload/itemUpload" 
@@ -81,7 +102,6 @@
                                         <el-dialog v-model="dialogVisible" size="tiny">
                                             <img width="100%" :src="dialogImageUrl" alt="">
                                         </el-dialog>
-
                                     </el-form-item>
                                     <el-form-item label="销售时段" v-if="productForm.itemType != 3">
                                         <el-tag v-for="tag in timeLists" :key="tag" :closable="true" type="primary" @close="timeTagClose(tag)">
@@ -308,6 +328,9 @@ export default {
             timeSelectVisible: false,
             timeLists: [],            
             checkAll: true,
+
+            itemTags: [],
+            tagValue: '',
 
             dialogImageUrl: '',
             dialogVisible: false,
@@ -594,6 +617,28 @@ export default {
                 });
                 console.log(error);
             })
+        },
+
+        itemTagClose(tag) {
+            this.itemTags.splice(this.itemTags.indexOf(tag), 1);
+        },
+
+        showInput() {
+            this.inputVisible = true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+
+        handleTagInputConfirm() {
+            let inputValue = this.tagValue;
+            if (inputValue) {
+                this.itemTags.push(inputValue);
+            }
+            this.inputVisible = false;
+            this.tagValue = '';
+
+            console.log(this.itemTags);
         },
 
         updateItems() {
