@@ -7,17 +7,7 @@
         <div style="margin:100px auto; text-align:center;">
             <img src="../../../static/images/robot.png" alt="">
             <img src="../../../static/images/logo.png" alt="">
-        </div>
-
-        <!-- <el-row :gutter="20">
-            <el-col :xs="24" :sm="24" :md="24" :lg="6">
-                <el-card class="box-list">
-                    Vuex 计数
-                   <hr>
-                   <count></count>
-                </el-card>
-            </el-col>
-        </el-row> -->
+        </div>        
 
     </div>
 

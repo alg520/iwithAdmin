@@ -18,7 +18,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag">
+    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
         <el-form-item label="分类名称:" :label-width="formLabelWidth" prop="catalogName">
           <el-input v-model="catalogForm.catalogName" auto-complete="off" class="input193"></el-input>

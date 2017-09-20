@@ -121,8 +121,7 @@ export default {
     created(){
         this.getLoginInfo();        
         this.getRobot();
-        this.getShopUser(); 
-        console.log("本地缓存",Lockr.get('username'));        
+        this.getShopUser();               
     },
     computed:{
         ...mapGetters([
@@ -131,14 +130,13 @@ export default {
     },
     methods:{
         getLoginInfo(){
-            userApi.getLoginUser().then(res => {
-                this.shop = res.shop;                
-                this.shopname = res.shop.name.zh;
+            userApi.getLoginUser().then(res => {                
+                this.shop = res.entry.shop;                
+                this.shopname = res.entry.shop.name.zh;
             });
         },
 
-        getUserList(){
-            
+        getUserList(){            
             userApi.getUserList({}).then(res => {
                 console.log("用户列表",res);                
             })

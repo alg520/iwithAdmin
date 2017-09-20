@@ -23,8 +23,7 @@
             </el-table>
             
             <div class="drapSortList" v-if="sortPage">
-                <div class="drapSortList-list">
-                    <h3>{{list1Title}}</h3>
+                <div class="drapSortList-list">                    
                     <div><el-button @click="cancelSort()">返回</el-button></div>
                     <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                         <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>

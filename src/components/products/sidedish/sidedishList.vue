@@ -77,11 +77,16 @@
                     <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
                 </el-form-item>
                 <el-form-item label="图片" prop="picUrl">
-                    <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="false" :on-success="handleItemPicSuccess" :before-upload="beforeItemPicUpload">
+                    <el-upload class="avatar-uploader" ref="sidedishUpload"
+                    action="/coron-web/upload/itemUpload" 
+                    :show-file-list="true" 
+                    :on-success="handleItemPicSuccess" 
+                    :on-remove="handleItemPicRemove"
+                    :before-upload="beforeItemPicUpload">
                         <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
-                    <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button>
+                    <!-- <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button> -->
                 </el-form-item>
             </el-form>
 
@@ -173,7 +178,7 @@ export default {
         handleItemPicSuccess(res, file, fileList) {
 
             console.log(fileList);
-
+            
             if (!res.status) {
                 this.$message.error("上传失败：" + res.message);
             }
@@ -181,6 +186,12 @@ export default {
             this.productForm.picUrl = res.entry;
             console.log(this.imageUrl);
             console.log(this.productForm.picUrl);
+        },
+
+        handleItemPicRemove(file, fileList){
+            this.imageUrl = '';
+            this.productForm.picUrl ='';
+            fileList = [];            
         },
 
         cancelUpload() {
@@ -217,6 +228,7 @@ export default {
             this.btnTag = 'add';
             this.titleTag = "添加配菜";
             this.sidedishDialogVisible = true;
+            this.clearForm();
         },
 
         addSideDish() {
@@ -396,7 +408,7 @@ export default {
             this.productForm.itemNo ='';
             this.productForm.itemName ='';
             this.productForm.itemDesc ='';
-            this.productForm.originPrice ='';
+            this.productForm.originPrice ='';            
             this.productForm.picUrl ='';
             this.imageUrl ='';        
         }

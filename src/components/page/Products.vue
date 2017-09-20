@@ -55,6 +55,8 @@ export default {
         //添加 根据当前页面的status 修改 vtitle 的值
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
+
+            console.log(this.$route.path)
         }
     }    
 }

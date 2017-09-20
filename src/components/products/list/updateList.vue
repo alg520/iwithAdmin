@@ -28,7 +28,7 @@
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
                                             <el-radio :label="1">单点</el-radio>
                                             <el-radio :label="2">套餐</el-radio>
-                                            <el-radio :label="3">配菜</el-radio>
+                                            <!-- <el-radio :label="3">配菜</el-radio> -->
                                         </el-radio-group>
                                     </el-form-item>
                                     <el-form-item label="所含商品" v-if="productForm.itemType == 2">
@@ -87,21 +87,22 @@
                                         <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">添加标签</el-button>
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
-                                        <!-- <el-upload class="avatar-uploader"                                        
-                                            action="/coron-web/upload/itemUpload" 
-                                            :show-file-list="false" 
-                                            :on-success="handleAvatarSuccess" 
-                                            :before-upload="beforeAvatarUpload">
-                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                            </el-upload> -->
+                                        <el-upload class="avatar-uploader"                                        
+                                        action="/coron-web/upload/itemUpload" 
+                                        :show-file-list="true" 
+                                        :on-success="handleAvatarSuccess"
+                                        :on-remove="handleRemove" 
+                                        :before-upload="beforeAvatarUpload">
+                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
 
-                                        <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                        <!-- <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                             <i class="el-icon-plus"></i>
                                         </el-upload>
                                         <el-dialog v-model="dialogVisible" size="tiny">
                                             <img width="100%" :src="dialogImageUrl" alt="">
-                                        </el-dialog>
+                                        </el-dialog> -->
                                     </el-form-item>
                                     <el-form-item label="销售时段" v-if="productForm.itemType != 3">
                                         <el-tag v-for="tag in timeLists" :key="tag" :closable="true" type="primary" @close="timeTagClose(tag)">
@@ -224,15 +225,7 @@
                                                 </el-table>
                                             </el-card>
                                         </template>
-                                    </el-form-item>
-                                    <!-- <el-form-item label="商品标签">
-                                                <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" :close-transition="false">
-                                                    {{tag}}
-                                                </el-tag>
-                                                <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini">
-                                                </el-input>
-                                                <el-button v-else class="button-new-tag" size="small">添加</el-button>
-                                                </el-form-item> -->
+                                    </el-form-item>                                    
                                     <el-form-item>
                                         <el-button type="primary" @click="updateItems()">立即修改</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
@@ -464,11 +457,23 @@ export default {
             this.productForm.discountPrice = data.discountPrice;
             this.timeLists = data.timeDurations;
             this.attrGroups = data.itemAttrs;
+            this.productForm.picUrl = this.imageUrl = data.picUrl;
+            this.itemTags = data.tagsObj.zh;
             data.itemType == 1 ? (this.sideDishGroups = data.childItems) : (this.setmealList = data.childItems);
         },
 
         handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
+
+            if (file.response.status) {
+
+                this.imageUrl = URL.createObjectURL(file.raw);
+                this.productForm.picUrl = file.response.entry;
+                this.$message({
+                    type: 'success',
+                    message: '图片上传成功！'
+                })
+            }
+            console.log(res);
             console.log(file);
             console.log(this.imageUrl);
         },
@@ -488,7 +493,10 @@ export default {
 
         handleRemove(file, fileList) {
             console.log(file, fileList);
+            this.imageUrl = '';
+            this.productForm.picUrl ='';
         },
+
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
@@ -649,7 +657,8 @@ export default {
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
-                picUrl: 'http://imglf.nosdn.127.net/img/Q0RPNGd0czV3aEZQQ0lZMmtkbC9HVWRqcG9YekdtZWRXNS9qZG8vRkc4NldldlRNelYrM3F3PT0.jpg?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg%7Cwatermark&type=2&text=wqkg5bCP6KKr5Y2VIC8gaHVjaGVuc2kubG9mdGVyLmNvbQ==&font=bXN5aA==&gravity=southwest&dissolve=30&fontsize=240&dx=8&dy=10&stripmeta=0',
+                tagsObj:{zh:this.itemTags,jp:[],en:[]},
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,                
                 itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
                 itemType: this.productForm.itemType,
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,

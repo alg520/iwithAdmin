@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <title>oss upload</title>
+
+    <script src='OSSUpload.js'></script>
+    <!-- <script src='http://gosspublic.alicdn.com/aliyun-oss-sdk.min.js'></script> -->
+    <script>
+
+
+        function upload() {
+
+            let data = {
+                romName : '测试',
+                romCode : 1,
+                romType : 1,
+                region : 'JP',
+                publishType : 0,
+                publishState : 0
+            };
+
+            var fileobj = document.getElementById("file").files[0];
+            var ossUpload = new OSSUpload(fileobj);
+            ossUpload.on('md5', function (md5) {
+                console.log(`md5: ${md5}`);
+                ossUpload.start(data);
+            });
+            
+            ossUpload.on('append', function (data) {
+                console.log('进度条: ' + data);
+            });
+            
+            ossUpload.on('finish', function () {
+                console.log('完成');
+            });
+
+            ossUpload.init();
+
+
+        }
+
+    </script>
+</head>
+
+<body>
+
+<input type='file' id='file' value='选择文件' /><dr/>
+<input type='button' id='uploadBtn' value='上传' onclick='upload();' />
+
+</body>
+</html>

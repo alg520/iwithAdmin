@@ -23,6 +23,11 @@
                         <img src="../../../static/images/b_header2.jpg" width="50px" />
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
+                                <div class="setting-div">                                    
+                                    <span class="setting-string">切换语言</span>
+                                </div>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
                                 <div class="setting-div">
                                     <!-- <span class="setting-icon">
                                         <i class="iconfont icon-user"></i>

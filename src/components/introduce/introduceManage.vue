@@ -16,7 +16,7 @@
             </el-col>
             <el-col :sm="20" :md="20" :lg="20">
                 <div v-if="!sortTag">
-                    <div class="content-list" id="content-list" v-if="!addTag">
+                    <div class="content-list" id="content-list">
                         <el-row>
                             <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
                                 <div style="text-align:center; padding-top:80px;">
@@ -39,10 +39,9 @@
                             </el-col>                        
                         </el-row> 
                     </div>
-                    <div class="add-intro-form" v-else>
+                    <!-- <div class="add-intro-form" v-else>
                         <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
-                            <el-form-item label="提案分组" prop="introGroup">
-                                <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
+                            <el-form-item label="提案分组" prop="introGroup">                                
                                 <el-select v-model="whichGroup" placeholder="请选择">
                                     <el-option
                                     v-for="item in introGroupDatas"
@@ -64,9 +63,8 @@
                                 <el-button @click="cancelForm()">取消</el-button>
                             </el-form-item>
                         </el-form>
-                    </div>
-                </div>
-                
+                    </div> -->
+                </div>                
 
                 <div class="introSort" v-else>
                     <div><el-button @click="cancelSort()">返回</el-button></div>
@@ -86,6 +84,38 @@
                 </div>
             </el-col>
         </el-row>
+
+        <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? '添加提案':'修改提案'">
+                    <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
+                            <el-form-item label="提案分组" prop="introGroup">
+                                <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
+                                <el-select v-model="whichGroup" placeholder="请选择">
+                                    <el-option
+                                    v-for="item in introGroupDatas"
+                                    :key="item.id"
+                                    :label="item.groupNamePojo.zh"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item> 
+                            <el-form-item label="提案名称" prop="title">
+                                <el-input v-model="introForm.title" class="input440"></el-input>
+                            </el-form-item>                        
+                            <el-form-item label="提案内容" prop="content">
+                                <el-input type="textarea" class="input440" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="addIntro()" v-if="addTag">立即创建</el-button>
+                                <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
+                                <el-button @click="cancelForm()">取消</el-button>
+                            </el-form-item>
+                        </el-form>
+                    <!-- <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="addIntro()" v-if="addBtn">立即创建</el-button>
+                        <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
+                        <el-button @click="cancelForm()">取消</el-button>
+                    </div> -->
+                </el-dialog>
     </div>
 </template>
 
@@ -116,12 +146,11 @@ export default {
             introGroupDatas:[],
             introDatas:[],
             whichGroup:'',
-            addTag:false,
-            addBtn:true,
+            addTag:true,            
             sortTag:false,
             isActive:0,
-            middleObj:{}
-            
+            middleObj:{},
+            introDialogVisible:false            
         }
     },
 
@@ -146,7 +175,7 @@ export default {
                 console.log("提案列表组",response);
                 
                 response.status && (this.introGroupDatas = response.entry)
-                &&(this.isActive = response.entry[0].id) 
+                &&(this.isActive = this.whichGroup = response.entry[0].id) 
                 && (this.getIntroList(this.isActive));               
 
 
@@ -172,6 +201,8 @@ export default {
             this.addBtn = true;
             this.introForm.title = '';
             this.introForm.content ='';
+
+            this.introDialogVisible = true;
         },
 
         addIntro(){
@@ -185,9 +216,11 @@ export default {
 
             $http.post('/coron-web/introduce/add',addParams).then(response => {
                 
+                
                 console.log(response);
                 this.addTag = false;
                 this.getIntroList(this.whichGroup);
+                this.introDialogVisible = false;
 
             }).catch(error => {
                 console.log(error);
@@ -197,8 +230,9 @@ export default {
 
         updateIntro(item){
             console.log(item);
-            this.addTag = true;
+            this.addTag = false;
             this.addBtn = false;
+            this.introDialogVisible = true;
             this.introForm.title = item.titlePojo.zh;
             this.introForm.content = item.contentPojo.zh;
             this.whichGroup = item.groupId;
@@ -220,6 +254,7 @@ export default {
                     message:'修改成功！'
                 });
                 this.addTag = false;
+                this.introDialogVisible = false;
                 this.getIntroList(this.whichGroup);
             }).catch(error => {
                 console.log(error);
@@ -271,13 +306,14 @@ export default {
 
         changeSelected:function(itemId){            
             this.isActive = itemId;
-            this.whichGroup = itemId;            
+            this.whichGroup = itemId;
             this.getIntroList(itemId);
         },
 
         cancelForm(){
-            this.addTag = false;
-            this.getIntroList();
+            // this.addTag = false;
+            // this.getIntroList();
+            this.introDialogVisible = false;
         },
 
         introSort(){

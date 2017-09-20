@@ -27,7 +27,7 @@
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
                                             <el-radio :label="1">单点</el-radio>
                                             <el-radio :label="2">套餐</el-radio>
-                                            <el-radio :label="3">配菜</el-radio>
+                                            <!-- <el-radio :label="3">配菜</el-radio> -->
                                         </el-radio-group>
                                     </el-form-item>
                                     <el-form-item label="所含商品" v-if="productForm.itemType == 2">
@@ -86,21 +86,22 @@
                                         <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">添加标签</el-button>
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
-                                        <!-- <el-upload class="avatar-uploader"                                        
-                                            action="/coron-web/upload/itemUpload" 
-                                            :show-file-list="false" 
-                                            :on-success="handleAvatarSuccess" 
-                                            :before-upload="beforeAvatarUpload">
-                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                            </el-upload> -->
+                                        <el-upload class="avatar-uploader"                                        
+                                        action="/coron-web/upload/itemUpload" 
+                                        :show-file-list="true" 
+                                        :on-success="handleAvatarSuccess"
+                                        :on-remove="handleRemove"
+                                        :before-upload="beforeAvatarUpload">
+                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
 
-                                        <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :on-error="itemUploadError" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                                        <!-- <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :on-error="itemUploadError" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                             <i class="el-icon-plus"></i>
                                         </el-upload>
                                         <el-dialog v-model="dialogVisible" size="tiny">
                                             <img width="100%" :src="dialogImageUrl" alt="">
-                                        </el-dialog>
+                                        </el-dialog> -->
                                     </el-form-item>
                                     <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
                                         <!-- <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
@@ -510,6 +511,8 @@ export default {
 
         handleRemove(file, fileList) {
             console.log(file, fileList);
+            this.imageUrl = '';
+            this.productForm.picUrl ='';
         },
 
         handlePictureCardPreview(file) {
@@ -683,7 +686,7 @@ export default {
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
                 tagsObj:{zh:this.itemTags,jp:[],en:[]},
-                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,  
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
                 itemAttrs: this.attrGroups,
