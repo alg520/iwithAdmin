@@ -22,6 +22,8 @@ import Updateshop from "@/components/operation/updateShop";
 import Shopdetail from "@/components/operation/shopdetail";
 import ywItemList from "@/components/operation/itemlist";
 import Robot from "@/components/operation/robotmanage";
+import OTAmanage from "@/components/operation/otamanage";
+import OTAadd from "@/components/operation/otaadd";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -36,7 +38,6 @@ import SideDishes from "@/components/products/sidedish/sidedishList";
 import { getToken } from "../utils/auth";
 
 Vue.use(Router);
-
 
 const router = new Router({
   mode: "history",
@@ -199,6 +200,29 @@ const router = new Router({
                 breadNav:[
                   {name:'运营管理',path:''},
                   {name:'机器人管理',path:''}                  
+                ]
+              }
+            },
+            { 
+              path: "otamanage", 
+              component:OTAmanage,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'OTA升级管理',path:''}
+                ]
+              }
+            },
+            { 
+              path: "otamanage/add", 
+              component:OTAadd,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'OTA升级管理',path:'/operation/otamanage'},
+                  {name:'OTA升级',path:''}
                 ]
               }
             }

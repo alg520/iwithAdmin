@@ -74,11 +74,11 @@
         </el-form-item>
         <el-form-item label="舞蹈音乐" prop="danceMusic">
           <el-upload action="/coron-web/upload/robotDanceMusicUpload" 
-          :on-preview="handlePreview" 
-          :on-remove="handleRemove"
+          :before-upload="beforeMusicUpload"
           :on-success="handleMusicSuccess"
-          :file-list="musicFilelists" 
-          :before-upload="beforeMusicUpload">
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :file-list="fileList">
             <el-button size="small" type="primary">点击上传音乐</el-button>
             <div slot="tip" class="el-upload__tip">只能上传mp3文件，且不超过15MB</div>
           </el-upload>
@@ -125,6 +125,7 @@ export default {
       },
       imgFilelists:[],
       musicFilelists: [],
+      fileList: [],
       imageUrl: '',
       middleObj:{},
       btnTag:'add'
@@ -193,23 +194,26 @@ export default {
       const isLt15M = file.size / 1024 /1024 < 15;
 
       if (!isMP3) {
-        this.$message.error('上传舞蹈音乐只能是 JPG 格式!');
+        this.$message.error('上传舞蹈音乐只能是 MP3 格式!');
       }
       if (!isLt15M) {
         this.$message.error('上传舞蹈音乐大小不能超过 15MB!');
       }
+      
       return isMP3 && isLt15M;
 
     },
 
     handleMusicSuccess(res, file ,fileList){
 
+      this.fileList = [];
+      this.fileList.push(file);
+
       if(!res.status){
         this.$message.error("上传失败：" + res.message);
       }
 
-      console.log(this.musicFilelists);
-
+      console.log(fileList);
       console.log(file);
 
       //this.robotDanceForm.danceMusic = URL.createObjectURL(file.raw);
@@ -267,10 +271,14 @@ export default {
       this.btnTag = 'update';
       this.middleObj = item;
       console.log(item);
+      this.fileList = [];
+      let fileObj = {name:item.motionCodesPojo.zh.danceMusic, url:item.motionCodesPojo.zh.danceMusic};
       this.robotDanceForm.danceName = item.motionCodesPojo.zh.danceName;
       this.robotDanceForm.danceCode = item.motionCodesPojo.zh.danceCode;
       this.robotDanceForm.danceImg = this.imageUrl = item.motionCodesPojo.zh.danceImg;
       this.robotDanceForm.danceMusic = item.motionCodesPojo.zh.danceMusic;
+      this.fileList.push(fileObj);
+
     },
 
     updaterobotDancePost(){

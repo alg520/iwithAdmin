@@ -1,6 +1,8 @@
 import axios from "axios";
 import { Message } from "element-ui";
 import router from "../router";
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 //创建 axios 实例
 const $http = axios.create({
@@ -15,6 +17,7 @@ const $http = axios.create({
 //request 拦截器
 $http.interceptors.request.use(
   config => {
+    NProgress.start();
     return config;
   },
   error => {
@@ -33,11 +36,17 @@ $http.interceptors.response.use(
     return checkStatus(response);
   },
   error => {
+
     //用户登录的时候会拿到一个基础信息，比如用户名，token,过期时间戳
     if (true) {
       //若访问接口的时候没有发现鉴权的基础信息，直接返回登录页
+
+
     } else {
       //如果有基础信息，判断当前时间戳和当前时间，若当前时间大于服务器时间请重新登录
+
+
+
     }
 
     //错误页判断
@@ -79,10 +88,13 @@ function checkStatus(response) {
       });
     }
 
+    NProgress.done();
+
     return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据
   }
 
+  
   return {
     status: -404,
     msg: "网络异常"
