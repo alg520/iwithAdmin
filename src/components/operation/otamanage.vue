@@ -22,7 +22,7 @@
             </el-table-column>
             <el-table-column prop="region" label="发布地区">
             </el-table-column>
-            <el-table-column prop="fileSize" label="文件大小">
+            <el-table-column prop="fileSize" label="文件大小(byte)">
             </el-table-column>
             <el-table-column prop="uploadState" label="是否上传成功">
                 <template scope="scope">
@@ -74,7 +74,7 @@ export default {
             middleObj: {},
             btnTag: 'add',
             currentPage: 1,
-            pageSize: 10,
+            pageSize: 8,
             totalItems: 0
         }
     },
@@ -88,7 +88,7 @@ export default {
 
         getRomLists() {
             $http.get('/coron-web/otarom/list', {
-                pageIndex: this.currentPage,
+                page: this.currentPage,
                 rp: this.pageSize
             }).then(res => {
                 if (res.status) {
@@ -108,7 +108,7 @@ export default {
 
         otaUpdate() {
             this.$router.push({
-                path: '/operation/otamanage/add'
+                path: '/operation/otaupdate'
             });
         },
 
@@ -118,11 +118,13 @@ export default {
             }).then(res => {
                 console.log(res);
                 if(res.status){
-                    this.getRomLists();
+                    
                     this.$message({
                         type: 'success',
                         message: '删除成功'
                     })
+                    this.getRomLists();
+                    
                 } else {
                     this.$message({
                         type: 'error',

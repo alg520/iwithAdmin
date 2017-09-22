@@ -6,7 +6,8 @@
  *
  *
  * OSS上传类
- * 封装了OSS相关操作
+ * 封装了后端断点续传的调用
+ * 封装了文件分割 和 md5获取
  * 1.获取文件md5
  * 2.通过md5查询文件是否已经上传
  * 3.如果上传过了 判断是否上传完
@@ -18,150 +19,123 @@
 
 
 // 引用资源
-document.write('<script language=javascript src=\'lib/browser-md5-file.js\'></script>');
+//document.write('<script language=javascript src=\'lib/browser-md5-file.js\'></script>');
+import './lib/browser-md5-file';
+import OSS from './lib/OSSUploadRequest';
 
-// 请求方式
-const POST = 'POST';
-const GET = 'GET';
-// 每次上传文件part大小 (默认1mb)
-const PART_SIZE = 1024 * 1024;
-// 外网域名
-const HOST = 'http://127.0.0.1:8080';
-// 判断是否可以上传
-const OTAROM_ADD = HOST + '/coron-web/otarom/addOtaRom';
-// 追加上传文件接口
-const OTAROM_APPEND = HOST + '/coron-web/otarom/appendOtaRom';
-// 文件md5
-let FILE_MD5 = null;
-// 文件名
-let FILE_NAME = null;
-// 文件总大小
-let FILE_SIZE = null;
-// 已上传文件大小 byte 字节
-let UPLOAD_SIZE = null;
-// 分割文件的总块数
-let PART_COUNT = null;
-// 需要从第几块开始上传
-let START_PART = null;
-// 当前上传的文件
-let FILE = null;
-// ajax发起者
-let xhr = null;
+// 外网域名ll
+let HOST = 'http://localhost:9010';
 
-// 随便写一个事件存储中心吧
-let handles = [];
-
+let config = {
+    POST : 'POST',// 请求方式
+    GET : 'GET',// 请求方式
+    PART_SIZE : 1024 * 1024,// 每次上传文件part大小 (默认1mb)
+    OTAROM_ADD : HOST + '/coron-web/otarom/addOtaRom',// 判断是否可以上传OTA
+    OTAROM_APPEND : HOST + '/coron-web/otarom/appendOtaRom',// 追加上传文件接口OTA
+    APK_ADD : HOST + '/coron-web/apk/addApk',// 判断是否可以上传APK
+    APK_APPEND : HOST + '/coron-web/apk/appendApk',// 追加上传文件接口APK
+    ADD : null,// 真实调用地址
+    APPEND : null,// 真实调用地址
+    FILE_MD5 : null,// 文件md5
+    FILE_NAME : null,// 文件名
+    FILE_SIZE : null,// 文件总大小
+    UPLOAD_SIZE : null,// 已上传文件大小 byte 字节
+    PART_COUNT : null,// 分割文件的总块数
+    START_PART : null,// 需要从第几块开始上传
+    FILE : null,// 当前上传的文件
+    TYPE : null,// 判断当前是 上传ota 还是 apk 1:ota 2:apk
+    handles : []// 随便写一个事件存储中心吧
+};
 
 /**
  * OSSUpload 上传类
- * @param file 文件流
+ * @param {file} file 文件流
+ * @param {int} type 1:ota 2:apk
  * @constructor
  */
-function OSSUpload(file) {
+export default function OSSUpload(file, type) {
+    if (file === null || file === undefined) {
+        throw '文件不能为空!';
+    }
+    if (type === null || type === undefined) {
+        throw '上传类型不能为空!';
+    }
     console.log(`创建句柄`);
-    FILE = file;
-    FILE_NAME = file.name;
+    config.FILE = file;
+    /** @namespace file.name */
+    config.FILE_NAME = file.name;
+    config.TYPE = type;
+    if (type === 1) {
+        config.ADD = config.OTAROM_ADD;
+        config.APPEND = config.OTAROM_APPEND;
+    } else if (type === 2) {
+        config.ADD = config.APK_ADD;
+        config.APPEND = config.APK_APPEND;
+    }
 }
 
 OSSUpload.prototype.init = function() {
     console.log(`init`);
     initMd5();
-    FILE_SIZE = getSize();
-    PART_COUNT = getPartCount();
-    console.log(`md5: ${FILE_MD5}`);
-    console.log(`size: ${FILE_SIZE}`);
-    console.log(`count: ${PART_COUNT}`);
+    config.FILE_SIZE = getSize();
+    config.PART_COUNT = getPartCount();
+    console.log(`md5: ${config.FILE_MD5}`);
+    console.log(`size: ${config.FILE_SIZE}`);
+    console.log(`count: ${config.PART_COUNT}`);
 };
 
-OSSUpload.prototype.start = function(data) {
-    let headers = [
-        {'Content-Type' : 'application/json'}
-    ];
+OSSUpload.prototype.start = function(body) {
 
-    data.md5 = FILE_MD5;
-    data.fileSize = FILE_SIZE;
+    config.body = body;
+    let temp = {
+        POST : config.POST,
+        GET : config.GET,
+        PART_SIZE : config.PART_SIZE,
+        HOST : config.HOST,
+        OTAROM_ADD : config.OTAROM_ADD,
+        OTAROM_APPEND : config.OTAROM_APPEND,
+        APK_ADD : config.APK_ADD,
+        APK_APPEND : config.APK_APPEND,
+        ADD : config.ADD,
+        APPEND : config.APPEND,
+        FILE_MD5 : config.FILE_MD5,
+        FILE_NAME : config.FILE_NAME,
+        FILE_SIZE : config.FILE_SIZE,
+        UPLOAD_SIZE : config.UPLOAD_SIZE,
+        PART_COUNT : config.PART_COUNT,
+        START_PART : config.START_PART,
+        FILE : config.FILE,
+        TYPE : config.TYPE,
+        body : config.body
+    }
 
-    httpRequest(OTAROM_ADD, POST, headers, JSON.stringify(data), false, function() {
-        console.log(xhr);
-        if (xhr.readyState === 4 && xhr.status === 200)
-        {
-            console.log(`result: ${xhr.responseText}`);
-            let resultObj = JSON.parse(xhr.responseText);
-            if (resultObj.status) {
-                /** @namespace resultObj.entry */
-                let uploadSize = resultObj.entry;
-                if (uploadSize === 0) {
-                    UPLOAD_SIZE = 0;
-                } else {
-                    UPLOAD_SIZE = uploadSize;
-                }
-                START_PART = getStartPart();
-                startAppend();
-            } else {
-                console.error(`error: ${resultObj}`);
-            }
+    let woker = new Worker('/static/js/OSSUploadRequest.js');
+    //let woker = new Worker(OSSUploadRequest);
 
+    console.log("123456",woker);
+
+    woker.onmessage = function (e) {
+        let result = e.data;
+        if (result.append) {
+            emit('append', result.append);
         }
-    });
+        if (result.finish) {
+            emit('finish', result.finish);
+        }
+    };
+
+    woker.postMessage(temp);
+
 };
 
 OSSUpload.prototype.on = function (eventName, callback) {
-    handles[eventName] = callback;
+    config.handles[eventName] = callback;
 };
 
 function emit (eventName) {
-    if(handles[arguments[0]]){
-        handles[arguments[0]](arguments[1]);
+    if(config.handles[arguments[0]]){
+        config.handles[arguments[0]](arguments[1]);
     }
-}
-
-/**
- *
- * 开始追加上传
- */
-function startAppend() {
-    // 从第一块开始上传
-    if (START_PART === 0) {
-        START_PART = 1;
-    }
-    while (START_PART <= PART_COUNT) {
-
-        let startIndex = (START_PART - 1) * PART_SIZE;
-        let endIndex = startIndex + PART_SIZE;
-        let uploadFilePart = null;
-
-        if (START_PART === PART_COUNT) {
-            uploadFilePart = FILE.slice(startIndex);
-        } else {
-            uploadFilePart = FILE.slice(startIndex, endIndex);
-        }
-
-        let data = new FormData();
-        data.append('md5', FILE_MD5);
-        data.append('fileName', FILE_NAME);
-        data.append('file', uploadFilePart);
-
-        httpRequest(OTAROM_APPEND, POST, null, data, false, function() {
-
-        });
-        // 不能使用闭包回调
-        console.log(xhr);
-        if (xhr.readyState === 4 && xhr.status === 200)
-        {
-            console.log(`result: ${xhr.responseText}`);
-            let resultObj = JSON.parse(xhr.responseText);
-            if (resultObj.status) {
-                emit('append', START_PART / PART_COUNT);
-            } else {
-                console.error(`error: ${resultObj}`);
-                return;
-            }
-
-        }
-
-        START_PART++;
-    }
-    emit('finish');
 }
 
 /**
@@ -169,65 +143,26 @@ function startAppend() {
  */
 function initMd5() {
 
-    browserMD5File(FILE, function (err, md5) {
-        FILE_MD5 = md5;
-        emit('md5', FILE_MD5);
+    browserMD5File(config.FILE, function (err, md5) {
+        config.FILE_MD5 = md5;
+        emit('md5', config.FILE_MD5);
     });
 }
 
 function getSize() {
-    return FILE.size;
+    return config.FILE.size;
 }
 
 function getPartCount() {
     let partCount = 0;
-    if (FILE_SIZE < PART_SIZE) {
+    if (config.FILE_SIZE < config.PART_SIZE) {
         partCount = 1;
     } else {
-        if (FILE_SIZE % PART_SIZE === 0) {
-            partCount = FILE_SIZE / PART_SIZE;
+        if (config.FILE_SIZE % config.PART_SIZE === 0) {
+            partCount = config.FILE_SIZE / config.PART_SIZE;
         } else {
-            partCount = parseInt(FILE_SIZE / PART_SIZE) + 1;
+            partCount = parseInt(config.FILE_SIZE / config.PART_SIZE) + 1;
         }
     }
     return partCount
-}
-
-function getStartPart() {
-    let startPart = 0;
-    if (UPLOAD_SIZE === 0) {
-        return startPart;
-    }
-    if (UPLOAD_SIZE < PART_SIZE) {
-        return startPart;
-    }
-    return (UPLOAD_SIZE / PART_SIZE);
-}
-
-/**
- *
- * @param {string} url
- * @param {string} method
- * @param {Object} headers
- * @param {Object} data
- * @param sync 是否异步 true:异步 false:同步
- * @param {Function} callback
- */
-function httpRequest(url, method, headers, data, sync, callback) {
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = callback;
-    xhr.open(method, url, sync);// 之所以关闭异步，是为了防止文件块送达服务器的顺序出错
-    // 设置请求头 打开连接才能设置头
-    if (headers !== null && headers !== undefined) {
-        if (headers instanceof Array) {
-            for (let i = 0; i < headers.length; i++) {
-                for (let key in headers[i]) {
-                    console.log(`key: ${key} value: ${headers[i][key]}`);
-                    xhr.setRequestHeader(key, headers[i][key]);
-                }
-            }
-        }
-    }
-    xhr.send(data);// 把打包的数据发送
-    return xhr;
 }
