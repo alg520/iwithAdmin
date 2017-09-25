@@ -46,10 +46,10 @@
                 </template>
                 <el-menu-item index="/operation/shopmanage">店铺管理</el-menu-item>
                 <el-menu-item index="/operation/ordermanage">订单管理</el-menu-item>
-                <el-menu-item index="/operation/robot">机器人管理</el-menu-item>
+                <el-menu-item index="/operation/robot">舞蹈管理</el-menu-item>
                 <el-menu-item index="/operation/otamanage">OTA升级管理</el-menu-item>
-            </el-submenu>
-           
+                <el-menu-item index="/operation/apkmanage">APK升级管理</el-menu-item>
+            </el-submenu>           
         </el-menu>
     </div>
 </template>

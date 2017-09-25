@@ -1,20 +1,20 @@
 <template>
     <div class="ota-add-page">
-        <el-form :model="otaUpdateForm" :rules="otaUpdateFormRules" ref="otaUpdateForm" label-width="100px" class="otaForm">            
-            <el-form-item label="ROM名称" prop="romName">
-                <el-input v-model="otaUpdateForm.romName"></el-input>
+        <el-form :model="apkAddForm" :rules="apkAddFormRules" ref="apkAddForm" label-width="100px" class="otaForm">            
+            <el-form-item label="APK名称" prop="name">
+                <el-input v-model="apkAddForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="ROM CODE" prop="romCode">
-                <el-input v-model="otaUpdateForm.romCode"></el-input>
+            <el-form-item label="APK CODE" prop="code">
+                <el-input v-model="apkAddForm.code"></el-input>
             </el-form-item>
-            <el-form-item label="打包类型" prop="romType">
-                <el-select v-model="otaUpdateForm.romType" placeholder="请选择活动区域">
+            <el-form-item label="打包类型" prop="type">
+                <el-select v-model="apkAddForm.type" placeholder="请选择打包类型">
                     <el-option label="full" value="1"></el-option>
                     <el-option label="delta" value="2"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="发布地区" prop="region">
-                <el-select v-model="otaUpdateForm.region" placeholder="请选择发布地区">
+                <el-select v-model="apkAddForm.region" placeholder="请选择发布地区">
                     <el-option label="中国" value="CN"></el-option>
                     <el-option label="日本" value="JP"></el-option>
                     <el-option label="英国" value="GB"></el-option>
@@ -22,14 +22,14 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="发布类型" prop="publishType">
-                <el-select v-model="otaUpdateForm.publishType" placeholder="请选择发布类型">
+                <el-select v-model="apkAddForm.publishType" placeholder="请选择发布类型">
                     <el-option label="debug" value="0"></el-option>
                     <el-option label="test" value="1"></el-option>
                     <el-option label="release" value="2"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="发布状态" prop="publishState">
-                <el-select v-model="otaUpdateForm.publishState" placeholder="请选择发布状态">
+                <el-select v-model="apkAddForm.publishState" placeholder="请选择发布状态">
                     <el-option label="testing" value="0"></el-option>
                     <el-option label="release" value="1"></el-option>
                 </el-select>
@@ -45,7 +45,7 @@
                     <div class="el-upload__text">将文件拖到此处，或
                         <em>点击上传</em>
                     </div>
-                    <div class="el-upload__tip" slot="tip">只能上传.zip文件</div>
+                    <div class="el-upload__tip" slot="tip">只能上传.apk文件</div>
                 </el-upload>
                 <el-progress v-for="(item,index) in percentArray" :key="item" :text-inside="true" :stroke-width="18" :percentage="item" status="success" v-if=" index+1 == percentArray.length"></el-progress>                
             </el-form-item>
@@ -62,27 +62,21 @@ import OSSUpload from '../../utils/OSSUpload/OSSUpload'
 export default {
     data() {
         return {                                   
-            otaUpdateForm: {
-                romName: 'test',
-                romCode: '1',
-                romType: '1',
+            apkAddForm: {
+                name: 'test',
+                code: '1',
+                type: '1',
                 region: 'JP',
                 publishType: '0',
                 publishState: '0'
             },
-            otaUpdateFormRules: {
-                romName: [
+            apkAddFormRules: {
+                name: [
                     { required: true, message: '请输入舞蹈名称', trigger: 'blur' }
                 ],
-                romCode: [
+                code: [
                     { required: true, message: '请输入舞蹈动作代码', trigger: 'blur' }
-                ],
-                danceImg: [
-                    { required: true, message: '请上传舞蹈动作图片', trigger: 'blur' }
-                ],
-                danceMusic: [
-                    { required: true, message: '请上传舞蹈动作音乐', trigger: 'blur' }
-                ]
+                ]                
             },            
             fileList: [],            
             middleObj: {},
@@ -109,31 +103,29 @@ export default {
 
         beforeRomUpload(file) {            
             
-            const isZIP = file.raw.type === 'application/zip';
-            const isLt500M = file.raw.size / 1024 / 1024 < 500;
+            const isAPK = file.raw.name.slice(-4) === '.apk';
+            
+            console.log("文件类型",file.raw.name.slice(-4));
 
-            if (!isZIP) {
-                this.$message.error('上传文件只能是 ZIP 格式!');
-                return false;
+            const isLt200M = file.raw.size / 1024 / 1024 < 200;
+
+            if (!isAPK) {
+                this.$message.error('上传文件只能是 .APK 格式!');                
             }
-            if (!isLt500M) {
-                this.$message.error('上传文件大小不能超过 500MB!');
-                return false;
+            if (!isLt200M) {
+                this.$message.error('上传文件大小不能超过 200MB!');                
             }
-            return isZIP && isLt500M;
+            return isAPK && isLt200M;
         },
 
         handleAvatarSuccess(res, file, fileList) {
-
-            console.log(fileList);
 
             if (!res.status) {
                 this.$message.error("上传失败：" + res.message);
             }
             this.imageUrl = URL.createObjectURL(file.raw);
             this.robotDanceForm.danceImg = res.entry;
-            console.log(this.imageUrl);
-            console.log(this.robotDanceForm.danceImg);
+            
         },
 
         handleChange(file,fileList){
@@ -143,29 +135,21 @@ export default {
             console.log(beforeResult);
             if(fileList.length > 1){                
                 this.$message.error("只能上传一个文件！");
-                fileList.pop();
-                console.log(fileList);
-                            
+                fileList.pop();                                        
             }
 
             if(beforeResult){
 
                 if(file.status == 'ready'){                                      
 
-                    this.myOSSUpload = new OSSUpload(file.raw,1);
-                }
-
-                if(file.status == 'ready'){
-
-                }
+                    this.myOSSUpload = new OSSUpload(file.raw,2);
+                }                
 
             } else {
                 
                 this.fileList = [];
-                console.log(this.$refs.romUpload);
                 
             }          
-
             console.log(file);
 
         },
@@ -175,12 +159,12 @@ export default {
             self.myOSSUpload.on('md5',function(md5){
 
                 var data = {
-                    romName : self.otaUpdateForm.romName,        
-                    romCode : self.otaUpdateForm.romCode,            
-                    romType : self.otaUpdateForm.romType,            
-                    region : self.otaUpdateForm.region,       
-                    publishType : self.otaUpdateForm.publishType,
-                    publishState : self.otaUpdateForm.publishState
+                    name : self.apkAddForm.name,        
+                    code : self.apkAddForm.code,            
+                    type : self.apkAddForm.type,            
+                    region : self.apkAddForm.region,
+                    publishType : self.apkAddForm.publishType,
+                    publishState : self.apkAddForm.publishState
                 };
 
                 self.myOSSUpload.start(data);
@@ -194,10 +178,10 @@ export default {
             });
 
             self.myOSSUpload.on('finish', function () {
-                console.log('上传完成',self.$router);
+                console.log('上传完成');
 
                 self.$router.push({
-                    path:'/operation/otamanage'
+                    path:'/operation/apkmanage'
                 })
 
             });

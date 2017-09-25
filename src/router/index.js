@@ -24,6 +24,8 @@ import ywItemList from "@/components/operation/itemlist";
 import Robot from "@/components/operation/robotmanage";
 import OTAmanage from "@/components/operation/otamanage";
 import OTAadd from "@/components/operation/otaadd";
+import APKmanage from "@/components/operation/apkmanage";
+import APKadd from "@/components/operation/apkadd";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -223,6 +225,30 @@ const router = new Router({
                   {name:'运营管理',path:''},
                   {name:'OTA升级管理',path:'/operation/otamanage'},
                   {name:'OTA升级',path:''}
+                ]
+              }
+            },
+            { 
+              path: "apkmanage", 
+              component:APKmanage,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'APK升级管理',path:''},
+                  {name:'升级列表',path:''}
+                ]
+              }
+            },
+            { 
+              path: "apkadd", 
+              component:APKadd,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  {name:'运营管理',path:''},
+                  {name:'APK升级管理',path:'/operation/apkmanage'},
+                  {name:'APK升级',path:''}
                 ]
               }
             }

@@ -38,7 +38,6 @@
                                                 <el-option label="全部" value=""></el-option>
                                                 <el-option label="单点" value="1"></el-option>
                                                 <el-option label="套餐" value="2"></el-option>
-                                                <el-option label="配菜" value="3"></el-option>
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">

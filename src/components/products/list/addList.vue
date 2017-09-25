@@ -708,11 +708,6 @@ export default {
                     this.$message({
                         type: 'info',
                         message: '菜品添加成功'
-                    })
-                    this.$notify({
-                        title: '成功',
-                        message: '菜品添加成功',
-                        type: 'success'
                     });
                     //添加成功后需要跳转到菜品列表页
                     this.gobackList();
