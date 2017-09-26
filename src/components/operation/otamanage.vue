@@ -2,7 +2,7 @@
     <div class="robotDancePage">
         <el-form :inline="true" style="text-align:center;">
             <el-form-item>
-                <el-button type="primary" @click="otaUpdate()">OTA升级</el-button>
+                <el-button type="primary" @click="otaAdd()">OTA升级</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="romLists" border style="width: 100%; text-align:center;">
@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button type="primary" size="small" @click="updaterobotDance(scope.row)">修改</el-button>
+                    <el-button type="primary" size="small" @click="otaInfoEdit(scope.row)">修改</el-button>
                     <el-button type="primary" size="small" @click="confirmDel(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -58,6 +58,51 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
             </el-pagination>
         </div>
+
+        <el-dialog title="修改信息" :visible.sync="otaUpdateDialogVisible">
+            <el-form :model="otaUpdateForm" ref="otaUpdateForm" label-width="100px" class="otaForm">
+                <el-form-item label="ROM名称" prop="romName">
+                    <el-input v-model="otaUpdateForm.romName" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="ROM CODE" prop="romCode">
+                    <el-input v-model="otaUpdateForm.romCode" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="打包类型" prop="romType" >
+                    <el-select v-model="otaUpdateForm.romType" placeholder="请选择活动区域" disabled>
+                        <el-option label="full" value="1"></el-option>
+                        <el-option label="delta" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="发布地区" prop="region">
+                    <el-select v-model="otaUpdateForm.region" placeholder="请选择发布地区" disabled>
+                        <el-option label="中国" value="CN"></el-option>
+                        <el-option label="日本" value="JP"></el-option>
+                        <el-option label="英国" value="GB"></el-option>
+                        <el-option label="美国" value="US"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="发布类型" prop="publishType" >
+                    <el-select v-model="otaUpdateForm.publishType" placeholder="请选择发布类型" disabled>
+                        <el-option label="debug" value="0"></el-option>
+                        <el-option label="test" value="1"></el-option>
+                        <el-option label="release" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="发布状态" prop="publishState">
+                    <el-select v-model="otaUpdateForm.publishState" placeholder="请选择发布状态">
+                        <el-option label="testing" value="0"></el-option>
+                        <el-option label="release" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="文件上传" prop="downUrl">
+                    <span>{{otaUpdateForm.downUrl}}</span>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="otaUpdate()">立即修改</el-button>
+                    <el-button @click="otaUpdateDialogVisible = false">取 消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
 
     </div>
 </template>
@@ -68,7 +113,17 @@ export default {
     data() {
         return {
             romLists: [],
-            robotDanceDialogVisible: false,
+            otaUpdateForm: {
+                romName: '',
+                romCode: '1',
+                romType: '1',
+                region: 'JP',
+                publishType: '0',
+                publishState: '0',
+                downUrl:''
+            },
+            middleObj:{},
+            otaUpdateDialogVisible: false,
             fileList: [],
             imageUrl: '',
             middleObj: {},
@@ -106,9 +161,47 @@ export default {
             this.getRomLists();
         },
 
+        otaInfoEdit(item) {
+            this.otaUpdateDialogVisible = true;
+
+            this.middleObj = item;
+
+            this.otaUpdateForm.romName = item.romName;
+            this.otaUpdateForm.romCode = item.romCode;
+            this.otaUpdateForm.romType = item.romType.toString();
+            this.otaUpdateForm.region = item.region;
+            this.otaUpdateForm.publishState = item.publishState.toString();
+            this.otaUpdateForm.publishType = item.publishType.toString();
+            this.otaUpdateForm.downUrl = item.downUrl;
+        },
+
         otaUpdate() {
+            const data = {
+                romId: this.middleObj.romId,                
+                publishState: this.otaUpdateForm.publishState               
+            };
+
+            console.log(data);
+
+            $http.post('/coron-web/otarom/update', data).then(res => {
+                
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: '修改成功'
+                    });
+                    this.otaUpdateDialogVisible = false;
+                    this.getRomLists();
+                } else {
+                    this.$message.error(res.message);
+                }
+
+            })
+        },
+
+        otaAdd() {
             this.$router.push({
-                path: '/operation/otaupdate'
+                path: '/operation/otaadd'
             });
         },
 

@@ -3,6 +3,7 @@ import { Message } from "element-ui";
 import router from "../router";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { Loading } from 'element-ui';
 
 //创建 axios 实例
 const $http = axios.create({
@@ -14,10 +15,13 @@ const $http = axios.create({
   }
 });
 
+var loadingScreen;
+
 //request 拦截器
 $http.interceptors.request.use(
   config => {
-    NProgress.start();
+    //NProgress.start();
+    loadingScreen = Loading.service({ fullscreen: true });
     return config;
   },
   error => {
@@ -88,7 +92,11 @@ function checkStatus(response) {
       });
     }
 
-    NProgress.done();
+    //NProgress.done();
+        
+    setTimeout(() => {
+      loadingScreen.close();
+    }, 500);
 
     return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据

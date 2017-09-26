@@ -217,7 +217,7 @@ const router = new Router({
               }
             },
             { 
-              path: "otaupdate", 
+              path: "otaadd", 
               component:OTAadd,
               meta:{
                 requireAuth:true,

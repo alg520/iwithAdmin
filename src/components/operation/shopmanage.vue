@@ -9,7 +9,7 @@
         <el-button type="primary" @click="goAddShop()">添加店铺</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="shopLists" border style="width: 100%; text-align:center;">
+    <el-table :data="shopLists" border style="width: 100%; text-align:center;" v-loading="loading">
       <el-table-column prop="name.zh" label="店铺名称">
       </el-table-column>
       <el-table-column prop="address" label="地址">
@@ -36,6 +36,7 @@ import { mapGetters,mapMutations} from 'vuex';
 export default {
   data() {
     return {
+      loading:true,
       currentPage: 1,
       pageSize: 10,
       totalItems: 0,
@@ -51,12 +52,13 @@ export default {
         'shop'
     ])
   },
-  created(){
+  created(){    
     this.getShopList();
   },
   methods:{
 
     getShopList(){
+      
       const data ={
         shopName:this.shopFrom.name,
         page:this.currentPage,
@@ -64,8 +66,15 @@ export default {
       };
       axios.post('/coron-web/shop/list',data).then(res => {
         console.log("店铺列表",res.data);
-        this.shopLists = res.data.rows;
-        this.totalItems = res.data.total;
+        this.loading = false;
+        loadingScreen.close();
+        if(res.status){
+          this.shopLists = res.data.rows;
+          this.totalItems = res.data.total;
+        } else {
+          this.$message.error('有错误！');
+        }
+        
       })
     },
 
