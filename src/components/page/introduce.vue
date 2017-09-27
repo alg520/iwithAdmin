@@ -79,32 +79,26 @@
                                 </el-col>
                             </el-row>
 
-                            <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? '添加提案':'修改提案'">
-                                <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
-                                    <el-form-item label="提案分组" prop="introGroup">
-                                        <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
+                            <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? '添加提案':'修改提案'" size="tiny">
+                                <el-form :model="introForm" :rules="introFormRules" ref="introForm" label-width="100px" style="width:100%;">
+                                    <el-form-item label="提案分组" prop="introGroup">                                        
                                         <el-select v-model="whichGroup" placeholder="请选择">
                                             <el-option v-for="item in introGroupDatas" :key="item.id" :label="item.groupNamePojo.zh" :value="item.id">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="提案名称" prop="title">
-                                        <el-input v-model="introForm.title" class="input440"></el-input>
+                                        <el-input v-model="introForm.title"></el-input>
                                     </el-form-item>
                                     <el-form-item label="提案内容" prop="content">
-                                        <el-input type="textarea" class="input440" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
+                                        <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
                                     </el-form-item>
                                     <el-form-item>
                                         <el-button type="primary" @click="addIntro()" v-if="addTag">立即创建</el-button>
                                         <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
                                         <el-button @click="cancelForm()">取消</el-button>
                                     </el-form-item>
-                                </el-form>
-                                <!-- <div slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="addIntro()" v-if="addBtn">立即创建</el-button>
-                            <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
-                            <el-button @click="cancelForm()">取消</el-button>
-                        </div> -->
+                                </el-form>                                
                             </el-dialog>
                         </div>
 
@@ -135,7 +129,7 @@ export default {
                 title: '',
                 content: ''
             },
-            rules: {
+            introFormRules: {
                 title: [
                     { required: true, message: '请输入活动名称', trigger: 'blur' }
                 ],
@@ -223,25 +217,42 @@ export default {
         },
 
         addIntro() {
+            var self = this;
+
             let addParams = {
-                groupId: this.whichGroup,
-                titlePojo: { zh: this.introForm.title, jp: '', en: '' },
-                contentPojo: { zh: this.introForm.content, jp: '', en: '' },
+                groupId: self.whichGroup,
+                titlePojo: { zh: self.introForm.title, jp: '', en: '' },
+                contentPojo: { zh: self.introForm.content, jp: '', en: '' },
                 type: 1,
                 position: 0
             };
 
-            $http.post('/coron-web/introduce/add', addParams).then(response => {
+            self.$refs['introForm'].validate((valid) => {
 
+                if(valid){
+                    $http.post('/coron-web/introduce/add', addParams).then(response => {
+                        console.log(response);
+                        if(response.status){
+                            self.addTag = false;
+                            self.getIntroList(self.whichGroup);
+                            self.introDialogVisible = false;
+                        } else {
+                            self.$message.error(response.responseCode);
+                        }                        
 
-                console.log(response);
-                this.addTag = false;
-                this.getIntroList(this.whichGroup);
-                this.introDialogVisible = false;
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
 
-            }).catch(error => {
-                console.log(error);
-            })
+            });
+
+            
 
         },
 
@@ -257,30 +268,47 @@ export default {
         },
 
         updateIntroPost() {
+            var self = this;
 
             let updateParams = {
-                id: this.middleObj.id,
-                titlePojo: { zh: this.introForm.title, jp: '', en: '' },
-                contentPojo: { zh: this.introForm.content, jp: '', en: '' }
+                id: self.middleObj.id,
+                titlePojo: { zh: self.introForm.title, jp: '', en: '' },
+                contentPojo: { zh: self.introForm.content, jp: '', en: '' }
             };
 
-            $http.post('/coron-web/introduce/update', updateParams).then(response => {
-                console.log(response);
-                this.$message({
-                    type: 'success',
-                    message: '修改成功！'
-                });
-                this.addTag = false;
-                this.introDialogVisible = false;
-                this.getIntroList(this.whichGroup);
-            }).catch(error => {
-                console.log(error);
+            self.$refs['introForm'].validate((valid) => {
+                if(valid){
+                    $http.post('/coron-web/introduce/update', updateParams).then(response => {
+                        console.log(response);
+                        if(response.status){
+                            this.$message({
+                            type: 'success',
+                                message: '修改成功！'
+                            });
+                            this.addTag = false;
+                            this.introDialogVisible = false;
+                            this.getIntroList(this.whichGroup);
+                        } else {
+                            this.$message.error(response.responseCode);
+                        }
+                        
+                    }).catch(error => {
+                        console.log(error);
+                        this.$message({
+                            type: 'error',
+                            message: '请求错误'
+                        });
+                    })
 
-                this.$message({
-                    type: 'error',
-                    message: '请求错误'
-                });
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
             })
+
+            
 
         },
 

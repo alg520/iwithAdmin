@@ -21,7 +21,7 @@
     <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
         <el-form-item label="分类名称:" :label-width="formLabelWidth" prop="catalogName">
-          <el-input v-model="catalogForm.catalogName" auto-complete="off" class="input193"></el-input>
+          <el-input v-model="catalogForm.catalogName" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -91,6 +91,8 @@ export default {
     },
 
     addCatalogPost() {
+
+      var self = this;
       //添加的时候需要 商铺id 和 属性名称
       // 商铺id 需要获取列表的时候 就要保存起来
       let params = {
@@ -99,41 +101,42 @@ export default {
         isVisible: true,
         position: 1,
         busiType: 1,
-        nameObject: { zh: this.catalogForm.catalogName, jp: '', en: '' },
+        nameObject: { zh: self.catalogForm.catalogName, jp: '', en: '' },
       };
 
-      if (this.catalogForm.catalogName == '') {
+      self.$refs['catalogForm'].validate((valid) => {
+        if (valid) {
 
-        this.$message({
-          type: 'info',
-          message: '要添加的类目名不能为空！'
-        });
+          $http.post("/coron-web/catalog/add", params).then(response => {
 
-      } else {
+            if (response.status) {
+              self.$message({
+                type: 'success',
+                message: '类目添加成功！'
+              });
+              self.getCatalogList();
+              self.cancelDialog();
+            } else {
+              self.$message({
+                type: 'error',
+                message: '类目添加失败:' + response.responseCode
+              });
+            }
 
-        $http.post("/coron-web/catalog/add", params).then(response => {
 
-          if(response.status){
-            this.$message({
-              type: 'success',
-              message: '类目添加成功！'
-            });
-            this.getCatalogList();
-            this.cancelDialog();
-          } else {
-            this.$message({
-              type: 'error',
-              message: '类目添加失败:'+ response.responseCode
-            });
-          }
-          
+          }).catch(error => {
+            console.log(error);
+            self.$message.error('请求错误！');
+          })
 
-        }).catch(error => {
+        } else {
+          self.$message({
+            type: 'warning',
+            message: '请填写必填字段'
+          });
+        }
 
-          console.log(error);
-
-        })
-      }
+      })
 
     },
 
@@ -148,44 +151,56 @@ export default {
     },
 
     updateCatalogPost() {
+      var self = this;
       //更新列表请求
       let updateParams = {
-        catalogId: this.middleObj.catalogId,
-        nameObject: { zh: this.catalogForm.catalogName, jp: '', en: '' },
-        isVisible: this.middleObj.isVisible,
-        seq: this.middleObj.seq
+        catalogId: self.middleObj.catalogId,
+        nameObject: { zh: self.catalogForm.catalogName, jp: '', en: '' },
+        isVisible: self.middleObj.isVisible,
+        seq: self.middleObj.seq
       };
 
-      if (this.catalogForm.catalogName == '') {
-        this.$message({
-          type: 'info',
-          message: '类目名不能为空！'
-        });
-      } else {
-        $http.post("/coron-web/catalog/update", updateParams).then(response => {
-          
+      self.$refs['catalogForm'].validate((valid) => {
+        if (valid) {
 
-          if (response.status) {
-            this.$message({
-              type: 'info',
-              message: '更新成功'
+          $http.post("/coron-web/catalog/update", updateParams).then(response => {
+            if (response.status) {
+              self.$message({
+                type: 'success',
+                message: '更新成功'
+              });
+            }
+            self.cancelDialog();
+            self.getCatalogList();
+
+          }).catch(error => {
+            console.log(error);
+            self.$message({
+              type: 'error',
+              message: '更新失败'
             });
-          }
-          this.cancelDialog();
-          this.getCatalogList();
+          })
 
-        }).catch(error => {
-          console.log(error);
-          this.$message({
-            type: 'info',
-            message: error
+        } else {
+          self.$message({
+            type: 'warning',
+            message: '请填写必填字段'
           });
-        })
-      }
+        }
+      })
+    },
+
+    checkChildren(item) {
+      return axios.post('/coron-web/item/list', {
+        catalogId: item.catalogId
+      })
     },
 
     delCatalog: function(item) {
-      $http.post('/coron-web/catalog/del', { catalogId: item.catalogId }).then(response => {
+
+      $http.post('/coron-web/catalog/del', {
+        catalogId: item.catalogId
+      }).then(response => {
 
         if (response.status) {
           this.$message({
@@ -207,23 +222,37 @@ export default {
     },
 
     confirmDel(item) {
-      this.$confirm('当前分类不为空的时候不允许删除,请先删除分类下的商品,是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        closeOnClickModal: false,
-        type: 'warning'
-      }).then(() => {
+      let self = this;
+      self.checkChildren(item).then(res => {
 
-        this.delCatalog(item);
+        if (res.data.rows && res.data.rows.length > 0) {
+          self.$alert('该分类下有提案时，不可直接删除分类', '提示', {
+            confirmButtonText: '我知道了',
+            type: 'warning'
+          })
+        } else {
 
-      }).catch(() => {
+          this.$confirm('确认删除该分类吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            closeOnClickModal: false,
+            type: 'warning'
+          }).then(() => {
 
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+            self.delCatalog(item);
 
-      });
+          }).catch(() => {
+
+            self.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+
+          });
+
+        }
+
+      })
     },
 
 

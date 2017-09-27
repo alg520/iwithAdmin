@@ -30,7 +30,7 @@
                             <p>微信支付KEY：<span v-text="shop.wxPrivateKey"></span></p>
                         </el-col>
                         <el-col :span="24">
-                            <h3>设备信息</h3>
+                            <h3>机器人列表</h3>
                         </el-col>
                         <el-col :span="24">
                             <el-table :data="equipmentInfos" style="width: 100%; text-align:center;" max-height=200>

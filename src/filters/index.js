@@ -11,9 +11,9 @@ export function parseProductType(itemType){
 
 //过滤商品售卖状态
 export function parseIsSale(isSale){
-    if(isSale == 0){
+    if(isSale == 1){
         return '已上架';
-    } else if(isSale == 1){
+    } else if(isSale == 0){
         return '未上架';
     }
 }

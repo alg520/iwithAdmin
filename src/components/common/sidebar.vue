@@ -27,7 +27,7 @@
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
                     <span class="sb-cn">提案管理</span>                 
                 </template>
-                <el-menu-item index="/introduce">提案分组</el-menu-item>                     
+                <el-menu-item index="/introduce">提案管理</el-menu-item>                     
             </el-submenu>
             <!-- v-if="authType == 3" -->
             <el-submenu index="3" v-if="authType == 3">

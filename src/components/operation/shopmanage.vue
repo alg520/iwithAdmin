@@ -9,7 +9,7 @@
         <el-button type="primary" @click="goAddShop()">添加店铺</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="shopLists" border style="width: 100%; text-align:center;" v-loading="loading">
+    <el-table :data="shopLists" border style="width: 100%; text-align:center;">
       <el-table-column prop="name.zh" label="店铺名称">
       </el-table-column>
       <el-table-column prop="address" label="地址">
@@ -65,9 +65,7 @@ export default {
         rp:this.pageSize
       };
       axios.post('/coron-web/shop/list',data).then(res => {
-        console.log("店铺列表",res.data);
-        this.loading = false;
-        loadingScreen.close();
+        console.log("店铺列表",res.data);        
         if(res.status){
           this.shopLists = res.data.rows;
           this.totalItems = res.data.total;

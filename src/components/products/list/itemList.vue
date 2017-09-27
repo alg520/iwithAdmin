@@ -29,8 +29,8 @@
                                         <el-form-item label="状态">
                                             <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getItemList()">
                                                 <el-option label="全部" value=""></el-option>
-                                                <el-option label="未上架" value="true"></el-option>
-                                                <el-option label="已上架" value="false"></el-option>
+                                                <el-option label="未上架" value="false"></el-option>
+                                                <el-option label="已上架" value="true"></el-option>
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="商品类型">
@@ -80,10 +80,10 @@
                                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
                                         <i class="el-icon-delete" title="删除"></i>
                                     </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
+                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
                                         <i class="el-icon-plus" title="上架"></i>
                                     </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
+                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
                                         <i class="el-icon-minus" title="下架"></i>
                                     </el-button>
                                 </template>
@@ -121,7 +121,8 @@ export default {
             currentPage: 1,
             pageSize: 10,
             totalItems: 0,
-            formLabelWidth: '120px'
+            formLabelWidth: '120px',
+            typeArray:[]
         }
     },
 
@@ -180,11 +181,16 @@ export default {
         },
 
         getItemList() {
+            this.typeArray = [];
+            if(!!this.itemsForm.itemType){
+                this.typeArray.push(this.itemsForm.itemType)
+            } 
 
             let getParams = {
                 itemName:this.itemsForm.itemName,
-                itemType: this.itemsForm.itemType,
+                itemType: this.typeArray.length > 0 ? this.typeArray:null,
                 isSale: this.itemsForm.isSale,
+                languageType:0,  //待修改
                 rp: 10,
                 page: this.currentPage,
                 catalogId: !!this.isActive ? this.isActive : null
@@ -218,11 +224,20 @@ export default {
                 itemId: item.itemId
             }).then(response => {
                 console.log(response);
-                this.$message({
-                    type: 'info',
-                    message: '删除成功'
-                });
-                this.getItemList();
+
+                if(response.status){
+                    this.$message({
+                        type: 'info',
+                        message: '删除成功'
+                    });
+                    this.getItemList();
+                } else {
+                    this.$message({
+                        type:'warning',
+                        message:response.cnMessage
+                    });
+                }
+                
             }).catch(error => {
                 console.log(error);
             })

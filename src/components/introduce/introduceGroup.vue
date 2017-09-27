@@ -40,7 +40,7 @@
         </div>
 
         <el-dialog title="提案组添加" :visible.sync="introGroupDialogVisible" class="addDialog" size="tiny">
-            <el-form :model="introGroupForm" :rules="rules" ref="introGroupForm">
+            <el-form :model="introGroupForm" :rules="introGroupFormRules" ref="introGroupForm">
                 <el-form-item label="属性列表名称:" label-width="120px" prop="name">
                    <el-input v-model="introGroupForm.name"></el-input>
                 </el-form-item>
@@ -73,7 +73,7 @@ export default {
             introGroupForm:{
                 name:''
             },
-            rules:{
+            introGroupFormRules:{
                 name: [
                     { required: true, message: '请输入提案组名称', trigger: 'blur' }                    
                 ]                
@@ -113,30 +113,44 @@ export default {
 
         addIntroGroup(){
             this.addTag = true;
+            this.introGroupForm.name ='';
             this.introGroupDialogVisible = true;
         },
 
         addIntroGroupPost(){
+            var self = this;
 
             let addParams = {
-                groupNamePojo:{zh:this.introGroupForm.name,en:'',jp:''},
+                groupNamePojo:{zh:self.introGroupForm.name,en:'',jp:''},
                 position:1
             }
 
-            $http.post('/coron-web/introduceGroup/add',addParams).then(response => {
+            self.$refs['introGroupForm'].validate((valid) => {
 
-                if(response.status){
-                    this.$message({
-                        type:'success',
-                        message:'提案组添加成功！'
-                    });
+                if(valid){
+                    $http.post('/coron-web/introduceGroup/add',addParams).then(response => {
+
+                        if(response.status){
+                            self.$message({
+                                type:'success',
+                                message:'提案组添加成功！'
+                            });
+                        }
+                        self.introGroupDialogVisible = false;
+                        self.getIntroGroupList();
+
+                    }).catch(error => {
+                        console.log(error);
+                    })
+
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
                 }
-                this.introGroupDialogVisible = false;
-                this.getIntroGroupList();
 
-            }).catch(error => {
-                console.log(error);
-            })
+            });           
         },
 
         updateIntroGroup(item){
@@ -149,46 +163,72 @@ export default {
             console.log(item);
 
         },
+        
 
         updateIntroGroupPost(){
+            let self = this;
 
             let updateParams = {
-                id:this.middleObj.id,
-                groupNamePojo:{zh:this.introGroupForm.name,en:'',jp:''},
+                id:self.middleObj.id,
+                groupNamePojo:{zh:self.introGroupForm.name,en:'',jp:''},
                 position:1
-            }; 
+            };
 
-            $http.post('/coron-web/introduceGroup/update',updateParams).then(response => {
-                this.$message({
-                    type:'success',
-                    message:'修改成功'
-                });
-                this.introGroupDialogVisible = false;
-                this.getIntroGroupList();
-                this.middleObj = null;
-            }).catch(error => {
-                console.log(error);
+            self.$refs['introGroupForm'].validate((valid) => {
+                if(valid){
+
+                    $http.post('/coron-web/introduceGroup/update',updateParams).then(response => {
+                        self.$message({
+                            type:'success',
+                            message:'修改成功'
+                        });
+                        self.introGroupDialogVisible = false;
+                        self.getIntroGroupList();
+                        self.middleObj = null;
+                    }).catch(error => {
+                        console.log(error);
+                    })
+
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
             })
-
         },
 
         delConfirm(item){
-            this.$confirm('当前分组不为空的时候不允许删除,请先删除分组下的提案,是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                closeOnClickModal:false,
-                type: 'warning'
-            }).then(() => {
+            var self = this;
+            self.checkNotChild(item).then(res => {
+                if(res.data.rows && res.data.rows.length > 0){
+                    self.$alert('该分类下有提案时，不可直接删除分类','提示',{
+                        confirmButtonText:'我知道了',
+                        type: 'warning'
+                    })
+                } else {
+                    self.$confirm('确认删除该分类吗?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        closeOnClickModal:false,
+                        type: 'warning'
+                    }).then(() => {
+                        self.delIntroGroup(item);
+                    }).catch(() => {
+                        self.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+            }).catch(res => {
+                console.log("错误提示",res);
+            })            
+        },
 
-                this.delIntroGroup(item);
-
-            }).catch(() => {
-
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-
+        checkNotChild(item){
+            return axios.get('/coron-web/introduce/list',{
+                params:{groupId:item.id}
             });
         },
 

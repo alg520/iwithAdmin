@@ -33,13 +33,13 @@
       <el-form-item label="详细地址" prop="address">
         <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址" class="percentage-width"></el-input>        
       </el-form-item>
-      <el-form-item label="是否收税" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
-        <el-radio-group v-model="addShopFrom.haveRadioFee">
-          <el-radio label='0'>不收税</el-radio>
-          <el-radio label='1'>收税</el-radio>
+      <el-form-item label="商品价格" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
+        <el-radio-group v-model="addShopFrom.haveRadioFee">          
+          <el-radio label='0'>不含税</el-radio>          
+          <el-radio label='1'>含税</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="税率" prop="taxRadio" v-if="addShopFrom.haveRadioFee == 1">
+      <el-form-item label="税率" prop="taxRadio" v-if="addShopFrom.haveRadioFee == 0">
         <el-input v-model="addShopFrom.taxRadio" placeholder="请输入税率"></el-input>
       </el-form-item>
       <el-form-item label="是否测试店铺" prop="isTest">
@@ -74,7 +74,7 @@ export default {
         contactPerson: '',
         shopTel: '',
         haveRadioFee: '0',
-        taxRadio: '',
+        taxRadio: '8',
         wxMerchantId: '',
         wxPrivateKey: '',
         language: "0",

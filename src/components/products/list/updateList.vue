@@ -227,8 +227,7 @@
                                         </template>
                                     </el-form-item>                                    
                                     <el-form-item>
-                                        <el-button type="primary" @click="updateItems()">立即修改</el-button>
-                                        <el-button>保存并添加下一个商品</el-button>
+                                        <el-button type="primary" @click="updateItems()">立即修改</el-button>                                        
                                         <el-button @click="gobackList()">返回</el-button>
                                     </el-form-item>
                                 </el-form>
@@ -681,23 +680,17 @@ export default {
                     this.$message({
                         type: 'info',
                         message: '菜品修改成功'
-                    })
-                    this.$notify({
-                        title: '成功',
-                        message: '菜品修改成功',
-                        type: 'success'
-                    });
+                    })                    
                     //添加成功后需要跳转到菜品列表页
                     this.gobackList();
                 }
 
             }).catch(error => {
                 console.log(error);
-                this.$notify({
-                    title: '失败',
-                    message: '这是一条错误的提示消息',
-                    type: 'error'
-                });
+                this.$message({
+                    type: 'error',
+                    message: '请求失败！'
+                })
             })
         },
 

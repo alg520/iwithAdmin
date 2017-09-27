@@ -86,7 +86,7 @@
         </el-row>
 
         <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? '添加提案':'修改提案'">
-                    <el-form :model="introForm" :rules="rules" ref="introForm" label-width="100px" class="demo-ruleForm">
+                    <el-form :model="introForm" :rules="introFormRules" ref="introForm" label-width="100px" class="demo-ruleForm">
                             <el-form-item label="提案分组" prop="introGroup">
                                 <!-- <el-input v-model="introForm.name" class="input440"></el-input> -->
                                 <el-select v-model="whichGroup" placeholder="请选择">
@@ -134,7 +134,7 @@ export default {
                 title:'',
                 content:''
             },
-            rules:{
+            introFormRules:{
                 title: [
                     { required: true, message: '请输入活动名称', trigger: 'blur' }                    
                 ],
@@ -201,30 +201,43 @@ export default {
             this.addBtn = true;
             this.introForm.title = '';
             this.introForm.content ='';
-
             this.introDialogVisible = true;
         },
 
         addIntro(){
+            var self = this;
+            
             let addParams = {
-                groupId:this.whichGroup,
-                titlePojo:{zh:this.introForm.title,jp:'',en:''},
-                contentPojo:{zh:this.introForm.content,jp:'',en:''},
+                groupId:self.whichGroup,
+                titlePojo:{zh:self.introForm.title,jp:'',en:''},
+                contentPojo:{zh:self.introForm.content,jp:'',en:''},
                 type:1,
                 position:0
             };
 
-            $http.post('/coron-web/introduce/add',addParams).then(response => {
-                
-                
-                console.log(response);
-                this.addTag = false;
-                this.getIntroList(this.whichGroup);
-                this.introDialogVisible = false;
+            self.$refs['introForm'].validate((valid) => {
+                if(valid){
 
-            }).catch(error => {
-                console.log(error);
-            })            
+                    console.log("添加提案",valid);
+
+                     $http.post('/coron-web/introduce/add',addParams).then(response => {
+                         console.log("添加提案",response);
+                
+                        self.addTag = false;
+                        self.getIntroList(self.whichGroup);
+                        self.introDialogVisible = false;
+
+                    }).catch(error => {
+                        console.log("错误信息",error);
+                    }) 
+
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
+            });                     
 
         },
 

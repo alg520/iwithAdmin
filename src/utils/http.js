@@ -49,9 +49,11 @@ $http.interceptors.response.use(
     } else {
       //如果有基础信息，判断当前时间戳和当前时间，若当前时间大于服务器时间请重新登录
 
-
-
     }
+
+    setTimeout(() => {
+      loadingScreen.close();
+    }, 500);
 
     //错误页判断
     if (error.response.status == 403) {

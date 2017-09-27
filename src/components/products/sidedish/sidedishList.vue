@@ -23,7 +23,7 @@
             </el-table-column>
             <el-table-column prop="originPrice" sortable label="价格">
             </el-table-column>
-            <el-table-column label="商品类别">
+            <!-- <el-table-column label="商品类别">
                 <template scope="scope">
                     <span>{{scope.row.itemType | parseProductType}}</span>
                 </template>
@@ -37,8 +37,8 @@
                 <template scope="scope">
                     <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
                 </template>
-            </el-table-column>
-            <el-table-column label="操作">
+            </el-table-column> -->
+            <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button type="text" size="small" @click="updatesideDishDialog(scope.row)">
                         <i class="el-icon-edit" title="编辑"></i>
@@ -46,12 +46,12 @@
                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
                         <i class="el-icon-delete" title="删除"></i>
                     </el-button>
-                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
+                    <!-- <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
                         <i class="el-icon-plus" title="上架"></i>
                     </el-button>
                     <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
                         <i class="el-icon-minus" title="下架"></i>
-                    </el-button>
+                    </el-button> -->
                 </template>
             </el-table-column>
         </el-table>
@@ -61,22 +61,21 @@
         </div>
 
         <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="titleTag">
-
-            <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
-                <el-form-item label="菜品编号" prop="itemNo">
+            <el-form :model="productForm" ref="productForm" :rules="rules" label-width="100px">
+                <!-- <el-form-item label="菜品编号" prop="itemNo">
                     <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="菜品名称" prop="itemName">
                     <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
                 </el-form-item>
-                <el-form-item label="菜品介绍" prop="itemDesc">
+                <!-- <el-form-item label="菜品介绍" prop="itemDesc">
                     <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
                     </el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="原价(元)" prop="originPrice">
-                    <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
+                    <el-input type="number" v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
                 </el-form-item>
-                <el-form-item label="图片" prop="picUrl">
+                <!-- <el-form-item label="图片" prop="picUrl">
                     <el-upload class="avatar-uploader" ref="sidedishUpload"
                     action="/coron-web/upload/itemUpload" 
                     :show-file-list="true" 
@@ -85,15 +84,14 @@
                     :before-upload="beforeItemPicUpload">
                         <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                    <!-- <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button> -->
-                </el-form-item>
+                    </el-upload>                    
+                </el-form-item> -->
             </el-form>
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="sidedishDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addSideDish()" v-if="btnTag == 'add'">立即添加</el-button>
-                <el-button type="primary" @click="updateSideDish()" v-else>立即修改</el-button>
+                <el-button type="primary" @click="addSideDishPost()" v-if="btnTag == 'add'">立即添加</el-button>
+                <el-button type="primary" @click="updateSideDishPost()" v-else>立即修改</el-button>
             </div>
         </el-dialog>
     </div>
@@ -205,6 +203,7 @@ export default {
                 itemName: this.itemsForm.itemName,
                 itemType: 3,
                 isSale: this.itemsForm.isSale,
+                languageType:0,
                 rp: 10,
                 page: this.currentPage,
                 catalogId: -1
@@ -229,6 +228,20 @@ export default {
             this.titleTag = "添加配菜";
             this.sidedishDialogVisible = true;
             this.clearForm();
+        },
+
+        addSideDishPost(){
+            var self = this;
+            self.$refs['productForm'].validate((valid) => {
+                if(valid){
+                    self.addSideDish();    
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
+            })
         },
 
         addSideDish() {
@@ -258,12 +271,7 @@ export default {
                     this.$message({
                         type: 'info',
                         message: '菜品添加成功'
-                    })
-                    this.$notify({
-                        title: '成功',
-                        message: '菜品添加成功',
-                        type: 'success'
-                    });
+                    })                         
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
                     this.clearForm();
@@ -272,12 +280,11 @@ export default {
                 }
 
             }).catch(error => {
-                console.log(error);
-                this.$notify({
-                    title: '失败',
-                    message: '这是一条错误的提示消息',
-                    type: 'error'
-                });
+                console.log(error);                
+                this.$message({
+                    type:'error',
+                    message:'添加失败'
+                })
             })
         },
 
@@ -293,6 +300,20 @@ export default {
 
             this.imageUrl = this.productForm.picUrl = item.picUrl;
             this.midObj = item;
+        },
+
+        updateSideDishPost(){
+            var self = this;
+            self.$refs['productForm'].validate((valid) => {
+                if(valid){
+                    self.updateSideDish();    
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'请输入必填字段！'
+                    })
+                }
+            })
         },
 
         updateSideDish() {
@@ -323,12 +344,7 @@ export default {
                     this.$message({
                         type: 'info',
                         message: '菜品修改成功'
-                    })
-                    this.$notify({
-                        title: '成功',
-                        message: '菜品修改成功',
-                        type: 'success'
-                    });
+                    })                    
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
                     this.clearForm();
@@ -338,11 +354,10 @@ export default {
 
             }).catch(error => {
                 console.log(error);
-                this.$notify({
-                    title: '失败',
-                    message: '这是一条错误的提示消息',
-                    type: 'error'
-                });
+                this.$message({
+                    type:'error',
+                    message:'添加失败'
+                })
             })
 
 
