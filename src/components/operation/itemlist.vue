@@ -53,7 +53,7 @@
                                 </div>
                             </el-col>
                         </el-row>
-                        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
+                        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="450">
                             <el-table-column prop="itemNameObject.zh" label="商品名称">
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable label="价格">
@@ -122,7 +122,8 @@ export default {
             currentPage: 1,
             pageSize: 10,
             totalItems: 0,
-            formLabelWidth: '120px'
+            formLabelWidth: '120px',
+            typeArray:[]
         }
     },
 
@@ -181,10 +182,15 @@ export default {
 
         getItemList() {
 
+            this.typeArray = [];
+            if(!!this.itemsForm.itemType){
+                this.typeArray.push(this.itemsForm.itemType)
+            } 
+
             let getParams = {
                 shopId:this.rShopDetailData.id,
                 itemName:this.itemsForm.itemName,
-                itemType: this.itemsForm.itemType,
+                itemType: this.typeArray.length > 0 ? this.typeArray:[1,2],
                 isSale: this.itemsForm.isSale,
                 rp: 10,
                 page: this.currentPage,
@@ -196,8 +202,7 @@ export default {
 
                     !!response.rows && (this.productsList = response.rows);
                     this.totalItems = response.total;
-                    console.log(this.productsList);
-
+                    
                 })
                 .catch(error => {
                     console.log(error);

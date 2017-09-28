@@ -188,7 +188,7 @@ export default {
 
             let getParams = {
                 itemName:this.itemsForm.itemName,
-                itemType: this.typeArray.length > 0 ? this.typeArray:null,
+                itemType: this.typeArray.length > 0 ? this.typeArray:[1,2],
                 isSale: this.itemsForm.isSale,
                 languageType:0,  //待修改
                 rp: 10,

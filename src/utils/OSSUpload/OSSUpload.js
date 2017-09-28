@@ -24,7 +24,8 @@ import './lib/browser-md5-file';
 import OSS from './lib/OSSUploadRequest';
 
 // 外网域名ll
-let HOST = 'http://localhost:9010';
+//let HOST = 'http://localhost:9010';
+let HOST = window.location.origin;
 
 let config = {
     POST : 'POST',// 请求方式

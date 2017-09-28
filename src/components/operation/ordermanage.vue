@@ -3,6 +3,7 @@
     <el-form :inline="true" :model="orderFrom">
       <el-form-item label="店铺列表">
         <el-select v-model="selectedShopID" filterable placeholder="请选择" @change="changeShop()">
+          <el-option label="全部" value=""></el-option>
           <el-option
             v-for="item in allShopLists"
             :key="item.id"
@@ -112,7 +113,7 @@ export default {
       $http.get('/coron-web/shop/getAll',{}).then(res => {
         console.log("所有店铺列表",res);
         this.allShopLists = res.entry;
-        this.selectedShopID = res.entry[0].id;
+        //this.selectedShopID = res.entry[0].id;
       })
     },
 

@@ -174,9 +174,7 @@ export default {
         },
 
         handleItemPicSuccess(res, file, fileList) {
-
-            console.log(fileList);
-            
+                        
             if (!res.status) {
                 this.$message.error("上传失败：" + res.message);
             }
@@ -189,7 +187,7 @@ export default {
         handleItemPicRemove(file, fileList){
             this.imageUrl = '';
             this.productForm.picUrl ='';
-            fileList = [];            
+            fileList = [];
         },
 
         cancelUpload() {
@@ -201,7 +199,7 @@ export default {
 
             let getParams = {
                 itemName: this.itemsForm.itemName,
-                itemType: 3,
+                itemType: [3],
                 isSale: this.itemsForm.isSale,
                 languageType:0,
                 rp: 10,
