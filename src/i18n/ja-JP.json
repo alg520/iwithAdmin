@@ -1,0 +1,24 @@
+{
+    "time": {
+      "ago": "ago",
+      "units": {
+        "minute": "minute | minutes",
+        "hour": "hour | hours",
+        "day": "day | days"
+      }
+    },
+    "locales": {
+      "en-US": "English",
+      "zh-CN": "Chinese",
+      "ja-JP": "Japanese"
+    },
+    "skin": "スキン",
+    "default": "デフォルト",
+    "purple": "パープル",
+    "introduction": "前書き",
+    "navList":{
+        "one":"ナビゲーション1",
+        "two":"ナビゲーション2"
+    }
+  }
+  

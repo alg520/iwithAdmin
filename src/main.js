@@ -11,6 +11,7 @@ import "element-ui/lib/theme-default/index.css";
 //引入项目中自定义过滤器
 import * as filters from "./filters/index";
 
+
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
@@ -21,6 +22,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key]);
 });
 
+// import ElementLocale from 'element-ui/lib/locale'
+import i18n from './i18n';
+
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
@@ -29,6 +33,7 @@ new Vue({
   template: "<App/>",
   components: { App },
   beforeCreate: function() {
+    console.log(i18n);
     console.log("beforeCreated.....");
     Lockr.set("username", "zhangpengbin");    
   }

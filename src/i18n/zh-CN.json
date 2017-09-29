@@ -1,0 +1,23 @@
+{
+    "time": {
+      "ago": "前",
+      "units": {
+        "minute": "分",
+        "hour": "时",
+        "day": "日"
+      }
+    },
+    "locales": {
+      "en-US": "英文",
+      "zh-CN": "简体中文"
+    },
+    "skin": "皮肤",
+    "default": "默认",
+    "purple": "墨紫",
+    "introduction": "简述",
+    "navList":{
+        "one":"第一导航",
+        "two":"第二导航"
+    }
+  }
+  

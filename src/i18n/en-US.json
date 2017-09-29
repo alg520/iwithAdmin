@@ -1,0 +1,23 @@
+{
+    "time": {
+      "ago": "ago",
+      "units": {
+        "minute": "minute | minutes",
+        "hour": "hour | hours",
+        "day": "day | days"
+      }
+    },
+    "locales": {
+      "en-US": "English",
+      "zh-CN": "Chinese"
+    },
+    "skin": "skin",
+    "default": "default",
+    "purple": "purple",
+    "introduction": "introduction",
+    "navList":{
+        "one":"first nav",
+        "two":"second nav"
+    }
+  }
+  

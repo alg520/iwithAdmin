@@ -12,6 +12,7 @@
             <!-- header right area-->
             <el-col :xs="24" :sm="12" :md="{span:8,offset: 4}">
                 <div class="website" style="text-align:center;">
+                    <span>{{$t('skin')}}+{{$t('navList.one')}}</span>
                     <span>Website:</span>
                     <span>www.iWith.com</span>
                 </div>
@@ -23,7 +24,7 @@
                         <img src="../../../static/images/b_header2.jpg" width="50px" />
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
-                                <div class="setting-div">                                    
+                                <div class="setting-div" @click="changeLanguage()">                                    
                                     <span class="setting-string">切换语言</span>
                                 </div>
                             </el-dropdown-item>
@@ -50,7 +51,6 @@
                                     </span> -->
                                     <span class="setting-string"> 退出</span>
                                 </div>
-    
                             </el-dropdown-item>
     
                         </el-dropdown-menu>
@@ -63,13 +63,17 @@
 </template>
 
 <script>
+import {LANGS} from '@/i18n/lang'
+import Vue from 'vue'
 import Lockr from 'lockr'
 import Cookies from 'js-cookie'
 import { logout } from '../../api/user'
 export default {
     data() {
         return {
-            name: 'linxin'
+            name: 'linxin',
+            locale: 'zh-CN',
+            langs: LANGS
         }
     },
     computed : {
@@ -78,6 +82,13 @@ export default {
             return Lockr.get("USERINFO");
         }
         
+        
+    },
+    mounted(){
+        Vue.config.lang = this.locale;
+    },
+    created(){
+        console.log(LANGS);
     },
     methods: {
         userLogout(){
@@ -90,6 +101,17 @@ export default {
                     });
                 }
             })
+        },
+        changeLanguage(){
+
+            if(this.locale == 'jp-JA'){
+                this.locale = 'zh-CN';
+            } else {
+                this.locale = 'jp-JA';
+            }
+            
+            Vue.config.lang = this.locale;
+            
         }
     }
 }
