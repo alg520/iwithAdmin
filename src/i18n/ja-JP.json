@@ -19,6 +19,15 @@
     "navList":{
         "one":"ナビゲーション1",
         "two":"ナビゲーション2"
+    },
+    "sidebar": {
+      "homepage":"ホームページ",
+      "operationmanage":"運営管理",
+      "shopmanage":"店舗管理",
+      "ordermanage":"注文管理",
+      "dancemanage":"ダンス管理",
+      "otamanage":"アップグレードOTA管理",
+      "apkmanage":"apkグレード管理"
     }
   }
   

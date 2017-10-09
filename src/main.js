@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from "vue";
+import $ from "jquery";
 import App from "./App";
 import Lockr from "lockr";
 import router from "./router";
@@ -13,6 +14,9 @@ import * as filters from "./filters/index";
 
 
 Vue.use(ElementUI);
+
+Vue.prototype.$ = $;
+
 
 Vue.config.productionTip = false;
 
@@ -33,8 +37,8 @@ new Vue({
   template: "<App/>",
   components: { App },
   beforeCreate: function() {
-    console.log(i18n);
+    
     console.log("beforeCreated.....");
-    Lockr.set("username", "zhangpengbin");    
+       
   }
 });

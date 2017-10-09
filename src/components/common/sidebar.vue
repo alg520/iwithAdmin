@@ -3,7 +3,7 @@
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
             <el-menu-item index="/dashboard">               
                     <span class="sb-icon"><i class="iconfont icon-zhuye"></i></span>
-                    <span class="sb-cn">主页</span>
+                    <span class="sb-cn">{{$t('sidebar.homepage')}}</span>
             </el-menu-item>
             <!-- v-if="authType == 3 || authType == 4" -->
             <el-menu-item index="/products" v-if="authType == 3 || authType == 4">
@@ -42,13 +42,13 @@
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
-                    <span class="sb-cn">运营管理</span>                 
+                    <span class="sb-cn">{{$t('sidebar.operationmanage')}}</span>                 
                 </template>
-                <el-menu-item index="/operation/shopmanage">店铺管理</el-menu-item>
-                <el-menu-item index="/operation/ordermanage">订单管理</el-menu-item>
-                <el-menu-item index="/operation/robot">舞蹈管理</el-menu-item>
-                <el-menu-item index="/operation/otamanage">OTA升级管理</el-menu-item>
-                <el-menu-item index="/operation/apkmanage">APK升级管理</el-menu-item>
+                <el-menu-item index="/operation/shopmanage">{{$t('sidebar.shopmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/ordermanage">{{$t('sidebar.ordermanage')}}</el-menu-item>
+                <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
+                <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
+                <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
             </el-submenu>           
         </el-menu>
     </div>

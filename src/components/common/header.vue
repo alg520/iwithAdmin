@@ -88,7 +88,7 @@ export default {
         Vue.config.lang = this.locale;
     },
     created(){
-        console.log(LANGS);
+        console.log("langs:",LANGS);
     },
     methods: {
         userLogout(){

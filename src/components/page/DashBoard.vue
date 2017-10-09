@@ -7,7 +7,13 @@
         <div style="margin:100px auto; text-align:center;">
             <img src="../../../static/images/robot.png" alt="">
             <img src="../../../static/images/logo.png" alt="">
-        </div>        
+        </div>
+
+        <div>
+            <input type="text" v-model="name" @blur="nameChange()">
+            {{translateName}}
+            {{$t('skin')}}
+        </div>
 
     </div>
 
@@ -18,14 +24,31 @@
 <script>
     import vPageTitle from '../common/pageTitle.vue';
     import count from '../common/count.vue';
+    import getLanguage from '../../utils/sysLanguage.js';
+    import getTranslateResult from '../../utils/translate.js';
     export default {
         data(){
            return{
-              
+              name:'成龙',
+              translateName:'zhangpengbin'
            }
         },
         components:{
             vPageTitle,count
+        },
+        created(){
+            var self = this;
+            getTranslateResult('zh',self.name)
+        },
+        methods:{
+            nameChange(){
+                var self = this;
+
+                var language = getLanguage();
+                console.log("当前浏览器语言是：",language);
+
+                getTranslateResult('zh',self.name);
+            }
         }
     }
 </script>
