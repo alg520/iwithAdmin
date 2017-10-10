@@ -28,25 +28,11 @@
                         </el-col>
                         <el-col :span="12">
                             <p>微信支付KEY：<span v-text="shop.wxPrivateKey"></span></p>
-                        </el-col>
-                        <el-col :span="24">
-                            <h3>机器人列表</h3>
-                        </el-col>
-                        <el-col :span="24">
-                            <el-table :data="equipmentInfos" style="width: 100%; text-align:center;" max-height=200>
-                                <el-table-column label="设备类型">
-                                   <template scope="scope">
-                                       <span>机器人</span>
-                                   </template>
-                                </el-table-column>
-                                <el-table-column prop="sn" label="SN号">
-                                </el-table-column>                                
-                            </el-table>
-                        </el-col>
+                        </el-col>                        
                         <el-col :span="24">
                             <h3>
-                                登陆账号
-                                <el-button type="primary" size="small" icon="plus" title="添加账号" @click="addUser()"></el-button>
+                                店员列表查看
+                                <el-button type="primary" size="small" icon="plus" title="添加账号" @click="addUser()" v-if="accountLists.length==0"></el-button>
                             </h3>
                         </el-col>
                         <el-col :span="24">
@@ -69,6 +55,20 @@
                                         </el-button>                                    
                                     </template>
                                 </el-table-column>
+                            </el-table>
+                        </el-col>
+                        <el-col :span="24">
+                            <h3>机器人列表查看</h3>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-table :data="equipmentInfos" style="width: 100%; text-align:center;" max-height=200>
+                                <el-table-column label="设备类型">
+                                   <template scope="scope">
+                                       <span>机器人</span>
+                                   </template>
+                                </el-table-column>
+                                <el-table-column prop="sn" label="SN号">
+                                </el-table-column>                                
                             </el-table>
                         </el-col>
                     </el-row>
@@ -191,6 +191,8 @@ export default {
             //this.shop = this.shopInfo;
             console.log(this.rShopDetailData);
             this.shop = this.rShopDetailData;
+
+            console.log("店铺信息",this.shop);
 
             this.getShopUser(this.shop.id);
             this.getRobot(this.shop.id);
@@ -361,6 +363,7 @@ export default {
 <style>
 .shop-info {
     padding: 10px 15px;
+    background-color: #fff;
 }
 
 .shop-info p {

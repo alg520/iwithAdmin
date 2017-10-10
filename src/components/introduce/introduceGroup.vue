@@ -27,7 +27,7 @@
                     <div><el-button @click="cancelSort()">返回</el-button></div>
                     <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                         <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>
-                            <div class="list-complete-item-handle">{{element.groupNamePojo.zh}} => {{element.seq}} => {{element.id}}
+                            <div class="list-complete-item-handle">{{element.groupNamePojo.zh}}
                                 <span class="pull-right">
                                     <i class="el-icon-d-caret"></i>
                                 </span>
@@ -86,7 +86,7 @@ export default {
     mounted() {
 
         //动态计算属性导航的高度
-        var introGroupHeight = document.body.clientHeight - 226;
+        var introGroupHeight = document.body.clientHeight - 196;
         document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
         // document.getElementById("content-list").style.height = introGroupHeight + 'px';
 
@@ -331,6 +331,10 @@ export default {
 </script>
 
 <style>
+.introGroup-manage {    
+    background-color: #fff;
+    overflow-y: auto;
+}
 .introGroup-toolbar {    
     padding: 8px 0 20px 20px;
     text-align: center;

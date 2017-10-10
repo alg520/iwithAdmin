@@ -8,7 +8,7 @@
             <!-- v-if="authType == 3 || authType == 4" -->
             <el-menu-item index="/products" v-if="authType == 3 || authType == 4">
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
-                <span class="sb-cn">商品管理</span>
+                <span class="sb-cn">{{$t('sidebar.itemmanage')}}</span>
             </el-menu-item>
 
             <!-- <el-submenu index="1">
@@ -25,18 +25,18 @@
             <el-submenu index="2" v-if="authType == 3">
                 <template slot="title">               
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
-                    <span class="sb-cn">提案管理</span>                 
+                    <span class="sb-cn">{{$t('sidebar.introducemanage')}}</span>                 
                 </template>
-                <el-menu-item index="/introduce">提案管理</el-menu-item>                     
+                <el-menu-item index="/introduce">{{$t('sidebar.introducemanage')}}</el-menu-item>                     
             </el-submenu>
             <!-- v-if="authType == 3" -->
             <el-submenu index="3" v-if="authType == 3">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
-                    <span class="sb-cn">商家管理</span>
+                    <span class="sb-cn">{{$t('sidebar.shop')}}</span>
                 </template>
-                <el-menu-item index="/shop/info">信息管理</el-menu-item>
-                <el-menu-item index="/shop/order">订单管理</el-menu-item>
+                <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
+                <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
             </el-submenu>
 
             <el-submenu index="4" v-if="authType == 1 || authType == 2">

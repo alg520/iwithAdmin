@@ -43,8 +43,7 @@
                                 </div>
                                 <div class="list-complete-item" v-for="element in productsList" :key='element' v-else>
                                     <div class="list-complete-item-handle">
-                                        {{element.itemNameObject.zh}} --
-                                        {{element.originPrice}}
+                                        {{element.itemNameObject.zh}}
                                         <span class="pull-right">
                                             <i class="el-icon-d-caret"></i>
                                         </span>

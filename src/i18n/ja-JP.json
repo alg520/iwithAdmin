@@ -22,7 +22,11 @@
     },
     "sidebar": {
       "homepage":"ホームページ",
+      "itemmanage":"商品管理",
+      "introducemanage":"提案管理",
       "operationmanage":"運営管理",
+      "shop":"経営者管理",
+      "infomanage":"情報管理",
       "shopmanage":"店舗管理",
       "ordermanage":"注文管理",
       "dancemanage":"ダンス管理",

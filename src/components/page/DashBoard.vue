@@ -13,6 +13,7 @@
             <input type="text" v-model="name" @blur="nameChange()">
             {{translateName}}
             {{$t('skin')}}
+            {{language}}
         </div>
 
     </div>
@@ -30,7 +31,8 @@
         data(){
            return{
               name:'成龙',
-              translateName:'zhangpengbin'
+              translateName:'',
+              language:''
            }
         },
         components:{
@@ -38,16 +40,23 @@
         },
         created(){
             var self = this;
-            getTranslateResult('zh',self.name)
+            getTranslateResult('zh',self.name).then(res => {
+                console.log("翻译结果",res[0]);
+
+                this.translateName = res[0].trans_result[0].dst + `&&` + res[1].trans_result[0].dst;
+            });
         },
         methods:{
             nameChange(){
                 var self = this;
 
-                var language = getLanguage();
-                console.log("当前浏览器语言是：",language);
+                this.language = getLanguage();
+                
+                getTranslateResult('zh',self.name).then(res => {
+                    console.log("翻译结果",res[0]);
 
-                getTranslateResult('zh',self.name);
+                    this.translateName = res[0].trans_result[0].dst + `&&` + res[1].trans_result[0].dst;
+                });
             }
         }
     }

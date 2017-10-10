@@ -31,7 +31,7 @@
         <el-input v-model="addShopFrom.street" placeholder="请输入街道" class="percentage-width"></el-input>        
       </el-form-item>
       <el-form-item label="详细地址" prop="address">
-        <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址" class="percentage-width"></el-input>        
+        <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址"></el-input>        
       </el-form-item>
       <el-form-item label="商品价格" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
         <el-radio-group v-model="addShopFrom.haveRadioFee">          
@@ -39,7 +39,7 @@
           <el-radio label='1'>含税</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="税率" prop="taxRadio" v-if="addShopFrom.haveRadioFee == 0">
+      <el-form-item label="税率" prop="taxRadio" v-if="addShopFrom.language == '2' && addShopFrom.haveRadioFee == 0">
         <el-input v-model="addShopFrom.taxRadio" placeholder="请输入税率"></el-input>
       </el-form-item>
       <el-form-item label="是否测试店铺" prop="isTest">
@@ -53,6 +53,12 @@
       </el-form-item>
       <el-form-item label="微信商铺密钥" prop="wxPrivateKey">
         <el-input v-model="addShopFrom.wxPrivateKey" placeholder="请输入微信商铺密钥"></el-input>
+      </el-form-item>
+      <el-form-item label="用户名" prop="uname">
+        <el-input v-model="addShopFrom.uname" placeholder="请输入管理员账号"></el-input>
+      </el-form-item> 
+      <el-form-item label="密码" prop="upassword">
+        <el-input v-model="addShopFrom.upassword" placeholder="请输入账号密码"></el-input>
       </el-form-item>      
       <el-form-item>
         <el-button type="primary" @click="submitForm('addShopFrom')">立即添加</el-button>
@@ -82,7 +88,9 @@ export default {
         postcode:'',
         province:'',
         city:'',
-        street:''
+        street:'',
+        uname:'',
+        upassword:''
       },
       addShopFromRules: {
         name: [
@@ -153,7 +161,15 @@ export default {
         isTest: true
       };
 
-      $http.post('/coron-web/shop/add', data).then(res => {
+      const postData = {
+        shop:data,
+        uname:this.addShopFrom.uname ? this.addShopFrom.uname:null,
+        upassword:this.addShopFrom.upassword ? this.addShopFrom.upassword:null
+      }
+
+      $http.post('/coron-web/shop/addAndUser', postData).then(res => {
+
+        console.log("修改后的添加店铺和账号",res);
 
         if(res.status){
           this.$message({
@@ -215,6 +231,7 @@ export default {
 <style>
 .add-shop {
   padding: 15px 10px;
+  background-color: #fff;
 }
 
 .addshopForm {
@@ -222,6 +239,6 @@ export default {
   margin: 0 auto;
 }
 .addshopForm .percentage-width {
-  width: 50%;
+  width: 70%;
 }
 </style>

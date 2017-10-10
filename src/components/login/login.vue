@@ -70,6 +70,7 @@ import MD5 from 'js-md5'
 import Lockr from "lockr"
 import Cookies from 'js-cookie'
 import { getToken } from "../../utils/auth"
+import getLanguage from '../../utils/sysLanguage'
 export default {
     data() {
         return {
@@ -95,6 +96,7 @@ export default {
 
     created() {
 
+        this.getOSLanguage();
         this.getLoginUserInfo();
         this.getAuthCode();
 
@@ -106,6 +108,12 @@ export default {
             axios.get('/coron-web/getPicValidateCode', {}).then(res => {
                 this.authCodeSrc = res.data.imgData;
             })
+        },
+
+        getOSLanguage(){
+            var language = getLanguage();
+            console.log("当前浏览器语言是：",language);
+            Lockr.set("LANGUAGE", language);
         },
 
         handleLogin() {
@@ -142,6 +150,8 @@ export default {
             getLoginUser().then(res => {
 
                 if (res.status) {
+
+                    console.log("用户登录信息",res);
 
                     if (getToken()) {
                         this.$router.push({

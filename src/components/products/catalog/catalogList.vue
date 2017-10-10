@@ -1,22 +1,43 @@
 <template>
   <div class="catalogForm">
-    <el-form :inline="true">
-      <el-form-item>
-        <el-button type="primary" @click="addCatalog()" v-if="btnTag == 'add'">添加类目</el-button>
-        <el-button type="primary" @click="addCatalog()" v-else>添加类目</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="catalogDatas" style="width: 100%">
-      <el-table-column type="index" width="80px">
-      </el-table-column>
-      <el-table-column prop="nameObject.zh" label="类目名称"></el-table-column>
-      <el-table-column label="操作" width="240">
-        <template scope="scope" width="240">
-          <el-button size="mini" @click="updateCatalog(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-if="!sortTag">
+      <el-form :inline="true">
+        <el-form-item>
+          <el-button type="primary" @click="addCatalog()">添加类目</el-button>
+          <el-button type="primary" @click="catalogSort()">类目排序</el-button>
+        </el-form-item>
+      </el-form>
+      <el-table :data="catalogDatas" style="width: 100%">
+        <el-table-column type="index" width="80px">
+        </el-table-column>
+        <el-table-column prop="nameObject.zh" label="类目名称"></el-table-column>
+        <el-table-column label="操作" width="240">
+          <template scope="scope" width="240">
+            <el-button size="mini" @click="updateCatalog(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="catalogSort" v-else>
+      <div>
+        <el-button @click="cancelSort()">返回</el-button>
+      </div>
+      <div class="drapSortList">
+        <div class="drapSortList-list">
+          <draggable :list="catalogDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
+            <div class="list-complete-item" v-for="element in catalogDatas" :key='element'>
+              <div class="list-complete-item-handle">{{element.nameObject.zh}}
+                <span class="pull-right">
+                  <i class="el-icon-d-caret"></i>
+                </span>
+              </div>
+            </div>
+          </draggable>
+        </div>
+      </div>
+    </div>
 
     <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
@@ -37,7 +58,11 @@
 <script>
 import axios from 'axios';
 import $http from '../../../utils/http';
+import draggable from 'vuedraggable';
 export default {
+  components: {
+    draggable
+  },
   data() {
     return {
       catalogDatas: [],
@@ -54,7 +79,8 @@ export default {
           { required: true, message: '请输入类目名称', trigger: 'blur' }
         ]
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      sortTag: false
     }
   },
   created() {
@@ -254,6 +280,82 @@ export default {
 
       })
     },
+
+    catalogSort(){
+      this.sortTag = true;
+    },
+
+    cancelSort(){
+      this.sortTag = false;
+    },
+
+    sortCatalog(itemParams) {
+
+            $http.post('/coron-web/catalog/sort', itemParams).then(response => {
+
+                if(response.status){
+                  this.$message({
+                      type: 'success',
+                      message: '更新成功'
+                  });
+                } else {
+                  this.$message({
+                      type: 'error',
+                      message: `更新失败：${response.message}`
+                  });
+                }
+                
+                this.getCatalogList();
+
+            }).catch(error => {
+                
+                this.$message({
+                    type: 'error',
+                    message: '更新失败'
+                });
+                this.getCatalogList();
+                
+            })
+        },
+
+    moved(evt) {
+
+      let newIndex = evt.moved.newIndex;
+      let oldIndex = evt.moved.oldIndex;
+
+      console.log(evt);
+      console.log(this.catalogDatas[evt.moved.newIndex + 1]);
+      console.log(this.catalogDatas[evt.moved.newIndex]);
+
+      if (newIndex > oldIndex) {
+        let oldItem = this.catalogDatas[evt.moved.newIndex],
+          newItem = this.catalogDatas[evt.moved.newIndex - 1];
+
+        const item = {
+          shopId: oldItem.shopId,
+          catalogId: newItem.catalogId,
+          oldIndex: oldItem.seq,
+          newIndex: newItem.seq
+        };
+
+        this.sortCatalog(item);
+
+      } else {
+
+        let oldItem = this.catalogDatas[evt.moved.newIndex],
+          newItem = this.catalogDatas[evt.moved.newIndex + 1];
+
+        const item = {
+          shopId: oldItem.shopId,
+          catalogId: newItem.catalogId,
+          oldIndex: oldItem.seq,
+          newIndex: newItem.seq
+        };
+
+        this.sortCatalog(item);
+      }
+
+    }
 
 
   }

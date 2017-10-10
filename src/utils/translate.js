@@ -26,15 +26,19 @@ export default function getTranslateResult(originLanguage,queryContent) {
   var query = queryContent;
   var str1 = appid + query + salt + key;
   var sign = MD5(str1);
-  var from = "zh";
-  var to = "jp";
-  var to2 = "en";  
+  var from = originLanguage;
+
+  var toJP = "jp";
+  var toEN = "en";
+  var toZH = "zh";
+
   const zh = "zh";
   const en = "en";
   const jp = "jp"; 
 
   if(originLanguage == zh){
-    var t1 = $.ajax({
+    
+    var translateJP = $.ajax({
       url: url,
       type: "get",
       dataType: "jsonp",
@@ -43,12 +47,12 @@ export default function getTranslateResult(originLanguage,queryContent) {
         appid: appid,
         salt: salt,
         from: from,
-        to: to,
+        to: toJP,
         sign: sign
       }
     });
 
-    var t2 = $.ajax({
+    var translateEN = $.ajax({
       url: url,
       type: "get",
       dataType: "jsonp",
@@ -57,17 +61,83 @@ export default function getTranslateResult(originLanguage,queryContent) {
         appid: appid,
         salt: salt,
         from: from,
-        to: to2,
+        to: toEN,
         sign: sign
       }
     });
 
-    Promise.all([t1,t2]).then(res => {
-      console.log("翻译结果",res);
-    })
+    return Promise.all([translateJP,translateEN]);
   }
 
   if(originLanguage == jp){
+
+    let translateEN = $.ajax({
+      url: url,
+      type: "get",
+      dataType: "jsonp",
+      data: {
+        q: query,
+        appid: appid,
+        salt: salt,
+        from: from,
+        to: toEN,
+        sign: sign
+      }
+    });
+
+    let translateZH = $.ajax({
+      url: url,
+      type: "get",
+      dataType: "jsonp",
+      data: {
+        q: query,
+        appid: appid,
+        salt: salt,
+        from: from,
+        to: toZH,
+        sign: sign
+      }
+    });
+
+    Promise.all([translateEN,translateZH]).then(res => {
+      console.log("翻译结果",res);
+    })
+
+  }
+
+  if(originLanguage == en){
+
+    let translateZH = $.ajax({
+      url: url,
+      type: "get",
+      dataType: "jsonp",
+      data: {
+        q: query,
+        appid: appid,
+        salt: salt,
+        from: from,
+        to: toZH,
+        sign: sign
+      }
+    });
+
+    let translateJP = $.ajax({
+      url: url,
+      type: "get",
+      dataType: "jsonp",
+      data: {
+        q: query,
+        appid: appid,
+        salt: salt,
+        from: from,
+        to: toJP,
+        sign: sign
+      }
+    });
+
+    Promise.all([translateJP,translateZH]).then(res => {
+      console.log("翻译结果",res);
+    })
 
   }
 

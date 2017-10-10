@@ -72,7 +72,7 @@ export default {
     data() {
         return {
             name: 'linxin',
-            locale: 'zh-CN',
+            locale: 'zh-cn',
             langs: LANGS
         }
     },
@@ -80,8 +80,7 @@ export default {
 
         USERINFO(){
             return Lockr.get("USERINFO");
-        }
-        
+        }        
         
     },
     mounted(){
@@ -104,10 +103,10 @@ export default {
         },
         changeLanguage(){
 
-            if(this.locale == 'jp-JA'){
-                this.locale = 'zh-CN';
+            if(this.locale == 'ja'){
+                this.locale = 'zh-cn';
             } else {
-                this.locale = 'jp-JA';
+                this.locale = 'ja';
             }
             
             Vue.config.lang = this.locale;

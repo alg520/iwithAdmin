@@ -353,5 +353,6 @@ export default {
 <style>
 .robotDancePage {
   padding: 10px 15px;
+  background-color: #fff;
 }
 </style>

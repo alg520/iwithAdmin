@@ -29,7 +29,7 @@
                                 </el-col>
                                 <el-col :sm="20" :md="20" :lg="20">
                                     <div v-if="!sortTag">
-                                        <div class="content-list" id="content-list">
+                                        <div class="intro-content-list" id="intro-content-list">
                                             <el-row>
                                                 <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
                                                     <div style="text-align:center; padding-top:80px;">
@@ -66,7 +66,7 @@
                                             <div class="drapSortList-list">
                                                 <draggable :list="introDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
                                                     <div class="list-complete-item" v-for="element in introDatas" :key='element'>
-                                                        <div class="list-complete-item-handle">{{element.titlePojo.zh}} => {{element.seq}}
+                                                        <div class="list-complete-item-handle">{{element.titlePojo.zh}}
                                                             <span class="pull-right">
                                                                 <i class="el-icon-d-caret"></i>
                                                             </span>
@@ -469,6 +469,10 @@ li.selected {
 
 .content-list {
     padding: 8px;
+}
+.intro-content-list {
+    padding: 8px;
+    overflow-y: auto;
 }
 .introduce-list {
     padding: 0px;

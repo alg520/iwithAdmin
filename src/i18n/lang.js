@@ -5,7 +5,7 @@ import enLocale from 'element-ui/lib/locale/lang/en'
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import jaLocale from 'element-ui/lib/locale/lang/ja'
 export const LANGS = {
-    'en-US': Object.assign(enUS, enLocale),
-    'zh-CN': Object.assign(zhCN, zhLocale),
-    'jp-JA': Object.assign(jaJP, jaLocale)
+    'en-us': Object.assign(enUS, enLocale),
+    'zh-cn': Object.assign(zhCN, zhLocale),
+    'ja': Object.assign(jaJP, jaLocale)
 }
