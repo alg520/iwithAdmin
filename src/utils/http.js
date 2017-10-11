@@ -8,7 +8,7 @@ import { Loading } from 'element-ui';
 //创建 axios 实例
 const $http = axios.create({
   baseURL: process.env.BASE_API, //api的base_url
-  timeout: 5000, //请求超时时间
+  timeout: 10000, //请求超时时间
   responseType: "json",
   headers: {
     "Content-Type": "application/json"

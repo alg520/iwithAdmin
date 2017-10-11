@@ -4,9 +4,9 @@
             <template>
                 <div class="catalog-nav" id="catalog-nav">
                     <ul class="catalog-list" id="catalog-list">
-                        <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
+                        <!-- <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
                             <a href="javascript:;">全部</a>
-                        </li>
+                        </li> -->
                         <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
                             <template>
                                 <a href="javascript:;" class="inblock" v-text="item.nameObject.zh">
@@ -210,6 +210,7 @@ export default {
 
 .content-list {    
     background-color: #fff;
+    overflow-y: auto;
 }
 
 
@@ -253,7 +254,7 @@ ul.catalog-list li.selected {
 }
 
 .drapSortList-list {
-    width: auto;
+    width: 100%;    
 }
 .list-complete-item {
     border:none;

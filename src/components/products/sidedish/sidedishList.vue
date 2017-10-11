@@ -251,7 +251,7 @@ export default {
                 originPrice: this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
-                timeDurations: [{ startTime: '00:00', endTime: '24:00' }],
+                timeDurations: [{ startTime: '00:00', endTime: '23:59' }],
                 seq: 1,
                 busiType: 1
             };

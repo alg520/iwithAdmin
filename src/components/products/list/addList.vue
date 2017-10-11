@@ -5,7 +5,7 @@
                 <div class="addProductForm">
                     <el-row>
                         <el-col :span="18">
-                            <div class="grid-content bg-purple">
+                            <div class="form-content">
                                 <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
                                     <el-form-item label="菜品编号" prop="itemNo">
                                         <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
@@ -263,12 +263,17 @@
                                             </el-card>
                                         </template>
                                     </el-form-item>
-                                    <el-form-item>
+                                    <!-- <el-form-item>
                                         <el-button type="primary" @click="addItems()">立即添加</el-button>
                                         <el-button>保存并添加下一个商品</el-button>
                                         <el-button @click="gobackList()">返回</el-button>
-                                    </el-form-item>
+                                    </el-form-item> -->
                                 </el-form>
+                                <div class="btn-fixed">
+                                    <el-button type="primary" @click="addItems()">立即添加</el-button>
+                                    <el-button>保存并添加下一个商品</el-button>
+                                    <el-button @click="gobackList()">返回</el-button>
+                                </div>
                             </div>
                         </el-col>
                     </el-row>
@@ -677,6 +682,10 @@ export default {
             console.log(this.itemTags);
         },
 
+        saveAddNext(){
+            
+        },
+
         addItems() {
             let addParams = {
                 itemNo: this.productForm.itemNo,
@@ -692,35 +701,47 @@ export default {
                 itemAttrs: this.attrGroups,
                 childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
                 seq: 1,
-                busiType: 1
+                busiType: 1 
             };
 
-            axios({
-                url: '/coron-web/item/add',
-                method: 'post',
-                data: addParams,
-                headers: {
-                    Language: 0
-                }
-            }).then(response => {
+            this.$refs['productForm'].validate((valid) => {
 
-                if (response.data.status == true) {
+                if(valid){
+                    axios({
+                        url: '/coron-web/item/add',
+                        method: 'post',
+                        data: addParams,
+                        headers: {
+                            Language: 0
+                        }
+                    }).then(response => {
+                        if (response.data.status == true) {
+                            this.$message({
+                                type: 'info',
+                                message: '菜品添加成功'
+                            });
+                            //添加成功后需要跳转到菜品列表页
+                            this.gobackList();
+                        }
+
+                    }).catch(error => {
+                        console.log(error);
+                        this.$notify({
+                            title: '失败',
+                            message: '这是一条错误的提示消息',
+                            type: 'error'
+                        });
+                    })
+
+                } else {
                     this.$message({
-                        type: 'info',
-                        message: '菜品添加成功'
+                        type: 'warning',
+                        message: '请填写必填字段'
                     });
-                    //添加成功后需要跳转到菜品列表页
-                    this.gobackList();
                 }
 
-            }).catch(error => {
-                console.log(error);
-                this.$notify({
-                    title: '失败',
-                    message: '这是一条错误的提示消息',
-                    type: 'error'
-                });
             })
+           
         },
 
 
@@ -955,5 +976,16 @@ export default {
 
 .input-new-tag {    
     width: 100px !important;
+}
+
+.form-content {
+    padding-bottom: 50px;
+}
+
+.btn-fixed {
+    text-align: center;
+    position: fixed;
+    bottom: 20px;
+    left: 40%;
 }
 </style>

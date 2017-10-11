@@ -60,7 +60,8 @@
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item label="原价(元)" prop="originPrice">
-                                        <el-input v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
+                                        <!-- <el-input-number  :min="0" :max="20" ></el-input-number> -->
+                                        <el-input v-model="productForm.originPrice" type="number" placeholder="请输入商品原价"></el-input>
                                     </el-form-item>
                                     <el-form-item label="折后价(元)" prop="discountPrice" v-if="productForm.itemType != 3">
                                         <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
@@ -692,6 +693,44 @@ export default {
                     message: '请求失败！'
                 })
             })
+
+            // this.$refs['productForm'].validate((valid) => {
+
+            //     if(valid){
+            //         axios({
+            //             url: '/coron-web/item/update',
+            //             method: 'post',
+            //             data: updateParams,
+            //             headers: {
+            //                 Language: 0
+            //             }
+            //         }).then(response => {
+
+            //             if (response.data.status == true) {
+            //                 this.$message({
+            //                     type: 'info',
+            //                     message: '菜品修改成功'
+            //                 })                    
+            //                 //添加成功后需要跳转到菜品列表页
+            //                 this.gobackList();
+            //             }
+
+            //         }).catch(error => {
+            //             console.log(error);
+            //             this.$message({
+            //                 type: 'error',
+            //                 message: '请求失败！'
+            //             })
+            //         })
+
+            //     } else {
+            //         this.$message({
+            //             type: 'warning',
+            //             message: '请填写必填字段'
+            //         });
+            //     }
+
+            // })
         },
 
 

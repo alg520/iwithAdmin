@@ -47,7 +47,7 @@
                                         <el-form-item>
                                             <el-button size="small" type="primary" @click="goAdd()">添加商品</el-button>
                                             <el-button size="small" type="primary" @click="goSort()">商品排序</el-button>
-                                            <el-button size="small" type="primary" @click="menuExport()">菜单导出</el-button>
+                                            <el-button size="small" type="primary" @click="menuExport()">菜单导出</el-button>                                            
                                         </el-form-item>
                                     </el-form>
                                 </div>
@@ -303,14 +303,8 @@ export default {
             })
         },
 
-        menuExport(){
-            $http.get('/coron-web/item/exportItems').then(res => {
-                console.log("菜单导出",res);
-
-                if(!res.status){
-                    alert(res.message);
-                }
-            })
+        menuExport(){            
+            window.location.href = '/coron-web/item/exportItems';
         }
 
     }
