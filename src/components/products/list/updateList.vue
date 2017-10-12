@@ -459,6 +459,7 @@ export default {
             this.attrGroups = data.itemAttrs;
             this.productForm.picUrl = this.imageUrl = data.picUrl;
             this.itemTags = data.tagsObj.zh;
+            this.productForm.seq = data.seq;
             data.itemType == 1 ? (this.sideDishGroups = data.childItems) : (this.setmealList = data.childItems);
         },
 
@@ -664,7 +665,7 @@ export default {
                 timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
                 itemAttrs: this.attrGroups,
                 childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
-                seq: 1,
+                seq: this.productForm.seq,
                 busiType: 1
             };
 

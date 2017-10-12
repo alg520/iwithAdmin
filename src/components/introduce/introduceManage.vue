@@ -136,7 +136,7 @@ export default {
             },
             introFormRules:{
                 title: [
-                    { required: true, message: '请输入活动名称', trigger: 'blur' }                    
+                    { required: true, message: '请输入提案名称', trigger: 'blur' }                    
                 ],
                 content:[
                     { required: true, message: '请输入提案内容', trigger: 'blur' },

@@ -704,43 +704,47 @@ export default {
                 busiType: 1 
             };
 
-            this.$refs['productForm'].validate((valid) => {
 
-                if(valid){
-                    axios({
-                        url: '/coron-web/item/add',
-                        method: 'post',
-                        data: addParams,
-                        headers: {
-                            Language: 0
-                        }
-                    }).then(response => {
-                        if (response.data.status == true) {
-                            this.$message({
-                                type: 'info',
-                                message: '菜品添加成功'
-                            });
-                            //添加成功后需要跳转到菜品列表页
-                            this.gobackList();
-                        }
-
-                    }).catch(error => {
-                        console.log(error);
-                        this.$notify({
-                            title: '失败',
-                            message: '这是一条错误的提示消息',
-                            type: 'error'
-                        });
-                    })
-
-                } else {
+            axios({
+                url: '/coron-web/item/add',
+                method: 'post',
+                data: addParams,
+                headers: {
+                    Language: 0
+                }
+            }).then(response => {
+                if (response.data.status == true) {
                     this.$message({
-                        type: 'warning',
-                        message: '请填写必填字段'
+                        type: 'info',
+                        message: '菜品添加成功'
                     });
+                    //添加成功后需要跳转到菜品列表页
+                    this.gobackList();
                 }
 
+            }).catch(error => {
+                console.log(error);
+                this.$notify({
+                    title: '失败',
+                    message: '这是一条错误的提示消息',
+                    type: 'error'
+                });
             })
+
+            // this.$refs['productForm'].validate((valid) => {
+
+            //     if(valid){
+
+                    
+
+            //     } else {
+            //         this.$message({
+            //             type: 'warning',
+            //             message: '请填写必填字段'
+            //         });
+            //     }
+
+            // })
            
         },
 

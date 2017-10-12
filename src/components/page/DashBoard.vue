@@ -30,7 +30,7 @@
     export default {
         data(){
            return{
-              name:'成龙',
+              name:'红烧鱼',
               translateName:'',
               language:''
            }
@@ -40,11 +40,7 @@
         },
         created(){
             var self = this;
-            getTranslateResult('zh',self.name).then(res => {
-                console.log("翻译结果",res[0]);
-
-                this.translateName = res[0].trans_result[0].dst + `&&` + res[1].trans_result[0].dst;
-            });
+            getTranslateResult('zh',self.name)
         },
         methods:{
             nameChange(){
@@ -52,11 +48,7 @@
 
                 this.language = getLanguage();
                 
-                getTranslateResult('zh',self.name).then(res => {
-                    console.log("翻译结果",res[0]);
-
-                    this.translateName = res[0].trans_result[0].dst + `&&` + res[1].trans_result[0].dst;
-                });
+                getTranslateResult('zh',self.name);
             }
         }
     }

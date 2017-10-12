@@ -14,9 +14,9 @@
             <!-- <el-submenu index="1">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>
-                    <span class="sb-cn">商品管理</span> 
+                    <span class="sb-cn">菜品管理</span> 
                 </template>
-                <el-menu-item index="products">商品列表</el-menu-item>
+                <el-menu-item index="products">菜品列表</el-menu-item>
                 <el-menu-item index="typeManage">目录管理</el-menu-item>
                 <el-menu-item index="tastemanage">属性管理</el-menu-item>
                 <el-menu-item index="shoptimeduration">时段管理</el-menu-item>                

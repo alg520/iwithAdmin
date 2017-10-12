@@ -268,7 +268,7 @@ export default {
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
-                        message: '菜品添加成功'
+                        message: '配菜添加成功'
                     })                         
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
@@ -324,7 +324,7 @@ export default {
                 originPrice: this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
-                timeDurations: [{ startTime: '00:00', endTime: '24:00' }],
+                timeDurations: [{ startTime: '00:00', endTime: '23:59' }],
                 seq: 1,
                 busiType: 1
             };
@@ -341,7 +341,7 @@ export default {
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
-                        message: '菜品修改成功'
+                        message: '配菜修改成功'
                     })                    
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
@@ -377,7 +377,7 @@ export default {
         },
 
         confirmDel(item) {
-            this.$confirm('确定要删除这个菜品吗?', '提示', {
+            this.$confirm('确定要删除这个配菜吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 closeOnClickModal: false,

@@ -175,7 +175,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    background: #fff url('../../../static/images/login_background.png') left 130px no-repeat;
+    background: #2d3a4b url('/coron-web/static/images/login_background.png') left 130px no-repeat;    
     background-size: 100%;
 }
 
@@ -183,10 +183,11 @@ export default {
     height: 130px;
     line-height: 130px;
     padding-left: 30px;
+    border-bottom: solid 1px #fff;
 }
 
 .login-container .login-title span {
-    color: #666;
+    color: #fff;
     font-size: 36px;
     font-weight: 300;
 }

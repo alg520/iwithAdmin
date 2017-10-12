@@ -2,7 +2,7 @@
     <div class="productLists">
         <!-- <v-pageTitle vtitle="全部商品"></v-pageTitle> -->
         <el-menu :default-active="activeIndex" class="el-menu-product" mode="horizontal" @select="handleSelect" router>
-            <el-menu-item index="list">商品列表</el-menu-item>
+            <el-menu-item index="list">菜品列表</el-menu-item>
             <el-menu-item index="catalog">类目管理</el-menu-item>
             <el-menu-item index="attrlist">属性管理</el-menu-item>
             <el-menu-item index="timeduration">时段管理</el-menu-item>

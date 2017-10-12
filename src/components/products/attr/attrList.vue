@@ -69,7 +69,7 @@ export default {
       $http.get('/coron-web/itemAttr/list')
         .then(response => {
           
-          !!response.rows && (this.itemAttrDatas = response.rows) && (this.shopId = response.rows[0].shopId);
+          !!response.rows && (this.itemAttrDatas = response.rows) && response.rows.length > 0 && (this.shopId = response.rows[0].shopId);
 
         })
         .catch(error => {
