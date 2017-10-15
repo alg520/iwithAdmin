@@ -70,9 +70,17 @@
 
 <script>
 import axios from 'axios';
+import MD5 from 'js-md5';
 import $http from '../../utils/http';
 export default {
   data() {
+    var validateNumLetter = (rule,value,callback) => {
+
+        if(!/^[A-Za-z0-9]+$/i.test(value)){
+            callback(new Error('请输入数字加字母！'));
+        }
+
+    };
     return {
       addShopFrom: {
         name: '',
@@ -123,6 +131,11 @@ export default {
       }
     }
   },
+  computed:{
+    MD5password(){
+        return MD5(this.addShopFrom.upassword)
+    }
+  },
   methods: {
 
     submitForm(formName) {
@@ -164,7 +177,7 @@ export default {
       const postData = {
         shop:data,
         uname:this.addShopFrom.uname ? this.addShopFrom.uname:null,
-        upassword:this.addShopFrom.upassword ? this.addShopFrom.upassword:null
+        upassword:this.addShopFrom.upassword ? this.MD5password:null
       }
 
       $http.post('/coron-web/shop/addAndUser', postData).then(res => {
@@ -185,7 +198,7 @@ export default {
             message:res.cnMessage
           });
         }
-
+        
       })
     },
 

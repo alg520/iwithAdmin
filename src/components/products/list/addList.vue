@@ -17,10 +17,10 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="菜品名称" prop="itemName">
-                                        <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
+                                        <el-input v-model="productForm.itemName" placeholder="菜品名称" @blur="translateContent(productForm.itemName,'name')"></el-input>
                                     </el-form-item>
                                     <el-form-item label="菜品介绍" prop="itemDesc">
-                                        <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
+                                        <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc" @blur="translateContent(productForm.itemDesc,'desc')">
                                         </el-input>
                                     </el-form-item>
                                     <el-form-item label="类型" prop="itemType">
@@ -171,7 +171,7 @@
                                                 </div>
                                                 <el-form label-width="120px" :inline="true">
                                                     <el-form-item label="属性组名称">
-                                                        <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.attrGname"></el-input>
+                                                        <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.attrGname" @blur="translateContent(productForm.attrGname,'attrGroup')"></el-input>
                                                     </el-form-item>
                                                     <el-form-item label="类型">
                                                         <el-radio-group v-model="productForm.attrGtype" size="small">
@@ -222,7 +222,7 @@
                                                 </div>
                                                 <el-form label-width="120px" :inline="true">
                                                     <el-form-item label="附属商品组名称">
-                                                        <el-input style="width:100%;" size="small" placeholder="请输入附属商品组名称" v-model="productForm.itemGname"></el-input>
+                                                        <el-input style="width:100%;" size="small" placeholder="请输入附属商品组名称" v-model="productForm.itemGname" @blur="translateContent(productForm.itemGname,'itemGname')"></el-input>
                                                     </el-form-item>
                                                     <el-form-item label="类型">
                                                         <el-radio-group v-model="productForm.itemGtype" size="small">
@@ -355,6 +355,9 @@
 import store from '@/store/index';
 import axios from 'axios';
 import $http from '../../../utils/http';
+import Cookies from 'js-cookie';
+import getLanguage from '../../../utils/sysLanguage.js';
+import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
         return {
@@ -464,8 +467,14 @@ export default {
                 itemType: [
                     { required: true, message: '请选择商品类型', trigger: 'blur' }
                 ]
-            }
-
+            },
+            itemNameTransArray:[],
+            itemDescTransArray:[],
+            attrGnameTransArray:[],
+            itemGnameTransArray:[],
+            tagGnameTransArray:[],
+            tagGroupObj:{zh:[],en:[],jp:[]}
+            
         }
 
     },
@@ -475,6 +484,12 @@ export default {
         this.getTimeList();
         this.getItemAttrList();
         this.getItemList();
+        console.log("店铺语言",this.shopLanguage);
+    },
+    computed:{
+        shopLanguage(){            
+            return Cookies.get('SHOPLANGUAGE');
+        }
     },
     methods: {
         handleAvatarSuccess(res, file) {
@@ -530,6 +545,7 @@ export default {
             console.log("属性选中更改事件", value);
 
         },
+
         handleCheckedDishChange(value) {
             console.log("选取的配菜", value);
         },
@@ -554,6 +570,7 @@ export default {
             this.isIndeterminate = false;
             console.log(this.timeLists);
         },
+
         handleCheckedCitiesChange(value) {
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.timeDatas.length;
@@ -606,14 +623,14 @@ export default {
                 .then(response => {
 
                     if (response.status) {
-                        console.log("时段列表",response);
+                        //console.log("时段列表",response);
                         //response.data.rows && (this.timeDatas = response.data.rows);
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
                         if (response.rows && response.rows.length > 0) {
                             response.rows.forEach((item, index) => {
                                 let obj = {startTime: item.startTime, endTime: item.endTime};
                                 this.timeDatas.push(obj); 
-                                console.log("时段列表",this.timeDatas);                               
+                                //console.log("时段列表",this.timeDatas);                               
                             });
                         }
 
@@ -662,6 +679,7 @@ export default {
 
         itemTagClose(tag) {
             this.itemTags.splice(this.itemTags.indexOf(tag), 1);
+            console.log(this.tagGroupObj);
         },
 
         showInput() {
@@ -672,7 +690,9 @@ export default {
         },
 
         handleTagInputConfirm() {
+
             let inputValue = this.tagValue;
+            this.translateContent(inputValue,'tag');
             if (inputValue) {
                 this.itemTags.push(inputValue);
             }
@@ -680,17 +700,95 @@ export default {
             this.tagValue = '';
 
             console.log(this.itemTags);
+
         },
 
         saveAddNext(){
             
         },
 
+        translateContent(itemName,type){
+            var self = this;
+            itemName !== ''
+            &&
+            getTranslateResult('zh',itemName).then(res => {
+
+                if(type == 'name'){
+                    console.log(" 添加菜品 ",res);
+                    var itemNameTrans = returnTransArray(res);
+                    self.itemNameTransArray = returnTransArray(res);
+                    console.log(" 添加菜品 ",itemNameTrans);
+                }
+                if(type == 'desc'){
+                    self.itemDescTransArray = returnTransArray(res);
+                    console.log(" 描述 ",self.itemDescTransArray);
+                }
+                if(type == 'attrGroup'){
+                    self.attrGnameTransArray = returnTransArray(res);
+                    console.log(" 属性组 ",self.attrGnameTransArray);
+                }
+                if(type == 'itemGname'){
+                    self.itemGnameTransArray = returnTransArray(res);
+                    console.log(" 附属商品组 ",self.itemGnameTransArray);
+                }
+                if(type == 'tag'){
+                    self.tagGnameTransArray = returnTransArray(res);
+                    console.log(" 标签组 ",self.tagGnameTransArray);
+                    
+                    self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                    self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                    self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+
+                    console.log("标签对象组",self.tagGroupObj);
+                    let tagsObj = {zh:self.itemTags,jp:self.itemTags,en:self.itemTags};
+                    Object.assign(tagsObj,self.tagGroupObj);
+                    console.log("最后的标签组对象",tagsObj);
+
+                }
+                
+            })
+
+        },
+
         addItems() {
+            let itemNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
+            let itemDescObj = {zh:this.productForm.itemDesc,jp:this.productForm.itemDesc,en:this.productForm.itemDesc};
+            let tagsObj = {zh:this.itemTags,jp:this.itemTags,en:this.itemTags};
+            if(this.shopLanguage == 0){
+                itemNameObj.zh = this.productForm.itemName;
+                itemDescObject.zh = this.productForm.itemDesc;
+                tagsObj.zh = this.itemTags;
+            } else if (this.shopLanguage == 1){
+                itemNameObj.en = this.productForm.itemName;
+                itemDescObj.en = this.productForm.itemDesc;
+                tagsObj.en = this.itemTags;
+            } else if(this.shopLanguage == 2) {
+                itemNameObj.jp = this.productForm.itemName;
+                itemDescObj.jp = this.productForm.itemDesc;
+                tagsObj.jp = this.itemTags;
+            }
+
+            if(this.itemNameTransArray.length > 0){
+                itemNameObj = Object.assign(itemNameObj,this.itemNameTransArray[0]);
+                console.log("合并后的菜名对象",itemNameObj);
+            }
+            if(this.itemDescTransArray.length > 0){
+                itemDescObj = Object.assign(itemDescObj,this.itemDescTransArray[0]);
+                console.log("合并后的描述对象",itemNameObj);
+            }
+            if(this.tagGnameTransArray.length>0){
+                Object.assign(tagsObj,this.tagGroupObj);
+                console.log("合并后的标签对象",itemNameObj);
+            }
+
+            // this.itemNameTrans.length > 0 && 
+
             let addParams = {
                 itemNo: this.productForm.itemNo,
-                itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
-                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                //itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
+                itemNameObject: itemNameObj,
+                //itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                itemDescObject: itemDescObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
@@ -719,7 +817,7 @@ export default {
                         message: '菜品添加成功'
                     });
                     //添加成功后需要跳转到菜品列表页
-                    this.gobackList();
+                    //this.gobackList();
                 }
 
             }).catch(error => {
@@ -827,8 +925,13 @@ export default {
 
         addAttrGroup() {
 
+            let attrGname = {zh: this.productForm.attrGname,jp:this.productForm.attrGname,en:this.productForm.attrGname };
+            if(this.attrGnameTransArray.length > 0){
+                attrGname = Object.assign(attrGname,this.attrGnameTransArray[0]);
+            }
+
             let attrItem = {
-                gname: { zh: this.productForm.attrGname,jp:'',en:'' },
+                gname: attrGname,
                 selectType: this.productForm.attrGtype,  //multi
                 seq: 0,
                 attrs: this.productForm.attrGlist
@@ -853,8 +956,13 @@ export default {
 
         addItemGroup() {
 
+            let itemGname = {zh: this.productForm.itemGname,jp:this.productForm.itemGname,en:this.productForm.itemGname };
+            if(this.itemGnameTransArray.length > 0){
+                itemGname = Object.assign(itemGname,this.itemGnameTransArray[0]);
+            }
+
             let itemSideDish = {
-                gname: { zh: this.productForm.itemGname, jp:'', en:'' },
+                gname: itemGname,
                 selectType: this.productForm.itemGtype,  //multi
                 seq: 0,
                 items: this.productForm.itemGlist
@@ -862,6 +970,7 @@ export default {
 
             if (this.productForm.itemGname != '' && this.productForm.itemGlist.length > 0) {
                 this.sideDishGroups.push(itemSideDish);
+                console.log("添加后的配菜组", this.sideDishGroups);
                 this.productForm.itemGname = '';
                 this.productForm.itemGlist = [];
                 this.checkSideDishList = [];

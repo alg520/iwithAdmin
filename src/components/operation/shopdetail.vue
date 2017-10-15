@@ -122,11 +122,9 @@ import { mapGetters,mapMutations} from 'vuex'
 export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
-
             if(!/^[A-Za-z0-9]+$/i.test(value)){
                 callback(new Error('请输入数字加字母！'));
             }
-
         };
         return {
             shop:{},

@@ -23,10 +23,9 @@
 </template>
 
 <script>
-    import vPageTitle from '../common/pageTitle.vue';
-    import count from '../common/count.vue';
+    import vPageTitle from '../common/pageTitle.vue';    
     import getLanguage from '../../utils/sysLanguage.js';
-    import getTranslateResult from '../../utils/translate.js';
+    import {getTranslateResult,returnTransArray} from '../../utils/translate.js';
     export default {
         data(){
            return{
@@ -36,19 +35,27 @@
            }
         },
         components:{
-            vPageTitle,count
+            vPageTitle
         },
         created(){
+            this.nameChange();
             var self = this;
-            getTranslateResult('zh',self.name)
+            //console.log("翻译结果2",getTranslateResult('zh',self.name));
         },
         methods:{
             nameChange(){
                 var self = this;
-
                 this.language = getLanguage();
-                
-                getTranslateResult('zh',self.name);
+
+                self.name != "" && getTranslateResult('zh',self.name).then(res => {                
+                    
+                    console.log("dashboard",returnTransArray(res));
+                    var transArray = returnTransArray(res);
+                    this.translateName = transArray[0].zh + '&&' + transArray[0].jp + '&&' + transArray[0].en;
+                    console.log("翻译结果",transArray);
+
+                })
+
             }
         }
     }

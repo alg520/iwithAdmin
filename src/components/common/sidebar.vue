@@ -68,7 +68,7 @@ import { getLoginUser } from '../../api/user'
             }
         },
         created(){
-            this.getLoginUserInfo();            
+            this.getLoginUserInfo();
         },
         methods:{
             //获取登录信息

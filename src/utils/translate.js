@@ -15,7 +15,7 @@ export function jsonp(url, data, option) {
   });
 }
 
-export default function getTranslateResult(originLanguage, queryContent) {
+export function getTranslateResult(originLanguage, queryContent) {
   const url = "http://api.fanyi.baidu.com/api/trans/vip/translate";
   //APP ID: 20170825000076961
   //密钥: Tpx_Gek5zh5CIJ6OJFOY
@@ -32,12 +32,16 @@ export default function getTranslateResult(originLanguage, queryContent) {
   var toEN = "en";
   var toZH = "zh";
 
-  const zh = "zh2";
+  const zh = "zh";
   const en = "en";
   const jp = "jp";
 
   if (query == "") {
+    
+    return {}
+
   } else {
+    
     let translateJP = $.ajax({
       url: url,
       type: "get",
@@ -79,35 +83,54 @@ export default function getTranslateResult(originLanguage, queryContent) {
         sign: sign
       }
     });
-    Promise.all([translateJP, translateEN, translateZH]).then(res => {
-      if (res.error_code == "54000") {
-        Message({
-          type: "error",
-          message: "必填参数为空"
-        });
-      }
-      console.log("直接", res);
+   
+    // Promise.all([translateJP, translateEN, translateZH]).then(res => {
+      
+    //   console.log("翻译promise返回结果", res);
 
-      let translateResult = [];
-      let item = {};
-      res.forEach((value, key) => {
-        console.log(value);
-        if (value.to == "zh") {
-          item.zh = value.trans_result[0].dst;
-        }
-        if (value.to == "en") {
-          item.en = value.trans_result[0].dst;
-        }
-        if (value.to == "jp") {
-          item.jp = value.trans_result[0].dst;
-        }
-      });
-
-      translateResult.push(item);
-
-      console.log("翻译的结果", translateResult);
-    });
+    //   returnTransArray(res);
+      
+    // });
 
     return Promise.all([translateJP, translateEN, translateZH]);
   }
 }
+
+export function returnTransArray(array){
+
+  if (array.error_code == "54000") {
+
+    console.log("我报错了");
+    Message({
+      type: "error",
+      message: "必填参数为空"
+    });
+  }
+
+  console.log(array);
+
+  let translateResult = [];
+  let item = {};
+
+  array.forEach((value, key) => {
+    console.log(value);
+    if (value.to == "zh") {
+      item.zh = value.trans_result[0].dst;
+    }
+    if (value.to == "en") {
+      item.en = value.trans_result[0].dst;
+    }
+    if (value.to == "jp") {
+      item.jp = value.trans_result[0].dst;
+    }
+  });
+
+  translateResult.push(item);
+  
+  console.log("翻译的结果", translateResult);
+
+  return translateResult;
+
+}
+
+

@@ -1,13 +1,13 @@
 <template>
     <div class="timeForm">
         <el-form :inline="true" :model="itemsForm">
-            <el-form-item label="状态">
+            <!-- <el-form-item label="状态">
                 <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getSideDishList()">
                     <el-option label="全部" value=""></el-option>
                     <el-option label="未上架" value="true"></el-option>
                     <el-option label="已上架" value="false"></el-option>
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="">
                 <el-input size="small" placeholder="请输入商品名称" v-model="itemsForm.itemName">
                 </el-input>
@@ -66,7 +66,7 @@
                     <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
                 </el-form-item> -->
                 <el-form-item label="菜品名称" prop="itemName">
-                    <el-input v-model="productForm.itemName" placeholder="菜品名称"></el-input>
+                    <el-input v-model="productForm.itemName" placeholder="菜品名称" @blur="translateContent(productForm.itemName,'name')"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="菜品介绍" prop="itemDesc">
                     <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
@@ -100,6 +100,8 @@
 <script>
 import axios from 'axios';
 import $http from '../../../utils/http';
+import getLanguage from '../../../utils/sysLanguage.js';
+import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
         return {
@@ -144,7 +146,8 @@ export default {
                 ]
             },
             formLabelWidth: '120px',
-            midObj: {}
+            midObj: {},
+            sideDishTransArray:[]
         }
     },
     created() {
@@ -242,11 +245,40 @@ export default {
             })
         },
 
+        translateContent(itemName,type){
+            var self = this;
+            itemName !== ''
+            &&
+            getTranslateResult('zh',itemName).then(res => {
+
+                if(type == 'name'){
+                    self.sideDishTransArray = returnTransArray(res);
+                    console.log(" 添加配菜 ",self.sideDishTransArray);
+                }
+                
+            })
+
+        },
+
         addSideDish() {
+            let sideDishNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
+            if(this.shopLanguage == 0){
+                sideDishNameObj.zh = this.productForm.itemName;
+            } else if (this.shopLanguage == 1){
+                sideDishNameObj.en = this.productForm.itemName;
+            } else if(this.shopLanguage == 2) {
+                sideDishNameObj.jp = this.productForm.itemName;
+            }
+
+            if(this.sideDishTransArray.length > 0){
+                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);
+                console.log("合并后的菜名对象",sideDishNameObj);
+            }
+
             const addParams = {
                 itemNo: this.productForm.itemNo,
-                itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
-                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                itemNameObject: sideDishNameObj,
+                itemDescObject: { zh: this.productForm.itemDesc, jp: this.productForm.itemDesc, en: this.productForm.itemDesc },
                 catalogId: this.productForm.catalogId,
                 originPrice: this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,

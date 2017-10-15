@@ -36,14 +36,11 @@
                                     <span class="setting-string">当前用户：{{USERINFO.uname}}</span>
                                 </div>
                             </el-dropdown-item>
-                            <!-- <el-dropdown-item divided>
-                                <div class="setting-div">
-                                    <span class="setting-icon">
-                                        <i class="iconfont icon-tuichu"></i>
-                                    </span>
-                                    <span class="setting-string">设置</span>
-                                </div>    
-                            </el-dropdown-item> -->
+                            <el-dropdown-item>
+                                <div class="setting-div">                                    
+                                    <span class="setting-string">修改密码</span>
+                                </div>
+                            </el-dropdown-item>
                             <el-dropdown-item divided>
                                 <div class="setting-div" @click="userLogout()">
                                     <!-- <span class="setting-icon">
@@ -73,13 +70,13 @@ export default {
         return {
             name: 'linxin',
             locale: 'zh-cn',
-            langs: LANGS
+            langs: LANGS            
         }
     },
     computed : {
 
         USERINFO(){
-            return Lockr.get("USERINFO");
+            return Lockr.get("USERINFO");            
         }        
         
     },
@@ -87,7 +84,7 @@ export default {
         Vue.config.lang = this.locale;
     },
     created(){
-        console.log("langs:",LANGS);
+        console.log("langs:",LANGS);        
     },
     methods: {
         userLogout(){

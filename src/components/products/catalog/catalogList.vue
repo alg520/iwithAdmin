@@ -42,7 +42,7 @@
     <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
         <el-form-item label="分类名称:" :label-width="formLabelWidth" prop="catalogName">
-          <el-input v-model="catalogForm.catalogName" auto-complete="off"></el-input>
+          <el-input v-model="catalogForm.catalogName" auto-complete="off" @blur="translateContent(catalogForm.catalogName,'name')"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -59,6 +59,8 @@
 import axios from 'axios';
 import $http from '../../../utils/http';
 import draggable from 'vuedraggable';
+import getLanguage from '../../../utils/sysLanguage.js';
+import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
 export default {
   components: {
     draggable
@@ -80,7 +82,8 @@ export default {
         ]
       },
       formLabelWidth: '120px',
-      sortTag: false
+      sortTag: false,
+      catalogNameTransArray:[]
     }
   },
   created() {
@@ -116,9 +119,37 @@ export default {
 
     },
 
-    addCatalogPost() {
+    translateContent(itemName,type){
+        var self = this;
+        itemName !== ''
+        &&
+        getTranslateResult('zh',itemName).then(res => {
 
+            if(type == 'name'){
+                self.catalogNameTransArray = returnTransArray(res);
+                console.log(" 添加分类 ",self.catalogNameTransArray);
+            }
+            
+        })
+
+    },
+
+    addCatalogPost() {
       var self = this;
+
+      let catalogObj = { zh: self.catalogForm.catalogName, jp: self.catalogForm.catalogName, en: self.catalogForm.catalogName };
+      if(this.shopLanguage == 0){
+          catalogObj.zh = this.catalogForm.catalogName;
+      } else if (this.shopLanguage == 1){
+          catalogObj.en = this.catalogForm.catalogName; 
+      } else if(this.shopLanguage == 2) {
+          catalogObj.jp = this.catalogForm.catalogName;
+      }
+      if(self.catalogNameTransArray.length > 0){
+        catalogObj = Object.assign(catalogObj,this.catalogNameTransArray[0]);
+        console.log("合并后的分类对象",catalogObj);
+      }
+      
       //添加的时候需要 商铺id 和 属性名称
       // 商铺id 需要获取列表的时候 就要保存起来
       let params = {
@@ -127,7 +158,7 @@ export default {
         isVisible: true,
         position: 1,
         busiType: 1,
-        nameObject: { zh: self.catalogForm.catalogName, jp: '', en: '' },
+        nameObject: catalogObj,
       };
 
       self.$refs['catalogForm'].validate((valid) => {

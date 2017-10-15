@@ -19,13 +19,13 @@
                             <span class="svg-container pull-left">
                                 <img src="../../../static/images/user_icon.png">
                             </span>
-                            <el-input class="login-input" autocomplete="off" name="username" type="text" v-model="loginForm.username" placeholder="用户名" />
+                            <el-input class="login-input" name="username" type="text" v-model="loginForm.username" placeholder="用户名" />
                         </el-form-item>
                         <el-form-item prop="password">
                             <span class="svg-container pull-left">
                                 <img src="../../../static/images/password_icon.png">
                             </span>
-                            <el-input class="login-input" autocomplete="off" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
+                            <el-input class="login-input" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
                         </el-form-item>
                         <el-form-item prop="authCode" class="authCode-Form">
                             <el-input class="authCode-input" name="authCode" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.authCode" placeholder="请输入验证码"></el-input>
@@ -125,6 +125,7 @@ export default {
             };
 
             this.$refs.loginForm.validate(valid => {
+                
                 if (valid) {
 
                     $http.post('/coron-web/login', data).then(res => {
@@ -138,6 +139,7 @@ export default {
                         }
 
                     })
+
                 } else {
                     console.log("error commit");
                     return false;
@@ -150,9 +152,8 @@ export default {
             getLoginUser().then(res => {
 
                 if (res.status) {
-
                     console.log("用户登录信息",res);
-
+                    
                     if (getToken()) {
                         this.$router.push({
                             path: '/dashboard'
@@ -160,6 +161,12 @@ export default {
                     } else {
                         return false;
                     }
+
+                    if(res.entry.userType == 3 || res.entry.userType == 4){                        
+                        console.log("店铺级别账号：",res.entry.shop);
+                        Cookies.set('SHOPLANGUAGE', res.entry.shop.language);
+                        Lockr.set("SHOPLANGUAGE", res.entry.shop.language);
+                    }                    
 
                     Lockr.set("USERINFO", res.entry);
                 }
@@ -195,7 +202,6 @@ export default {
 .login-container .login-middle {
     min-height: 500px;
 }
-
 
 .login-container .svg-container {
     width: 57px;
