@@ -17,10 +17,10 @@
       </el-table-column>
     </el-table>
   
-    <el-dialog :visible.sync="timeDialogVisible" class="addDialog" v-bind:title="titleTag">
+    <el-dialog :visible.sync="timeDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="timeDurationForm" :rules="rules" ref="timeDurationForm">
         <el-form-item label="时段名称" :label-width="formLabelWidth" prop="name">
-          <el-input v-model="timeDurationForm.name" auto-complete="off" class="input193"></el-input>
+          <el-input v-model="timeDurationForm.name" @blur="translateContent(timeDurationForm.name,'time')"></el-input>
         </el-form-item>
         <el-form-item label="时间范围" :label-width="formLabelWidth" required>          
             <el-time-select placeholder="起始时间" v-model="timeDurationForm.startTime" :picker-options="{
@@ -50,6 +50,9 @@
 <script>
 import axios from 'axios';
 import $http from '../../../utils/http';
+import Cookies from 'js-cookie';
+import getLanguage from '../../../utils/sysLanguage.js';
+import {getTranslateResult,baiduTranslate,returnTransArray} from '../../../utils/translate.js';
 export default {
   data() {
     return {
@@ -68,13 +71,19 @@ export default {
           { required: true, message: '请输入属性名称', trigger: 'blur' }
         ]
       },     
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      timeNameTransArray:[]
     }
   },
   created() {
 
     this.getTimeList();
 
+  },
+  computed:{
+      _SHOPLANGUAGE(){            
+          return Cookies.get('SHOPLANGUAGE');
+      }
   },
   methods: {
 
@@ -106,10 +115,38 @@ export default {
       this.resetForm();
     },
 
+    translateContent(itemName,type){
+        var self = this;
+        let _language = self._SHOPLANGUAGE;
+        itemName !== ''
+        &&
+        baiduTranslate(itemName,_language).then(res => {
+          if(type == 'time'){
+              self.timeNameTransArray = returnTransArray(res);
+              console.log(" 添加时段 ",self.timeNameTransArray);
+          }
+        })
+    },
+
     addTimeDuration(formName) {
 
+      let timeNameObj = {zh:this.timeDurationForm.name,jp:this.timeDurationForm.name,en:this.timeDurationForm.name};
+      if(this._SHOPLANGUAGE == 0){
+          timeNameObj.zh = this.timeDurationForm.name;
+      } else if (this._SHOPLANGUAGE == 1){
+          timeNameObj.en = this.timeDurationForm.name;
+      } else if(this._SHOPLANGUAGE == 2) {
+          timeNameObj.jp = this.timeDurationForm.name;
+      }
+
+      if(this.timeNameTransArray.length > 0){
+          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);
+          console.log("合并后的时段对象",timeNameObj);
+      }
+
       let timeParams = {
-        nameGL: { zh: this.timeDurationForm.name,jp:'',en:''},
+        //nameGL: { zh: this.timeDurationForm.name,jp:this.timeDurationForm.name,en:this.timeDurationForm.name},
+        nameGL: timeNameObj,
         startTime: this.timeDurationForm.startTime,
         endTime: this.timeDurationForm.endTime
       };
@@ -192,6 +229,13 @@ export default {
       this.btnTag = 'update';
       this.timeDialogVisible = true;
       this.timeDurationForm.name = item.nameGL.zh;
+      if(this._SHOPLANGUAGE == 0){          
+          this.timeDurationForm.name = item.nameGL.zh;
+      } else if (this._SHOPLANGUAGE == 1){          
+          this.timeDurationForm.name = item.nameGL.en;
+      } else if(this._SHOPLANGUAGE == 2) {          
+          this.timeDurationForm.name = item.nameGL.jp;
+      }
       this.timeDurationForm.startTime = item.startTime;
       this.timeDurationForm.endTime = item.endTime;
       this.timeDurationId = item.timeDurationId;
@@ -200,9 +244,15 @@ export default {
 
     updateTimeDurationPost(){
 
+      let timeNameObj = {zh:this.timeDurationForm.name,jp:this.timeDurationForm.name,en:this.timeDurationForm.name};
+      if(this.timeNameTransArray.length > 0){
+          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);
+          console.log("合并后的时段对象",timeNameObj);
+      }
+
       let updateParams = {
         timeDurationId:this.timeDurationId,
-        nameGL:{zh:this.timeDurationForm.name,jp:'',en:''},
+        nameGL:timeNameObj,
         startTime:this.timeDurationForm.startTime,
         endTime:this.timeDurationForm.endTime
       };
@@ -225,7 +275,6 @@ export default {
       this.timeDurationForm.name = '';
       this.timeDurationForm.startTime ='';
       this.timeDurationForm.endTime = '';
-
 
     }
   }

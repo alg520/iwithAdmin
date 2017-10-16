@@ -313,6 +313,7 @@
 import axios from 'axios';
 import $http from '../../../utils/http';
 import Lockr from 'lockr';
+import Cookies from 'js-cookie';
 export default {
     data() {
         return {
@@ -433,6 +434,9 @@ export default {
     computed: {
         accepDatas() {
             return Lockr.get("itemUpdateData");
+        },
+        _SHOPLANGUAGE(){            
+            return Cookies.get('SHOPLANGUAGE');
         }
     },
     created() {
@@ -448,17 +452,29 @@ export default {
             console.log("接受的数据", this.accepDatas);
             console.log(this.accepDatas.timeDurations);
             const data = this.accepDatas;
-            this.productForm.itemName = data.itemNameObject.zh;
+            if(this._SHOPLANGUAGE == 0){
+                this.productForm.itemName = data.itemNameObject.zh;
+                this.productForm.itemDesc = data.itemDescObject.zh;
+                this.itemTags = data.tagsObj.zh;
+            }
+            if(this._SHOPLANGUAGE ==1){
+                this.productForm.itemName = data.itemNameObject.en;
+                this.productForm.itemDesc = data.itemDescObject.en;
+                this.itemTags = data.tagsObj.en;
+            }
+            if(this._SHOPLANGUAGE ==2){                
+                this.productForm.itemName = data.itemNameObject.jp;
+                this.productForm.itemDesc = data.itemDescObject.jp;
+                this.itemTags = data.tagsObj.jp;
+            }            
             this.productForm.catalogId = data.catalogId;
-            this.productForm.itemNo = data.itemNo;
-            this.productForm.itemDesc = data.itemDescObject.zh;
+            this.productForm.itemNo = data.itemNo;            
             this.productForm.itemType = data.itemType;
             this.productForm.originPrice = data.originPrice;
             this.productForm.discountPrice = data.discountPrice;
             this.timeLists = data.timeDurations;
             this.attrGroups = data.itemAttrs;
-            this.productForm.picUrl = this.imageUrl = data.picUrl;
-            this.itemTags = data.tagsObj.zh;
+            this.productForm.picUrl = this.imageUrl = data.picUrl;            
             this.productForm.seq = data.seq;
             data.itemType == 1 ? (this.sideDishGroups = data.childItems) : (this.setmealList = data.childItems);
         },

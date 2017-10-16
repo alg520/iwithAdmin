@@ -25,7 +25,8 @@
 <script>
     import vPageTitle from '../common/pageTitle.vue';    
     import getLanguage from '../../utils/sysLanguage.js';
-    import {getTranslateResult,returnTransArray} from '../../utils/translate.js';
+    import Cookies from 'js-cookie';
+    import {baiduTranslate,returnTransArray} from '../../utils/translate.js';
     export default {
         data(){
            return{
@@ -40,19 +41,24 @@
         created(){
             this.nameChange();
             var self = this;
-            //console.log("翻译结果2",getTranslateResult('zh',self.name));
+            
+        },
+        computed:{
+            shopLanguage(){            
+                return Cookies.get('SHOPLANGUAGE');
+            }
         },
         methods:{
             nameChange(){
                 var self = this;
                 this.language = getLanguage();
 
-                self.name != "" && getTranslateResult('zh',self.name).then(res => {                
+                self.name != '' && baiduTranslate(self.name,this.shopLanguage).then(res => {
                     
-                    console.log("dashboard",returnTransArray(res));
-                    var transArray = returnTransArray(res);
-                    this.translateName = transArray[0].zh + '&&' + transArray[0].jp + '&&' + transArray[0].en;
-                    console.log("翻译结果",transArray);
+                    console.log("改版后的返回",res);
+                    let transArray = returnTransArray(res);
+                    console.log("改版后处理结果",transArray);
+                    this.translateName = transArray[0].jp + '&&' + transArray[0].en;
 
                 })
 

@@ -100,8 +100,9 @@
 <script>
 import axios from 'axios';
 import $http from '../../../utils/http';
+import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
+import {getTranslateResult, baiduTranslate, returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
         return {
@@ -154,6 +155,11 @@ export default {
 
         this.getSideDishList();
 
+    },
+    computed:{
+        _SHOPLANGUAGE(){            
+            return Cookies.get('SHOPLANGUAGE');
+        }
     },
     methods: {
 
@@ -247,32 +253,30 @@ export default {
 
         translateContent(itemName,type){
             var self = this;
+            let _language = self._SHOPLANGUAGE;
             itemName !== ''
             &&
-            getTranslateResult('zh',itemName).then(res => {
-
+            baiduTranslate(itemName,_language).then(res => {
                 if(type == 'name'){
                     self.sideDishTransArray = returnTransArray(res);
                     console.log(" 添加配菜 ",self.sideDishTransArray);
                 }
-                
             })
-
         },
 
         addSideDish() {
             let sideDishNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
-            if(this.shopLanguage == 0){
+            if(this._SHOPLANGUAGE == 0){
                 sideDishNameObj.zh = this.productForm.itemName;
-            } else if (this.shopLanguage == 1){
+            } else if (this._SHOPLANGUAGE == 1){
                 sideDishNameObj.en = this.productForm.itemName;
-            } else if(this.shopLanguage == 2) {
+            } else if(this._SHOPLANGUAGE == 2) {
                 sideDishNameObj.jp = this.productForm.itemName;
             }
 
             if(this.sideDishTransArray.length > 0){
                 sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);
-                console.log("合并后的菜名对象",sideDishNameObj);
+                console.log("合并后的配菜对象",sideDishNameObj);
             }
 
             const addParams = {
@@ -326,6 +330,17 @@ export default {
             this.productForm.itemNo = item.itemNo;
             this.productForm.itemName = item.itemNameObject.zh;
             this.productForm.itemDesc = item.itemDescObject.zh;
+            if(this._SHOPLANGUAGE == 0){          
+                this.productForm.itemName = item.itemNameObject.zh;
+                this.productForm.itemDesc = item.itemDescObject.zh;
+            } else if (this._SHOPLANGUAGE == 1){          
+                this.productForm.itemName = item.itemNameObject.en;
+                this.productForm.itemDesc = item.itemDescObject.en;
+            } else if(this._SHOPLANGUAGE == 2) {          
+                this.productForm.itemName = item.itemNameObject.jp;
+                this.productForm.itemDesc = item.itemDescObject.jp;
+            }
+
             this.productForm.originPrice = item.originPrice;
 
             this.imageUrl = this.productForm.picUrl = item.picUrl;
@@ -347,11 +362,19 @@ export default {
         },
 
         updateSideDish() {
+
+            let sideDishNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
+            if(this.sideDishTransArray.length > 0){
+                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);
+                console.log("合并后的配菜对象",sideDishNameObj);
+            }
+
+
             const updateParams = {
                 itemId: this.midObj.itemId,
                 itemNo: this.productForm.itemNo,
-                itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
-                itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                itemNameObject: sideDishNameObj,
+                itemDescObject: { zh: this.productForm.itemDesc, jp: this.productForm.itemName, en: this.productForm.itemName },
                 catalogId: this.productForm.catalogId,
                 originPrice: this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,

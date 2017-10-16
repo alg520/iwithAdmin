@@ -54,7 +54,21 @@
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
-                            <el-table-column prop="itemNameObject.zh" label="商品名称">
+                            <el-table-column prop="itemNo" sortable label="编号" fixed width="100px">
+                            </el-table-column>
+                            <el-table-column label="商品名称">
+                                <template scope="scope">
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="商品描述">
+                                <template scope="scope">
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable label="价格">
                             </el-table-column>
@@ -73,7 +87,7 @@
                                     <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作">
+                            <el-table-column label="操作" fixed="right" width="100px">
                                 <template scope="scope">
                                     <el-button type="text" size="small" @click="updateItem(scope.row)">
                                         <i class="el-icon-edit" title="编辑"></i>
@@ -105,6 +119,7 @@
 import axios from 'axios';
 import $http from '../../../utils/http';
 import Lockr from 'lockr';
+import Cookies from 'js-cookie';
 export default {
     data() {
         return {
@@ -138,7 +153,9 @@ export default {
     },
 
     computed: {
-
+        _SHOPLANGUAGE(){            
+            return Cookies.get('SHOPLANGUAGE');
+        }
     },
 
     mounted: function() {
@@ -292,8 +309,9 @@ export default {
         },
 
         goAdd() {
+            Lockr.set("addCatalogID", this.isActive);
             this.$router.push({
-                path: '/products/add'
+                path: '/products/add'                
             })
         },
 

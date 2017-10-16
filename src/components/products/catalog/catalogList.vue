@@ -10,7 +10,13 @@
       <el-table :data="catalogDatas" style="width: 100%">
         <el-table-column type="index" width="80px">
         </el-table-column>
-        <el-table-column prop="nameObject.zh" label="类目名称"></el-table-column>
+        <el-table-column prop="nameObject.zh" label="类目名称">
+          <template scope="scope">
+            <span v-if="_SHOPLANGUAGE == 0">{{scope.row.nameObject.zh}}</span>
+            <span v-if="_SHOPLANGUAGE == 1">{{scope.row.nameObject.en}}</span>
+            <span v-if="_SHOPLANGUAGE == 2">{{scope.row.nameObject.jp}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="240">
           <template scope="scope" width="240">
             <el-button size="mini" @click="updateCatalog(scope.row)">编辑</el-button>
@@ -28,7 +34,10 @@
         <div class="drapSortList-list">
           <draggable :list="catalogDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
             <div class="list-complete-item" v-for="element in catalogDatas" :key='element'>
-              <div class="list-complete-item-handle">{{element.nameObject.zh}}
+              <div class="list-complete-item-handle">
+                <span v-if="_SHOPLANGUAGE == 0">{{element.nameObject.zh}}</span>
+                <span v-if="_SHOPLANGUAGE == 1">{{element.nameObject.en}}</span>
+                <span v-if="_SHOPLANGUAGE == 2">{{element.nameObject.jp}}</span>
                 <span class="pull-right">
                   <i class="el-icon-d-caret"></i>
                 </span>
@@ -59,8 +68,9 @@
 import axios from 'axios';
 import $http from '../../../utils/http';
 import draggable from 'vuedraggable';
+import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
+import {getTranslateResult,baiduTranslate,returnTransArray} from '../../../utils/translate.js';
 export default {
   components: {
     draggable
@@ -89,6 +99,11 @@ export default {
   created() {
     //默认获取属性列表
     this.getCatalogList();
+  },
+  computed:{
+      _SHOPLANGUAGE(){            
+          return Cookies.get('SHOPLANGUAGE');
+      }
   },
   methods: {
     getCatalogList() {
@@ -121,15 +136,14 @@ export default {
 
     translateContent(itemName,type){
         var self = this;
+        let _language = self._SHOPLANGUAGE;
         itemName !== ''
         &&
-        getTranslateResult('zh',itemName).then(res => {
-
-            if(type == 'name'){
-                self.catalogNameTransArray = returnTransArray(res);
-                console.log(" 添加分类 ",self.catalogNameTransArray);
-            }
-            
+        baiduTranslate(itemName,_language).then(res => {
+          if(type == 'name'){
+              self.catalogNameTransArray = returnTransArray(res);
+              console.log(" 添加分类 ",self.catalogNameTransArray);
+          }
         })
 
     },
@@ -138,11 +152,11 @@ export default {
       var self = this;
 
       let catalogObj = { zh: self.catalogForm.catalogName, jp: self.catalogForm.catalogName, en: self.catalogForm.catalogName };
-      if(this.shopLanguage == 0){
+      if(this._SHOPLANGUAGE == 0){
           catalogObj.zh = this.catalogForm.catalogName;
-      } else if (this.shopLanguage == 1){
+      } else if (this._SHOPLANGUAGE == 1){
           catalogObj.en = this.catalogForm.catalogName; 
-      } else if(this.shopLanguage == 2) {
+      } else if(this._SHOPLANGUAGE == 2) {
           catalogObj.jp = this.catalogForm.catalogName;
       }
       if(self.catalogNameTransArray.length > 0){
@@ -204,15 +218,33 @@ export default {
       this.catalogDialogVisible = true;
       this.middleObj = item;
       this.catalogForm.catalogName = item.nameObject.zh;
+      if(this._SHOPLANGUAGE == 0){          
+          this.catalogForm.catalogName = item.nameObject.zh;
+      } else if (this._SHOPLANGUAGE == 1){          
+          this.catalogForm.catalogName = item.nameObject.en;
+      } else if(this._SHOPLANGUAGE == 2) {          
+          this.catalogForm.catalogName = item.nameObject.jp;
+      }
 
     },
 
     updateCatalogPost() {
-      var self = this;
+      var self = this; 
+      let nameObj = { 
+        zh: self.catalogForm.catalogName, 
+        en: self.catalogForm.catalogName, 
+        jp: self.catalogForm.catalogName 
+      };      
+
+      if(self.catalogNameTransArray.length > 0){
+        nameObj = Object.assign(nameObj,this.catalogNameTransArray[0]);
+        console.log("修改合并后的分类对象",nameObj);
+      }
+
       //更新列表请求
       let updateParams = {
         catalogId: self.middleObj.catalogId,
-        nameObject: { zh: self.catalogForm.catalogName, jp: '', en: '' },
+        nameObject: nameObj,
         isVisible: self.middleObj.isVisible,
         seq: self.middleObj.seq
       };

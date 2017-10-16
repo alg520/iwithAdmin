@@ -11,7 +11,7 @@ const $http = axios.create({
   timeout: 10000, //请求超时时间
   responseType: "json",
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json"    
   }
 });
 
@@ -98,7 +98,7 @@ function checkStatus(response) {
         
     setTimeout(() => {
       loadingScreen.close();
-    }, 500);
+    }, 0);
 
     return response.data;
     //如果不需要除了data 之外的数据 可直接返回过滤后的数据

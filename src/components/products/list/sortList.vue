@@ -9,8 +9,9 @@
                         </li> -->
                         <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
                             <template>
-                                <a href="javascript:;" class="inblock" v-text="item.nameObject.zh">
-                                </a>
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.zh" v-if="_SHOPLANGUAGE == 0"></a>
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.en" v-if="_SHOPLANGUAGE == 1"></a>
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.jp" v-if="_SHOPLANGUAGE == 2"></a>
                             </template>
                         </li>
                     </ul>
@@ -42,8 +43,10 @@
                                     </div>   
                                 </div>
                                 <div class="list-complete-item" v-for="element in productsList" :key='element' v-else>
-                                    <div class="list-complete-item-handle">
-                                        {{element.itemNameObject.zh}}
+                                    <div class="list-complete-item-handle">                                        
+                                        <span v-if="_SHOPLANGUAGE == 0">{{element.itemNameObject.zh}}</span>
+                                        <span v-if="_SHOPLANGUAGE == 1">{{element.itemNameObject.en}}</span>
+                                        <span v-if="_SHOPLANGUAGE == 2">{{element.itemNameObject.jp}}</span>
                                         <span class="pull-right">
                                             <i class="el-icon-d-caret"></i>
                                         </span>
@@ -62,6 +65,7 @@
 import axios from 'axios';
 import $http from '../../../utils/http';
 import draggable from 'vuedraggable';
+import Cookies from 'js-cookie';
 export default {    
     data() {
         return {
@@ -81,9 +85,11 @@ export default {
     components: {
         draggable
     },
-
+    
     computed: {
-
+        _SHOPLANGUAGE(){            
+            return Cookies.get('SHOPLANGUAGE');
+        }
     },
 
     mounted: function() {

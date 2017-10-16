@@ -5,24 +5,26 @@
         </div>
         <div class="login-middle">
             <el-row :gutter="20">
-                <el-col :span="14">                    
-                     <img src="../../../static/images/robot.png" alt="">
+                <el-col :span="14">
+                    <button>IWITH</button>
                 </el-col>
                 <el-col :span="10">                    
-                    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="top" label-width="0px" class="login-form">
-                        
+                    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px" class="login-form">
+                        <el-form-item>
+                            <div class="form-title">
+                                <span>IWITH 商家管理系统</span>
+                            </div>
+                        </el-form-item>
                         <el-form-item prop="username">
-                            <p>用户名:</p>
-                            <!-- <span class="svg-container pull-left">
+                            <span class="svg-container pull-left">
                                 <img src="../../../static/images/user_icon.png">
-                            </span> -->
+                            </span>
                             <el-input class="login-input" name="username" type="text" v-model="loginForm.username" placeholder="用户名" />
                         </el-form-item>
                         <el-form-item prop="password">
-                            <p>密码:</p>
-                            <!-- <span class="svg-container pull-left">
+                            <span class="svg-container pull-left">
                                 <img src="../../../static/images/password_icon.png">
-                            </span> -->
+                            </span>
                             <el-input class="login-input" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
                         </el-form-item>
                         <el-form-item prop="authCode" class="authCode-Form">
@@ -49,11 +51,11 @@
                             <br>
                             <span>联系手机号：（+86）18666286292</span>
                         </div>
-                        <el-button type="text" class="footer-us">联系我们</el-button>
+                        <el-button type="text">联系我们</el-button>
                     </el-tooltip>
                 </span>
                 &emsp;|&emsp;
-                <span><el-button type="text" class="footer-web">IWITH 官网</el-button></span>
+                <span><el-button type="text">IWITH 官网</el-button></span>
             </p>
         </div>
 
@@ -74,8 +76,8 @@ export default {
         return {
             authCodeSrc: '',
             loginForm: {
-                username: '',
-                upassword: '',
+                username: 'zpb',
+                upassword: '123456',
                 authCode: ''
             },
             loginRules: {
@@ -179,29 +181,26 @@ export default {
 .login-container {
     position: relative;
     width: 100%;
-    height: 100%;    
+    height: 100%;
+    background: #2d3a4b url('/coron-web/static/images/login_background.png') left 130px no-repeat;    
+    background-size: 100%;
 }
 
 .login-container .login-title {
-    height: 70px;
-    line-height: 70px;
+    height: 130px;
+    line-height: 130px;
     padding-left: 30px;
     border-bottom: solid 1px #fff;
-    background: rgba(44,48,52,.95);
 }
 
 .login-container .login-title span {
     color: #fff;
-    font-size: 24px;
+    font-size: 36px;
     font-weight: 300;
 }
 
 .login-container .login-middle {
     min-height: 500px;
-    min-width: 1000px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: #fff url('../../../static/images/robot.png');
 }
 
 .login-container .svg-container {
@@ -210,27 +209,20 @@ export default {
     line-height: 54px;
     display: inline-block;
     text-align: center;
-    background-color: #00a2ca;
+    background-color: #2d3a4b;
 }
 
 .login-container .login-form {
-    width: 250px;
-    padding:10px 20px;
+    width: 402px;
+    padding: 30px;
     background-color: #fff;    
-    margin-top: 80px;
-    border: 1px solid #D4D4D4;
-    position: absolute;
-    right: 160px;
-    z-index: 2;
+    margin-top: 50px;
+    box-shadow:0px 0px 8px #000;
+    
 }
-
-.login-container .login-form .el-form-item {
-    margin-bottom: 10px;
-}
-
 .login-container .form-title {
     text-align: center;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 400;
 }
 
@@ -239,72 +231,46 @@ export default {
 }
 
 .login-container .login-form .login-input {
-    width: 100%;
+    width: 345px;
 }
 
 .login-container .login-form .authCode-input {
-    width: 50%;
-}
-
-.login-container .login-form p{    
-    margin: 0;
-    font-weight: 700;
+    width: 60%;
 }
 
 .login-container .login-input .el-input__inner {
-    line-height: 16px;
-    padding: 8px 5px;
-    background: transparent;
+    height: 54px;
+    border-radius: 0;
+    border-left: none;
 }
 
-.login-container .authCode-input .el-input__inner {    
-    line-height: 16px;
-    padding: 8px 5px;
-    background: transparent;    
-}
-
-.login-container .authCode-Form {
-    margin-top: 20px;
+.login-container .authCode-input .el-input__inner {
+    height: 54px;
+    border-radius: 0;
 }
 
 .login-container .authCodeImg {
-    height: 36px;
+    height: 54px;
 }
 
 .login-container .loginBtn {
     color: #fff;
     width: 100%;
-    height: 36px;
-    font-size: 14px;
-    font-weight: 700;
-    background-color: #00a2ca;
-    outline: none;
-    border: none;
-    border-radius: 4px;
-    margin-top: 10px;
+    height: 52px;
+    font-size: 24px;
+    background-color: #2d3a4b;
 }
-.login-container .loginBtn:hover {
-    color: #fff;
-    outline: none;
-}
-
 .login-container .login-footer {
     height: 98px;
     line-height: 98px;
     text-align: center;
     width: 100%;
     position: fixed;
-    bottom: 100px;
-    background: #4B5054;
+    bottom: 0;
+    background: #fff;
 }
 .login-container .login-footer p {
     padding:0;
     margin: 0;
-    color: #fff;
-}
-
-.login-container .login-footer .footer-us,
-.login-container .login-footer .footer-web {
-    color:rgba(255,255,255,.69);
 }
 </style>

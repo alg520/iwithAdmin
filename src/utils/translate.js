@@ -37,11 +37,8 @@ export function getTranslateResult(originLanguage, queryContent) {
   const jp = "jp";
 
   if (query == "") {
-    
-    return {}
-
+    return {};
   } else {
-    
     let translateJP = $.ajax({
       url: url,
       type: "get",
@@ -83,23 +80,21 @@ export function getTranslateResult(originLanguage, queryContent) {
         sign: sign
       }
     });
-   
+
     // Promise.all([translateJP, translateEN, translateZH]).then(res => {
-      
+
     //   console.log("翻译promise返回结果", res);
 
     //   returnTransArray(res);
-      
+
     // });
 
     return Promise.all([translateJP, translateEN, translateZH]);
   }
 }
 
-export function returnTransArray(array){
-
+export function returnTransArray(array) {
   if (array.error_code == "54000") {
-
     console.log("我报错了");
     Message({
       type: "error",
@@ -126,11 +121,138 @@ export function returnTransArray(array){
   });
 
   translateResult.push(item);
-  
+
   console.log("翻译的结果", translateResult);
 
   return translateResult;
-
 }
 
+export function baiduTranslate(queryContent, shopLanguage) {
+  const url = "http://api.fanyi.baidu.com/api/trans/vip/translate";
+
+  const appid = "20170825000076961";
+  const key = "Tpx_Gek5zh5CIJ6OJFOY";
+  const salt = new Date().getTime();
+
+  var query = queryContent;
+  var str1 = appid + query + salt + key;
+  var sign = MD5(str1);
+
+  const zh = "zh";
+  const en = "en";
+  const jp = "jp";
+
+  var toJP = "jp";
+  var toEN = "en";
+  var toZH = "zh";
+
+  if(query !== ''){
+    
+    if (shopLanguage == 0) {
+      const originLanguage = "zh";
+  
+      let translateToJP = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toJP,
+          sign: sign
+        }
+      });
+  
+      let translateToEN = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toEN,
+          sign: sign
+        }
+      });
+  
+      return Promise.all([translateToJP, translateToEN]);
+    }
+  
+    if (shopLanguage == 1) {
+      const originLanguage = "en";
+  
+      let translateToJP = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toJP,
+          sign: sign
+        }
+      });
+  
+      let translateToZH = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toZH,
+          sign: sign
+        }
+      });
+  
+      return Promise.all([translateToJP, translateToZH]);
+    }
+  
+    if (shopLanguage == 2) {
+      const originLanguage = "jp";
+  
+      let translateToZH = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toZH,
+          sign: sign
+        }
+      });
+  
+      let translateToEN = $.ajax({
+        url: url,
+        type: "get",
+        dataType: "jsonp",
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: originLanguage,
+          to: toEN,
+          sign: sign
+        }
+      });
+  
+      return Promise.all([translateToZH, translateToEN]);
+    }
+
+  } else {
+    return {}
+  }
+
+}
 

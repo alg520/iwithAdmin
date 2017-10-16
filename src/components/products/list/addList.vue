@@ -270,8 +270,8 @@
                                     </el-form-item> -->
                                 </el-form>
                                 <div class="btn-fixed">
-                                    <el-button type="primary" @click="addItems()">立即添加</el-button>
-                                    <el-button>保存并添加下一个商品</el-button>
+                                    <el-button type="primary" @click="addItems('add')">立即添加</el-button>
+                                    <el-button @click="saveAddNext('save')">保存并添加下一个商品</el-button>
                                     <el-button @click="gobackList()">返回</el-button>
                                 </div>
                             </div>
@@ -356,8 +356,9 @@ import store from '@/store/index';
 import axios from 'axios';
 import $http from '../../../utils/http';
 import Cookies from 'js-cookie';
+import Lockr from 'lockr';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult,returnTransArray} from '../../../utils/translate.js';
+import {getTranslateResult,baiduTranslate,returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
         return {
@@ -474,7 +475,6 @@ export default {
             itemGnameTransArray:[],
             tagGnameTransArray:[],
             tagGroupObj:{zh:[],en:[],jp:[]}
-            
         }
 
     },
@@ -484,11 +484,18 @@ export default {
         this.getTimeList();
         this.getItemAttrList();
         this.getItemList();
+        this.productForm.catalogId = this.addCatalogID == 0 ? '':this.addCatalogID;
+        
         console.log("店铺语言",this.shopLanguage);
+        console.log("添加类目ID",this.addCatalogID);
+        
     },
     computed:{
         shopLanguage(){            
             return Cookies.get('SHOPLANGUAGE');
+        },
+        addCatalogID(){
+            return Lockr.get("addCatalogID");
         }
     },
     methods: {
@@ -585,7 +592,7 @@ export default {
         getItemList() {
             //因为是套餐内商品所以默认查询所有单品
             let getParams = {
-                itemType: 1,
+                itemType: [1],
                 rp: 10,
                 page: 1
             };
@@ -678,7 +685,14 @@ export default {
         },
 
         itemTagClose(tag) {
-            this.itemTags.splice(this.itemTags.indexOf(tag), 1);
+            let _index = this.itemTags.indexOf(tag);
+            this.itemTags.splice(_index, 1);
+
+            if(this.tagGnameTransArray.length>0){
+                this.tagGroupObj.zh.splice(_index,1);
+                this.tagGroupObj.en.splice(_index,1);
+                this.tagGroupObj.jp.splice(_index,1);
+            }            
             console.log(this.tagGroupObj);
         },
 
@@ -703,16 +717,16 @@ export default {
 
         },
 
-        saveAddNext(){
-            
+        saveAddNext(type){
+            this.addItems(type);
         },
 
         translateContent(itemName,type){
             var self = this;
+            let _language = self.shopLanguage;
             itemName !== ''
             &&
-            getTranslateResult('zh',itemName).then(res => {
-
+            baiduTranslate(itemName,_language).then(res => {
                 if(type == 'name'){
                     console.log(" 添加菜品 ",res);
                     var itemNameTrans = returnTransArray(res);
@@ -734,29 +748,39 @@ export default {
                 if(type == 'tag'){
                     self.tagGnameTransArray = returnTransArray(res);
                     console.log(" 标签组 ",self.tagGnameTransArray);
-                    
-                    self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
-                    self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
-                    self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+
+                    if(self.shopLanguage == 0){
+                        self.tagGroupObj.zh = self.itemTags;
+                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                    }
+                    if(self.shopLanguage ==1){
+                        self.tagGroupObj.en = self.itemTags;
+                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                    }
+                    if(self.shopLanguage == 2){
+                        self.tagGroupObj.jp = self.itemTags;
+                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                    }
 
                     console.log("标签对象组",self.tagGroupObj);
-                    let tagsObj = {zh:self.itemTags,jp:self.itemTags,en:self.itemTags};
-                    Object.assign(tagsObj,self.tagGroupObj);
-                    console.log("最后的标签组对象",tagsObj);
 
                 }
-                
+
             })
 
         },
 
-        addItems() {
+        addItems(type) {
+
             let itemNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
             let itemDescObj = {zh:this.productForm.itemDesc,jp:this.productForm.itemDesc,en:this.productForm.itemDesc};
             let tagsObj = {zh:this.itemTags,jp:this.itemTags,en:this.itemTags};
             if(this.shopLanguage == 0){
                 itemNameObj.zh = this.productForm.itemName;
-                itemDescObject.zh = this.productForm.itemDesc;
+                itemDescObj.zh = this.productForm.itemDesc;
                 tagsObj.zh = this.itemTags;
             } else if (this.shopLanguage == 1){
                 itemNameObj.en = this.productForm.itemName;
@@ -774,25 +798,21 @@ export default {
             }
             if(this.itemDescTransArray.length > 0){
                 itemDescObj = Object.assign(itemDescObj,this.itemDescTransArray[0]);
-                console.log("合并后的描述对象",itemNameObj);
+                console.log("合并后的描述对象",itemDescObj);
             }
             if(this.tagGnameTransArray.length>0){
-                Object.assign(tagsObj,this.tagGroupObj);
-                console.log("合并后的标签对象",itemNameObj);
+                tagsObj = Object.assign(tagsObj,this.tagGroupObj);
+                console.log("合并后的标签对象",tagsObj);
             }
 
-            // this.itemNameTrans.length > 0 && 
-
             let addParams = {
-                itemNo: this.productForm.itemNo,
-                //itemNameObject: { zh: this.productForm.itemName, jp: '', en: '' },
-                itemNameObject: itemNameObj,
-                //itemDescObject: { zh: this.productForm.itemDesc, jp: '', en: '' },
+                itemNo: this.productForm.itemNo,                
+                itemNameObject: itemNameObj,                
                 itemDescObject: itemDescObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
-                tagsObj:{zh:this.itemTags,jp:[],en:[]},
+                tagsObj:tagsObj,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
@@ -808,7 +828,7 @@ export default {
                 method: 'post',
                 data: addParams,
                 headers: {
-                    Language: 0
+                    Language: this.shopLanguage
                 }
             }).then(response => {
                 if (response.data.status == true) {
@@ -817,16 +837,22 @@ export default {
                         message: '菜品添加成功'
                     });
                     //添加成功后需要跳转到菜品列表页
-                    //this.gobackList();
+                    type == 'add' && this.gobackList();
+                    type == 'save' && this.addFromReset();
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: response.data.cnMessage
+                    });
                 }
 
             }).catch(error => {
                 console.log(error);
-                this.$notify({
-                    title: '失败',
-                    message: '这是一条错误的提示消息',
-                    type: 'error'
+                this.$message({
+                    type: 'info',
+                    message: '菜品添加失败'
                 });
+                
             })
 
             // this.$refs['productForm'].validate((valid) => {
@@ -868,7 +894,7 @@ export default {
 
                     if (item.itemAttrId == item2) {
                         //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
-                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh, jp: '', en: '' } });
+                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh, jp: item.attrNameObject.jp, en: item.attrNameObject.en } });
                     }
                 })
 
@@ -1040,6 +1066,7 @@ export default {
             this.setmealGroup = [];
             this.attrGroups = [];
             this.sideDishGroups = [];
+            this.itemTags = [];
         }
     }
 }
