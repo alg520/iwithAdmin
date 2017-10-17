@@ -8,12 +8,16 @@
                             <div class="form-content">
                                 <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
                                     <el-form-item label="菜品编号" prop="itemNo">
-                                        <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
+                                        <el-input type="number" v-model="productForm.itemNo" placeholder="请输入菜品编号"></el-input>                                        
                                     </el-form-item>
                                     <el-form-item label="所属目录" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" placeholder="请选择分类">
-                                            <el-option v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="item.catalogId">
                                             </el-option>
+                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="item.catalogId">
+                                            </el-option>
+                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="item.catalogId">
+                                            </el-option>                                            
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="菜品名称" prop="itemName">
@@ -35,18 +39,27 @@
                                             <i class="el-icon-plus"></i>添加套餐内商品
                                         </el-button>
                                         <el-table :data="setmealList" border style="width: 100%; margin-top:10px;" max-height="250">
-                                            <el-table-column prop="itemNameObject.zh" label="名称" width="120">
+                                            <el-table-column label="名称" width="120">
+                                                <template scope="scope">
+                                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                                                </template>
                                             </el-table-column>
                                             <el-table-column prop="originPrice" label="单品价格">
                                             </el-table-column>
                                             <el-table-column prop="childItems" label="配菜列表">
                                                 <template scope="scope">
-                                                    <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 0" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 1" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.en}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 2" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.jp}}</el-tag>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="itemAttrs" label="属性列表">
                                                 <template scope="scope">
-                                                    <el-tag v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.zh}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 0" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.zh}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 1" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.en}}</el-tag>
+                                                    <el-tag v-if="_SHOPLANGUAGE == 2" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.jp}}</el-tag>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column label="操作" width="80">
@@ -65,98 +78,70 @@
                                         <el-input v-model="productForm.discountPrice" placeholder="请输入商品折后价"></el-input>
                                     </el-form-item>
                                     <el-form-item label="标签" prop="discountPrice">
-                                        <el-tag
-                                        :key="tag"
-                                        type="primary"
-                                        v-for="tag in itemTags"
-                                        :closable="true"
-                                        :close-transition="false"
-                                        @close="itemTagClose(tag)">
-                                        {{tag}}
+                                        <el-tag :key="tag" type="primary" v-for="tag in itemTags" :closable="true" :close-transition="false" @close="itemTagClose(tag)">
+                                            {{tag}}
                                         </el-tag>
-                                        <el-input
-                                        class="input-new-tag"
-                                        v-if="inputVisible"
-                                        v-model="tagValue"
-                                        ref="saveTagInput"
-                                        size="mini"
-                                        @keyup.enter.native="handleTagInputConfirm"
-                                        @blur="handleTagInputConfirm">
+                                        <el-input class="input-new-tag" v-if="inputVisible" v-model="tagValue" ref="saveTagInput" size="mini" @keyup.enter.native="handleTagInputConfirm" @blur="handleTagInputConfirm">
                                         </el-input>
                                         <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">添加标签</el-button>
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
-                                        <el-upload class="avatar-uploader"                                        
-                                        action="/coron-web/upload/itemUpload" 
-                                        :show-file-list="true" 
-                                        :on-success="handleAvatarSuccess"
-                                        :on-remove="handleRemove"
-                                        :before-upload="beforeAvatarUpload">
+                                        <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
                                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
 
                                         <!-- <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :on-error="itemUploadError" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-                                            <i class="el-icon-plus"></i>
-                                        </el-upload>
-                                        <el-dialog v-model="dialogVisible" size="tiny">
-                                            <img width="100%" :src="dialogImageUrl" alt="">
-                                        </el-dialog> -->
+                                                <i class="el-icon-plus"></i>
+                                            </el-upload>
+                                            <el-dialog v-model="dialogVisible" size="tiny">
+                                                <img width="100%" :src="dialogImageUrl" alt="">
+                                            </el-dialog> -->
                                     </el-form-item>
                                     <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
                                         <!-- <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
-                                            <el-option v-for="item in timeDatas" :key="item.timeDuration" :label="item.name" :change="getT()" :value="item.timeDuration">
-                                            </el-option>
-                                        </el-select> -->
-                                        <el-tag
-                                        v-for="tag in timeLists"
-                                        :key="tag.id"
-                                        :closable="true"
-                                        type="primary"
-                                        @close="timeTagClose(tag)"
-                                        >
-                                        {{tag.startTime}}~{{tag.endTime}}
+                                                <el-option v-for="item in timeDatas" :key="item.timeDuration" :label="item.name" :change="getT()" :value="item.timeDuration">
+                                                </el-option>
+                                            </el-select> -->
+                                        <el-tag v-for="tag in timeLists" :key="tag.id" :closable="true" type="primary" @close="timeTagClose(tag)">
+                                            {{tag.startTime}}~{{tag.endTime}}
                                         </el-tag>
-                                        <el-popover
-                                        ref="popover5"
-                                        placement="top"
-                                        width="160"
-                                        v-model="timeSelectVisible">
-                                        <p>
-                                            <template>
-                                                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                                                <div style="margin: 15px 0;"></div>
-                                                <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange">
-                                                    <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
-                                                </el-checkbox-group>
-                                                 <!-- <el-table
-                                                    ref="multipleTable"
-                                                    :data="timeDatas"
-                                                    border
-                                                    tooltip-effect="dark"
-                                                    style="width: 100%"
-                                                    @selection-change="timeChange">
-                                                    <el-table-column
-                                                    type="selection"
-                                                    width="55">
-                                                    </el-table-column>                                                    
-                                                    <el-table-column
-                                                    prop="startTime"
-                                                    label="开始时间"
-                                                    width="120">
-                                                    </el-table-column>
-                                                    <el-table-column
-                                                    prop="endTime"
-                                                    label="结束时间"
-                                                    show-overflow-tooltip>
-                                                    </el-table-column>
-                                                </el-table> -->
-                                            </template>
-                                        </p>
-                                        <div style="text-align: right; margin: 0">
-                                            <el-button size="mini" type="text" @click="timeSelectVisible = false">取消</el-button>
-                                            <el-button type="primary" size="mini" @click="okTime()">确定</el-button>
-                                        </div>
+                                        <el-popover ref="popover5" placement="top" width="160" v-model="timeSelectVisible">
+                                            <p>
+                                                <template>
+                                                    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                                                    <div style="margin: 15px 0;"></div>
+                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange">
+                                                        <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
+                                                    </el-checkbox-group>
+                                                    <!-- <el-table
+                                                        ref="multipleTable"
+                                                        :data="timeDatas"
+                                                        border
+                                                        tooltip-effect="dark"
+                                                        style="width: 100%"
+                                                        @selection-change="timeChange">
+                                                        <el-table-column
+                                                        type="selection"
+                                                        width="55">
+                                                        </el-table-column>                                                    
+                                                        <el-table-column
+                                                        prop="startTime"
+                                                        label="开始时间"
+                                                        width="120">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                        prop="endTime"
+                                                        label="结束时间"
+                                                        show-overflow-tooltip>
+                                                        </el-table-column>
+                                                    </el-table> -->
+                                                </template>
+                                            </p>
+                                            <div style="text-align: right; margin: 0">
+                                                <el-button size="mini" type="text" @click="timeSelectVisible = false">取消</el-button>
+                                                <el-button type="primary" size="mini" @click="okTime()">确定</el-button>
+                                            </div>
                                         </el-popover>
                                         <el-button type="text" v-popover:popover5>请选择时段</el-button>
                                     </el-form-item>
@@ -181,14 +166,21 @@
                                                     </el-form-item>
                                                     <br>
                                                     <el-form-item label="属性列表">
-                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">
-                                                            {{tag.name.zh}}
+                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                            <span v-if="_SHOPLANGUAGE == 0">{{tag.name.zh}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 1">{{tag.name.en}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 2">{{tag.name.jp}}</span>
                                                         </el-tag>
                                                         <el-button class="button-new-tag" size="small" type="primary" @click="selectAttr()">选择属性</el-button>
                                                     </el-form-item>
                                                 </el-form>
                                                 <el-table :data="attrGroups" border style="width: 100%; text-align:center; margin-top:10px;" max-height="250">
-                                                    <el-table-column prop="gname.zh" label="名称" width="120">
+                                                    <el-table-column label="名称" width="120">
+                                                        <template scope="scope">                                                            
+                                                            <span v-if="_SHOPLANGUAGE == 0">{{scope.row.gname.zh}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 1">{{scope.row.gname.en}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 2">{{scope.row.gname.jp}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column label="类型" width="120">
                                                         <template scope="scope">
@@ -197,7 +189,11 @@
                                                     </el-table-column>
                                                     <el-table-column prop="attrs" label="属性列表">
                                                         <template scope="scope">
-                                                            <el-tag v-for="attr in scope.row.attrs" :key="attr.itemAttrId" type="success">{{attr.name.zh}}</el-tag>
+                                                            <el-tag v-for="attr in scope.row.attrs" :key="attr.itemAttrId" type="success">                                                                
+                                                                <span v-if="_SHOPLANGUAGE == 0">{{attr.name.zh}}</span>
+                                                                <span v-if="_SHOPLANGUAGE == 1">{{attr.name.en}}</span>
+                                                                <span v-if="_SHOPLANGUAGE == 2">{{attr.name.jp}}</span>
+                                                            </el-tag>
                                                         </template>
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
@@ -233,14 +229,21 @@
                                                     <br>
                                                     <el-form-item label="附属商品列表">
                                                         <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
-                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">
-                                                            {{tag.itemNameObject.zh}}
+                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                            <span v-if="_SHOPLANGUAGE == 0">{{tag.itemNameObject.zh}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 1">{{tag.itemNameObject.en}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 2">{{tag.itemNameObject.jp}}</span>
                                                         </el-tag>
                                                         <el-button class="button-new-tag" size="small" type="primary" @click="getSideDishes()">选择商品</el-button>
                                                     </el-form-item>
                                                 </el-form>
                                                 <el-table :data="sideDishGroups" border style="width: 100%; text-align:center; margin-top:10px;" max-height="250">
                                                     <el-table-column prop="gname.zh" label="名称" width="120">
+                                                        <template scope="scope">
+                                                            <span v-if="_SHOPLANGUAGE==0">{{scope.row.gname.zh}}</span>
+                                                            <span v-if="_SHOPLANGUAGE==1">{{scope.row.gname.en}}</span>
+                                                            <span v-if="_SHOPLANGUAGE==2">{{scope.row.gname.jp}}</span>
+                                                        </template>
                                                     </el-table-column>
                                                     <el-table-column label="类型" width="120">
                                                         <template scope="scope">
@@ -249,7 +252,11 @@
                                                     </el-table-column>
                                                     <el-table-column label="配菜列表">
                                                         <template scope="scope">
-                                                            <el-tag v-for="item in scope.row.items" :key="item.itemId" type="success">{{item.itemNameObject.zh}}</el-tag>
+                                                            <el-tag v-for="item in scope.row.items" :key="item.itemId" type="success">                                                                
+                                                                <span v-if="_SHOPLANGUAGE==0">{{item.itemNameObject.zh}}</span>
+                                                                <span v-if="_SHOPLANGUAGE==1">{{item.itemNameObject.zh}}</span>
+                                                                <span v-if="_SHOPLANGUAGE==2">{{item.itemNameObject.zh}}</span>
+                                                            </el-tag>
                                                         </template>
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
@@ -264,10 +271,10 @@
                                         </template>
                                     </el-form-item>
                                     <!-- <el-form-item>
-                                        <el-button type="primary" @click="addItems()">立即添加</el-button>
-                                        <el-button>保存并添加下一个商品</el-button>
-                                        <el-button @click="gobackList()">返回</el-button>
-                                    </el-form-item> -->
+                                            <el-button type="primary" @click="addItems()">立即添加</el-button>
+                                            <el-button>保存并添加下一个商品</el-button>
+                                            <el-button @click="gobackList()">返回</el-button>
+                                        </el-form-item> -->
                                 </el-form>
                                 <div class="btn-fixed">
                                     <el-button type="primary" @click="addItems('add')">立即添加</el-button>
@@ -283,7 +290,11 @@
                             <el-form-item label="属性列表名称:" :label-width="formLabelWidth">
                                 <template>
                                     <el-checkbox-group v-model="checkAttrList" @change="handleCheckedAttrsChange">
-                                        <el-checkbox v-for="item in itemAttrDatas" :label="item.itemAttrId" :key="item.itemAttrId">{{item.attrNameObject.zh}}</el-checkbox>
+                                        <el-checkbox v-for="item in itemAttrDatas" :label="item.itemAttrId" :key="item.itemAttrId">                                            
+                                            <span v-if="_SHOPLANGUAGE == 0">{{item.attrNameObject.zh}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 1">{{item.attrNameObject.en}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 2">{{item.attrNameObject.jp}}</span>
+                                        </el-checkbox>
                                     </el-checkbox-group>
                                 </template>
                             </el-form-item>
@@ -299,7 +310,11 @@
                             <el-form-item label="配菜列表:" :label-width="formLabelWidth">
                                 <template>
                                     <el-checkbox-group v-model="checkSideDishList" @change="handleCheckedDishChange">
-                                        <el-checkbox v-for="item in sideDishDatas" :label="item.itemId" :key="item.itemId">{{item.itemNameObject.zh}}</el-checkbox>
+                                        <el-checkbox v-for="item in sideDishDatas" :label="item.itemId" :key="item.itemId">                                            
+                                            <span v-if="_SHOPLANGUAGE == 0">{{item.itemNameObject.zh}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 1">{{item.itemNameObject.en}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 2">{{item.itemNameObject.jp}}</span>
+                                        </el-checkbox>
                                     </el-checkbox-group>
                                 </template>
                             </el-form-item>
@@ -324,6 +339,11 @@
                             <el-table-column type="selection" width="55">
                             </el-table-column>
                             <el-table-column prop="itemNameObject.zh" label="商品名称">
+                                <template scope="scope">                                    
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable label="价格">
                             </el-table-column>
@@ -358,15 +378,15 @@ import $http from '../../../utils/http';
 import Cookies from 'js-cookie';
 import Lockr from 'lockr';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult,baiduTranslate,returnTransArray} from '../../../utils/translate.js';
+import { getTranslateResult, baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
         return {
-            
+
             activeName: 'first',
             imageUrl: '',
             timeSelectVisible: false,
-            timeLists:[],
+            timeLists: [],
             isIndeterminate: true,
             checkAll: true,
 
@@ -434,7 +454,7 @@ export default {
                         selectType: 'single',  //multi
                         seq: 0,
                         attrs: [
-                            
+
                         ]
                     }
                 ],
@@ -469,12 +489,12 @@ export default {
                     { required: true, message: '请选择商品类型', trigger: 'blur' }
                 ]
             },
-            itemNameTransArray:[],
-            itemDescTransArray:[],
-            attrGnameTransArray:[],
-            itemGnameTransArray:[],
-            tagGnameTransArray:[],
-            tagGroupObj:{zh:[],en:[],jp:[]}
+            itemNameTransArray: [],
+            itemDescTransArray: [],
+            attrGnameTransArray: [],
+            itemGnameTransArray: [],
+            tagGnameTransArray: [],
+            tagGroupObj: { zh: [], en: [], jp: [] }
         }
 
     },
@@ -484,17 +504,17 @@ export default {
         this.getTimeList();
         this.getItemAttrList();
         this.getItemList();
-        this.productForm.catalogId = this.addCatalogID == 0 ? '':this.addCatalogID;
-        
-        console.log("店铺语言",this.shopLanguage);
-        console.log("添加类目ID",this.addCatalogID);
-        
+        this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID;
+
+        console.log("店铺语言", this._SHOPLANGUAGE);
+        console.log("添加类目ID", this.addCatalogID);
+
     },
-    computed:{
-        shopLanguage(){            
+    computed: {
+        _SHOPLANGUAGE() {
             return Cookies.get('SHOPLANGUAGE');
         },
-        addCatalogID(){
+        addCatalogID() {
             return Lockr.get("addCatalogID");
         }
     },
@@ -539,7 +559,7 @@ export default {
         handleRemove(file, fileList) {
             console.log(file, fileList);
             this.imageUrl = '';
-            this.productForm.picUrl ='';
+            this.productForm.picUrl = '';
         },
 
         handlePictureCardPreview(file) {
@@ -557,19 +577,19 @@ export default {
             console.log("选取的配菜", value);
         },
 
-        timeChange(val){
+        timeChange(val) {
             this.timeLists = val;
-            console.log("所选择的时段",this.timeLists);
+            console.log("所选择的时段", this.timeLists);
         },
 
         okTime() {
-            console.log("当前选择的时间",this.timeLists);
+            console.log("当前选择的时间", this.timeLists);
             this.timeSelectVisible = false;
         },
 
-        timeTagClose(tag){
+        timeTagClose(tag) {
             this.timeLists.splice(this.timeLists.indexOf(tag), 1);
-            console.log("当前选择的时间段",this.timeLists);           
+            console.log("当前选择的时间段", this.timeLists);
         },
 
         handleCheckAllChange(event) {
@@ -612,16 +632,17 @@ export default {
         },
         //会存放在vuex
         getCatalogList() {
-            $http.get('/coron-web/catalog/getCatalogs')
-                .then(response => {
+            $http.get('/coron-web/catalog/getCatalogs', {
+                page: 1,
+                rp: 100
+            }).then(response => {
 
-                    !!response.entry && (this.catalogDatas = response.entry);
+                !!response.entry && (this.catalogDatas = response.entry);
 
-                })
-                .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问');
-                })
+            }).catch(error => {
+                console.log(error);
+                alert('网络错误，不能访问');
+            })
         },
         //会存放在vuex
         getTimeList() {
@@ -635,8 +656,8 @@ export default {
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
                         if (response.rows && response.rows.length > 0) {
                             response.rows.forEach((item, index) => {
-                                let obj = {startTime: item.startTime, endTime: item.endTime};
-                                this.timeDatas.push(obj); 
+                                let obj = { startTime: item.startTime, endTime: item.endTime };
+                                this.timeDatas.push(obj);
                                 //console.log("时段列表",this.timeDatas);                               
                             });
                         }
@@ -656,15 +677,15 @@ export default {
         },
         //会存放在vuex
         getItemAttrList() {
-            $http.get('/coron-web/itemAttr/list')
-                .then(response => {
-
-                    !!response.rows && (this.itemAttrDatas = response.rows);
-                })
-                .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问');
-                })
+            $http.get('/coron-web/itemAttr/list', {
+                page: 1,
+                rp: 100
+            }).then(response => {
+                !!response.rows && (this.itemAttrDatas = response.rows);
+            }).catch(error => {
+                console.log(error);
+                alert('网络错误，不能访问');
+            })
         },
         //获取配菜
         getSideDishes() {
@@ -688,11 +709,11 @@ export default {
             let _index = this.itemTags.indexOf(tag);
             this.itemTags.splice(_index, 1);
 
-            if(this.tagGnameTransArray.length>0){
-                this.tagGroupObj.zh.splice(_index,1);
-                this.tagGroupObj.en.splice(_index,1);
-                this.tagGroupObj.jp.splice(_index,1);
-            }            
+            if (this.tagGnameTransArray.length > 0) {
+                this.tagGroupObj.zh.splice(_index, 1);
+                this.tagGroupObj.en.splice(_index, 1);
+                this.tagGroupObj.jp.splice(_index, 1);
+            }
             console.log(this.tagGroupObj);
         },
 
@@ -706,7 +727,7 @@ export default {
         handleTagInputConfirm() {
 
             let inputValue = this.tagValue;
-            this.translateContent(inputValue,'tag');
+            this.translateContent(inputValue, 'tag');
             if (inputValue) {
                 this.itemTags.push(inputValue);
             }
@@ -717,109 +738,109 @@ export default {
 
         },
 
-        saveAddNext(type){
+        saveAddNext(type) {
             this.addItems(type);
         },
 
-        translateContent(itemName,type){
+        translateContent(itemName, type) {
             var self = this;
-            let _language = self.shopLanguage;
+            let _language = self._SHOPLANGUAGE;
             itemName !== ''
-            &&
-            baiduTranslate(itemName,_language).then(res => {
-                if(type == 'name'){
-                    console.log(" 添加菜品 ",res);
-                    var itemNameTrans = returnTransArray(res);
-                    self.itemNameTransArray = returnTransArray(res);
-                    console.log(" 添加菜品 ",itemNameTrans);
-                }
-                if(type == 'desc'){
-                    self.itemDescTransArray = returnTransArray(res);
-                    console.log(" 描述 ",self.itemDescTransArray);
-                }
-                if(type == 'attrGroup'){
-                    self.attrGnameTransArray = returnTransArray(res);
-                    console.log(" 属性组 ",self.attrGnameTransArray);
-                }
-                if(type == 'itemGname'){
-                    self.itemGnameTransArray = returnTransArray(res);
-                    console.log(" 附属商品组 ",self.itemGnameTransArray);
-                }
-                if(type == 'tag'){
-                    self.tagGnameTransArray = returnTransArray(res);
-                    console.log(" 标签组 ",self.tagGnameTransArray);
-
-                    if(self.shopLanguage == 0){
-                        self.tagGroupObj.zh = self.itemTags;
-                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
-                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                &&
+                baiduTranslate(itemName, _language).then(res => {
+                    if (type == 'name') {
+                        console.log(" 添加菜品 ", res);
+                        var itemNameTrans = returnTransArray(res);
+                        self.itemNameTransArray = returnTransArray(res);
+                        console.log(" 添加菜品 ", itemNameTrans);
                     }
-                    if(self.shopLanguage ==1){
-                        self.tagGroupObj.en = self.itemTags;
-                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
-                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                    if (type == 'desc') {
+                        self.itemDescTransArray = returnTransArray(res);
+                        console.log(" 描述 ", self.itemDescTransArray);
                     }
-                    if(self.shopLanguage == 2){
-                        self.tagGroupObj.jp = self.itemTags;
-                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
-                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                    if (type == 'attrGroup') {
+                        self.attrGnameTransArray = returnTransArray(res);
+                        console.log(" 属性组 ", self.attrGnameTransArray);
+                    }
+                    if (type == 'itemGname') {
+                        self.itemGnameTransArray = returnTransArray(res);
+                        console.log(" 附属商品组 ", self.itemGnameTransArray);
+                    }
+                    if (type == 'tag') {
+                        self.tagGnameTransArray = returnTransArray(res);
+                        console.log(" 标签组 ", self.tagGnameTransArray);
+
+                        if (self._SHOPLANGUAGE == 0) {
+                            self.tagGroupObj.zh = self.itemTags;
+                            self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                            self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                        }
+                        if (self._SHOPLANGUAGE == 1) {
+                            self.tagGroupObj.en = self.itemTags;
+                            self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                            self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                        }
+                        if (self._SHOPLANGUAGE == 2) {
+                            self.tagGroupObj.jp = self.itemTags;
+                            self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                            self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                        }
+
+                        console.log("标签对象组", self.tagGroupObj);
+
                     }
 
-                    console.log("标签对象组",self.tagGroupObj);
-
-                }
-
-            })
+                })
 
         },
 
         addItems(type) {
 
-            let itemNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
-            let itemDescObj = {zh:this.productForm.itemDesc,jp:this.productForm.itemDesc,en:this.productForm.itemDesc};
-            let tagsObj = {zh:this.itemTags,jp:this.itemTags,en:this.itemTags};
-            if(this.shopLanguage == 0){
+            let itemNameObj = { zh: this.productForm.itemName, jp: this.productForm.itemName, en: this.productForm.itemName };
+            let itemDescObj = { zh: this.productForm.itemDesc, jp: this.productForm.itemDesc, en: this.productForm.itemDesc };
+            let tagsObj = { zh: this.itemTags, jp: this.itemTags, en: this.itemTags };
+            if (this._SHOPLANGUAGE == 0) {
                 itemNameObj.zh = this.productForm.itemName;
                 itemDescObj.zh = this.productForm.itemDesc;
                 tagsObj.zh = this.itemTags;
-            } else if (this.shopLanguage == 1){
+            } else if (this._SHOPLANGUAGE == 1) {
                 itemNameObj.en = this.productForm.itemName;
                 itemDescObj.en = this.productForm.itemDesc;
                 tagsObj.en = this.itemTags;
-            } else if(this.shopLanguage == 2) {
+            } else if (this._SHOPLANGUAGE == 2) {
                 itemNameObj.jp = this.productForm.itemName;
                 itemDescObj.jp = this.productForm.itemDesc;
                 tagsObj.jp = this.itemTags;
             }
 
-            if(this.itemNameTransArray.length > 0){
-                itemNameObj = Object.assign(itemNameObj,this.itemNameTransArray[0]);
-                console.log("合并后的菜名对象",itemNameObj);
+            if (this.itemNameTransArray.length > 0) {
+                itemNameObj = Object.assign(itemNameObj, this.itemNameTransArray[0]);
+                console.log("合并后的菜名对象", itemNameObj);
             }
-            if(this.itemDescTransArray.length > 0){
-                itemDescObj = Object.assign(itemDescObj,this.itemDescTransArray[0]);
-                console.log("合并后的描述对象",itemDescObj);
+            if (this.itemDescTransArray.length > 0) {
+                itemDescObj = Object.assign(itemDescObj, this.itemDescTransArray[0]);
+                console.log("合并后的描述对象", itemDescObj);
             }
-            if(this.tagGnameTransArray.length>0){
-                tagsObj = Object.assign(tagsObj,this.tagGroupObj);
-                console.log("合并后的标签对象",tagsObj);
+            if (this.tagGnameTransArray.length > 0) {
+                tagsObj = Object.assign(tagsObj, this.tagGroupObj);
+                console.log("合并后的标签对象", tagsObj);
             }
 
             let addParams = {
-                itemNo: this.productForm.itemNo,                
-                itemNameObject: itemNameObj,                
+                itemNo: this.productForm.itemNo,
+                itemNameObject: itemNameObj,
                 itemDescObject: itemDescObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
-                tagsObj:tagsObj,
+                tagsObj: tagsObj,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
                 itemAttrs: this.attrGroups,
                 childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
-                seq: 1,
-                busiType: 1 
+                seq: 0,
+                busiType: 1
             };
 
 
@@ -828,7 +849,7 @@ export default {
                 method: 'post',
                 data: addParams,
                 headers: {
-                    Language: this.shopLanguage
+                    Language: this._SHOPLANGUAGE
                 }
             }).then(response => {
                 if (response.data.status == true) {
@@ -852,14 +873,14 @@ export default {
                     type: 'info',
                     message: '菜品添加失败'
                 });
-                
+
             })
 
             // this.$refs['productForm'].validate((valid) => {
 
             //     if(valid){
 
-                    
+
 
             //     } else {
             //         this.$message({
@@ -869,7 +890,7 @@ export default {
             //     }
 
             // })
-           
+
         },
 
 
@@ -951,9 +972,9 @@ export default {
 
         addAttrGroup() {
 
-            let attrGname = {zh: this.productForm.attrGname,jp:this.productForm.attrGname,en:this.productForm.attrGname };
-            if(this.attrGnameTransArray.length > 0){
-                attrGname = Object.assign(attrGname,this.attrGnameTransArray[0]);
+            let attrGname = { zh: this.productForm.attrGname, jp: this.productForm.attrGname, en: this.productForm.attrGname };
+            if (this.attrGnameTransArray.length > 0) {
+                attrGname = Object.assign(attrGname, this.attrGnameTransArray[0]);
             }
 
             let attrItem = {
@@ -982,9 +1003,9 @@ export default {
 
         addItemGroup() {
 
-            let itemGname = {zh: this.productForm.itemGname,jp:this.productForm.itemGname,en:this.productForm.itemGname };
-            if(this.itemGnameTransArray.length > 0){
-                itemGname = Object.assign(itemGname,this.itemGnameTransArray[0]);
+            let itemGname = { zh: this.productForm.itemGname, jp: this.productForm.itemGname, en: this.productForm.itemGname };
+            if (this.itemGnameTransArray.length > 0) {
+                itemGname = Object.assign(itemGname, this.itemGnameTransArray[0]);
             }
 
             let itemSideDish = {
@@ -1114,7 +1135,7 @@ export default {
     margin-left: 8px;
 }
 
-.input-new-tag {    
+.input-new-tag {
     width: 100px !important;
 }
 

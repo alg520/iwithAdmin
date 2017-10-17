@@ -201,7 +201,7 @@ export default {
     min-width: 1000px;
     max-width: 1200px;
     margin: 0 auto;
-    background: #fff url('../../../static/images/robot.png');
+    background: #fff url('/coron-web/static/images/robot.png');
 }
 
 .login-container .svg-container {
@@ -294,7 +294,7 @@ export default {
     text-align: center;
     width: 100%;
     position: fixed;
-    bottom: 100px;
+    bottom: 0;
     background: #4B5054;
 }
 .login-container .login-footer p {

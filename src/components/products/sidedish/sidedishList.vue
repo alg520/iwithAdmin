@@ -20,6 +20,11 @@
         </el-form>
         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
             <el-table-column prop="itemNameObject.zh" label="商品名称">
+                <template scope="scope">
+                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="originPrice" sortable label="价格">
             </el-table-column>
@@ -60,7 +65,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="titleTag">
+        <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
             <el-form :model="productForm" ref="productForm" :rules="rules" label-width="100px">
                 <!-- <el-form-item label="菜品编号" prop="itemNo">
                     <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
@@ -102,7 +107,7 @@ import axios from 'axios';
 import $http from '../../../utils/http';
 import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult, baiduTranslate, returnTransArray} from '../../../utils/translate.js';
+import {baiduTranslate, returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
         return {
@@ -216,18 +221,16 @@ export default {
                 catalogId: -1
             };
 
-            $http.post('/coron-web/item/list', getParams)
-                .then(response => {
+            $http.post('/coron-web/item/list', getParams).then(response => {
 
-                    !!response.rows && (this.productsList = response.rows);
-                    this.totalItems = response.total;
-                    console.log(this.productsList);
+                !!response.rows && (this.productsList = response.rows);
+                this.totalItems = response.total;
+                console.log(this.productsList);
 
-                })
-                .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问,请刷新页面重试！');
-                })
+            }).catch(error => {
+                console.log(error);
+                alert('网络错误，不能访问,请刷新页面重试！');
+            })
         },
 
         addsideDishDialog() {

@@ -1,22 +1,27 @@
 <template>
+    <div class="itemPage">   
     <el-row>
-        <el-col :sm="6" :md="6" :lg="5">
-            <template>
-                <div class="catalog-nav" id="catalog-nav">
-                    <ul class="catalog-list" id="catalog-list">
-                        <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
-                            <a href="javascript:;">全部</a>
-                        </li>
-                        <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
-                            <template>
-                                <a href="javascript:;" class="inblock" v-text="item.nameObject.zh">
-                                </a>
-                            </template>
-                        </li>
-                    </ul>
-
-                </div>
-            </template>
+        <el-col :sm="6" :md="6" :lg="5">            
+            <div class="catalog-nav" id="catalog-nav">
+                <ul class="catalog-list" id="catalog-list">
+                    <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
+                        <a href="javascript:;">全部</a>
+                    </li>
+                    <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
+                        <template>                                
+                            <span v-if="_SHOPLANGUAGE == 0">
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.zh"></a>
+                            </span>
+                            <span v-if="_SHOPLANGUAGE == 1">
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.en"></a>
+                            </span>
+                            <span v-if="_SHOPLANGUAGE == 2">
+                                <a href="javascript:;" class="inblock" v-text="item.nameObject.jp"></a>
+                            </span>
+                        </template>
+                    </li>
+                </ul>
+            </div>            
         </el-col>
         <el-col :sm="18" :md="18" :lg="19">
             <transition mode="out-in">
@@ -54,7 +59,7 @@
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
-                            <el-table-column prop="itemNo" sortable label="编号" fixed width="100px">
+                            <el-table-column prop="itemNo" sortable label="编号" fixed width="90px">
                             </el-table-column>
                             <el-table-column label="商品名称">
                                 <template scope="scope">
@@ -63,7 +68,7 @@
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="商品描述">
+                            <el-table-column label="商品描述" width="300px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
@@ -113,6 +118,7 @@
             </transition>
         </el-col>
     </el-row>
+    </div>
 </template>
 
 <script>
@@ -148,10 +154,6 @@ export default {
         this.getItemList();
     },
 
-    components: {
-
-    },
-
     computed: {
         _SHOPLANGUAGE(){            
             return Cookies.get('SHOPLANGUAGE');
@@ -162,23 +164,24 @@ export default {
 
         //动态计算属性导航的高度
         var catalogNavHeight = document.body.clientHeight - 171;
-        document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+        document.getElementById("catalog-nav").style.minHeight = catalogNavHeight + 'px';
 
     },
 
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值 
         getCatalogList: function() {
-            $http.get('/coron-web/catalog/getCatalogs')
-                .then(response => {
+            $http.get('/coron-web/catalog/getCatalogs',{
+                page:1,
+                rp:100
+            }).then(response => {
 
-                    !!response.entry && (this.catalogDatas = response.entry);
+                !!response.entry && (this.catalogDatas = response.entry);
 
-                })
-                .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问');
-                })
+            }).catch(error => {
+                console.log(error);
+                alert('网络错误，不能访问');
+            })
         },
 
         changeSelected: function(itemId) {
@@ -331,6 +334,10 @@ export default {
 </script>
 
 <style scoped>
+.itemPage {
+    height:auto;
+    background-color:#fff;
+}
 .el-col {
     text-align: center;
 }
@@ -347,6 +354,7 @@ export default {
 .catalog-nav {
     border-right: 1px solid #ccc;
     padding-top: 20px;
+    overflow-y:auto;
 }
 
 ul.catalog-list {

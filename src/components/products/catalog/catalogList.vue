@@ -7,7 +7,7 @@
           <el-button type="primary" @click="catalogSort()">类目排序</el-button>
         </el-form-item>
       </el-form>
-      <el-table :data="catalogDatas" style="width: 100%">
+      <el-table :data="catalogDatas" style="width: 100%" max-height="500">
         <el-table-column type="index" width="80px">
         </el-table-column>
         <el-table-column prop="nameObject.zh" label="类目名称">
@@ -23,7 +23,7 @@
             <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table>      
     </div>
 
     <div class="catalogSort" v-else>
@@ -92,6 +92,9 @@ export default {
         ]
       },
       formLabelWidth: '120px',
+      currentPage: 1,
+      pageSize: 100,
+      totalItems: 0,
       sortTag: false,
       catalogNameTransArray:[]
     }
@@ -107,15 +110,14 @@ export default {
   },
   methods: {
     getCatalogList() {
-      $http.get('/coron-web/catalog/getCatalogs')
-        .then(response => {
-
-          console.log(response);
-
+      $http.get('/coron-web/catalog/getCatalogs',{
+        page:this.currentPage,
+        rp:this.pageSize
+      }).then(response => {          
+          
           !!response.entry && (this.catalogDatas = response.entry);
-
-        })
-        .catch(error => {
+          
+        }).catch(error => {
           console.log(error);
           alert('网络错误，不能访问');
         })
@@ -234,7 +236,7 @@ export default {
         zh: self.catalogForm.catalogName, 
         en: self.catalogForm.catalogName, 
         jp: self.catalogForm.catalogName 
-      };      
+      };
 
       if(self.catalogNameTransArray.length > 0){
         nameObj = Object.assign(nameObj,this.catalogNameTransArray[0]);

@@ -5,7 +5,7 @@
         <el-button type="primary" @click="addAttr()">添加属性</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="itemAttrDatas" style="width: 100%">
+    <el-table :data="itemAttrDatas" style="width: 100%" max-height="500">
       <el-table-column type="index" width="80px">
       </el-table-column>
       <el-table-column label="名称">
@@ -61,6 +61,8 @@ export default {
         ]
       },
       formLabelWidth: '120px',
+      currentPage: 1,
+      pageSize: 100,
       attrTransArray: []
     }
   },
@@ -78,18 +80,19 @@ export default {
   },
   methods: {
     getItemAttrList() {
-      $http.get('/coron-web/itemAttr/list')
-        .then(response => {
+      $http.get('/coron-web/itemAttr/list', {
+        page: this.currentPage,
+        rp: this.pageSize
+      }).then(response => {
 
-          !!response.rows && (this.itemAttrDatas = response.rows) && response.rows.length > 0 && (this.shopId = response.rows[0].shopId);
+        !!response.rows && (this.itemAttrDatas = response.rows) && response.rows.length > 0 && (this.shopId = response.rows[0].shopId);
 
-        })
-        .catch(error => {
+      }).catch(error => {
 
-          console.log(error);
-          alert('网络错误，不能访问');
+        console.log(error);
+        alert('网络错误，不能访问');
 
-        })
+      })
     },
 
     addAttr() {
@@ -101,14 +104,14 @@ export default {
     translateContent(itemName, type) {
       var self = this;
       let _language = self._SHOPLANGUAGE;
-      itemName !== ''
-        &&
+      if(itemName !== ''){
         baiduTranslate(itemName, _language).then(res => {
           if (type == 'attr') {
             self.attrTransArray = returnTransArray(res);
             console.log(" 添加属性 ", self.attrTransArray);
           }
         })
+      }        
 
     },
 

@@ -6,7 +6,13 @@
       </el-form-item>
     </el-form>
     <el-table :data="timeDatas" style="width: 100%">
-      <el-table-column prop="nameGL.zh" label="名称" width="180"></el-table-column>
+      <el-table-column prop="nameGL.zh" label="名称" width="180">
+        <template scope="scope">
+            <span v-if="_SHOPLANGUAGE == 0">{{scope.row.nameGL.zh}}</span>
+            <span v-if="_SHOPLANGUAGE == 1">{{scope.row.nameGL.en}}</span>
+            <span v-if="_SHOPLANGUAGE == 2">{{scope.row.nameGL.jp}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="startTime" label="开始时间"></el-table-column>
       <el-table-column prop="endTime" label="结束时间"></el-table-column>
       <el-table-column label="操作" width="240">
@@ -52,7 +58,7 @@ import axios from 'axios';
 import $http from '../../../utils/http';
 import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
-import {getTranslateResult,baiduTranslate,returnTransArray} from '../../../utils/translate.js';
+import {baiduTranslate,returnTransArray} from '../../../utils/translate.js';
 export default {
   data() {
     return {
@@ -81,7 +87,7 @@ export default {
 
   },
   computed:{
-      _SHOPLANGUAGE(){            
+      _SHOPLANGUAGE(){
           return Cookies.get('SHOPLANGUAGE');
       }
   },
@@ -89,8 +95,7 @@ export default {
 
     getTimeList() {
 
-      $http.get('/coron-web/shopTimeDuration/list')
-        .then(response => {
+      $http.get('/coron-web/shopTimeDuration/list').then(response => {        
 
           if (response.status) {
             response.rows && (this.timeDatas = response.rows);
@@ -101,8 +106,7 @@ export default {
             });
           }
 
-        })
-        .catch(error => {
+        }).catch(error => {
           console.log(error);
           alert('网络错误，不能访问');
         })
