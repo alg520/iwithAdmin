@@ -12,17 +12,11 @@
                     <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="top" label-width="0px" class="login-form">
                         
                         <el-form-item prop="username">
-                            <p>用户名:</p>
-                            <!-- <span class="svg-container pull-left">
-                                <img src="../../../static/images/user_icon.png">
-                            </span> -->
+                            <p>用户名:</p>                            
                             <el-input class="login-input" name="username" type="text" v-model="loginForm.username" placeholder="用户名" />
                         </el-form-item>
-                        <el-form-item prop="password">
-                            <p>密码:</p>
-                            <!-- <span class="svg-container pull-left">
-                                <img src="../../../static/images/password_icon.png">
-                            </span> -->
+                        <el-form-item prop="upassword">
+                            <p>密码:</p>                            
                             <el-input class="login-input" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
                         </el-form-item>
                         <el-form-item prop="authCode" class="authCode-Form">
@@ -71,6 +65,13 @@ import { getToken } from "../../utils/auth"
 import getLanguage from '../../utils/sysLanguage'
 export default {
     data() {
+        var validateNumLetter = (rule,value,callback) => {
+            if(!/^[A-Za-z0-9]+$/i.test(value)){
+                callback(new Error('请输入数字加字母！'));
+            }else {
+                callback();
+            }
+        };
         return {
             authCodeSrc: '',
             loginForm: {
@@ -79,8 +80,14 @@ export default {
                 authCode: ''
             },
             loginRules: {
-                username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-                upassword: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+                username: [
+                    { required: true, message: '请输入账号', trigger: 'blur' },
+                    { validator: validateNumLetter , trigger:'onchange'}
+                ],
+                upassword: [
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+                ],
                 authCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
             }
         }
@@ -128,9 +135,9 @@ export default {
 
                     $http.post('/coron-web/login', data).then(res => {
                         console.log(res);
-                        if (res.status) {
-                            this.getLoginUserInfo();
+                        if (res.status) {                            
                             Cookies.set('Token', res.entry);
+                            this.getLoginUserInfo();
                             this.$router.push({ path: '/dashboard' })
                         } else {
                             this.$message.error(res.cnMessage);
@@ -140,6 +147,10 @@ export default {
 
                 } else {
                     console.log("error commit");
+                    this.$message({
+                        type:'error',
+                        message:'校验失败，请检查'
+                    })
                     return false;
                 }
             })
@@ -150,8 +161,16 @@ export default {
             getLoginUser().then(res => {
 
                 if (res.status) {
-                    console.log("用户登录信息",res);
+                    Lockr.set("USERINFO", res.entry);
+                    Cookies.set('_UNAME', res.entry.uname);
                     
+                    if(res.entry.userType == 3 || res.entry.userType == 4){                        
+                        console.log("店铺级别账号：",res.entry.shop);
+                        Cookies.set('SHOPLANGUAGE', res.entry.shop.language);
+                        Lockr.set("SHOPLANGUAGE", res.entry.shop.language);
+                    }
+
+                    console.log("用户登录信息",res);
                     if (getToken()) {
                         this.$router.push({
                             path: '/dashboard'
@@ -160,13 +179,6 @@ export default {
                         return false;
                     }
 
-                    if(res.entry.userType == 3 || res.entry.userType == 4){                        
-                        console.log("店铺级别账号：",res.entry.shop);
-                        Cookies.set('SHOPLANGUAGE', res.entry.shop.language);
-                        Lockr.set("SHOPLANGUAGE", res.entry.shop.language);
-                    }                    
-
-                    Lockr.set("USERINFO", res.entry);
                 }
 
             })

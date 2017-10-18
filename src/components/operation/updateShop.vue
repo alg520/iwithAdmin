@@ -42,6 +42,9 @@
             <el-form-item label="税率" prop="taxRadio" v-if="updateShopForm.language == '2' && updateShopForm.haveRadioFee == 0">
                 <el-input v-model="updateShopForm.taxRadio"></el-input>
             </el-form-item>
+            <el-form-item label="控制板密码" prop="custPanelAuthCode">
+                <el-input v-model="updateShopForm.custPanelAuthCode" :disabled="true" placeholder="请输入控制板密码"></el-input>
+            </el-form-item>
             <el-form-item label="微信商铺收款ID" prop="wxMerchantId">
                 <el-input v-model="updateShopForm.wxMerchantId"></el-input>
             </el-form-item>
@@ -68,7 +71,16 @@ import $http from '../../utils/http'
 import Lockr from 'lockr'
 export default {
     data() {
-        return {
+        var validateNumLetter = (rule,value,callback) => {
+
+            if(!/^[A-Za-z0-9]+$/i.test(value)){
+                callback(new Error('请输入数字加字母！'));
+            }else {
+                callback();
+            }
+
+        };
+        return {            
             updateShopForm: {
                 name: '',
                 address: '',
@@ -83,12 +95,13 @@ export default {
                 postcode: '',
                 province: '',
                 city: '',
-                street: ''
+                street: '',
+                custPanelAuthCode:''
             },
             updateShopFormRules: {
                 name: [
                     { required: true, message: '请输入店铺名称', trigger: 'blur' }
-                ],
+                ],                
                 shopTel: [
                     { required: true, message: '请输入店铺联系电话', trigger: 'blur' }
                 ],
@@ -97,10 +110,7 @@ export default {
                 ],
                 address: [
                     { required: true, message: '请输入店铺地址', trigger: 'blur' }
-                ],
-                postcode: [
-                    { required: true, message: '请输入店铺地址', trigger: 'blur' }
-                ],
+                ],                
                 province: [
                     { required: true, message: '请输入店铺地址', trigger: 'blur' }
                 ],
@@ -130,25 +140,48 @@ export default {
     methods: {
 
         getUpdateData() {
-            var data = this.rShopDetailData;
-            this.updateShopForm.name = data.name.zh;
-            this.updateShopForm.address = data.address;
-            this.updateShopForm.contactPerson = data.contactPerson;
-            this.updateShopForm.shopTel = data.shopTel;
+            var data = this.rShopDetailData;            
             this.updateShopForm.language = data.language + "";
+            this.updateShopForm.address = data.address;
+            if(data.language == 0){
+                this.updateShopForm.name = data.name.zh;
+            }
+            if(data.language == 1){
+                this.updateShopForm.name = data.name.en;
+            }
+            if(data.language == 2){
+                this.updateShopForm.name = data.name.jp;
+                if(data.address.startsWith("{",0) && data.address.includes('}')){
+                    let shopAddressParse = JSON.parse(data.address);
+                    this.updateShopForm.province = shopAddressParse.province;
+                    this.updateShopForm.city = shopAddressParse.city;
+                    this.updateShopForm.street = shopAddressParse.street;
+                    this.updateShopForm.address = shopAddressParse.address;
+                } else {
+                    this.updateShopForm.address = data.address;
+                }
+                
+            }            
+
+            this.updateShopForm.contactPerson = data.contactPerson;
+            this.updateShopForm.shopTel = data.shopTel;            
             this.updateShopForm.haveRadioFee = (data.haveRadioFee + 0) + "";
             this.updateShopForm.taxRadio = data.taxRadio;
             this.updateShopForm.wxMerchantId = data.wxMerchantId;
             this.updateShopForm.wxPrivateKey = data.wxPrivateKey;
             this.updateShopForm.isTest = data.isTest + "";
+            if(!!data.custPanelAuthCode){
+                this.updateShopForm.custPanelAuthCode = data.custPanelAuthCode;
+            } else {                
+                this.updateShopForm.custPanelAuthCode = Math.random().toString(36).substr(2).slice(1,7);
+            }
+            
         },
 
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-
                     this.updateShop();
-
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -161,14 +194,37 @@ export default {
         },
 
         updateShop() {
+            let nameObj = {zh:'',jp:'',en:''};
+            let shopAddress = this.updateShopForm.address;
+
+            if(this.updateShopForm.language == 0){
+                nameObj.zh = this.updateShopForm.name;
+                shopAddress = this.updateShopForm.address;
+            }
+            if(this.updateShopForm.language == 1){
+                nameObj.en = this.updateShopForm.name;
+                shopAddress = this.updateShopForm.address;
+            }
+            if(this.updateShopForm.language == 2){
+                nameObj.jp = this.updateShopForm.name;
+
+                let addressObj = {};
+                addressObj.province = this.updateShopForm.province;
+                addressObj.city = this.updateShopForm.city;
+                addressObj.street = this.updateShopForm.street;
+                addressObj.address = this.updateShopForm.address;
+
+                shopAddress = JSON.stringify(addressObj);                
+            }
 
             const data = {
                 id: this.rShopDetailData.id,
-                name: { zh: this.updateShopForm.name, jp: '', en: '' },
+                name: { zh: this.updateShopForm.name, jp: this.updateShopForm.name, en: this.updateShopForm.name },
                 shopTel: this.updateShopForm.shopTel,
                 haveRadioFee: parseInt(this.updateShopForm.haveRadioFee),
+                custPanelAuthCode: this.updateShopForm.custPanelAuthCode,
                 taxRadio: this.updateShopForm.taxRadio ? this.updateShopForm.taxRadio : 1,
-                address: this.updateShopForm.address,
+                address: shopAddress,
                 contactPerson: this.updateShopForm.contactPerson,
                 wxMerchantId: this.updateShopForm.wxMerchantId,
                 wxPrivateKey: this.updateShopForm.wxPrivateKey,

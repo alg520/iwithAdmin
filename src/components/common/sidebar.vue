@@ -10,17 +10,7 @@
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
                 <span class="sb-cn">{{$t('sidebar.itemmanage')}}</span>
             </el-menu-item>
-
-            <!-- <el-submenu index="1">
-                <template slot="title">
-                    <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>
-                    <span class="sb-cn">菜品管理</span> 
-                </template>
-                <el-menu-item index="products">菜品列表</el-menu-item>
-                <el-menu-item index="typeManage">目录管理</el-menu-item>
-                <el-menu-item index="tastemanage">属性管理</el-menu-item>
-                <el-menu-item index="shoptimeduration">时段管理</el-menu-item>                
-            </el-submenu> -->
+            
             <!-- v-if="authType == 3" -->
             <el-submenu index="2" v-if="authType == 3">
                 <template slot="title">               
@@ -74,8 +64,6 @@ import { getLoginUser } from '../../api/user'
             //获取登录信息
             getLoginUserInfo(){
                 getLoginUser().then( res => {
-                    console.log("用户登录信息",res);
-
                     if(res.status){
 
                         console.log("用户登录信息",res.entry);

@@ -33,7 +33,7 @@
                                     <!-- <span class="setting-icon">
                                         <i class="iconfont icon-user"></i>
                                     </span> -->
-                                    <span class="setting-string">当前用户：{{USERINFO.uname}}</span>
+                                    <span class="setting-string">当前用户：{{loginUname}}</span>
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item>
@@ -64,29 +64,34 @@ import {LANGS} from '@/i18n/lang'
 import Vue from 'vue'
 import Lockr from 'lockr'
 import Cookies from 'js-cookie'
-import { logout } from '../../api/user'
+import { getLoginUser,logout } from '../../api/user'
 export default {
     data() {
         return {
             name: 'linxin',
             locale: 'zh-cn',
-            langs: LANGS            
+            langs: LANGS,
+            loginUname:''
         }
     },
     computed : {
-
         USERINFO(){
-            return Lockr.get("USERINFO");            
+            return Cookies.get('_UNAME');
         }        
-        
     },
     mounted(){
         Vue.config.lang = this.locale;
     },
     created(){
-        console.log("langs:",LANGS);        
+        console.log("langs:",LANGS);
+        getLoginUser().then(res => {
+            if(res.status){
+                this.loginUname = res.entry.uname;
+            }
+        })
+             
     },
-    methods: {
+    methods: {        
         userLogout(){
             logout().then(res => {                
                 if(res.status){
@@ -106,8 +111,7 @@ export default {
                 this.locale = 'ja';
             }
             
-            Vue.config.lang = this.locale;
-            
+            Vue.config.lang = this.locale;            
         }
     }
 }

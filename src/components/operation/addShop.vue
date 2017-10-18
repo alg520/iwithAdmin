@@ -48,6 +48,9 @@
               <el-option label="否" value="false"></el-option>
           </el-select>
       </el-form-item>
+      <el-form-item label="控制板密码" prop="custPanelAuthCode">
+        <el-input v-model="addShopFrom.custPanelAuthCode" placeholder="请输入控制板密码" :disabled="true"></el-input>
+      </el-form-item>
       <el-form-item label="微信商铺收款ID" prop="wxMerchantId">
         <el-input v-model="addShopFrom.wxMerchantId" placeholder="请输入微信商铺收款ID"></el-input>
       </el-form-item>
@@ -72,12 +75,15 @@
 import axios from 'axios';
 import MD5 from 'js-md5';
 import $http from '../../utils/http';
+import Cookies from 'js-cookie';
 export default {
   data() {
     var validateNumLetter = (rule,value,callback) => {
 
         if(!/^[A-Za-z0-9]+$/i.test(value)){
             callback(new Error('请输入数字加字母！'));
+        }else {
+            callback();
         }
 
     };
@@ -91,6 +97,7 @@ export default {
         taxRadio: '8',
         wxMerchantId: '',
         wxPrivateKey: '',
+        custPanelAuthCode:Math.random().toString(36).substr(2).slice(2,8),
         language: "0",
         isTest: "true",
         postcode:'',
@@ -103,6 +110,9 @@ export default {
       addShopFromRules: {
         name: [
           { required: true, message: '请输入店铺名称', trigger: 'blur' }
+        ],
+        custPanelAuthCode:[
+          { validator:validateNumLetter, trigger: 'onchange' }
         ],
         shopTel: [
           { required: true, message: '请输入店铺联系电话', trigger: 'blur' }
@@ -134,6 +144,9 @@ export default {
   computed:{
     MD5password(){
         return MD5(this.addShopFrom.upassword)
+    },    
+    _SHOPLANGUAGE(){            
+        return Cookies.get('SHOPLANGUAGE');
     }
   },
   methods: {
@@ -155,18 +168,42 @@ export default {
       this.$refs[formName].resetFields();
     },
 
-    addShop() {      
+    addShop() {
+      let nameObj = {zh:'',jp:'',en:''};
+      let shopAddress = this.addShopFrom.address;      
 
+      if(this.addShopFrom.language == '0'){
+        nameObj.zh = this.addShopFrom.name;
+        shopAddress = this.addShopFrom.address;
+      }
+
+      if(this.addShopFrom.language == '1'){
+        nameObj.en = this.addShopFrom.name;
+        shopAddress = this.addShopFrom.address;
+      }
+      
       if(this.addShopFrom.language == '2'){
-        this.addShopFrom.address = this.addShopFrom.province + '  ' + this.addShopFrom.city + '  ' + this.addShopFrom.street + '  ' + this.addShopFrom.address;
+        nameObj.jp = this.addShopFrom.name;
+
+        let addressObj = {};
+        addressObj.province = this.addShopFrom.province;
+        addressObj.city = this.addShopFrom.city;
+        addressObj.street = this.addShopFrom.street;
+        addressObj.address = this.addShopFrom.address;
+
+        shopAddress = JSON.stringify(addressObj);
+
+        console.log(shopAddress);
+        //shopAddress = this.addShopFrom.province + '  ' + this.addShopFrom.city + '  ' + this.addShopFrom.street + '  ' + this.addShopFrom.address;
       }
 
       const data = {
-        name: { zh: this.addShopFrom.name, jp: '', en: '' },
+        name: { zh: this.addShopFrom.name, jp: this.addShopFrom.name, en: this.addShopFrom.name },
         shopTel: this.addShopFrom.shopTel,
         haveRadioFee: parseInt(this.addShopFrom.haveRadioFee),
+        custPanelAuthCode: this.addShopFrom.custPanelAuthCode,
         taxRadio: this.addShopFrom.taxRadio ? this.addShopFrom.taxRadio : 1,
-        address: this.addShopFrom.address,
+        address: shopAddress,
         contactPerson: this.addShopFrom.contactPerson,
         wxMerchantId: this.addShopFrom.wxMerchantId,
         wxPrivateKey: this.addShopFrom.wxPrivateKey,
@@ -175,9 +212,9 @@ export default {
       };
 
       const postData = {
-        shop:data,
-        uname:this.addShopFrom.uname ? this.addShopFrom.uname:null,
-        upassword:this.addShopFrom.upassword ? this.MD5password:null
+        shop: data,
+        uname: this.addShopFrom.uname ? this.addShopFrom.uname : null,
+        upassword: this.addShopFrom.upassword ? this.MD5password : null
       }
 
       $http.post('/coron-web/shop/addAndUser', postData).then(res => {
@@ -232,9 +269,7 @@ export default {
           message:'请输入邮编！'
         });
       }
-
-
-      
+     
     }
   }
 

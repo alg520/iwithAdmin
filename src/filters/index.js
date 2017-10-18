@@ -38,3 +38,15 @@ export function itemToType(itemType){
         return '多选'
     }
 }
+
+// japan address JSON.parse
+export function addressParse(address){    
+        
+    if(address.startsWith("{",0) && address.includes('}')){        
+        var addressObj = JSON.parse(address);
+        return `${addressObj.province} ${addressObj.city} ${addressObj.street} ${addressObj.address}`
+    } else {
+        return address;
+    }
+   
+}

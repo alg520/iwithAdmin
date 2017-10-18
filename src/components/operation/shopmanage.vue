@@ -11,8 +11,18 @@
     </el-form>
     <el-table :data="shopLists" border style="width: 100%; text-align:center;">
       <el-table-column prop="name.zh" label="店铺名称">
+        <template scope="scope">
+          <span v-if=" scope.row.language == 0">{{ scope.row.name.zh }}</span>
+          <span v-if=" scope.row.language == 1">{{ scope.row.name.en }}</span>
+          <span v-if=" scope.row.language == 2">{{ scope.row.name.jp }}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="address" label="地址">
+      <el-table-column label="地址">
+        <template scope="scope">          
+          <span v-if=" scope.row.language == 0">{{ scope.row.address }}</span>
+          <span v-if=" scope.row.language == 1">{{ scope.row.address }}</span>
+          <span v-if=" scope.row.language == 2">{{ scope.row.address | addressParse }}</span>
+        </template>
       </el-table-column> 
       <el-table-column prop="shopTel" label="电话">
       </el-table-column>     

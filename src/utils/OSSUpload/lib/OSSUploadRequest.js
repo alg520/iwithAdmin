@@ -2,8 +2,7 @@
 let config = null;
 
 onmessage = function(e) {
-    console.log('on message');
-
+        
     if(e.data.body){
         config = e.data;
         start(config.body);

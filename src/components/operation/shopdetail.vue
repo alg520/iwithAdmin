@@ -12,13 +12,23 @@
                             <h3>基本信息</h3>
                         </el-col>
                         <el-col :span="12">
-                            <p>店铺名称：<span v-text="shop.name.zh"></span></p>
+                            <p>
+                                店铺名称：
+                                <span v-if="shop.language == 0" v-text="shop.name.zh"></span>
+                                <span v-if="shop.language == 1" v-text="shop.name.en"></span>
+                                <span v-if="shop.language == 2" v-text="shop.name.jp"></span>
+                            </p>
                         </el-col>
                         <el-col :span="12">
                             <p>店铺联系电话：<span v-text="shop.shopTel"></span></p>
                         </el-col>
                         <el-col :span="12">
-                            <p>店铺地址：<span v-text="shop.address"></span></p>
+                            <p>
+                                店铺地址：                                
+                                <span v-if="shop.language == 0" v-text="shop.address"></span>
+                                <span v-if="shop.language == 1" v-text="shop.address"></span>
+                                <span v-if="shop.language == 2" >{{shop.address | addressParse}}</span>
+                            </p>
                         </el-col>
                         <el-col :span="12">
                             <p>语言设置：<span> {{shop.language | languageType}}</span></p>
@@ -28,7 +38,10 @@
                         </el-col>
                         <el-col :span="12">
                             <p>微信支付KEY：<span v-text="shop.wxPrivateKey"></span></p>
-                        </el-col>                        
+                        </el-col>
+                        <el-col :span="12">
+                            <p>店铺授权码：<span v-text="shop.custPanelAuthCode"></span></p>
+                        </el-col>
                         <el-col :span="24">
                             <h3>
                                 店员列表查看
@@ -39,10 +52,16 @@
                             <el-table :data="accountLists" style="width: 100%; text-align:center;" max-height=200>
                                 <el-table-column prop="uname" label="账号">
                                 </el-table-column>
-                                <el-table-column prop="uname" label="账号类型">
+                                <el-table-column prop="userType" label="账号类型">
                                     <template scope="scope">
                                         <el-tag type="danger" v-if="scope.row.userType == 3">管理员</el-tag>
-                                        <el-tag type="danger" v-if="scope.row.userType == 4">店员</el-tag>
+                                        <el-tag type="primary" v-if="scope.row.userType == 4">店员</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="店员信息">
+                                    <template scope="scope">                                        
+                                        <el-tag type="primary">用户ID：{{scope.row.userId}}</el-tag>
+                                        <el-tag type="primary">用户联系方式：{{scope.row.telephone}}</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="100">
@@ -96,9 +115,9 @@
                 <el-form-item label="账号">
                     <el-input type="text" v-model="updatepwdForm.uname" :disabled="true"></el-input>
                 </el-form-item>
-                <el-form-item label="原密码" prop="oldupassword">
+                <!-- <el-form-item label="原密码" prop="oldupassword">
                     <el-input type="password" v-model="updatepwdForm.oldupassword" ></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="新密码" prop="newupassword">
                     <el-input type="password" v-model="updatepwdForm.newupassword" ></el-input>
                 </el-form-item>
@@ -112,18 +131,20 @@
 </template>
 
 <script>
-import axios from 'axios'
-import $http from '../../utils/http'
-import Lockr from 'lockr'
-import MD5 from 'js-md5'
-import * as user from '../../api/user'
-import { getRobotByShop } from '../../api/shop'
-import { mapGetters,mapMutations} from 'vuex'
+import axios from 'axios';
+import $http from '../../utils/http';
+import Lockr from 'lockr';
+import MD5 from 'js-md5';
+import * as user from '../../api/user';
+import { getRobotByShop } from '../../api/shop';
+import { mapGetters,mapMutations} from 'vuex';
 export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
             if(!/^[A-Za-z0-9]+$/i.test(value)){
                 callback(new Error('请输入数字加字母！'));
+            }else {
+                callback();
             }
         };
         return {
@@ -144,8 +165,7 @@ export default {
                 ],
                 upassword:[
                     { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' },
-                    { validator: validateNumLetter , trigger:'blur'}
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
                 ]
             },
             updatepwdForm:{
@@ -153,14 +173,10 @@ export default {
                 oldupassword:'',
                 newupassword:'' 
             },
-            updatepwdRules:{                
-                oldupassword:[
-                    { required: true, message: '请输入原密码', trigger: 'blur' }                    
-                ],
+            updatepwdRules:{
                 newupassword:[
                     { required: true, message: '请输入新密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' },
-                    { validator: validateNumLetter , trigger:'blur'}
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
                 ]
             },
             accountLists:[],
@@ -227,6 +243,8 @@ export default {
         },
 
         addUser(){
+            this.addUserForm.uname ='';
+            this.addUserForm.upassword ='';
             this.addUserDialogVisible = true;
         },
 
@@ -250,7 +268,7 @@ export default {
                 } else {
                     this.$message({
                         type:'error',
-                        message:res.message
+                        message:res.cnMessage
                     })    
                 }
                 
@@ -321,7 +339,7 @@ export default {
 
         updatePassword(item){
 
-            this.updatePWDDialogVisible = true;            
+            this.updatePWDDialogVisible = true;
             this.middleItem = item;
             this.updatepwdForm.uname = item.uname;
             
@@ -330,9 +348,8 @@ export default {
         updatePasswordPost(formName){
 
             const data = {
-                targetUserId:this.middleItem.id,
-                oldPassword:this.updatepwdForm.oldupassword,
-                newPassword:this.updatepwdForm.newupassword
+                targetUserId:this.middleItem.userId,                
+                newPassword:MD5(this.updatepwdForm.newupassword)
             };
             
             this.$refs[formName].validate((valid) => {
@@ -341,8 +358,17 @@ export default {
                     
                     $http.post('/coron-web/user/updatePassword',data).then(res => {
                 
-                        if(res.status){
-                            console.log("密码修改成功",res);
+                        if(res.status){                            
+                            this.$message({
+                                type:'success',
+                                message:'修改成功'
+                            });
+                            this.updatePWDDialogVisible = false;
+                        } else {
+                            this.$message({
+                                type:'error',
+                                message:res.message
+                            });
                         }
 
                     })

@@ -9,12 +9,12 @@
             <img src="../../../static/images/logo.png" alt="">
         </div>
 
-        <div>
+        <!-- <div>
             <input type="text" v-model="name" @blur="nameChange()">
             {{translateName}}
             {{$t('skin')}}
             {{language}}
-        </div>
+        </div> -->
 
     </div>
 
@@ -39,9 +39,7 @@
             vPageTitle
         },
         created(){
-            this.nameChange();
-            var self = this;
-            
+                        
         },
         computed:{
             shopLanguage(){            
