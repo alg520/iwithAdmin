@@ -111,7 +111,7 @@ OSSUpload.prototype.start = function(body) {
     }
 
     //let woker = new Worker('/static/js/OSSUploadRequest.js');
-    let woker = new Worker('/coron-web/static/js/OSSUploadRequest.js');
+    let woker = new Worker('/coron-web/bigc/static/js/OSSUploadRequest.js');
     //let woker = new Worker(OSSUploadRequest);
 
     console.log("123456",woker);

@@ -5,8 +5,10 @@
         </div>
         <div class="login-middle">
             <el-row :gutter="20">
-                <el-col :span="14">                    
-                     <img src="../../../static/images/robot.png" alt="">
+                <el-col :span="14">                     
+                     <div class="middle-left">
+
+                     </div>
                 </el-col>
                 <el-col :span="10">                    
                     <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="top" label-width="0px" class="login-form">
@@ -209,11 +211,12 @@ export default {
 }
 
 .login-container .login-middle {
-    min-height: 500px;
+    min-height: 600px;
     min-width: 1000px;
     max-width: 1200px;
     margin: 0 auto;
-    background: #fff url('/coron-web/static/images/robot.png');
+    background: #fff url('/coron-web/bigc/static/images/login-robotbg.png') no-repeat;
+    background-size: contain;
 }
 
 .login-container .svg-container {

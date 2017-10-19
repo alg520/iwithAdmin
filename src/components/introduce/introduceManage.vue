@@ -162,6 +162,12 @@ export default {
         document.getElementById("content-list").style.height = introduceHeight + 'px';
 
     },
+    
+    computed: {
+        _SHOPLANGUAGE() {
+            return Cookies.get('SHOPLANGUAGE');
+        }
+    },
 
     created() {
         //默认获取属性列表

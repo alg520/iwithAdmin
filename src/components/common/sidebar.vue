@@ -5,6 +5,7 @@
                     <span class="sb-icon"><i class="iconfont icon-zhuye"></i></span>
                     <span class="sb-cn">{{$t('sidebar.homepage')}}</span>
             </el-menu-item>
+            
             <!-- v-if="authType == 3 || authType == 4" -->
             <el-menu-item index="/products" v-if="authType == 3 || authType == 4">
                 <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
@@ -19,6 +20,7 @@
                 </template>
                 <el-menu-item index="/introduce">{{$t('sidebar.introducemanage')}}</el-menu-item>                     
             </el-submenu>
+
             <!-- v-if="authType == 3" -->
             <el-submenu index="3" v-if="authType == 3">
                 <template slot="title">
@@ -39,7 +41,7 @@
                 <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
-            </el-submenu>           
+            </el-submenu>
         </el-menu>
     </div>
 </template>
