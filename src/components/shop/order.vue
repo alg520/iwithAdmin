@@ -30,6 +30,9 @@
       <el-table-column prop="paidAmount" label="实际支付金额" width="180">
       </el-table-column>
       <el-table-column prop="tradeStatus" label="订单状态" width="180">
+        <template scope="scope">
+          <span>{{ scope.row.tradeStatus| orderStatus}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="createdTime" label="下单时间">
       </el-table-column>

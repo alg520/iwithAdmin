@@ -20,7 +20,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="订单状态">
-        <el-select v-model="tradeStatus" placeholder="订单状态">
+        <el-select v-model="tradeStatus" placeholder="订单状态" @change="changeShop()">
           <el-option label="全部" value=""></el-option>
           <el-option label="待审核" value="1"></el-option>
           <el-option label="审核通过" value="2"></el-option>
@@ -41,6 +41,9 @@
       <el-table-column prop="paidAmount" label="实际支付金额" width="180">
       </el-table-column>
       <el-table-column prop="tradeStatus" label="订单状态" width="180">
+        <template scope="scope">
+          <span>{{ scope.row.tradeStatus| orderStatus}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="createdTime" label="下单时间">
       </el-table-column>
@@ -58,10 +61,10 @@
 </template>
 
 <script>
-import axios from 'axios';
-import $http from '../../utils/http';
-import Lockr from 'lockr';
-import formatDate from '../../utils/formatDate';
+import axios from "axios";
+import $http from "../../utils/http";
+import Lockr from "lockr";
+import formatDate from "../../utils/formatDate";
 export default {
   data() {
     return {
@@ -69,88 +72,98 @@ export default {
       pageSize: 10,
       totalItems: 0,
       orderFrom: {
-        time: '',
-        status: '0'
+        time: "",
+        status: "0"
       },
-      tradeStatus:'',
+      tradeStatus: "",
       tradeLists: [],
-      allShopLists:[],
-      selectedShopID:'',
-      tradeDetailInfo:'',
+      allShopLists: [],
+      selectedShopID: "",
+      tradeDetailInfo: "",
       pickerTradetime: {
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            }
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            }
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            }
           }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
-          }
-        }]
+        ]
       },
-      startTrade: '',
-      endTrade: ''
-    }
+      startTrade: "",
+      endTrade: ""
+    };
   },
   created() {
     this.getTrade();
     this.getAllShopList();
   },
   methods: {
-    getAllShopList(){
+    getAllShopList() {
       //获取所有店铺列表，绑定到可搜索的下拉列表
-      $http.get('/coron-web/shop/getAll',{}).then(res => {
-        console.log("所有店铺列表",res);
+      $http.get("/coron-web/shop/getAll", {}).then(res => {
+        console.log("所有店铺列表", res);
         this.allShopLists = res.entry;
         //this.selectedShopID = res.entry[0].id;
-      })
+      });
     },
 
     getTrade() {
       const getData = {
-        shopId:this.selectedShopID,
-        startTime: this.startTrade == '' ? '' : formatDate(this.startTrade,'yyyy-MM-dd h:m:s'),
-        endTime: this.endTrade == '' ? '' : formatDate(this.endTrade,'yyyy-MM-dd h:m:s'),
+        shopId: this.selectedShopID == "" ? null : this.selectedShopID,
+        startTime:
+          this.startTrade == ""
+            ? null
+            : formatDate(this.startTrade, "yyyy-MM-dd h:m:s"),
+        stopTime:
+          this.endTrade == ""
+            ? null
+            : formatDate(this.endTrade, "yyyy-MM-dd h:m:s"),
         tradeStatus: this.tradeStatus,
         page: this.currentPage,
-        rp: 10,
+        rp: 10
       };
 
-      $http.post('/coron-web/trade/getByShop', getData).then(res => {
+      $http.post("/coron-web/trade/getByShop", getData).then(res => {
         console.log("获取交易记录", res.data);
         this.tradeLists = res.rows;
         this.totalItems = res.total;
-
-      })
+      });
     },
-    
-    getDetailTrade(item) {
 
+    getDetailTrade(item) {
       var self = this;
 
-      $http.post('/coron-web/trade/getTradeInfo', {
-        tradeId: item.tradeId
-      }).then(res => {
-        console.log("交易详情", res.entry);
-        self.tradeDetailInfo = res.entry;
+      $http
+        .post("/coron-web/trade/getTradeInfo", {
+          tradeId: item.tradeId
+        })
+        .then(res => {
+          console.log("交易详情", res.entry);
+          self.tradeDetailInfo = res.entry;
 
-        Lockr.set("tradeDetailInfo",self.tradeDetailInfo);
+          Lockr.set("tradeDetailInfo", self.tradeDetailInfo);
 
-        this.$router.push({
-          path:'/operation/orderdetail'
+          this.$router.push({
+            path: "/operation/orderdetail"
+          });
         });
-      })
     },
 
     handleSizeChange(size) {
@@ -163,18 +176,16 @@ export default {
       this.getTrade();
     },
 
-
-    getSomeThing() {      
+    getSomeThing() {
       this.getTrade();
     },
 
-    changeShop(){
+    changeShop() {
       console.log(this.selectedShopID);
       this.getTrade();
     }
-
   }
-}
+};
 </script>
 
 <style>

@@ -19,7 +19,9 @@
                         </el-col>
                         <el-col :span="12">
                             <p>交易状态：
-                                <span v-text="tradeInfo.tradeStatus"></span>
+                                <span>
+                                    {{tradeInfo.tradeStatus | orderStatus}}
+                                </span>
                             </p>
                         </el-col>
                         <el-col :span="12">

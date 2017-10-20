@@ -87,7 +87,7 @@
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
-                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                            <img v-if="imageUrl" :src="baseUrl + productForm.picUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
 
@@ -98,44 +98,18 @@
                                                 <img width="100%" :src="dialogImageUrl" alt="">
                                             </el-dialog> -->
                                     </el-form-item>
-                                    <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">
-                                        <!-- <el-select v-model="productForm.timeDurations" multiple placeholder="请选择时段">
-                                                <el-option v-for="item in timeDatas" :key="item.timeDuration" :label="item.name" :change="getT()" :value="item.timeDuration">
-                                                </el-option>
-                                            </el-select> -->
+                                    <el-form-item label="销售时段" prop="timeDurations" v-if="productForm.itemType != 3">                                        
                                         <el-tag v-for="tag in timeLists" :key="tag.id" :closable="true" type="primary" @close="timeTagClose(tag)">
                                             {{tag.startTime}}~{{tag.endTime}}
                                         </el-tag>
-                                        <el-popover ref="popover5" placement="top" width="160" v-model="timeSelectVisible">
+                                        <el-popover ref="popoverTime" placement="top" width="160" v-model="timeSelectVisible">
                                             <p>
                                                 <template>
                                                     <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
                                                     <div style="margin: 15px 0;"></div>
-                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange">
+                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange" class="time-checkbox">
                                                         <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
-                                                    </el-checkbox-group>
-                                                    <!-- <el-table
-                                                        ref="multipleTable"
-                                                        :data="timeDatas"
-                                                        border
-                                                        tooltip-effect="dark"
-                                                        style="width: 100%"
-                                                        @selection-change="timeChange">
-                                                        <el-table-column
-                                                        type="selection"
-                                                        width="55">
-                                                        </el-table-column>                                                    
-                                                        <el-table-column
-                                                        prop="startTime"
-                                                        label="开始时间"
-                                                        width="120">
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                        prop="endTime"
-                                                        label="结束时间"
-                                                        show-overflow-tooltip>
-                                                        </el-table-column>
-                                                    </el-table> -->
+                                                    </el-checkbox-group>                                                    
                                                 </template>
                                             </p>
                                             <div style="text-align: right; margin: 0">
@@ -143,7 +117,7 @@
                                                 <el-button type="primary" size="mini" @click="okTime()">确定</el-button>
                                             </div>
                                         </el-popover>
-                                        <el-button type="text" v-popover:popover5>请选择时段</el-button>
+                                        <el-button type="text" v-popover:popoverTime>请选择时段</el-button>
                                     </el-form-item>
                                     <el-form-item label="属性设置" v-if="productForm.itemType == 1">
                                         <template>
@@ -166,7 +140,7 @@
                                                     </el-form-item>
                                                     <br>
                                                     <el-form-item label="属性列表">
-                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag,'attr')">                                                            
                                                             <span v-if="_SHOPLANGUAGE == 0">{{tag.name.zh}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 1">{{tag.name.en}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 2">{{tag.name.jp}}</span>
@@ -198,7 +172,7 @@
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
                                                         <template scope="scope">
-                                                            <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
+                                                            <el-button @click.native.prevent="deleteRow(scope.$index,'attr')" type="text" size="small">
                                                                 移除
                                                             </el-button>
                                                         </template>
@@ -227,9 +201,8 @@
                                                         </el-radio-group>
                                                     </el-form-item>
                                                     <br>
-                                                    <el-form-item label="附属商品列表">
-                                                        <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
-                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                    <el-form-item label="附属商品列表">                                                        
+                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag,'sideDish')">                                                            
                                                             <span v-if="_SHOPLANGUAGE == 0">{{tag.itemNameObject.zh}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 1">{{tag.itemNameObject.en}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 2">{{tag.itemNameObject.jp}}</span>
@@ -261,7 +234,7 @@
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
                                                         <template scope="scope">
-                                                            <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
+                                                            <el-button @click.native.prevent="deleteRow(scope.$index,'sideDish')" type="text" size="small">
                                                                 移除
                                                             </el-button>
                                                         </template>
@@ -328,11 +301,11 @@
                     <el-dialog title="套餐添加" :visible.sync="setmealDialogVisible" class="addDialog ">
                         <el-form :inline="true" :model="itemsForm">
                             <el-form-item label="">
-                                <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" :on-icon-click="handleIconClick">
+                                <el-input size="small" placeholder="请输入商品名称" v-model="itemsForm.itemName">
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button size="small" type="primary" @click="goAdd()">添加商品</el-button>
+                                <el-button size="small" type="primary" @click="getItemList()">查询单品</el-button>
                             </el-form-item>
                         </el-form>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center" max-height="450" @selection-change="handleSelectionChange">
@@ -358,6 +331,10 @@
                                 </template>
                             </el-table-column>
                         </el-table>
+                        <div class="block turn-page" style="margin-top:10px;">
+                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
+                            </el-pagination>
+                        </div>
 
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="setmealDialogVisible = false">取 消</el-button>
@@ -382,7 +359,7 @@ import { getTranslateResult, baiduTranslate, returnTransArray } from '../../../u
 export default {
     data() {
         return {
-
+            baseUrl:'http://www.52iwith.com/coron-web/',
             activeName: 'first',
             imageUrl: '',
             timeSelectVisible: false,
@@ -489,6 +466,9 @@ export default {
                     { required: true, message: '请选择商品类型', trigger: 'blur' }
                 ]
             },
+            currentPage:1,
+            pageSize: 10,
+            totalItems:'',
             itemNameTransArray: [],
             itemDescTransArray: [],
             attrGnameTransArray: [],
@@ -530,7 +510,6 @@ export default {
                     message: '图片上传成功！'
                 })
             }
-
             console.log(file.response);
 
         },
@@ -608,26 +587,38 @@ export default {
         getSetmeal() {
             this.setmealDialogVisible = true;
         },
+
+        // 翻页
+        handleCurrentChange(page) {            
+            this.getItemList();
+        },
+
+        handleSizeChange(size) {
+            console.log(size);
+        },
         //会存放在vuex
         getItemList() {
             //因为是套餐内商品所以默认查询所有单品
             let getParams = {
                 itemType: [1],
+                itemName:this.itemsForm.itemName == '' ? null : this.itemsForm.itemName,
                 rp: 10,
-                page: 1
+                page: this.currentPage
             };
 
             $http.post('/coron-web/item/list', getParams)
                 .then(response => {
 
                     !!response.rows && (this.productsList = response.rows);
-                    this.totalItems = response.total;
-                    console.log(this.productsList);
+                    this.totalItems = response.total;                    
 
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问,请刷新页面重试！');
+                    console.log(error);                    
+                    this.$message({
+                        type:'error',
+                        message:'网络错误'
+                    })
                 })
         },
         //会存放在vuex
@@ -693,7 +684,14 @@ export default {
 
             $http.get('/coron-web/item/getSideDishes').then(response => {
                 console.log("配菜列表", response.entry);
-                this.sideDishDatas = response.entry;
+                if( response.status){
+                    this.sideDishDatas = response.entry;
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:'请求出错'
+                    })
+                }                
 
             }).catch(error => {
 
@@ -948,20 +946,24 @@ export default {
         },
 
         //根据索引删除已选中的标签
-        handleClose(tag) {
-            this.productForm.attrGlist.splice(this.productForm.attrGlist.indexOf(tag), 1);
-            this.checkAttrList.splice(this.checkAttrList.indexOf(tag.itemAttrId), 1);
+        handleClose(tag,tagType) {
+            if(tagType == 'attr'){
+                this.productForm.attrGlist.splice(this.productForm.attrGlist.indexOf(tag), 1);
+                this.checkAttrList.splice(this.checkAttrList.indexOf(tag.itemAttrId), 1);
+            } else {
+                this.productForm.itemGlist.splice(this.productForm.itemGlist.indexOf(tag), 1);
+                this.checkSideDishList.splice(this.checkSideDishList.indexOf(tag.itemId), 1);
+            }            
         },
 
-        deleteRow(rowIndex) {
-            //根据索引删除数据
-            this.attrGroups.splice(rowIndex, 1);
+        deleteRow(rowIndex,tag) {
+            //根据索引删除数据            
+            tag == 'attr' ? this.attrGroups.splice(rowIndex, 1):this.sideDishGroups.splice(rowIndex,1);
+
         },
 
         deleteSetmealRow(rowIndex) {
-            //根据索引删除数据
-
-            console.log();
+            //根据索引删除数据            
             this.setmealList.splice(rowIndex, 1);
         },
 
@@ -1148,5 +1150,9 @@ export default {
     position: fixed;
     bottom: 20px;
     left: 40%;
+}
+
+.time-checkbox .el-checkbox+.el-checkbox {
+    margin-left: 0;
 }
 </style>

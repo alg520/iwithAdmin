@@ -8,8 +8,8 @@
                             <h3>交易基本信息</h3>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易类型：
-                                <span v-text="tradeInfo.tradeType"></span>
+                            <p>交易类型：                                
+                                <span>{{ tradeInfo.tradeType| tradeType}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
@@ -18,8 +18,8 @@
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易状态：
-                                <span v-text="tradeInfo.tradeStatus"></span>
+                            <p>交易状态：                                
+                                <span>{{ tradeInfo.tradeStatus| orderStatus}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">

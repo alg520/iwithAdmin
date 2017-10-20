@@ -39,6 +39,38 @@ export function itemToType(itemType){
     }
 }
 
+export function orderStatus(tradeStatus){
+    if(tradeStatus == '1'){
+        return '待审核'
+    }
+    if(tradeStatus == '2'){
+        return '审核通过'
+    } 
+    if(tradeStatus == '3'){
+        return '人工退单'
+    } 
+    if(tradeStatus == '4'){
+        return '审核未通过'
+    } 
+    if(tradeStatus == '5'){
+        return '取消'
+    }     
+}
+
+export function tradeType(type){
+    if(type == '1'){
+        return '点餐交易'
+    }
+    if(type == '2'){
+        return '酒店交易'
+    } 
+    if(type == '3'){
+        return '医院交易'
+    }
+}
+
+
+
 // japan address JSON.parse
 export function addressParse(address){    
         

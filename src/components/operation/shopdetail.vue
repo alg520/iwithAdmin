@@ -69,7 +69,7 @@
                                         <el-button type="text" size="small" @click="updatePassword(scope.row)">
                                             <i class="el-icon-edit" title="修改"></i>
                                         </el-button>                                                                       
-                                        <el-button type="text" size="small" @click="confirmDel(scope.row)">
+                                        <el-button v-if="scope.row.userType == 3" type="text" size="small" @click="confirmDel(scope.row)">
                                             <i class="el-icon-delete" title="删除"></i>
                                         </el-button>                                    
                                     </template>
@@ -174,6 +174,10 @@ export default {
                 newupassword:'' 
             },
             updatepwdRules:{
+                oldupassword:[
+                    { required: true, message: '请输入原密码', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+                ],
                 newupassword:[
                     { required: true, message: '请输入新密码', trigger: 'blur' },
                     { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
@@ -342,7 +346,8 @@ export default {
             this.updatePWDDialogVisible = true;
             this.middleItem = item;
             this.updatepwdForm.uname = item.uname;
-            
+            this.updatepwdForm.newupassword = '';
+
         },
 
         updatePasswordPost(formName){
@@ -358,7 +363,7 @@ export default {
                     
                     $http.post('/coron-web/user/updatePassword',data).then(res => {
                 
-                        if(res.status){                            
+                        if(res.status){
                             this.$message({
                                 type:'success',
                                 message:'修改成功'

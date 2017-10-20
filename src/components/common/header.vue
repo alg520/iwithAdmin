@@ -16,7 +16,7 @@
                     <span>Website:</span>
                     <span>www.iWith.com</span>
                 </div>
-            </el-col>            
+            </el-col>
     
             <el-col :xs="8" :sm="8" :md="8">
                 <div class="user-header pull-right">
@@ -37,7 +37,7 @@
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                                <div class="setting-div">                                    
+                                <div class="setting-div" @click="updatePassword()">                                    
                                     <span class="setting-string">修改密码</span>
                                 </div>
                             </el-dropdown-item>
@@ -55,23 +55,69 @@
                 </div>                   
             </el-col>
         </el-row>
+
+        <el-dialog title="密码修改" :visible.sync="updatePWDDialogVisible" class="addDialog headerDialog" size="tiny">
+            <p>{{errorInfo}}</p>
+            <el-form :model="updatepwdForm" :rules="updatepwdRules" ref="updatepwdForm" label-width="100px">
+                <el-form-item label="账号">
+                    <el-input type="text" v-model="updatepwdForm.uname" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="原密码" prop="oldupassword">
+                    <el-input type="password" v-model="updatepwdForm.oldupassword" ></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="newupassword">
+                    <el-input type="password" v-model="updatepwdForm.newupassword" ></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="updatePasswordPost('updatepwdForm')">确认修改</el-button>                    
+                    <el-button @click="updatePWDDialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>            
+        </el-dialog>
     
     </div>
 </template>
 
 <script>
-import {LANGS} from '@/i18n/lang'
-import Vue from 'vue'
-import Lockr from 'lockr'
-import Cookies from 'js-cookie'
-import { getLoginUser,logout } from '../../api/user'
+import Vue from 'vue';
+import {LANGS} from '@/i18n/lang';
+import Lockr from 'lockr';
+import Cookies from 'js-cookie';
+import MD5 from 'js-md5';
+import $http from '../../utils/http';
+import { getLoginUser,logout } from '../../api/user';
 export default {
     data() {
+         var validateNumLetter = (rule,value,callback) => {
+            if(!/^[A-Za-z0-9]+$/i.test(value)){
+                callback(new Error('请输入数字加字母！'));
+            }else {
+                callback();
+            }
+        };
         return {
             name: 'linxin',
+            shopInfo:'',
             locale: 'zh-cn',
             langs: LANGS,
-            loginUname:''
+            loginUname:'',
+            updatePWDDialogVisible:false,
+            errorInfo:'',
+            updatepwdForm:{
+                uname:'',
+                oldupassword:'',
+                newupassword:'' 
+            },
+            updatepwdRules:{
+                oldupassword:[
+                    { required: true, message: '请输入原密码', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+                ],
+                newupassword:[
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
+                ]
+            }
         }
     },
     computed : {
@@ -86,6 +132,8 @@ export default {
         console.log("langs:",LANGS);
         getLoginUser().then(res => {
             if(res.status){
+                console.log("登录信息",res.entry);
+                this.shopInfo = res.entry;
                 this.loginUname = res.entry.uname;
             }
         })
@@ -111,7 +159,60 @@ export default {
                 this.locale = 'ja';
             }
             
-            Vue.config.lang = this.locale;            
+            Vue.config.lang = this.locale;
+        },
+
+        updatePassword(){
+
+            this.updatePWDDialogVisible = true;            
+            this.updatepwdForm.uname = this.shopInfo.uname;
+            this.updatepwdForm.oldupassword ='';
+            this.updatepwdForm.newupassword ='';
+            
+        },
+
+        updatePasswordPost(formName){
+
+            const data = {
+                targetUserId:this.shopInfo.userId,                
+                oldPassword:MD5(this.updatepwdForm.oldupassword),
+                newPassword:MD5(this.updatepwdForm.newupassword)
+            };
+            
+            this.$refs[formName].validate((valid) => {
+                
+                if (valid) {
+                
+                    $http.post('/coron-web/user/updatePassword',data).then(res => {
+                
+                        if(res.status){
+                            this.$message({
+                                type:'success',
+                                message:'修改成功'
+                            });
+                            this.updatePWDDialogVisible = false;
+                            this.userLogout();
+                        } else {
+                            this.$message({
+                                type:'error',
+                                message:res.message
+                            });
+                            this.errorInfo = res.message;
+                        }
+
+                    })
+
+                } else {
+                    console.log('error submit!!');
+                    this.$message({
+                        type:'error',
+                        customClass:'zIndexMessage',
+                        message: '校验失败,请检查'
+                    });                    
+                    return false;
+                }
+            });
+
         }
     }
 }
@@ -245,4 +346,10 @@ export default {
     padding-top: 3px;
     padding-right: 3px;
 }
+
+.zIndexMessage {
+    z-index: 9999 !important;
+    top: 300px;
+}
+
 </style>

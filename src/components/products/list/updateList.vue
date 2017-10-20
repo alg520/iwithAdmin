@@ -92,7 +92,7 @@
                                     </el-form-item>
                                     <el-form-item label="图片" prop="picUrl">
                                         <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
-                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                            <img v-if="imageUrl" :src="baseUrl + productForm.picUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>                                       
                                     </el-form-item>
@@ -103,7 +103,7 @@
                                         <el-popover ref="popoverTime" placement="right" width="160" v-model="timeSelectVisible">
                                             <p>
                                                 <template>
-                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedTimesChange">
+                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedTimesChange" class="time-checkbox">
                                                         <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
                                                     </el-checkbox-group>
                                                 </template>
@@ -126,7 +126,7 @@
                                                 </div>
                                                 <el-form label-width="120px" :inline="true">
                                                     <el-form-item label="属性组名称">
-                                                        <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.attrGname"></el-input>
+                                                        <el-input style="width:100%;" size="small" placeholder="请输入属性组名称" v-model="productForm.attrGname" @blur="translateContent(productForm.attrGname,'attrGroup')"></el-input>
                                                     </el-form-item>
                                                     <el-form-item label="类型">
                                                         <el-radio-group v-model="productForm.attrGtype" size="small">
@@ -136,7 +136,7 @@
                                                     </el-form-item>
                                                     <br>
                                                     <el-form-item label="属性列表">
-                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                        <el-tag :key="tag" v-for="tag in productForm.attrGlist" :closable="true" :close-transition="false" @close="handleClose(tag,'attr')">                                                            
                                                             <span v-if="_SHOPLANGUAGE == 0">{{tag.name.zh}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 1">{{tag.name.en}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 2">{{tag.name.jp}}</span>
@@ -168,7 +168,7 @@
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
                                                         <template scope="scope">
-                                                            <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
+                                                            <el-button @click.native.prevent="deleteRow(scope.$index,'attr')" type="text" size="small">
                                                                 移除
                                                             </el-button>
                                                         </template>
@@ -188,7 +188,7 @@
                                                 </div>
                                                 <el-form label-width="120px" :inline="true">
                                                     <el-form-item label="附属商品组名称">
-                                                        <el-input style="width:100%;" size="small" placeholder="请输入附属商品组名称" v-model="productForm.itemGname"></el-input>
+                                                        <el-input style="width:100%;" size="small" placeholder="请输入附属商品组名称" v-model="productForm.itemGname" @blur="translateContent(productForm.itemGname,'itemGname')"></el-input>
                                                     </el-form-item>
                                                     <el-form-item label="类型">
                                                         <el-radio-group v-model="productForm.itemGtype" size="small">
@@ -197,9 +197,8 @@
                                                         </el-radio-group>
                                                     </el-form-item>
                                                     <br>
-                                                    <el-form-item label="附属商品列表">
-                                                        <!-- <el-button :plain="true" type="info" size="small" @click="attrListDialogVisible = true">添加属性</el-button> -->
-                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag)">                                                            
+                                                    <el-form-item label="附属商品列表">                                                        
+                                                        <el-tag :key="tag" v-for="tag in productForm.itemGlist" :closable="true" :close-transition="false" @close="handleClose(tag,'sideDish')">                                                            
                                                             <span v-if="_SHOPLANGUAGE == 0">{{tag.itemNameObject.zh}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 1">{{tag.itemNameObject.en}}</span>
                                                             <span v-if="_SHOPLANGUAGE == 2">{{tag.itemNameObject.jp}}</span>
@@ -231,7 +230,7 @@
                                                     </el-table-column>
                                                     <el-table-column label="操作" width="80">
                                                         <template scope="scope">
-                                                            <el-button @click.native.prevent="deleteRow(scope.$index)" type="text" size="small">
+                                                            <el-button @click.native.prevent="deleteRow(scope.$index,'sideDish')" type="text" size="small">
                                                                 移除
                                                             </el-button>
                                                         </template>
@@ -296,11 +295,11 @@
                     <el-dialog title="套餐添加" :visible.sync="setmealDialogVisible" class="addDialog ">
                         <el-form :inline="true" :model="itemsForm">
                             <el-form-item label="">
-                                <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" :on-icon-click="handleIconClick">
+                                <el-input size="small" placeholder="请输入商品名称" v-model="itemsForm.itemName">
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button size="small" type="primary" @click="goAdd()">添加商品</el-button>
+                                <el-button size="small" type="primary" @click="getItemList()">查询单品</el-button>
                             </el-form-item>
                         </el-form>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center" max-height="450" @selection-change="handleSelectionChange">
@@ -326,6 +325,10 @@
                                 </template>
                             </el-table-column>
                         </el-table>
+                        <div class="block turn-page" style="margin-top:10px;">
+                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
+                            </el-pagination>
+                        </div>
 
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="setmealDialogVisible = false">取 消</el-button>
@@ -348,6 +351,7 @@ import {baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
         return {
+            baseUrl:'http://www.52iwith.com/coron-web/',
             activeName: 'first',
             imageUrl: '',
             timeSelectVisible: false,
@@ -458,6 +462,9 @@ export default {
                     { required: true, message: '请选择商品类型', trigger: 'blur' }
                 ]
             },
+            currentPage:1,
+            pageSize: 10,
+            totalItems:'',
             itemNameTransArray: [],
             itemDescTransArray: [],
             attrGnameTransArray: [],
@@ -532,11 +539,12 @@ export default {
         },
 
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
+
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
+                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
             }
             if (!isLt2M) {
                 this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -586,14 +594,24 @@ export default {
         okTime() {
             console.log("当前选择的时间", this.timeLists);
             this.timeSelectVisible = false;
-        },         
+        },
+
+        // 翻页
+        handleCurrentChange(page) {            
+            this.getItemList();
+        },
+
+        handleSizeChange(size) {
+            console.log(size);
+        },
 
         getItemList() {
             //因为是套餐内商品所以默认查询所有单品
             let getParams = {
                 itemType: [1],
+                itemName:this.itemsForm.itemName == '' ? null : this.itemsForm.itemName,
                 rp: 10,
-                page: 1
+                page: this.currentPage
             };
 
             $http.post('/coron-web/item/list', getParams)
@@ -931,19 +949,24 @@ export default {
         },
 
         //根据索引删除已选中的标签
-        handleClose(tag) {
-            this.productForm.attrGlist.splice(this.productForm.attrGlist.indexOf(tag), 1);
-            this.checkAttrList.splice(this.checkAttrList.indexOf(tag.itemAttrId), 1);
+        handleClose(tag,tagType) {
+
+            if(tagType == 'attr'){
+                this.productForm.attrGlist.splice(this.productForm.attrGlist.indexOf(tag), 1);
+                this.checkAttrList.splice(this.checkAttrList.indexOf(tag.itemAttrId), 1);
+            } else {
+                this.productForm.itemGlist.splice(this.productForm.itemGlist.indexOf(tag), 1);
+                this.checkSideDishList.splice(this.checkSideDishList.indexOf(tag.itemId), 1);
+            }   
         },
 
-        deleteRow(rowIndex) {
-            //根据索引删除数据
-            this.attrGroups.splice(rowIndex, 1);
+        deleteRow(rowIndex,tag) {
+            //根据索引删除数据            
+            tag == 'attr' ? this.attrGroups.splice(rowIndex, 1):this.sideDishGroups.splice(rowIndex,1);
         },
 
         deleteSetmealRow(rowIndex) {
             //根据索引删除数据
-
             this.setmealList.splice(rowIndex, 1);
         },
 
@@ -1125,5 +1148,8 @@ export default {
     position: fixed;
     bottom: 20px;
     left: 40%;
+}
+.time-checkbox .el-checkbox+.el-checkbox {
+    margin-left: 0;
 }
 </style>

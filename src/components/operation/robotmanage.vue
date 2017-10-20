@@ -28,13 +28,13 @@
       </el-table-column>
       <el-table-column label="舞蹈图片">
         <template scope="prop">
-          <!-- <img :src="prop.row.motionCodesPojo.zh.danceImg" alt="" width="100" height="100"> -->
+          <!-- <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="100" height="100"> -->
           <span>{{prop.row.motionCodesPojo.zh.danceImg}}</span>
         </template>
       </el-table-column>
       <el-table-column label="舞蹈音乐">
         <template scope="prop">
-          <!-- <audio :src="prop.row.motionCodesPojo.zh.danceMusic" controls="controls">
+          <!-- <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls">
             Your browser does not support the audio element.
           </audio> -->
           <span>{{prop.row.motionCodesPojo.zh.danceMusic}}</span>
@@ -51,7 +51,7 @@
     <el-dialog :title=" btnTag == 'add' ? '添加舞蹈':'修改舞蹈'" :visible.sync="robotDanceDialogVisible" size="tiny">
       <el-form :model="robotDanceForm" :rules="robotDanceFormRules" ref="robotDanceForm" :label-width="formLabelWidth">
         <el-form-item label="舞蹈名称" prop="danceName">
-          <el-input v-model="robotDanceForm.danceName" placeholder="请输入舞蹈名称"></el-input>
+          <el-input v-model="robotDanceForm.danceName" placeholder="请输入舞蹈中文名称"></el-input>          
         </el-form-item>
         <el-form-item label="舞蹈代码" prop="danceCode">
           <el-input v-model="robotDanceForm.danceCode" placeholder="请输入舞蹈代码"></el-input>
@@ -99,6 +99,7 @@ import $http from '../../utils/http'
 export default {
   data() {
     return {
+      baseUrl:'http://www.52iwith.com/coron-web/',
       robotDanceLists: [],
       robotDanceDialogVisible: false,
       formLabelWidth: '120px',
@@ -247,10 +248,26 @@ export default {
     },
 
     robotDanceAdd(){
+
+
+
+
       const data = {
         type: this.robotDanceForm.type,
         motionCodesPojo: {
           zh: {
+            danceName: this.robotDanceForm.danceName,
+            danceCode: this.robotDanceForm.danceCode,
+            danceImg: this.robotDanceForm.danceImg,
+            danceMusic: this.robotDanceForm.danceMusic
+          },
+          en: {
+            danceName: this.robotDanceForm.danceName,
+            danceCode: this.robotDanceForm.danceCode,
+            danceImg: this.robotDanceForm.danceImg,
+            danceMusic: this.robotDanceForm.danceMusic
+          },
+          jp: {
             danceName: this.robotDanceForm.danceName,
             danceCode: this.robotDanceForm.danceCode,
             danceImg: this.robotDanceForm.danceImg,
