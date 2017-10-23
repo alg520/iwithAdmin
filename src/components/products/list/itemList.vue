@@ -89,7 +89,7 @@
                             </el-table-column>
                             <el-table-column label="图片">
                                 <template scope="scope">
-                                    <img :src="'http://www.52iwith.com/coron-web/' + scope.row.picUrl" alt="图片" width="50" height="50" style="margin-top:5px">
+                                    <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50" style="margin-top:5px">
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" fixed="right" width="100px">
@@ -129,6 +129,7 @@ import Cookies from 'js-cookie';
 export default {
     data() {
         return {
+            baseUrl:'http://www.52iwith.com/coron-web/',
             isActive: 0,
             catalogDatas: [],
             productsList: [],

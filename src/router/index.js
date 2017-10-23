@@ -26,7 +26,7 @@ import OTAmanage from "@/components/operation/otamanage";
 import OTAadd from "@/components/operation/otaadd";
 import APKmanage from "@/components/operation/apkmanage";
 import APKadd from "@/components/operation/apkadd";
-
+import Translate from "@/components/operation/translate";
 
 import ItemList from "@/components/products/list/itemList";
 import AddList from "@/components/products/list/addList";
@@ -49,34 +49,31 @@ const router = new Router({
     {
       path: "/",
       component: Home,
-      meta:{
-        requireAuth:true
+      meta: {
+        requireAuth: true
       },
       children: [
         {
           path: "",
           component: DashBoard,
-          meta:{
-            requireAuth:true
-          },
+          meta: {
+            requireAuth: true
+          }
         },
         {
           path: "/dashboard",
           component: DashBoard,
-          meta:{
-            requireAuth:true
-          },
+          meta: {
+            requireAuth: true
+          }
         },
         {
           path: "/products",
           component: Products,
-          redirect: "/products/list",          
-          meta:{
-            requireAuth:true,
-            breadNav:[
-              {name:'商品管理',path:''},
-              {name:'商品列表',path:''}
-            ]
+          redirect: "/products/list",
+          meta: {
+            requireAuth: true,
+            breadNav: [{ name: "商品管理", path: "" }, { name: "商品列表", path: "" }]
           },
           children: [
             { path: "list", component: ItemList },
@@ -93,166 +90,172 @@ const router = new Router({
           path: "/introduce",
           component: Introduce,
           meta: ["提案管理", "提案列表"],
-          meta:{
-            requireAuth:true,
-            breadNav:[
-              {name:'提案管理',path:''},
-              {name:'提案列表',path:''}
-            ]
-          },
+          meta: {
+            requireAuth: true,
+            breadNav: [{ name: "提案管理", path: "" }, { name: "提案列表", path: "" }]
+          }
         },
         {
           path: "/operation",
-          component: Operation,          
+          component: Operation,
           redirect: "/operation/shopmanage",
           children: [
-            { 
-              path: "shopmanage", 
-              component: Shopmanage, 
-              meta: ["运营管理", "店铺管理"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'店铺管理',path:''}
+            {
+              path: "shopmanage",
+              component: Shopmanage,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "店铺管理", path: "" }
                 ]
-              },
+              }
             },
-            { 
-              path: "addshop", 
-              component: Addshop, 
-              meta: ["运营管理", "店铺管理", "店铺添加"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'店铺管理',path:'/operation/shopmanage'},
-                  {name:'店铺添加',path:''}
+            {
+              path: "addshop",
+              component: Addshop,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "店铺管理", path: "/operation/shopmanage" },
+                  { name: "店铺添加", path: "" }
                 ]
-              },
+              }
             },
-            { 
-              path: "updateshop", 
-              component: Updateshop, 
-              meta: ["运营管理", "店铺管理", "店铺修改"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'店铺管理',path:'/operation/shopmanage'},
-                  {name:'店铺修改',path:''}
+            {
+              path: "updateshop",
+              component: Updateshop,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "店铺管理", path: "/operation/shopmanage" },
+                  { name: "店铺修改", path: "" }
                 ]
-              },
+              }
             },
-            { 
+            {
               path: "shopdetail",
-              name: "shopdetail", 
-              component: Shopdetail, 
-              meta: ["运营管理", " 店铺详情"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'店铺详情',path:''}                 
+              name: "shopdetail",
+              component: Shopdetail,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "店铺详情", path: "" }
                 ]
-              },
+              }
             },
-            { 
+            {
               path: "itemlist",
-              name: "itemlist", 
+              name: "itemlist",
               component: ywItemList,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'店铺详情',path:'/operation/shopdetail'},
-                  {name:'商品列表',path:''}                
-                ]
-              },
-            },
-            { 
-              path: "ordermanage", 
-              component: Ordermanage, 
-              meta: ["运营管理", "订单管理"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'订单管理',path:''}                 
-                ]
-              },
-            },
-            { 
-              path: "orderdetail", 
-              component:OOrderdetail,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'订单管理',path:'/operation/ordermanage'},
-                  {name:'订单详情',path:''}
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "/operation/shopmanage" },
+                  { name: "店铺详情", path: "/operation/shopdetail" },
+                  { name: "商品列表", path: "" }
                 ]
               }              
             },
-            { 
-              path: "robot", 
-              component:Robot,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'机器人管理',path:''}                  
+            {
+              path: "translate",
+              name: "translate",
+              component: Translate,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "店铺详情", path: "/operation/apkmanage" },
+                  { name: "商品列表", path: "/operation/itemlist" },
+                  { name: "翻译", path: "" }
                 ]
               }
             },
-            { 
-              path: "otamanage", 
-              component:OTAmanage,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'OTA升级管理',path:''}
+            {
+              path: "ordermanage",
+              component: Ordermanage,
+              meta: ["运营管理", "订单管理"],
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "订单管理", path: "" }
                 ]
               }
             },
-            { 
-              path: "otaadd", 
-              component:OTAadd,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'OTA升级管理',path:'/operation/otamanage'},
-                  {name:'OTA升级',path:''}
+            {
+              path: "orderdetail",
+              component: OOrderdetail,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "订单管理", path: "/operation/ordermanage" },
+                  { name: "订单详情", path: "" }
                 ]
               }
             },
-            { 
-              path: "apkmanage", 
-              component:APKmanage,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'APK升级管理',path:''},
-                  {name:'升级列表',path:''}
+            {
+              path: "robot",
+              component: Robot,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "机器人管理", path: "" }
                 ]
               }
             },
-            { 
-              path: "apkadd", 
-              component:APKadd,
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'运营管理',path:''},
-                  {name:'APK升级管理',path:'/operation/apkmanage'},
-                  {name:'APK升级',path:''}
+            {
+              path: "otamanage",
+              component: OTAmanage,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "OTA升级管理", path: "" }
+                ]
+              }
+            },
+            {
+              path: "otaadd",
+              component: OTAadd,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "OTA升级管理", path: "/operation/otamanage" },
+                  { name: "OTA升级", path: "" }
+                ]
+              }
+            },
+            {
+              path: "apkmanage",
+              component: APKmanage,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "APK升级管理", path: "" },
+                  { name: "升级列表", path: "" }
+                ]
+              }
+            },
+            {
+              path: "apkadd",
+              component: APKadd,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "运营管理", path: "" },
+                  { name: "APK升级管理", path: "/operation/apkmanage" },
+                  { name: "APK升级", path: "" }
                 ]
               }
             }
-
           ]
         },
         {
@@ -260,43 +263,41 @@ const router = new Router({
           component: Shop,
           redirect: "/shop/info",
           children: [
-            { 
-              path: "info", 
-              component: Shopinfo, 
-              meta: ["商家管理", "信息管理"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'商家管理',path:''},
-                  {name:'信息管理',path:''}                 
+            {
+              path: "info",
+              component: Shopinfo,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "商家管理", path: "" },
+                  { name: "信息管理", path: "" }
                 ]
-              },
+              }
             },
-            { 
-              path: "order", 
-              component: Shoporder, 
+            {
+              path: "order",
+              component: Shoporder,
               meta: ["商家管理", "订单管理"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'商家管理',path:''},
-                  {name:'订单管理',path:''}                 
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "商家管理", path: "" },
+                  { name: "订单管理", path: "" }
                 ]
-              },
+              }
             },
-            { 
-              path: "orderdetail", 
-              component: Orderdetail, 
-              meta: ["商家管理", "订单管理","订单详情"],
-              meta:{
-                requireAuth:true,
-                breadNav:[
-                  {name:'商家管理',path:''},
-                  {name:'订单管理',path:'/shop/order'},
-                  {name:'订单详情',path:''}                 
+            {
+              path: "orderdetail",
+              component: Orderdetail,
+              meta: ["商家管理", "订单管理", "订单详情"],
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "商家管理", path: "" },
+                  { name: "订单管理", path: "/shop/order" },
+                  { name: "订单详情", path: "" }
                 ]
-              },
-              
+              }
             }
           ]
         }
@@ -304,8 +305,8 @@ const router = new Router({
     },
     {
       path: "/loginIn",
-      name:'login',
-      component: Login      
+      name: "login",
+      component: Login
     },
     // catch all redirect
     { path: "*", redirect: "/dashboard" }
@@ -317,10 +318,9 @@ router.beforeEach((to, from, next) => {
   //let token = getToken();
   let token = getToken();
 
-  console.log("ROUTER",token);
+  console.log("ROUTER", token);
 
   if (to.meta.requireAuth) {
-
     if (token) {
       next();
     } else {
@@ -331,12 +331,10 @@ router.beforeEach((to, from, next) => {
 
       return false;
     }
-
   } else {
     next();
     return false;
   }
-
 });
 
 export default router;

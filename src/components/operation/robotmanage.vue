@@ -26,18 +26,20 @@
       </el-table-column>
       <el-table-column prop="motionCodesPojo.zh.danceCode" label="舞蹈代码">
       </el-table-column>
-      <el-table-column label="舞蹈图片">
+      <el-table-column label="舞蹈图片" width="150">
         <template scope="prop">
-          <!-- <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="100" height="100"> -->
-          <span>{{prop.row.motionCodesPojo.zh.danceImg}}</span>
+          <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="50" height="50">
+          <!-- <span>{{prop.row.motionCodesPojo.zh.danceImg}}</span> -->
         </template>
       </el-table-column>
       <el-table-column label="舞蹈音乐">
         <template scope="prop">
-          <!-- <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls">
-            Your browser does not support the audio element.
-          </audio> -->
-          <span>{{prop.row.motionCodesPojo.zh.danceMusic}}</span>
+          <div style="width:80px;">
+            <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls" width="100">
+              Your browser does not support the audio element.
+            </audio>
+          </div>          
+          <!-- <span>{{prop.row.motionCodesPojo.zh.danceMusic}}</span> -->
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150">
@@ -67,7 +69,7 @@
           :show-file-list="false" 
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">            
+            <img v-if="imageUrl" :src="baseUrl + imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>            
           </el-upload>
           <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button>
@@ -248,9 +250,6 @@ export default {
     },
 
     robotDanceAdd(){
-
-
-
 
       const data = {
         type: this.robotDanceForm.type,

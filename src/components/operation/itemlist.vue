@@ -46,15 +46,29 @@
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button size="small" type="primary" @click="goAdd()"> 查询</el-button>
-                                            <el-button size="small" type="primary" @click="goSort()">翻译</el-button>
+                                            <el-button size="small" type="primary" @click="getItemList()"> 查询</el-button>
+                                            <el-button size="small" type="primary" @click="goTranslate()">翻译</el-button>
                                         </el-form-item>
                                     </el-form>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="450">
-                            <el-table-column prop="itemNameObject.zh" label="商品名称">
+                            <el-table-column prop="itemNo" sortable label="编号" fixed width="90px">
+                            </el-table-column>
+                            <el-table-column label="商品名称">
+                                <template scope="scope">
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="商品描述" width="300px">
+                                <template scope="scope">
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable label="价格">
                             </el-table-column>
@@ -70,10 +84,10 @@
                             </el-table-column>
                             <el-table-column label="图片">
                                 <template scope="scope">
-                                    <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
+                                    <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50" style="margin-top:5px">
                                 </template>
                             </el-table-column>
-                            <!-- <el-table-column label="操作">
+                            <!-- <el-table-column label="操作" fixed="right" width="100px">
                                 <template scope="scope">
                                     <el-button type="text" size="small" @click="updateItem(scope.row)">
                                         <i class="el-icon-edit" title="编辑"></i>
@@ -81,10 +95,10 @@
                                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
                                         <i class="el-icon-delete" title="删除"></i>
                                     </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
+                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
                                         <i class="el-icon-plus" title="上架"></i>
                                     </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
+                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
                                         <i class="el-icon-minus" title="下架"></i>
                                     </el-button>
                                 </template>
@@ -108,6 +122,7 @@ import Lockr from 'lockr';
 export default {
     data() {
         return {
+            baseUrl:'http://www.52iwith.com/coron-web/',
             isActive: 0,
             catalogDatas: [],
             productsList: [],
@@ -132,12 +147,17 @@ export default {
         this.getCatalogList();
         this.getItemList();
         console.log("店铺信息",this.rShopDetailData);
+        console.log("店铺语言",this._SHOPLANGUAGE);
     },
 
     computed: {
         rShopDetailData(){
             return Lockr.get('shopDetailData');
         },
+        _SHOPLANGUAGE(){            
+            return this.rShopDetailData.language;
+        
+        }
     },
 
     mounted: function() {
@@ -281,15 +301,9 @@ export default {
             this.getItemList();
         },
 
-        goAdd() {
+        goTranslate() {            
             this.$router.push({
-                path: '/products/add'
-            })
-        },
-
-        goSort() {
-            this.$router.push({
-                path: '/products/sort'
+                name: 'translate'
             })
         }
 

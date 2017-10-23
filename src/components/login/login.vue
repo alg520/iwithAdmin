@@ -7,7 +7,7 @@
             <el-row :gutter="20">
                 <el-col :span="14">                     
                      <div class="middle-left">
-
+                         &nbsp;
                      </div>
                 </el-col>
                 <el-col :span="10">                    
