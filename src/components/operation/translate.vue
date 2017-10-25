@@ -22,6 +22,16 @@
             <sideDishTranslate></sideDishTranslate>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="提案组翻译">
+        <div class="tab-content">
+            <introGroupTranslate></introGroupTranslate>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="提案翻译">
+        <div class="tab-content">
+            <introTranslate></introTranslate>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>  
 </template>
@@ -34,9 +44,11 @@ import itemTranslate from './translate/itemTranslate'
 import catalogTranslate from './translate/catalogTranslate'
 import attrTranslate from './translate/attrTranslate'
 import sideDishTranslate from './translate/sideDishTranslate'
+import introGroupTranslate from './translate/introGroupTranslate'
+import introTranslate from './translate/introTranslate'
 export default {
   components:{
-    itemTranslate,catalogTranslate,attrTranslate,sideDishTranslate
+    itemTranslate,catalogTranslate,attrTranslate,sideDishTranslate,introGroupTranslate,introTranslate
   },
   data() {
     return {
@@ -70,6 +82,8 @@ export default {
     document.getElementsByClassName("tab-content")[1].style.height = catalogNavHeight + 'px';
     document.getElementsByClassName("tab-content")[2].style.height = catalogNavHeight + 'px';
     document.getElementsByClassName("tab-content")[3].style.height = catalogNavHeight + 'px';
+    document.getElementsByClassName("tab-content")[4].style.height = catalogNavHeight + 'px';
+    document.getElementsByClassName("tab-content")[5].style.height = catalogNavHeight + 'px';
 
   },
 

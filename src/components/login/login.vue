@@ -49,7 +49,11 @@
                     </el-tooltip>
                 </span>
                 &emsp;|&emsp;
-                <span><el-button type="text" class="footer-web">IWITH 官网</el-button></span>
+                <span>
+                    <el-button type="text" class="footer-web">
+                        <a href="http://www.iwith-smart.cn/" target="_blank">IWITH官网</a>
+                    </el-button>
+                </span>
             </p>
         </div>
 
@@ -320,6 +324,10 @@ export default {
 
 .login-container .login-footer .footer-us,
 .login-container .login-footer .footer-web {
+    color:rgba(255,255,255,.69);
+}
+
+.login-container .login-footer .footer-web a {
     color:rgba(255,255,255,.69);
 }
 </style>

@@ -83,9 +83,17 @@
                                 </template>
                             </el-table-column>
                             <el-table-column label="图片">
-                                <template scope="scope">
-                                    <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50" style="margin-top:5px">
-                                </template>
+                                <template scope="scope">                                    
+                                    <el-popover
+                                        ref="popoverImg"
+                                        placement="left"            
+                                        trigger="hover">
+                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="200" height="200" style="margin-top:5px;">
+                                    </el-popover>          
+                                    <el-button v-popover:popoverImg type="text">
+                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50">
+                                    </el-button>
+                                </template>                                
                             </el-table-column>
                             <!-- <el-table-column label="操作" fixed="right" width="100px">
                                 <template scope="scope">

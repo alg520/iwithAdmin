@@ -5,52 +5,60 @@
                 <div class="base-info">
                     <el-row :gutter="20">
                         <el-col :span="24">
-                            <h3>交易基本信息</h3>
+                            <h3><span>{{$('shop.trade.info')}}</span></h3>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易类型：
+                            <p>
+                                <span>{{$('shop.trade.type')}}:</span>
                                 <span v-text="tradeInfo.tradeType"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易ID:
+                            <p>
+                                <span>{{$('shop.trade.ID')}}:</span>
                                 <span v-text="tradeInfo.tradeId"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易状态：
+                            <p>
+                                <span>{{$('shop.trade.status')}}:</span>
                                 <span>
                                     {{tradeInfo.tradeStatus | orderStatus}}
                                 </span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>创建时间：
+                            <p>
+                                <span>{{$('shop.trade.time')}}:</span>
                                 <span> {{tradeInfo.createdTime}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>原价：
+                            <p>
+                                <span>{{$('shop.trade.price')}}:</span>
                                 <span v-text="tradeInfo.originalAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>折后价：
+                            <p>
+                                <span>{{$('shop.trade.paidAmount')}}:</span>
                                 <span v-text="tradeInfo.paidAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>机器人ID:
+                            <p>
+                                <span>{{$('shop.trade.robotId')}}:</span>
                                 <span v-text="tradeInfo.robotId"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>税率:
+                            <p>
+                                <span>{{$('shop.trade.taxAmount')}}:</span>
                                 <span v-text="tradeInfo.taxAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="24">
-                            <h3>订单信息</h3>
+                            <h3><span>{{$('shop.trade.orderInfo')}}</span></h3>
                         </el-col>
                         <el-col :span="24">
                             <el-table :data="orders" style="width: 100%">

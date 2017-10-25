@@ -39,7 +39,10 @@
                             <draggable :list="productsList" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                                 <div class="list-complete-item" v-if="productsList.length == 0">
                                     <div class="list-complete-item-handle">
-                                        当前分类下暂无菜品！                                        
+                                        当前分类下暂无菜品！
+                                        <span v-if="_SHOPLANGUAGE == 0">当前分类下暂无菜品！</span>
+                                        <span v-if="_SHOPLANGUAGE == 1">NO DATA</span>
+                                        <span v-if="_SHOPLANGUAGE == 2">データなし</span>
                                     </div>   
                                 </div>
                                 <div class="list-complete-item" v-for="element in productsList" :key='element' v-else>

@@ -25,7 +25,7 @@
             <el-submenu index="3" v-if="authType == 3">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
-                    <span class="sb-cn">{{$t('sidebar.shop')}}</span>
+                    <span class="sb-cn">{{$t('sidebar.shopmanage')}}</span>
                 </template>
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
@@ -41,6 +41,16 @@
                 <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
+            </el-submenu>
+
+            <el-submenu index="5" v-if="authType == 7">
+                <template slot="title">               
+                    <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
+                    <span class="sb-cn">{{$t('sidebar.devmanage')}}</span>
+                </template>
+                <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
+                <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/apkmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

@@ -1,22 +1,22 @@
 <template>
     <div class="introGroup-manage" id="introGroup-manage">
         <div class="introGroup-toolbar">
-            <el-button type="primary" @click="addIntroGroup()">新建分组</el-button>
-            <el-button type="primary" @click="addIntroSort()">分组排序</el-button>
+            <el-button type="primary" @click="addIntroGroup()">{{$t('introduce.addGroup')}}</el-button>
+            <el-button type="primary" @click="addIntroSort()">{{$t('introduce.groupSort')}}</el-button>
         </div>
         <div class="introGroup-body" >
             <el-table :data="introGroupDatas" stripe style="width: 100%" v-if="!sortPage">
                 <el-table-column type="index" width="55" align="center">
                 </el-table-column>
-                <el-table-column prop="groupNamePojo.zh" label="提案组名称" align="center">
+                <el-table-column prop="groupNamePojo.zh" :label="$t('introduce.introduceGroupName')" align="center">
                 </el-table-column>
-                <el-table-column label="操作" width="100">
+                <el-table-column :label="$t('_global.action')" width="100">
                     <template scope="scope">
                         <el-button @click.native.prevent="updateIntroGroup(scope.row)" type="text" size="small">
-                            修改
+                            {{$t('_global.edit')}}
                         </el-button>
                         <el-button @click.native.prevent="delConfirm(scope.row)" type="text" size="small">
-                            移除
+                            {{$t('_global.delete')}}
                         </el-button>
                     </template>
                 </el-table-column>
@@ -24,7 +24,7 @@
             
             <div class="drapSortList" v-if="sortPage">
                 <div class="drapSortList-list">                    
-                    <div><el-button @click="cancelSort()">返回</el-button></div>
+                    <div><el-button @click="cancelSort()">{{$t('_global.back')}}</el-button></div>
                     <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                         <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>
                             <div class="list-complete-item-handle">{{element.groupNamePojo.zh}}
@@ -39,16 +39,16 @@
 
         </div>
 
-        <el-dialog title="提案组添加" :visible.sync="introGroupDialogVisible" class="addDialog" size="tiny">
+        <el-dialog :title="addTag ? $t('introduce.addIntroduceGroup'):$t('introduce.updateIntroduceGroup')" :visible.sync="introGroupDialogVisible" class="addDialog" size="tiny">
             <el-form :model="introGroupForm" :rules="introGroupFormRules" ref="introGroupForm">
-                <el-form-item label="属性列表名称:" label-width="120px" prop="name">
+                <el-form-item :label="$t('introduce.introduceGroupName')" label-width="120px" prop="name">
                    <el-input v-model="introGroupForm.name"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="introGroupDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addIntroGroupPost()" v-if="addTag">立即添加</el-button>
-                <el-button type="primary" @click="updateIntroGroupPost()" v-else>确认修改</el-button>
+                <el-button @click="introGroupDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+                <el-button type="primary" @click="addIntroGroupPost()" v-if="addTag">{{$t('_global.lijiAdd')}}</el-button>
+                <el-button type="primary" @click="updateIntroGroupPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
             </div>
         </el-dialog>      
   </div>
@@ -77,9 +77,7 @@ export default {
                 name: [
                     { required: true, message: '请输入提案组名称', trigger: 'blur' }                    
                 ]                
-            },
-            list1:[],
-            list1Title:'提案组排序'            
+            }                                 
         }
     },
 

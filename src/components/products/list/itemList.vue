@@ -5,7 +5,7 @@
             <div class="catalog-nav" id="catalog-nav">
                 <ul class="catalog-list" id="catalog-list">
                     <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
-                        <a href="javascript:;">全部</a>
+                        <a href="javascript:;">{{$t('products.all')}}</a>
                     </li>
                     <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
                         <template>                                
@@ -31,80 +31,88 @@
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
                                     <el-form :inline="true" :model="itemsForm">
-                                        <el-form-item label="状态">
+                                        <el-form-item :label="$t('products.status')">
                                             <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getItemList()">
-                                                <el-option label="全部" value=""></el-option>
-                                                <el-option label="未上架" value="false"></el-option>
-                                                <el-option label="已上架" value="true"></el-option>
+                                                <el-option :label="$t('products.all')" value=""></el-option>
+                                                <el-option :label="$t('products.saleDown')" value="false"></el-option>
+                                                <el-option :label="$t('products.saleUp')" value="true"></el-option>
                                             </el-select>
                                         </el-form-item>
-                                        <el-form-item label="商品类型">
+                                        <el-form-item :label="$t('products.itemType')">
                                             <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small" @change="getItemList()">
-                                                <el-option label="全部" value=""></el-option>
-                                                <el-option label="单点" value="1"></el-option>
-                                                <el-option label="套餐" value="2"></el-option>
+                                                <el-option :label="$t('products.all')" value=""></el-option>
+                                                <el-option :label="$t('products.singleProduct')" value="1"></el-option>
+                                                <el-option :label="$t('products.package')" value="2"></el-option>
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">
-                                            <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
+                                            <el-input size="small" :placeholder="$t('products.itemName_T')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button size="small" type="primary" @click="goAdd()">添加商品</el-button>
-                                            <el-button size="small" type="primary" @click="goSort()">商品排序</el-button>
-                                            <el-button size="small" type="primary" @click="menuExport()">菜单导出</el-button>                                            
+                                            <el-button size="small" type="primary" @click="goAdd()">{{$t('products.addItem')}}</el-button>
+                                            <el-button size="small" type="primary" @click="goSort()">{{$t('products.itemSort')}}</el-button>
+                                            <el-button size="small" type="primary" @click="menuExport()">{{$t('products.itemExport')}}</el-button>                                            
                                         </el-form-item>
                                     </el-form>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
-                            <el-table-column prop="itemNo" sortable label="编号" fixed width="90px">
+                            <el-table-column prop="itemNo" sortable label="NO." fixed width="90px">
                             </el-table-column>
-                            <el-table-column label="商品名称">
+                            <el-table-column :label="$t('products.itemName')">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="商品描述" width="300px">
+                            <el-table-column :label="$t('products.itemDesc')" width="300px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="originPrice" sortable label="价格">
+                            <el-table-column prop="originPrice" sortable :label="$t('products.price')">
                             </el-table-column>
-                            <el-table-column label="商品类别">
+                            <el-table-column :label="$t('products.itemType')">
                                 <template scope="scope">
                                     <span>{{scope.row.itemType | parseProductType}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态">
+                            <el-table-column :label="$t('products.status')">
                                 <template scope="scope">
                                     <span>{{scope.row.isSale | parseIsSale}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="图片">
-                                <template scope="scope">
-                                    <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50" style="margin-top:5px">
+                            <el-table-column :label="$t('products.img')">
+                                <template scope="scope">                                    
+                                    <el-popover
+                                        ref="popoverImg"
+                                        placement="left"            
+                                        trigger="hover">
+                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="200" height="200" style="margin-top:5px;">                                        
+                                    </el-popover>          
+                                    <el-button v-popover:popoverImg type="text">
+                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50">
+                                    </el-button>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" fixed="right" width="100px">
+                            <el-table-column :label="$t('products.action')" fixed="right" width="100px">
                                 <template scope="scope">
                                     <el-button type="text" size="small" @click="updateItem(scope.row)">
-                                        <i class="el-icon-edit" title="编辑"></i>
+                                        <i class="el-icon-edit" :title="$t('products.edit')"></i>
                                     </el-button>
                                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
-                                        <i class="el-icon-delete" title="删除"></i>
+                                        <i class="el-icon-delete" :title="$t('products.delete')"></i>
                                     </el-button>
                                     <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
-                                        <i class="el-icon-plus" title="上架"></i>
+                                        <i class="el-icon-plus" :title="$t('products.putaway')"></i>
                                     </el-button>
                                     <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
-                                        <i class="el-icon-minus" title="下架"></i>
+                                        <i class="el-icon-minus" :title="$t('products.soldout')"></i>
                                     </el-button>
                                 </template>
                             </el-table-column>
@@ -128,7 +136,7 @@ import Lockr from 'lockr';
 import Cookies from 'js-cookie';
 export default {
     data() {
-        return {
+        return {            
             baseUrl:'http://www.52iwith.com/coron-web/',
             isActive: 0,
             catalogDatas: [],
@@ -152,7 +160,7 @@ export default {
     created() {
         //默认获取属性列表
         this.getCatalogList();
-        this.getItemList();
+        this.getItemList();        
     },
 
     computed: {

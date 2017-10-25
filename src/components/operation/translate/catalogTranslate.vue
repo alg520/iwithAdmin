@@ -23,9 +23,9 @@
                       </div>                      
                   </template>                  
               </el-table-column>              
-              <el-table-column label="创建时间">
+              <el-table-column label="更新时间" width="200px">
                   <template scope="scope">                      
-                      <span>{{scope.row.gmtCreated}}</span>
+                      <span>{{scope.row.gmtUpdated}}</span>
                   </template>
               </el-table-column>              
               <el-table-column label="操作" fixed="right" width="100px">
@@ -147,6 +147,7 @@ export default {
                         message: '更新成功'
                     });
                     this.getCatalogList();
+                    this.cancelTranslate();
                 } else {
                     this.$message({
                         type:'error',

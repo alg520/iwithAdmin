@@ -23,7 +23,7 @@
                       </div>                      
                   </template>                  
               </el-table-column>              
-              <el-table-column label="商品描述">
+              <!-- <el-table-column label="商品描述">
                   <template scope="scope">
                       <span v-if="_SHOPLANGUAGE == 0 && editTag !== scope.row.itemId">{{scope.row.itemDescObject.zh}}</span>
                       <span v-if="_SHOPLANGUAGE == 1 && editTag !== scope.row.itemId">{{scope.row.itemDescObject.en}}</span>
@@ -38,6 +38,11 @@
                         <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 2}" placeholder="请输入英文描述" v-model="editForm.descEN">                          
                         </el-input>
                       </div>
+                  </template>
+              </el-table-column>  -->
+              <el-table-column label="更新时间" width="200px">
+                  <template scope="scope">                      
+                      <span>{{scope.row.gmtUpdated}}</span>
                   </template>
               </el-table-column>              
               <el-table-column label="操作" fixed="right" width="100px">
@@ -108,8 +113,7 @@ export default {
     getItemList() {
       let getParams = {
         shopId: this.rShopDetailData.id,
-        itemType:[3],
-        catalogId:'-1',
+        itemType:[3],        
         rp: 10,
         page: this.currentPage
       };

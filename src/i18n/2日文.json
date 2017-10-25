@@ -1,0 +1,279 @@
+{
+  "time": {
+    "ago": "前",
+    "units": {
+      "minute": "分",
+      "hour": "时",
+      "day": "日"
+    }
+  },
+  "locales": {
+    "en-US": "英文",
+    "zh-CN": "简体中文"
+  },
+  "skin": "皮肤",
+  "default": "默认",
+  "purple": "墨紫",
+  "introduction": "简述",
+  "navList": {
+    "one": "第一导航",
+    "two": "第二导航"
+  },
+  "sidebar": {
+    "homepage":"トップ",
+    "itemmanage":"商品管理",
+    "operationmanage":"運営管理",
+    "shopmanage":"店舗管理",
+    "ordermanage":"オーダー管理",
+    "dancemanage":"ダンス管理",
+    "otamanage":"OTAアップデート",
+    "apkmanage":"APKアップデート",
+    "introducemanage":"提案管理",
+    "infomanage":"情報管理"
+  },
+  "products": {
+    "edit":"編集",
+    "delete":"削除",
+    "itemList":"商品リスト",
+    "cattlogManage":"カデコリー",
+    "attrManage":"属性",
+    "timeManage":"営業時間",
+    "garnishManage":"トッピング",
+    "status":"状態",
+    "itemType":"商品類型",
+    "all":"全部",
+    "saleUp":"販売中",
+    "saleDown":"未販売",
+    "singleProduct":"単品",
+    "package":"セット",
+    "itemName_T":"商品名を入力してください",
+    "addItem":"商品追加",
+    "itemSort":"商品順番",
+    "itemExport":"メニューダウンロード",
+    "itemName":"商品名",
+    "price":"金額",
+    "img":"画像",
+    "action":"操作",
+    "addCatalog":"カテゴリー追加",
+    "catalogSort":"カテゴリー順番",
+    "catalogName":"カテゴリー名",
+    "addAttr":"属性追加",
+    "attrName":"属性名",
+    "addTime":"時間帯追加",
+    "timeName":"時間帯名",
+    "startTime":"始まり",
+    "endTime":"終わり",
+    "search":"検索",
+    "addGarnish":"トッピング",
+    "addItemPage":{
+      "itemNo":"商品番号",
+      "catalog":"カテゴリー",
+      "itemName":"商品名",
+      "itemDesc":"商品紹介",
+      "type":"類型",
+      "singleProduct":"単品",
+      "package":"セット",
+      "oldPrice":"原価(円)",
+      "newPrice":"セールス金額(円)",
+      "tag":"タグ",
+      "addTag":"タグ追加",
+      "img":"画像",
+      "salesTime":"販売時間帯",
+      "selectSalesTime":"時間帯を選択してください",
+      "attrSetting":"属性設定",
+      "addAttrGroup":"属性グループ追加",
+      "attrGroupName":"属性グループ名称",
+      "attrGroupName_T":"属性グループ名称を入力してください",
+      "multi":"複数選択",
+      "radio":"単一選択",
+      "attrList":"属性グループリスト",
+      "name":"名称",
+      "tiedShopSetting":"トッピング設定",
+      "addTiedShopGroup":"トッピング",
+      "tiedShopGroupName":"トッピンググループ名称",
+      "tiedShopGroupName_T":"トッピンググループ名称を入力してください",
+      "selectItem":"トッピング選択",
+      "garnishList":"トッピングリスト",
+      "save":"保存",
+      "saveToAdd":"保存してから次の商品を追加します",
+      "add":"追加",
+      "action":"操作"
+    },
+    "addCatalogPage":{
+      "addCatalog":"カテゴリー追加",
+      "groupName":"カテゴリー名",
+      "cancel":"キャンセル",
+      "add":"保存"
+    },
+    "addAttrPage":{
+      "addAttr":"属性追加",
+      "attrName":"属性名",
+      "cancel":"キャンセル",
+      "add":"保存"
+    },
+    "addTimePage":{
+      "timeName":"時間帯名",
+      "timeRange":"時間範囲",
+      "startTime":"始まり",
+      "endTime":"終わり",
+      "cancel":"キャンセル",
+      "add":"保存"
+    },
+    "addGarnishPage":{
+      "addGarnish":"トッピング追加",
+      "itemName":"トッピング名",
+      "price":"原価(円)",
+      "cancel":"キャンセル",
+      "add":"保存"
+    }
+    
+  },
+  "introduce":{
+    "edit":"編集",
+    "delete":"削除",
+    "action":"操作",
+    "introduceManage":"提案管理",
+    "introduceList":"提案リスト",
+    "groupManage":"グループ管理",
+    "addIntroduce":"提案追加",
+    "introduceSort":"提案順番",
+    "addGroup":"新規グループ",
+    "groupSort":"グループ順番",
+    "introduceGroupName":"提案グループ名",
+    "addIntroducePage":{
+      "addIntroduce":"提案追加",
+      "introduceName":"提案名称",
+      "introduceContent":"提案内容",
+      "cancel":"キャンセル",
+      "add":"保存"
+    },
+    "addIntroduceGroupPage":{
+      "addIntroduceGroup":"提案グループ追加",
+      "introduceGroupName":"提案グループ名称",
+      "cancel":"キャンセル",
+      "add":"保存"
+    }
+  },
+  "shop":{
+    "addShop":"店舗追加",
+    "baseInfo":"基本情報",
+    "shopName":"店舗名",
+    "shopAddress":"店舗住所",
+    "shopContact":"店舗電話番号",
+    "langSetting":"言語設定",
+    "wechatPayId":"Wechat Pay アカウント",
+    "wechatPayKey":"Wechat Pay Key",
+    "deviceInfo":"デバイス情報",
+    "deviceType":"デバイス類型",
+    "sn":"ロボットsn",
+    "loginId":"ログインアカウント",
+    "id":"アカウント",
+    "action":"操作",
+    "addIdPage":{
+      "addId":"アカウント追加",
+      "id":"アカウント",
+      "password":"パスワード",
+      "add":"追加確認",
+      "cancel":"キャンセル"
+    },
+    "orderPage":{
+      "orderTimeSlot":"オーダー時間",
+      "orderStatus":"オーダー状態",
+      "all":"全部",
+      "pendingAudit":"確認待ち",
+      "auditPassed":"確認済み",
+      "manualWithdrawal":"チャージバック",
+      "auditNotApproved":"未採択",
+      "cancel":"キャンセル",
+      "search":"サーチ",
+      "orderId":"オーダー番号",
+      "oldPrice":"原価",
+      "price":"実際勘定金額",
+      "orderTime":"オーダー時間",
+      "action":"操作",
+      "info":"情報"
+    }
+  },
+  "robotDanceManage":{
+    "danceId":"ダンス番号",
+    "type":"類型",
+    "version":"バージョン",
+    "danceName":"ダンス名",
+    "danceCode":"ダンスコード",
+    "danceImg":"ダンス画像",
+    "danceMusic":"ダンス音楽",
+    "action":"操作",
+    "edit":"編集",
+    "delete":"削除",
+    "editPage":{
+      "bootDance":"起動動作",
+      "controlPanelDance":"コントローラリスト動作",
+      "update":"編集確認",
+      "cancel":"キャンセル"
+    },
+    "addPage":{
+      "bootDance":"起動動作",
+      "controlPanelDance":"コントローラリスト動作",
+      "add":"追加確認",
+      "cancel":"キャンセル",
+      "clickUploadMusic":"クリックして音楽をアップロードする"
+    }
+  },
+  "otaManage":{
+    "romId":"ROM ID",
+    "romName":"ROM 名称",
+    "romCode":"ROM CODE",
+    "romType":"ROM TYPE",
+    "romDonwloadAddress":"ROMダウンロードアドレス",
+    "pushAddress":"発布地域",
+    "fileSize":"ファイルサイズ(byte)",
+    "isUploadSuccess":"アップロード成功かどうか",
+    "uploading":"アップロード済み",
+    "md5":"MD5",
+    "pushType":"発布類型",
+    "pushStatus":"発布状態",
+    "action":"操作",
+    "add":"OTAアップデート",
+    "edit":"編集",
+    "delete":"削除",
+    "editPage":{
+      "fileUpload":"ファイルアップロード",
+      "update":"編集確認",
+      "cancel":"キャンセル"
+    },
+    "addPage":{
+      "fileUpload":"ファイルアップロード",
+      "update":"アップデート確認",
+      "cancel":"キャンセル"
+    }
+  },
+  "apkManage":{
+    "apkId":"APP ID",
+    "apkName":"APP 名称",
+    "apkCode":"APP CODE",
+    "apkType":"APP TYPE",
+    "apkDonwloadAddress":"APPダウンロードアドレス",
+    "pushAddress":"発布地域",
+    "fileSize":"ファイルサイズ(byte)",
+    "isUploadSuccess":"アップロード成功かどうか",
+    "uploading":"アップロード済み",
+    "md5":"MD5",
+    "pushType":"発布類型",
+    "pushStatus":"発布状態",
+    "action":"操作",
+    "add":"APKアップデート",
+    "edit":"編集",
+    "delete":"削除",
+    "editPage":{
+      "fileUpload":"ファイルアップロード",
+      "update":"編集確認",
+      "cancel":"キャンセル"
+    },
+    "addPage":{
+      "fileUpload":"ファイルアップロード",
+      "update":"アップデート確認",
+      "cancel":"キャンセル"
+    }
+  }
+
+}

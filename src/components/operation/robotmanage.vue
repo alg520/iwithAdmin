@@ -12,7 +12,7 @@
       </el-form-item>
     </el-form>
     <el-table :data="robotDanceLists" border style="width: 100%; text-align:center;">
-      <el-table-column prop="robotDanceId" label="舞蹈编号" width="150">
+      <el-table-column prop="robotDanceId" fixed="" label="舞蹈编号" width="100">
       </el-table-column>
       <el-table-column label="类型"  width="150">
         <template scope="prop">
@@ -28,13 +28,21 @@
       </el-table-column>
       <el-table-column label="舞蹈图片" width="150">
         <template scope="prop">
-          <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="50" height="50">
           <!-- <span>{{prop.row.motionCodesPojo.zh.danceImg}}</span> -->
+          <el-popover
+            ref="popoverImg"
+            placement="top"            
+            trigger="hover">
+            <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="200" height="200" style="margin-top:5px;">
+          </el-popover>          
+          <el-button v-popover:popoverImg type="text">
+            <img :src="baseUrl + prop.row.motionCodesPojo.zh.danceImg" alt="" width="50" height="50" style="margin-top:5px;">
+          </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="舞蹈音乐">
+      <el-table-column label="舞蹈音乐" width="320px">
         <template scope="prop">
-          <div style="width:80px;">
+          <div>
             <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls" width="100">
               Your browser does not support the audio element.
             </audio>
@@ -42,10 +50,10 @@
           <!-- <span>{{prop.row.motionCodesPojo.zh.danceMusic}}</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" fixed="right" width="100">
         <template scope="scope">
-          <el-button type="primary" size="small" @click="updaterobotDance(scope.row)">修改</el-button>
-          <el-button type="primary" size="small" @click="confirmDel(scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="updaterobotDance(scope.row)">修改</el-button>
+          <el-button type="text" size="small" @click="confirmDel(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -69,8 +77,8 @@
           :show-file-list="false" 
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="baseUrl + imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>            
+            <img v-if="imageUrl" :src="baseUrl + robotDanceForm.danceImg" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button>
         </el-form-item>

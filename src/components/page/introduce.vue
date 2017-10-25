@@ -1,6 +1,6 @@
 <template>
     <div class="introduceLists">
-        <v-pageTitle vtitle="全部提案"></v-pageTitle>
+        <v-pageTitle vtitle="home"></v-pageTitle>
 
         <div class="clear"></div>
 
@@ -8,14 +8,14 @@
 
             <template>
                 <el-tabs v-model="activeName" @tab-click="handleNavClick">
-                    <el-tab-pane label="提案管理" name="intro">
+                    <el-tab-pane :label="$t('introduce.introduceManage')" name="intro">
 
                         <!-- <introduceManage></introduceManage> -->
 
                         <div class="intro-manage">
                             <div class="intro-toolbar">
-                                <el-button type="primary" @click="newIntro()">新建提案</el-button>
-                                <el-button type="primary" @click="introSort()">提案排序</el-button>
+                                <el-button type="primary" @click="newIntro()">{{$t('introduce.addIntroduce')}}</el-button>
+                                <el-button type="primary" @click="introSort()">{{$t('introduce.introduceSort')}}</el-button>
                             </div>
                             <el-row>
                                 <el-col :sm="4" :md="4" :lg="4">
@@ -60,7 +60,7 @@
 
                                     <div class="introSort" v-else>
                                         <div>
-                                            <el-button @click="cancelSort()">返回</el-button>
+                                            <el-button @click="cancelSort()">{{$t('_global.back')}}</el-button>
                                         </div>
                                         <div class="drapSortList">
                                             <div class="drapSortList-list">
@@ -79,31 +79,31 @@
                                 </el-col>
                             </el-row>
 
-                            <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? '添加提案':'修改提案'" size="tiny">
+                            <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? $t('introduce.addIntroduce'):$t('introduce.updateIntroduce')" size="tiny">
                                 <el-form :model="introForm" :rules="introFormRules" ref="introForm" label-width="100px" style="width:100%;">
-                                    <el-form-item label="提案分组" prop="introGroup">                                        
-                                        <el-select v-model="whichGroup" placeholder="请选择">
+                                    <el-form-item :label="$t('introduce.introduceGroupName')" prop="introGroup">                                        
+                                        <el-select v-model="whichGroup" :placeholder="$t('placeholder.introGroup')">
                                             <el-option v-for="item in introGroupDatas" :key="item.id" :label="item.groupNamePojo.zh" :value="item.id">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
-                                    <el-form-item label="提案名称" prop="title">
-                                        <el-input v-model="introForm.title"></el-input>
+                                    <el-form-item :label="$t('introduce.introduceName')" prop="title">
+                                        <el-input v-model="introForm.title" :placeholder="$t('placeholder.introName')"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="提案内容" prop="content">
-                                        <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
+                                    <el-form-item :label="$t('introduce.introduceContent')" prop="content">
+                                        <el-input type="textarea" :placeholder="$t('placeholder.introContent')" :autosize="{ minRows: 3, maxRows: 5}" v-model="introForm.content"></el-input>
                                     </el-form-item>
                                     <el-form-item>
-                                        <el-button type="primary" @click="addIntro()" v-if="addTag">立即创建</el-button>
-                                        <el-button type="primary" @click="updateIntroPost()" v-else>修改</el-button>
-                                        <el-button @click="cancelForm()">取消</el-button>
+                                        <el-button type="primary" @click="addIntro()" v-if="addTag">{{$t('_global.lijiAdd')}}</el-button>
+                                        <el-button type="primary" @click="updateIntroPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
+                                        <el-button @click="cancelForm()">{{$t('_global.cancel')}}</el-button>
                                     </el-form-item>
                                 </el-form>                                
                             </el-dialog>
                         </div>
 
                     </el-tab-pane>
-                    <el-tab-pane label="分组管理" name="introGroup">
+                    <el-tab-pane :label="$t('introduce.groupManage')" name="introGroup">
                         <introduceGroup></introduceGroup>
                     </el-tab-pane>
                 </el-tabs>

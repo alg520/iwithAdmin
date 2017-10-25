@@ -1,6 +1,6 @@
 <template>
   <div class="shopLists">
-        <v-pageTitle vtitle="商家管理"></v-pageTitle>
+        <v-pageTitle></v-pageTitle>
     
         <div class="clear"></div>
     

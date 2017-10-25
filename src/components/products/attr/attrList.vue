@@ -2,37 +2,37 @@
   <div class="attrForm">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-button type="primary" @click="addAttr()">添加属性</el-button>
+        <el-button type="primary" @click="addAttr()">{{$t('products.addAttr')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="itemAttrDatas" style="width: 100%" max-height="500">
       <el-table-column type="index" width="80px">
       </el-table-column>
-      <el-table-column label="名称">
+      <el-table-column :label="$t('products.attrName')">
         <template scope="scope">
           <span v-if="_SHOPLANGUAGE == 0">{{scope.row.attrNameObject.zh}}</span>
           <span v-if="_SHOPLANGUAGE == 1">{{scope.row.attrNameObject.en}}</span>
           <span v-if="_SHOPLANGUAGE == 2">{{scope.row.attrNameObject.jp}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="240">
+      <el-table-column :label="$t('_global.action')" width="240">
         <template scope="scope" width="240">
-          <el-button size="mini" @click="editAttr(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
+          <el-button size="mini" @click="editAttr(scope.row)">{{$t('_global.edit')}}</el-button>
+          <el-button size="mini" type="danger" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog :visible.sync="attrDialogVisible" class="addDialog tasteDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="attrForm" :rules="rules" ref="attrForm">
-        <el-form-item label="属性名称：" :label-width="formLabelWidth" prop="attrName">
-          <el-input v-model="attrForm.attrName" placeholder="请输入属性名称" @blur="translateContent(attrForm.attrName,'attr')"></el-input>
+        <el-form-item :label="$t('products.attrName')" :label-width="formLabelWidth" prop="attrName">
+          <el-input v-model="attrForm.attrName" :placeholder="$t('placeholder.attrName')" @blur="translateContent(attrForm.attrName,'attr')"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="attrDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addAttrPost('attrForm')" v-if="titleTag == '添加属性'">立即添加</el-button>
-        <el-button type="primary" @click="editAttrPost('attrForm')" v-else>立即修改</el-button>
+        <el-button @click="attrDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+        <el-button type="primary" @click="addAttrPost('attrForm')" v-if="titleTag == '添加属性'">{{$t('_global.lijiAdd')}}</el-button>
+        <el-button type="primary" @click="editAttrPost('attrForm')" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
   </div>

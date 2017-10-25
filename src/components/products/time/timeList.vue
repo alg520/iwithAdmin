@@ -2,40 +2,40 @@
   <div class="timeForm">
     <el-form :inline="true">
       <el-form-item>
-        <el-button type="primary" @click="addDialog()">添加时段</el-button>
+        <el-button type="primary" @click="addDialog()">{{$t('products.addTime')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="timeDatas" style="width: 100%">
-      <el-table-column prop="nameGL.zh" label="名称" width="180">
+      <el-table-column prop="nameGL.zh" :label="$t('products.timeName')" width="180">
         <template scope="scope">
             <span v-if="_SHOPLANGUAGE == 0">{{scope.row.nameGL.zh}}</span>
             <span v-if="_SHOPLANGUAGE == 1">{{scope.row.nameGL.en}}</span>
             <span v-if="_SHOPLANGUAGE == 2">{{scope.row.nameGL.jp}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="startTime" label="开始时间"></el-table-column>
-      <el-table-column prop="endTime" label="结束时间"></el-table-column>
-      <el-table-column label="操作" width="240">
+      <el-table-column prop="startTime" :label="$t('products.startTime')"></el-table-column>
+      <el-table-column prop="endTime" :label="$t('products.endTime')"></el-table-column>
+      <el-table-column :label="$t('products.action')" width="240">
         <template scope="scope" width="240">
-          <el-button size="mini" @click="updateTimeDuration(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
+          <el-button size="mini" @click="updateTimeDuration(scope.row)"> {{$t('_global.edit')}} </el-button>
+          <el-button size="mini" type="danger" @click="confirmDel(scope.row)"> {{$t('_global.delete')}} </el-button>
         </template>
       </el-table-column>
     </el-table>
   
     <el-dialog :visible.sync="timeDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
       <el-form :model="timeDurationForm" :rules="rules" ref="timeDurationForm">
-        <el-form-item label="时段名称" :label-width="formLabelWidth" prop="name">
-          <el-input v-model="timeDurationForm.name" @blur="translateContent(timeDurationForm.name,'time')"></el-input>
+        <el-form-item :label="$t('products.timeName')" :label-width="formLabelWidth" prop="name">
+          <el-input v-model="timeDurationForm.name" :placeholder="$t('placeholder.timeName')" @blur="translateContent(timeDurationForm.name,'time')"></el-input>
         </el-form-item>
-        <el-form-item label="时间范围" :label-width="formLabelWidth" required>          
-            <el-time-select placeholder="起始时间" v-model="timeDurationForm.startTime" :picker-options="{
+        <el-form-item :label="$t('products.timeRange')" :label-width="formLabelWidth" required>          
+            <el-time-select :placeholder="$t('placeholder.startTime')" v-model="timeDurationForm.startTime" :picker-options="{
                 start: '00:00',
                 step: '00:10',
                 end: '23:59'
               }">
             </el-time-select>
-            <el-time-select placeholder="结束时间" v-model="timeDurationForm.endTime" :picker-options="{
+            <el-time-select :placeholder="$t('placeholder.endTime')" v-model="timeDurationForm.endTime" :picker-options="{
                 start: '00:00',
                 step: '00:10',
                 end: '23:59',
@@ -45,9 +45,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="timeDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addTimeDuration('timeDurationForm')" v-if="btnTag == 'add'">立即添加</el-button>
-        <el-button type="primary" @click="updateTimeDurationPost()" v-else>立即修改</el-button>
+        <el-button @click="timeDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+        <el-button type="primary" @click="addTimeDuration('timeDurationForm')" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+        <el-button type="primary" @click="updateTimeDurationPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
   </div>

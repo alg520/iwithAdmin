@@ -1,6 +1,6 @@
 <template>
   <div class="attrTrans-page">
-      <el-table :data="attrDatas" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="650">
+      <el-table :data="attrDatas" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="550">
               <el-table-column prop="itemAttrId" sortable label="编号" fixed width="90px">
               </el-table-column>
               <el-table-column label="商品名称">
@@ -23,20 +23,20 @@
                       </div>                      
                   </template>                  
               </el-table-column>              
-              <el-table-column label="创建时间">
+              <el-table-column label="更新时间" width="200px">
                   <template scope="scope">                      
-                      <span>{{scope.row.gmtCreated}}</span>
+                      <span>{{scope.row.gmtUpdated}}</span>
                   </template>
               </el-table-column>              
               <el-table-column label="操作" fixed="right" width="100px">
                   <template scope="scope">
-                      <el-button type="text" size="small" @click="editTranslate(scope.row)" v-if="editTag !== scope.row.catalogId">
+                      <el-button type="text" size="small" @click="editTranslate(scope.row)" v-if="editTag !== scope.row.itemAttrId">
                           <i class="el-icon-edit" title="翻译"></i>
                       </el-button>
-                      <el-button type="text" size="small" @click="confirmTranslate()" v-if="editTag == scope.row.catalogId">
+                      <el-button type="text" size="small" @click="confirmTranslate()" v-if="editTag == scope.row.itemAttrId">
                           <i class="el-icon-circle-check" title="确认"></i>
                       </el-button>
-                      <el-button type="text" size="small" @click="cancelTranslate()" v-if="editTag == scope.row.catalogId">
+                      <el-button type="text" size="small" @click="cancelTranslate()" v-if="editTag == scope.row.itemAttrId">
                           <i class="el-icon-circle-cross" title="取消"></i>
                       </el-button>                      
                   </template>
@@ -136,7 +136,7 @@ export default {
 
             let updateParams = {
                 shopId: this.rShopDetailData.id,
-                itemAttrId: this.middleObj.catalogId,
+                itemAttrId: this.middleObj.itemAttrId,
                 attrNameObject: catalogNameObj        
             };
 
@@ -146,7 +146,8 @@ export default {
                         type: 'success',
                         message: '更新成功'
                     });
-                    this.getCatalogList();
+                    this.getAttrList();
+                    this.cancelTranslate();
                 } else {
                     this.$message({
                         type:'error',

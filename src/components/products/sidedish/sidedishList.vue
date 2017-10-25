@@ -1,62 +1,28 @@
 <template>
     <div class="timeForm">
-        <el-form :inline="true" :model="itemsForm">
-            <!-- <el-form-item label="状态">
-                <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getSideDishList()">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="未上架" value="true"></el-option>
-                    <el-option label="已上架" value="false"></el-option>
-                </el-select>
-            </el-form-item> -->
-            <el-form-item label="">
-                <el-input size="small" placeholder="请输入商品名称" v-model="itemsForm.itemName">
-                </el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button size="small" type="primary" @click="getSideDishList()">查询</el-button>
-                <el-button size="small" type="primary" @click="addsideDishDialog()">添加配菜</el-button>
-                <!-- <el-button size="small" type="primary" @click="goSort()">商品排序</el-button> -->
+        <el-form :inline="true" :model="itemsForm">            
+            <el-form-item>                
+                <el-button size="small" type="primary" @click="addsideDishDialog()">{{$t('products.addGarnish')}}</el-button>                
             </el-form-item>
         </el-form>
         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
-            <el-table-column prop="itemNameObject.zh" label="商品名称">
+            <el-table-column prop="itemNameObject.zh" :label="$t('products.itemName')">
                 <template scope="scope">
                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="originPrice" sortable label="价格">
-            </el-table-column>
-            <!-- <el-table-column label="商品类别">
-                <template scope="scope">
-                    <span>{{scope.row.itemType | parseProductType}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="状态">
-                <template scope="scope">
-                    <span>{{scope.row.isSale | parseIsSale}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="图片">
-                <template scope="scope">
-                    <img :src="scope.row.picUrl" alt="图片" width="50" height="50">
-                </template>
-            </el-table-column> -->
-            <el-table-column label="操作" width="150">
+            <el-table-column prop="originPrice" sortable :label="$t('products.price')">
+            </el-table-column>            
+            <el-table-column :label="$t('_global.action')" width="150">
                 <template scope="scope">
                     <el-button type="text" size="small" @click="updatesideDishDialog(scope.row)">
-                        <i class="el-icon-edit" title="编辑"></i>
+                        <i class="el-icon-edit" :title="$t('_global.edit')"></i>
                     </el-button>
                     <el-button type="text" size="small" @click="confirmDel(scope.row)">
-                        <i class="el-icon-delete" title="删除"></i>
-                    </el-button>
-                    <!-- <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
-                        <i class="el-icon-plus" title="上架"></i>
-                    </el-button>
-                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
-                        <i class="el-icon-minus" title="下架"></i>
-                    </el-button> -->
+                        <i class="el-icon-delete" :title="$t('_global.delete')"></i>
+                    </el-button>                    
                 </template>
             </el-table-column>
         </el-table>
@@ -70,15 +36,15 @@
                 <!-- <el-form-item label="菜品编号" prop="itemNo">
                     <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
                 </el-form-item> -->
-                <el-form-item label="菜品名称" prop="itemName">
-                    <el-input v-model="productForm.itemName" placeholder="菜品名称" @blur="translateContent(productForm.itemName,'name')"></el-input>
+                <el-form-item :label="$t('products.itemName')">
+                    <el-input v-model="productForm.itemName" :placeholder="$t('placeholder.itemName')" @blur="translateContent(productForm.itemName,'name')"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="菜品介绍" prop="itemDesc">
                     <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
                     </el-input>
                 </el-form-item> -->
-                <el-form-item label="原价(元)" prop="originPrice">
-                    <el-input type="number" v-model="productForm.originPrice" placeholder="请输入商品原价"></el-input>
+                <el-form-item :label="$t('products.price')" prop="originPrice">
+                    <el-input type="number" v-model="productForm.originPrice" :placeholder="$t('placeholder.price')"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="图片" prop="picUrl">
                     <el-upload class="avatar-uploader" ref="sidedishUpload"
@@ -94,9 +60,9 @@
             </el-form>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="sidedishDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addSideDishPost()" v-if="btnTag == 'add'">立即添加</el-button>
-                <el-button type="primary" @click="updateSideDishPost()" v-else>立即修改</el-button>
+                <el-button @click="sidedishDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+                <el-button type="primary" @click="addSideDishPost()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+                <el-button type="primary" @click="updateSideDishPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
             </div>
         </el-dialog>
     </div>
@@ -217,8 +183,7 @@ export default {
                 isSale: this.itemsForm.isSale,
                 languageType:0,
                 rp: 10,
-                page: this.currentPage,
-                catalogId: -1
+                page: this.currentPage                
             };
 
             $http.post('/coron-web/item/list', getParams).then(response => {

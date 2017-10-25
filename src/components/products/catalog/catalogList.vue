@@ -3,24 +3,24 @@
     <div v-if="!sortTag">
       <el-form :inline="true">
         <el-form-item>
-          <el-button type="primary" @click="addCatalog()">添加类目</el-button>
-          <el-button type="primary" @click="catalogSort()">类目排序</el-button>
+          <el-button type="primary" @click="addCatalog()">{{$t('products.addCatalog')}}</el-button>
+          <el-button type="primary" @click="catalogSort()">{{$t('products.catalogSort')}}</el-button>
         </el-form-item>
       </el-form>
       <el-table :data="catalogDatas" style="width: 100%" max-height="500">
         <el-table-column type="index" width="80px">
         </el-table-column>
-        <el-table-column prop="nameObject.zh" label="类目名称">
+        <el-table-column prop="nameObject.zh" :label="$t('products.catalogName')">
           <template scope="scope">
             <span v-if="_SHOPLANGUAGE == 0">{{scope.row.nameObject.zh}}</span>
             <span v-if="_SHOPLANGUAGE == 1">{{scope.row.nameObject.en}}</span>
             <span v-if="_SHOPLANGUAGE == 2">{{scope.row.nameObject.jp}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="240">
+        <el-table-column :label="$t('_global.action')" width="240">
           <template scope="scope" width="240">
-            <el-button size="mini" @click="updateCatalog(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="confirmDel(scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateCatalog(scope.row)">{{$t('_global.edit')}}</el-button>
+            <el-button size="mini" type="danger" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
           </template>
         </el-table-column>
       </el-table>      
@@ -28,7 +28,7 @@
 
     <div class="catalogSort" v-else>
       <div>
-        <el-button @click="cancelSort()">返回</el-button>
+        <el-button @click="cancelSort()">{{$t('_global.back')}}</el-button>
       </div>
       <div class="drapSortList">
         <div class="drapSortList-list">
@@ -48,16 +48,16 @@
       </div>
     </div>
 
-    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
+    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" :title="titleTag" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
-        <el-form-item label="分类名称:" :label-width="formLabelWidth" prop="catalogName">
-          <el-input v-model="catalogForm.catalogName" auto-complete="off" @blur="translateContent(catalogForm.catalogName,'name')"></el-input>
+        <el-form-item :label="$t('products.catalogName')" :label-width="formLabelWidth" prop="catalogName">
+          <el-input v-model="catalogForm.catalogName" :placeholder="$t('placeholder.catalogName')" @blur="translateContent(catalogForm.catalogName,'name')"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="catalogDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addCatalogPost()" v-if="btnTag == 'add'">确定添加</el-button>
-        <el-button type="primary" @click="updateCatalogPost()" v-else>确定修改</el-button>
+        <el-button @click="catalogDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+        <el-button type="primary" @click="addCatalogPost()" v-if="btnTag == 'add'">{{$t('_global.confirm')}}</el-button>
+        <el-button type="primary" @click="updateCatalogPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
 
