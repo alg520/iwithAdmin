@@ -317,7 +317,7 @@ export default {
       self.checkChildren(item).then(res => {
 
         if (res.data.rows && res.data.rows.length > 0) {
-          self.$alert('该分类下有提案时，不可直接删除分类', '提示', {
+          self.$alert('该分类下有菜品时，不可直接删除分类', '提示', {
             confirmButtonText: '我知道了',
             type: 'warning'
           })

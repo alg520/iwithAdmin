@@ -1,34 +1,34 @@
 <template>
   <div class="shopmanage-page">
     <el-form :inline="true" :model="shopFrom">
-      <el-form-item label="店铺名称">
-        <el-input v-model="shopFrom.name" placeholder="请输入店铺名称" @keyup.enter="getShopList()"></el-input>
+      <el-form-item :label="$t('shop.shopName')">
+        <el-input v-model="shopFrom.name" :placeholder="$t('placeholder.shopName')" @keyup.enter="getShopList()"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getShopList()">查询</el-button>
-        <el-button type="primary" @click="goAddShop()">添加店铺</el-button>
+        <el-button type="primary" @click="getShopList()">{{$t('_global.search')}}</el-button>
+        <el-button type="primary" @click="goAddShop()">{{$t('shop.addShop')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="shopLists" border style="width: 100%; text-align:center;">
-      <el-table-column prop="name.zh" label="店铺名称">
+      <el-table-column prop="name.zh" :label="$t('shop.shopName')">
         <template scope="scope">
           <span v-if=" scope.row.language == 0">{{ scope.row.name.zh }}</span>
           <span v-if=" scope.row.language == 1">{{ scope.row.name.en }}</span>
           <span v-if=" scope.row.language == 2">{{ scope.row.name.jp }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="地址">
+      <el-table-column :label="$t('shop.shopAddress')">
         <template scope="scope">          
           <span v-if=" scope.row.language == 0">{{ scope.row.address }}</span>
           <span v-if=" scope.row.language == 1">{{ scope.row.address }}</span>
           <span v-if=" scope.row.language == 2">{{ scope.row.address | addressParse }}</span>
         </template>
       </el-table-column> 
-      <el-table-column prop="shopTel" label="电话">
+      <el-table-column prop="shopTel" :label="$t('shop.shopContact')">
       </el-table-column>     
-      <el-table-column label="操作" width="130">
+      <el-table-column :label="$t('_global.action')" width="130">
         <template scope="scope">
-          <el-button type="text" size="small" @click="getShopDetail(scope.row)">店铺详情</el-button>
+          <el-button type="text" size="small" @click="getShopDetail(scope.row)">{{$t('shop.detailInfo')}}</el-button>
         </template>
       </el-table-column>
     </el-table>

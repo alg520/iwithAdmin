@@ -2,55 +2,55 @@
     <div class="robotDancePage">
         <el-form :inline="true" style="text-align:center;">
             <el-form-item>
-                <el-button type="primary" @click="otaAdd()">OTA升级</el-button>
+                <el-button type="primary" @click="otaAdd()">{{$t('otaManage.add')}}</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="romLists" border style="width: 100%; text-align:center;">
-            <el-table-column prop="romId" label="ROM ID">
+            <el-table-column prop="romId" sortable label="ROM ID" width="120px" fixed="left">
             </el-table-column>
-            <el-table-column prop="romName" label="ROM 名称">
+            <el-table-column prop="romName" :label="$t('otaManage.romName')" min-width="150px">
             </el-table-column>
-            <el-table-column prop="romCode" label="ROM CODE">
+            <el-table-column prop="romCode" label="ROM CODE" min-width="130px">
             </el-table-column>
-            <el-table-column prop="romType" label="ROM 类型">
+            <el-table-column prop="romType" :label="$t('otaManage.romType')" min-width="130px">
                 <template scope="scope">
                     <span v-if="scope.row.romType == '1'">full</span>
                     <span v-else>delta</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="downUrl" label="ROM 下载地址">
+            <el-table-column prop="downUrl" :label="$t('otaManage.romDonwloadAddress')" min-width="200px">
             </el-table-column>
-            <el-table-column prop="region" label="发布地区">
+            <el-table-column prop="region" :label="$t('otaManage.pushAddress')" min-width="120px">
             </el-table-column>
-            <el-table-column prop="fileSize" label="文件大小(byte)">
+            <el-table-column prop="fileSize" :label="$t('otaManage.fileSize')" min-width="150px">
             </el-table-column>
-            <el-table-column prop="uploadState" label="是否上传成功">
+            <el-table-column prop="uploadState" :label="$t('otaManage.isUploadSuccess')" min-width="150px">
                 <template scope="scope">
-                    <span v-if="scope.row.uploadState">成功</span>
-                    <span v-else>失败</span>
+                    <span v-if="scope.row.uploadState">{{$t('otaManage.success')}}</span>
+                    <span v-else>{{$t('otaManage.failed')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="uploadSize" label="已上传大小">
+            <el-table-column prop="uploadSize" :label="$t('otaManage.fileSize')" min-width="150px">
             </el-table-column>
-            <el-table-column prop="md5" label="MD5">
+            <el-table-column prop="md5" label="MD5" min-width="200px">
             </el-table-column>
-            <el-table-column prop="publishType" label="发布类型">
+            <el-table-column prop="publishType" :label="$t('otaManage.pushType')" min-width="150px">
                 <template scope="scope">
                     <span v-if="scope.row.publishType == '0'">debug</span>
                     <span v-if="scope.row.publishType == '1'">test</span>
                     <span v-if="scope.row.publishType == '2'">release</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="publishState" label="发布状态">
+            <el-table-column prop="publishState" :label="$t('otaManage.pushStatus')" min-width="150px">
                 <template scope="scope">
                     <span v-if="scope.row.publishState == '0'">testing</span>
                     <span v-else>release</span>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column :label="$t('_global.action')" width="150" fixed="right">
                 <template scope="scope">
-                    <el-button type="primary" size="small" @click="otaInfoEdit(scope.row)">修改</el-button>
-                    <el-button type="primary" size="small" @click="confirmDel(scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" @click="otaInfoEdit(scope.row)">{{$t('_global.edit')}}</el-button>
+                    <el-button type="primary" size="small" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -59,51 +59,50 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="修改信息" :visible.sync="otaUpdateDialogVisible">
+        <el-dialog :title="$t('otaManage.updateInfo')" :visible.sync="otaUpdateDialogVisible">
             <el-form :model="otaUpdateForm" ref="otaUpdateForm" label-width="100px" class="otaForm">
-                <el-form-item label="ROM名称" prop="romName">
+                <el-form-item :label="$t('otaManage.romName')" prop="romName">
                     <el-input v-model="otaUpdateForm.romName" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="ROM CODE" prop="romCode">
                     <el-input v-model="otaUpdateForm.romCode" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="打包类型" prop="romType" >
-                    <el-select v-model="otaUpdateForm.romType" placeholder="请选择活动区域" disabled>
+                <el-form-item :label="$t('otaManage.romType')" prop="romType" >
+                    <el-select v-model="otaUpdateForm.romType" disabled>
                         <el-option label="full" value="1"></el-option>
                         <el-option label="delta" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布地区" prop="region">
-                    <el-select v-model="otaUpdateForm.region" placeholder="请选择发布地区" disabled>
-                        <el-option label="中国" value="CN"></el-option>
-                        <el-option label="日本" value="JP"></el-option>
-                        <el-option label="英国" value="GB"></el-option>
-                        <el-option label="美国" value="US"></el-option>
+                <el-form-item :label="$t('otaManage.pushAddress')" prop="region">
+                    <el-select v-model="otaUpdateForm.region" disabled>
+                        <el-option label="中国(China)" value="CN"></el-option>
+                        <el-option label="日本(Janpan)" value="JP"></el-option>
+                        <el-option label="英国(UK)" value="GB"></el-option>
+                        <el-option label="美国(US)" value="US"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布类型" prop="publishType" >
-                    <el-select v-model="otaUpdateForm.publishType" placeholder="请选择发布类型" disabled>
+                <el-form-item :label="$t('otaManage.pushType')" prop="publishType" >
+                    <el-select v-model="otaUpdateForm.publishType" disabled>
                         <el-option label="debug" value="0"></el-option>
                         <el-option label="test" value="1"></el-option>
                         <el-option label="release" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布状态" prop="publishState">
-                    <el-select v-model="otaUpdateForm.publishState" placeholder="请选择发布状态">
+                <el-form-item :label="$t('otaManage.pushStatus')" prop="publishState">
+                    <el-select v-model="otaUpdateForm.publishState">
                         <el-option label="testing" value="0"></el-option>
                         <el-option label="release" value="1"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="文件上传" prop="downUrl">
+                <el-form-item :label="$t('otaManage.fileUpload')" prop="downUrl">
                     <span>{{otaUpdateForm.downUrl}}</span>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="otaUpdate()">立即修改</el-button>
-                    <el-button @click="otaUpdateDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="otaUpdate()">{{$t('_global.lijiEdit')}}</el-button>
+                    <el-button @click="otaUpdateDialogVisible = false">{{$t('_global.cancel')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
-
     </div>
 </template>
 

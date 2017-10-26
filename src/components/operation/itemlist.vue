@@ -5,7 +5,7 @@
                 <div class="catalog-nav" id="catalog-nav">
                     <ul class="catalog-list" id="catalog-list">
                         <li @click="changeSelected(0)" :class="[isActive == 0 ? 'selected' :'']">
-                            <a href="javascript:;">全部</a>
+                            <a href="javascript:;">{{$t('products.all')}}</a>
                         </li>
                         <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
                             <template>
@@ -42,47 +42,47 @@
                                             </el-select>
                                         </el-form-item> -->
                                         <el-form-item label="">
-                                            <el-input size="small" placeholder="请输入商品名称" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
+                                            <el-input size="small" :placeholder="$t('placeholder.itemName')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button size="small" type="primary" @click="getItemList()"> 查询</el-button>
-                                            <el-button size="small" type="primary" @click="goTranslate()">翻译</el-button>
+                                            <el-button size="small" type="primary" @click="getItemList()">{{$t('_global.search')}}</el-button>
+                                            <el-button size="small" type="primary" @click="goTranslate()">{{$t('products.translate')}}</el-button>
                                         </el-form-item>
                                     </el-form>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="450">
-                            <el-table-column prop="itemNo" sortable label="编号" fixed width="90px">
+                            <el-table-column prop="itemNo" sortable label="NO." fixed min-width="90px">
                             </el-table-column>
-                            <el-table-column label="商品名称">
+                            <el-table-column :label="$t('products.itemName')" min-width="150px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="商品描述" width="300px">
+                            <el-table-column :label="$t('products.itemDesc')" min-width="300px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="originPrice" sortable label="价格">
+                            <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">
                             </el-table-column>
-                            <el-table-column label="商品类别">
+                            <el-table-column :label="$t('products.itemType')" min-width="150px">
                                 <template scope="scope">
                                     <span>{{scope.row.itemType | parseProductType}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态">
+                            <el-table-column :label="$t('products.status')" min-width="80px">
                                 <template scope="scope">
                                     <span>{{scope.row.isSale | parseIsSale}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="图片">
+                            <el-table-column :label="$t('products.img')" min-width="100px">
                                 <template scope="scope">                                    
                                     <el-popover
                                         ref="popoverImg"

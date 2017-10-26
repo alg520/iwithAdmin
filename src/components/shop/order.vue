@@ -8,7 +8,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item :label="$t('shop.order.status')">
-        <el-select v-model="tradeStatus" :placeholder="$t('placeholder.orderStatus')">
+        <el-select v-model="tradeStatus" :placeholder="$t('placeholder.orderStatus')"  @change="getSomeThing()">
           <el-option :label="$t('shop.order.all')" value=""></el-option>
           <el-option :label="$t('shop.order.pendingAudit')" value="1"></el-option>
           <el-option :label="$t('shop.order.auditPassed')" value="2"></el-option>

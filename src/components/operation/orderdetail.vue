@@ -5,76 +5,90 @@
                 <div class="base-info">
                     <el-row :gutter="20">
                         <el-col :span="24">
-                            <h3>交易基本信息</h3>
+                            <h3>{{$t('shop.trade.info')}}</h3>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易类型：                                
+                            <p>
+                                <span>{{$t('shop.trade.type')}}:</span>                                
                                 <span>{{ tradeInfo.tradeType| tradeType}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易ID:
+                            <p>
+                                <span>{{$t('shop.trade.ID')}}:</span>
                                 <span v-text="tradeInfo.tradeId"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>交易状态：                                
+                            <p>
+                                <span>{{$t('shop.trade.status')}}:</span>                                
                                 <span>{{ tradeInfo.tradeStatus| orderStatus}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>创建时间：
+                            <p>
+                                <span>{{$t('shop.trade.time')}}:</span>
                                 <span> {{tradeInfo.createdTime}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>原价：
+                            <p>
+                                <span>{{$t('shop.trade.price')}}:</span>
                                 <span v-text="tradeInfo.originalAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>折后价：
+                            <p>
+                                <span>{{$t('shop.trade.paidAmount')}}:</span>
                                 <span v-text="tradeInfo.paidAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>机器人ID:
+                            <p>
+                                <span>{{$t('shop.trade.robotId')}}:</span>
                                 <span v-text="tradeInfo.robotId"></span>
                             </p>
                         </el-col>
                         <el-col :span="12">
-                            <p>税率:
+                            <p>
+                                <span>{{$t('shop.trade.taxAmount')}}:</span>
                                 <span v-text="tradeInfo.taxAmount"></span>
                             </p>
                         </el-col>
                         <el-col :span="24">
-                            <h3>订单信息</h3>
+                            <h3><span>{{$t('shop.trade.orderInfo')}}</span></h3>
                         </el-col>
                         <el-col :span="24">
                             <el-table :data="orders" style="width: 100%">
                                 <el-table-column type="expand">
                                     <template scope="props">
-                                        <el-form label-position="left" inline class="demo-table-expand">                                            
-                                            <el-form-item label="店铺 ID">
+                                        <el-form label-position="left" inline class="order-table-expand">                                            
+                                            <el-form-item :label="$t('shop.order.shopId')">
                                                 <span>{{ props.row.shopId }}</span>
                                             </el-form-item>
-                                            <el-form-item label="订单类型">
+                                            <el-form-item :label="$t('shop.order.type')">
                                                 <span>{{ props.row.orderType }}</span>
                                             </el-form-item>
-                                            <el-form-item label="属性列表">
+                                            <el-form-item :label="$t('shop.order.num')">
+                                                <span>{{ props.row.itemNum }}</span>
+                                            </el-form-item>
+                                            <el-form-item :label="$t('shop.order.totalPaidPrice')">
+                                                <span>{{ props.row.totalPaidPrice }}</span>
+                                            </el-form-item>
+                                            <el-form-item :label="$t('shop.order.attrList')">
                                                 <el-tag v-for="attr in attrs" :key="attr.attrId">{{attr.name.zh}}</el-tag>
                                             </el-form-item>
-                                            <el-form-item label="配菜列表">
+                                            <el-form-item :label="$t('shop.order.sideDishList')">
                                                 <el-tag v-for="item in sideDishs" :key="item.itemId">{{item.itemNameObject.zh}}</el-tag>
                                             </el-form-item>
                                         </el-form>
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="商品 ID" prop="itemId">
+                                <el-table-column :label="$t('shop.order.itemId')" prop="itemId">
                                 </el-table-column>
-                                <el-table-column label="商品名称" prop="name.zh">
+                                <el-table-column :label="$t('shop.order.itemName')" prop="name.zh">
                                 </el-table-column>
-                                <el-table-column label="描述" prop="picUrl">
+                                <el-table-column :label="$t('shop.order.originalPrice')" prop="itemOriginalPrice">
                                 </el-table-column>
                             </el-table>
                         </el-col>
@@ -175,16 +189,16 @@ export default {
     text-align: center;
 }
 
-.demo-table-expand {
+.order-table-expand {
     font-size: 0;
 }
 
-.demo-table-expand label {
-    width: 90px;
+.order-table-expand label {
+    width: 120px;
     color: #99a9bf;
 }
 
-.demo-table-expand .el-form-item {
+.order-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 45%;

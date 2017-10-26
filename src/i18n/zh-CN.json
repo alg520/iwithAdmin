@@ -20,6 +20,7 @@
     "two": "第二导航"
   },
   "_global":{
+    "all":"全部",
     "confirm":"确认",
     "cancel":"取消",
     "radio":"单选",
@@ -35,7 +36,8 @@
     "lijiAdd":"立即添加",
     "lijiEdit":"立即修改",
     "saveAndAddNext":"保存并添加下一个",
-    "back":"返回"
+    "back":"返回",
+    "number":"编号"
   },
   "placeholder":{
     "itemNo":"请输入菜品编号",
@@ -57,7 +59,34 @@
     "userId":"请输入账号",
     "password":"请输入密码",
     "newpassword":"请输入新密码",
-    "orderStatus":"请选择订单状态"
+    "orderStatus":"请选择订单状态",
+    "shopName":"请输入店铺名称",
+    "shopContact":"请输入店铺联系人",
+    "shopTel":"请输入店铺联系电话",
+    "postCode":"请输入邮编",
+    "province":"请输入省",
+    "city":"请输入市",
+    "street":"请输入街道",
+    "address":"请输入店铺地址",
+    "taxRate":"请输入税率",
+    "select":"请选择",
+    "authCode":"请输入店铺授权码",
+    "wechatPayId":"请输入微信支付账号",
+    "wechatPayKey":"请输入微信支付Key",
+    "transNameZH":"请输入中文名称",
+    "transNameEN":"请输入英文名称",
+    "transNameJP":"请输入日文名称",
+    "transDescZH":"请输入中文描述",
+    "transDescEN":"请输入英文描述",
+    "transDescJP":"请输入日文描述",
+    "robotDanceZH":"请输入舞蹈中文名称",
+    "robotDanceJP":"请输入舞蹈日文名称",
+    "robotDanceEN":"请输入舞蹈英文名称",
+    "robotDanceCode":"请输入舞蹈代码",
+    "romName":"请输入ROM名称",
+    "romCode":"请输入ROM CODE",
+    "appName":"请输入APP名称",
+    "appCode":"请输入APP CODE"
   },
   "sidebar": {
     "homepage":"首页",
@@ -76,6 +105,7 @@
   "products": {
     "edit":"编辑",
     "delete":"删除",
+    "translate":"翻译",
     "itemList":"菜品列表",
     "cattlogManage":"类目管理",
     "attrManage":"属性管理",
@@ -109,6 +139,8 @@
     "timeName":"时段名称",
     "startTime":"开始时间",
     "endTime":"结束时间",
+    "createTime":"创建时间",
+    "updateTime":"更新时间",
     "timeRange":"时间范围",    
     "addGarnish":"添加配菜",    
     "addItemPage":{
@@ -170,12 +202,29 @@
     "introduceContent":"提案内容"
   },
   "shop":{
+    "list":"店铺列表",
     "addShop":"添加店铺",
+    "detailInfo":"店铺详情",
+    "checkGoods":"查看商品",
     "baseInfo":"基本信息",
     "shopName":"店铺名称",
+    "contacts":"店铺联系人",
     "shopAddress":"店铺地址",
     "shopContact":"店铺联系电话",
     "langSetting":"语言设置",
+    "postCode":"邮编",
+    "province":"省",
+    "city":"市",
+    "street":"街道",
+    "itemPrice":"商品价格",
+    "noTax":"不含税",
+    "haveTax":"含税",
+    "taxRate":"税率",
+    "isTest":"是否测试店铺",
+    "yes":"是",
+    "no":"否",
+    "perssion":"货币精度",
+    "currencyType":"货币类型",
     "wechatPayId":"微信支付账号",
     "wechatPayKey":"微信支付Key",
     "authCode":"店铺授权码",
@@ -208,10 +257,21 @@
       "auditNotApproved":"审核未通过",
       "cancel":"已取消",      
       "orderId":"订单编号",
-      "oldPrice":"原价",
+      "oldPrice":"原价(元)",
       "price":"实际支付金额",
       "orderTime":"下单时间",      
-      "info":"详情"      
+      "info":"详情",
+      "itemId":"菜品ID",
+      "itemName":"菜品名称",
+      "itemDesc":"菜品描述",
+      "originalPrice":"原价(元)",      
+      "shopId":"店铺ID",
+      "type":"订单类型",
+      "num":"数量",
+      "totalOriginalPrice":"总价",
+      "totalPaidPrice":"实际支付价格",
+      "attrList":"属性列表",
+      "sideDishList":"配菜列表"
     },
     "trade":{
       "info":"交易详情",
@@ -226,86 +286,69 @@
       "orderInfo":"订单信息"      
     }
   },
-  "robotDanceManage":{
+  "translate":{
+    "item":"菜品翻译",
+    "catalog":"类目翻译",
+    "attribute":"属性翻译",
+    "sideDish":"配菜翻译",
+    "introGroup":"提案组翻译",
+    "intro":"提案翻译"
+  },
+  "robot":{
+    "addDance":"添加舞蹈",
+    "updateDance":"修改舞蹈",
     "danceId":"舞蹈编号",
-    "type":"类型",
+    "danceType":"舞蹈类型",
+    "bootDance":"开机动作",
+    "controlPanelDance":"控制板列表动作",
     "version":"版本号",
     "danceName":"舞蹈名称",
     "danceCode":"舞蹈代码",
     "danceImg":"舞蹈图片",
     "danceMusic":"舞蹈音乐",
-    "action":"操作",
-    "edit":"修改",
-    "delete":"删除",
-    "editPage":{
-      "bootDance":"开机动作",
-      "controlPanelDance":"控制板列表动作",
-      "update":"确认修改",
-      "cancel":"取消"
-    },
-    "addPage":{
-      "bootDance":"开机动作",
-      "controlPanelDance":"控制板列表动作",
-      "add":"确认添加",
-      "cancel":"取消",
-      "clickUploadMusic":"点击上传音乐"
-    }
+    "clickUploadMusic":"点击上传音乐",
+    "uploadLimit":"只能上传mp3文件，且不超过15MB"    
   },
   "otaManage":{
     "romId":"ROM ID",
     "romName":"ROM 名称",
-    "romCode":"ROM CODE",
-    "romType":"ROM TYPE",
+    "romType":"ROM 类型",
     "romDonwloadAddress":"ROM下载地址",
     "pushAddress":"发布地区",
     "fileSize":"文件大小(byte)",
     "isUploadSuccess":"是否上传成功",
     "uploading":"已上传",
-    "md5":"MD5",
+    "success":"成功",
+    "failed":"失败",
     "pushType":"发布类型",
     "pushStatus":"发布状态",
-    "action":"操作",
     "add":"OTA升级",
-    "edit":"修改",
-    "delete":"删除",
-    "editPage":{
-      "fileUpload":"文件上传",
-      "update":"确认修改",
-      "cancel":"取消"
-    },
-    "addPage":{
-      "fileUpload":"文件上传",
-      "update":"确认升级",
-      "cancel":"取消"
-    }
+    "updateInfo":"修改信息",
+    "fileUpload":"文件上传",
+    "update":"确认升级"
   },
   "apkManage":{
     "apkId":"APP ID",
     "apkName":"APP 名称",
     "apkCode":"APP CODE",
-    "apkType":"APP TYPE",
+    "apkType":"APP 类型",
+    "dyApk":"店员app",
+    "kzbApk":"控制板app",
     "apkDonwloadAddress":"APP下载地址",
     "pushAddress":"发布地区",
     "fileSize":"文件大小(byte)",
-    "isUploadSuccess":"是否上传成功",
-    "uploading":"已上传",
+    "uploadState":"上传状态",
+    "success":"上传完成",
+    "uploading":"正在上传",    
     "md5":"MD5",
     "pushType":"发布类型",
     "pushStatus":"发布状态",
-    "action":"操作",
+    "publishDate":"上传时间",
+    "remark":"备注",
     "add":"APK升级",
-    "edit":"修改",
-    "delete":"删除",
-    "editPage":{
-      "fileUpload":"文件上传",
-      "update":"确认修改",
-      "cancel":"取消"
-    },
-    "addPage":{
-      "fileUpload":"文件上传",
-      "update":"确认升级",
-      "cancel":"取消"
-    }
+    "updateInfo":"修改信息",
+    "fileUpload":"文件上传",
+    "updateConfirm":"确认升级"
   }
 
 }

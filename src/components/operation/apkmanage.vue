@@ -2,55 +2,55 @@
     <div class="apkmanagePage">
         <el-form :inline="true" style="text-align:center;">
             <el-form-item>
-                <el-button type="primary" @click="apkAdd()">APK升级</el-button>
+                <el-button type="primary" @click="apkAdd()">{{$t('apkManage.add')}}</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="apkLists" border style="width: 100%; text-align:center;">
-            <el-table-column prop="id" label="APP版本ID">
+            <el-table-column prop="id" sortable label="APP ID" width="120px" fixed="left">
             </el-table-column>
-            <el-table-column prop="name" label="APP 名称">
+            <el-table-column prop="name" :label="$t('apkManage.apkName')" min-width="150px">
             </el-table-column>
-            <el-table-column prop="type" label="APP 类型">
+            <el-table-column prop="type" :label="$t('apkManage.apkType')" min-width="130px">
                 <template scope="scope">
-                    <span v-if="scope.row.type == '1'">店员app</span>
-                    <span v-else>控制版app</span>
+                    <span v-if="scope.row.type == '1'">{{$t('apkManage.dyApk')}}</span>
+                    <span v-else>{{$t('apkManage.kzbApk')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="downUrl" label="下载地址">
+            <el-table-column prop="downUrl" :label="$t('apkManage.apkDonwloadAddress')" min-width="200px">
             </el-table-column>
-            <el-table-column prop="region" label="发布地区">
+            <el-table-column prop="region" :label="$t('apkManage.pushAddress')" min-width="120px">
             </el-table-column>
-            <el-table-column prop="fileSize" label="文件大小(byte)">
+            <el-table-column prop="fileSize" :label="$t('apkManage.fileSize')" min-width="150px">
             </el-table-column>
-            <el-table-column prop="md5" label="MD5">
+            <el-table-column prop="md5" label="MD5" min-width="200px">
             </el-table-column>
-            <el-table-column prop="uploadState" label="上传状态">
+            <el-table-column prop="uploadState" :label="$t('apkManage.uploadState')" min-width="150px">
                 <template scope="scope">
-                    <span v-if="scope.row.uploadState == 1">上传完成</span>
-                    <span v-else>正在上传</span>
+                    <span v-if="scope.row.uploadState == 1">{{$t('apkManage.success')}}</span>
+                    <span v-else>{{$t('apkManage.uploading')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="publishType" label="发布类型">
+            <el-table-column prop="publishType" :label="$t('apkManage.pushType')" min-width="120px">
                 <template scope="scope">
                     <span v-if="scope.row.publishType == 0">debug</span>
                     <span v-if="scope.row.publishType == 1">test</span>
                     <span v-if="scope.row.publishType == 2">release</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="publishState" label="发布状态">
+            <el-table-column prop="publishState" :label="$t('apkManage.pushStatus')" min-width="120px">
                 <template scope="scope">
                     <span v-if="scope.row.publishState == 0">testing</span>
                     <span v-else>release</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="publishDate" label="上传时间">
+            <el-table-column prop="publishDate" :label="$t('apkManage.publishDate')" min-width="200px">
             </el-table-column>
-            <el-table-column prop="remark" label="备注">
+            <el-table-column prop="remark" :label="$t('apkManage.remark')" min-width="230px">
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column :label="$t('_global.action')" fixed="right" width="150">
                 <template scope="scope">
-                    <el-button type="primary" size="small" @click="apkInfoEdit(scope.row)">修改</el-button>
-                    <el-button type="primary" size="small" @click="confirmDel(scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" @click="apkInfoEdit(scope.row)">{{$t('_global.edit')}}</el-button>
+                    <el-button type="primary" size="small" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -59,47 +59,47 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="修改信息" :visible.sync="apkUpdateDialogVisible">
+        <el-dialog :title="$t('apkManage.updateInfo')" :visible.sync="apkUpdateDialogVisible">
             <el-form :model="apkUpdateForm" ref="apkUpdateForm" label-width="100px" class="otaForm">
-                <el-form-item label="APK名称" prop="name">
+                <el-form-item :label="$t('apkManage.apkName')" prop="name">
                     <el-input v-model="apkUpdateForm.name" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="APK CODE" prop="code">
                     <el-input v-model="apkUpdateForm.code" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="打包类型" prop="type">
-                    <el-select v-model="apkUpdateForm.type" placeholder="请选择打包类型" disabled>
-                        <el-option label="full" value="1"></el-option>
-                        <el-option label="delta" value="2"></el-option>
+                <el-form-item :label="$t('apkManage.apkType')" prop="type">
+                    <el-select v-model="apkUpdateForm.type" disabled>
+                        <el-option :label="$t('apkManage.dyApk')" value="1"></el-option>
+                        <el-option :label="$t('apkManage.kzbApk')" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布地区" prop="region">
-                    <el-select v-model="apkUpdateForm.region" placeholder="请选择发布地区" disabled>
-                        <el-option label="中国" value="CN"></el-option>
-                        <el-option label="日本" value="JP"></el-option>
-                        <el-option label="英国" value="GB"></el-option>
-                        <el-option label="美国" value="US"></el-option>
+                <el-form-item :label="$t('apkManage.pushAddress')" prop="region">
+                    <el-select v-model="apkUpdateForm.region" disabled>
+                        <el-option label="中国(China)" value="CN"></el-option>
+                        <el-option label="日本(Janpan)" value="JP"></el-option>
+                        <el-option label="英国(UK)" value="GB"></el-option>
+                        <el-option label="美国(US)" value="US"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布类型" prop="publishType">
-                    <el-select v-model="apkUpdateForm.publishType" placeholder="请选择发布类型">
+                <el-form-item :label="$t('apkManage.pushType')" prop="publishType">
+                    <el-select v-model="apkUpdateForm.publishType">
                         <el-option label="debug" value="0"></el-option>
                         <el-option label="test" value="1"></el-option>
                         <el-option label="release" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="发布状态" prop="publishState">
-                    <el-select v-model="apkUpdateForm.publishState" placeholder="请选择发布状态">
+                <el-form-item :label="$t('apkManage.pushStatus')" prop="publishState">
+                    <el-select v-model="apkUpdateForm.publishState">
                         <el-option label="testing" value="0"></el-option>
                         <el-option label="release" value="1"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="文件上传" prop="downUrl">
+                <el-form-item :label="$t('apkManage.fileUpload')" prop="downUrl">
                     <span>{{apkUpdateForm.downUrl}}</span>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="apkUpdate()">立即修改</el-button>
-                    <el-button @click="apkUpdateDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="apkUpdate()">{{$t('_global.lijiEdit')}}</el-button>
+                    <el-button @click="apkUpdateDialogVisible = false">{{$t('_global.cancel')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -137,7 +137,6 @@ export default {
 
     },
     methods: {
-
         getAPKLists() {
             $http.post('/coron-web/apk/list', {
                 page: this.currentPage,
@@ -162,7 +161,6 @@ export default {
             this.apkUpdateDialogVisible = true;
 
             this.middleObj = item;
-
             this.apkUpdateForm.name = item.name;
             this.apkUpdateForm.code = item.code;
             this.apkUpdateForm.type = item.type.toString();

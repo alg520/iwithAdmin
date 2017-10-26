@@ -1,40 +1,40 @@
 <template>
     <div class="ota-add-page">
         <el-form :model="apkAddForm" :rules="apkAddFormRules" ref="apkAddForm" label-width="100px" class="otaForm">            
-            <el-form-item label="APK名称" prop="name">
-                <el-input v-model="apkAddForm.name"></el-input>
+            <el-form-item :label="$t('apkManage.apkName')" prop="name">
+                <el-input v-model="apkAddForm.name" :placeholder="$t('placeholder.appName')"></el-input>
             </el-form-item>
             <el-form-item label="APK CODE" prop="code">
-                <el-input v-model="apkAddForm.code"></el-input>
+                <el-input v-model="apkAddForm.code" :placeholder="$t('placeholder.appCode')"></el-input>
             </el-form-item>
-            <el-form-item label="打包类型" prop="type">
-                <el-select v-model="apkAddForm.type" placeholder="请选择打包类型">
-                    <el-option label="full" value="1"></el-option>
-                    <el-option label="delta" value="2"></el-option>
+            <el-form-item :label="$t('apkManage.apkType')" prop="type">
+                <el-select v-model="apkAddForm.type" placeholder="请选择apk类型">
+                    <el-option :label="$t('apkManage.dyApk')" value="1"></el-option>
+                    <el-option :label="$t('apkManage.kzbApk')" value="2"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布地区" prop="region">
+            <el-form-item :label="$t('apkManage.pushAddress')" prop="region">
                 <el-select v-model="apkAddForm.region" placeholder="请选择发布地区">
-                    <el-option label="中国" value="CN"></el-option>
-                    <el-option label="日本" value="JP"></el-option>
-                    <el-option label="英国" value="GB"></el-option>
-                    <el-option label="美国" value="US"></el-option>
+                    <el-option label="中国(China)" value="CN"></el-option>
+                    <el-option label="日本(Janpan)" value="JP"></el-option>
+                    <el-option label="英国(UK)" value="GB"></el-option>
+                    <el-option label="美国(US)" value="US"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布类型" prop="publishType">
+            <el-form-item :label="$t('apkManage.pushType')" prop="publishType">
                 <el-select v-model="apkAddForm.publishType" placeholder="请选择发布类型">
                     <el-option label="debug" value="0"></el-option>
                     <el-option label="test" value="1"></el-option>
                     <el-option label="release" value="2"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布状态" prop="publishState">
+            <el-form-item :label="$t('apkManage.pushStatus')" prop="publishState">
                 <el-select v-model="apkAddForm.publishState" placeholder="请选择发布状态">
                     <el-option label="testing" value="0"></el-option>
                     <el-option label="release" value="1"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="文件上传">
+            <el-form-item :label="$t('apkManage.fileUpload')">
                 <el-upload drag
                 action=""
                 ref="romUpload"
@@ -50,7 +50,7 @@
                 <el-progress v-for="(item,index) in percentArray" :key="item" :text-inside="true" :stroke-width="18" :percentage="item" status="success" v-if=" index+1 == percentArray.length"></el-progress>                
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="startUpload()">立即升级</el-button>
+                <el-button type="primary" @click="startUpload()">{{$t('apkManage.updateConfirm')}}</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -63,8 +63,8 @@ export default {
     data() {
         return {                                   
             apkAddForm: {
-                name: 'test',
-                code: '1',
+                name: '',
+                code: '',
                 type: '1',
                 region: 'JP',
                 publishType: '0',
@@ -200,7 +200,8 @@ export default {
 
 <style>
 .ota-add-page {
-    padding: 10px 15px;
+    padding: 20px 15px;
+    background-color: #fff;
 }
 .otaForm {
     width: 60%;

@@ -1,34 +1,27 @@
 <template>
   <div class="robotDancePage">
-    <el-form :inline="true" style="text-align:center;">
-      <!-- <el-form-item label="店铺列表">
-        <el-select v-model="selectedShopID" filterable placeholder="请选择" @change="changeShop()">
-          <el-option v-for="item in allShopLists" :key="item.id" :label="item.name.zh" :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item> -->
+    <el-form :inline="true" style="text-align:center;">      
       <el-form-item>
-        <el-button type="primary" @click="addRobotDance()">添加舞蹈</el-button>
+        <el-button type="primary" @click="addRobotDance()">{{$t('robot.addDance')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="robotDanceLists" border style="width: 100%; text-align:center;">
-      <el-table-column prop="robotDanceId" fixed="" label="舞蹈编号" width="100">
+      <el-table-column prop="robotDanceId" fixed="left" sortable :label="$t('robot.danceId')" width="120">
       </el-table-column>
-      <el-table-column label="类型"  width="150">
+      <el-table-column :label="$t('robot.danceType')"  min-width="150">
         <template scope="prop">
-          <span v-if="prop.row.type == 1">开机动作</span>
-          <span v-if="prop.row.type == 2">控制板列表动作</span>
+          <span v-if="prop.row.type == 1">{{$t('robot.bootDance')}}</span>
+          <span v-if="prop.row.type == 2">{{$t('robot.controlPanelDance')}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="version" label="版本号">
+      <el-table-column prop="version" :label="$t('robot.version')">
       </el-table-column>
-      <el-table-column prop="motionCodesPojo.zh.danceName" label="舞蹈名称">
+      <el-table-column prop="motionCodesPojo.zh.danceName" :label="$t('robot.danceName')" min-width="120">
       </el-table-column>
-      <el-table-column prop="motionCodesPojo.zh.danceCode" label="舞蹈代码">
+      <el-table-column prop="motionCodesPojo.zh.danceCode" :label="$t('robot.danceCode')" min-width="200">
       </el-table-column>
-      <el-table-column label="舞蹈图片" width="150">
-        <template scope="prop">
-          <!-- <span>{{prop.row.motionCodesPojo.zh.danceImg}}</span> -->
+      <el-table-column :label="$t('robot.danceImg')" width="150">
+        <template scope="prop">          
           <el-popover
             ref="popoverImg"
             placement="top"            
@@ -40,64 +33,66 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="舞蹈音乐" width="320px">
+      <el-table-column :label="$t('robot.danceMusic')" width="330px">
         <template scope="prop">
           <div>
-            <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls" width="100">
+            <audio :src="baseUrl + prop.row.motionCodesPojo.zh.danceMusic" controls="controls">
               Your browser does not support the audio element.
             </audio>
           </div>          
           <!-- <span>{{prop.row.motionCodesPojo.zh.danceMusic}}</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" width="100">
+      <el-table-column :label="$t('_global.action')" fixed="right" width="100">
         <template scope="scope">
-          <el-button type="text" size="small" @click="updaterobotDance(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="confirmDel(scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="updaterobotDance(scope.row)">{{$t('_global.edit')}}</el-button>
+          <el-button type="text" size="small" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :title=" btnTag == 'add' ? '添加舞蹈':'修改舞蹈'" :visible.sync="robotDanceDialogVisible" size="tiny">
+    <el-dialog :title=" btnTag == 'add' ? $t('robot.addDance'):$t('robot.updateDance')" :visible.sync="robotDanceDialogVisible">
       <el-form :model="robotDanceForm" :rules="robotDanceFormRules" ref="robotDanceForm" :label-width="formLabelWidth">
-        <el-form-item label="舞蹈名称" prop="danceName">
-          <el-input v-model="robotDanceForm.danceName" placeholder="请输入舞蹈中文名称"></el-input>          
+        <el-form-item :label="$t('robot.danceName')" prop="danceName">
+          <el-input v-model="robotDanceForm.danceName" :placeholder="$t('placeholder.robotDanceZH')"></el-input>          
+          <el-input v-model="robotDanceForm.danceNameJP" :placeholder="$t('placeholder.robotDanceJP')"></el-input>          
+          <el-input v-model="robotDanceForm.danceNameEN" :placeholder="$t('placeholder.robotDanceEN')"></el-input>
         </el-form-item>
-        <el-form-item label="舞蹈代码" prop="danceCode">
-          <el-input v-model="robotDanceForm.danceCode" placeholder="请输入舞蹈代码"></el-input>
+        <el-form-item :label="$t('robot.danceCode')" prop="danceCode">
+          <el-input v-model="robotDanceForm.danceCode" :placeholder="$t('placeholder.robotDanceCode')"></el-input>
         </el-form-item>
-        <el-form-item label="舞蹈类型" prop="type">
+        <el-form-item :label="$t('robot.danceType')" prop="type">
           <el-select v-model="robotDanceForm.type">
-            <el-option label="开机动作" value="1"></el-option>
-            <el-option label="控制板列表动作" value="2"></el-option>
+            <el-option :label="$t('robot.bootDance')" value="1"></el-option>
+            <el-option :label="$t('robot.controlPanelDance')" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="舞蹈图片" prop="danceImg">
+        <el-form-item :label="$t('robot.danceImg')" prop="danceImg">
           <el-upload class="avatar-uploader" action="/coron-web/upload/robotDanceImgUpload" 
           :show-file-list="false" 
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="baseUrl + robotDanceForm.danceImg" class="avatar">
+            <img v-if="imageUrl" :src="uploadSuccessTag ? imageUrl:baseUrl + robotDanceForm.danceImg" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> 删除 </el-button>
+          <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> {{$t('_global.delete')}}</el-button>
         </el-form-item>
-        <el-form-item label="舞蹈音乐" prop="danceMusic">
+        <el-form-item :label="$t('robot.danceMusic')" prop="danceMusic">
           <el-upload action="/coron-web/upload/robotDanceMusicUpload" 
           :before-upload="beforeMusicUpload"
           :on-success="handleMusicSuccess"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :file-list="fileList">
-            <el-button size="small" type="primary">点击上传音乐</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传mp3文件，且不超过15MB</div>
+            <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
+            <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
           </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="robotDanceDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addRobotDancePost()" v-if="btnTag == 'add'">确定添加</el-button>
-        <el-button type="primary" @click="updaterobotDancePost()" v-else>确定修改</el-button>
+        <el-button @click="robotDanceDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+        <el-button type="primary" @click="addRobotDancePost()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+        <el-button type="primary" @click="updaterobotDancePost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
 
@@ -115,6 +110,9 @@ export default {
       formLabelWidth: '120px',
       robotDanceForm: {
         danceName: '',
+        danceNameZH: '',
+        danceNameJP: '',
+        danceNameEN: '',
         danceCode: '',
         danceImg: '',
         danceMusic: '',
@@ -123,6 +121,12 @@ export default {
       robotDanceFormRules:{
         danceName:[
           { required:true , message:'请输入舞蹈名称', trigger:'blur'}
+        ],
+        danceNameEN:[
+          { required:true , message:'请输入舞蹈英文名称', trigger:'blur'}
+        ],
+        danceNameJP:[
+          { required:true , message:'请输入舞蹈日文名称', trigger:'blur'}
         ],
         danceCode:[
           { required:true , message:'请输入舞蹈动作代码', trigger:'blur'}
@@ -139,7 +143,8 @@ export default {
       fileList: [],
       imageUrl: '',
       middleObj:{},
-      btnTag:'add'
+      btnTag:'add',
+      uploadSuccessTag:false
     }
   },
   created() {
@@ -186,7 +191,10 @@ export default {
       console.log(fileList);
 
       if(!res.status){
-        this.$message.error("上传失败：" + res.message);
+        this.$message.error("图片上传失败：" + res.message);
+      } else {
+        this.$message.success("图片上传成功");
+        this.uploadSuccessTag = true;
       }
       this.imageUrl = URL.createObjectURL(file.raw);
       this.robotDanceForm.danceImg = res.entry;
@@ -269,13 +277,13 @@ export default {
             danceMusic: this.robotDanceForm.danceMusic
           },
           en: {
-            danceName: this.robotDanceForm.danceName,
+            danceName: this.robotDanceForm.danceNameEN,
             danceCode: this.robotDanceForm.danceCode,
             danceImg: this.robotDanceForm.danceImg,
             danceMusic: this.robotDanceForm.danceMusic
           },
           jp: {
-            danceName: this.robotDanceForm.danceName,
+            danceName: this.robotDanceForm.danceNameJP,
             danceCode: this.robotDanceForm.danceCode,
             danceImg: this.robotDanceForm.danceImg,
             danceMusic: this.robotDanceForm.danceMusic
@@ -291,13 +299,17 @@ export default {
     },
 
     updaterobotDance(item){
+      this.uploadSuccessTag = false;
       this.robotDanceDialogVisible = true;
       this.btnTag = 'update';
       this.middleObj = item;
       console.log(item);
+      //根据当前不同的语言显示不同语言的内容
       this.fileList = [];
       let fileObj = {name:item.motionCodesPojo.zh.danceMusic, url:item.motionCodesPojo.zh.danceMusic};
       this.robotDanceForm.danceName = item.motionCodesPojo.zh.danceName;
+      this.robotDanceForm.danceNameEN = item.motionCodesPojo.en.danceName;
+      this.robotDanceForm.danceNameJP = item.motionCodesPojo.jp.danceName;
       this.robotDanceForm.danceCode = item.motionCodesPojo.zh.danceCode;
       this.robotDanceForm.danceImg = this.imageUrl = item.motionCodesPojo.zh.danceImg;
       this.robotDanceForm.danceMusic = item.motionCodesPojo.zh.danceMusic;
@@ -313,6 +325,18 @@ export default {
         motionCodesPojo: {
           zh: {
             danceName: this.robotDanceForm.danceName,
+            danceCode: this.robotDanceForm.danceCode,
+            danceImg: this.robotDanceForm.danceImg,
+            danceMusic: this.robotDanceForm.danceMusic
+          },
+          en: {
+            danceName: this.robotDanceForm.danceNameEN,
+            danceCode: this.robotDanceForm.danceCode,
+            danceImg: this.robotDanceForm.danceImg,
+            danceMusic: this.robotDanceForm.danceMusic
+          },
+          jp: {
+            danceName: this.robotDanceForm.danceNameJP,
             danceCode: this.robotDanceForm.danceCode,
             danceImg: this.robotDanceForm.danceImg,
             danceMusic: this.robotDanceForm.danceMusic
@@ -376,7 +400,7 @@ export default {
 
 <style>
 .robotDancePage {
-  padding: 10px 15px;
+  padding: 20px 15px;
   background-color: #fff;
 }
 </style>

@@ -46,7 +46,7 @@
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">
-                                            <el-input size="small" :placeholder="$t('products.itemName_T')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
+                                            <el-input size="small" :placeholder="$t('placeholder.itemName')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
@@ -59,35 +59,35 @@
                             </el-col>
                         </el-row>
                         <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%" max-height="450">
-                            <el-table-column prop="itemNo" sortable label="NO." fixed width="90px">
+                            <el-table-column prop="itemNo" sortable label="NO." fixed min-width="90px">
                             </el-table-column>
-                            <el-table-column :label="$t('products.itemName')">
+                            <el-table-column :label="$t('products.itemName')" min-width="150px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('products.itemDesc')" width="300px">
+                            <el-table-column :label="$t('products.itemDesc')" min-width="300px">
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="originPrice" sortable :label="$t('products.price')">
+                            <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">
                             </el-table-column>
-                            <el-table-column :label="$t('products.itemType')">
+                            <el-table-column :label="$t('products.itemType')" min-width="150px">
                                 <template scope="scope">
                                     <span>{{scope.row.itemType | parseProductType}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('products.status')">
+                            <el-table-column :label="$t('products.status')" min-width="80px">
                                 <template scope="scope">
                                     <span>{{scope.row.isSale | parseIsSale}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('products.img')">
+                            <el-table-column :label="$t('products.img')" min-width="100px">
                                 <template scope="scope">                                    
                                     <el-popover
                                         ref="popoverImg"
@@ -100,7 +100,7 @@
                                     </el-button>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('products.action')" fixed="right" width="100px">
+                            <el-table-column :label="$t('products.action')" fixed="right" min-width="100px">
                                 <template scope="scope">
                                     <el-button type="text" size="small" @click="updateItem(scope.row)">
                                         <i class="el-icon-edit" :title="$t('products.edit')"></i>

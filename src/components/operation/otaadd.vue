@@ -1,40 +1,40 @@
 <template>
     <div class="ota-add-page">
         <el-form :model="otaUpdateForm" :rules="otaUpdateFormRules" ref="otaUpdateForm" label-width="100px" class="otaForm">            
-            <el-form-item label="ROM名称" prop="romName">
-                <el-input v-model="otaUpdateForm.romName"></el-input>
+            <el-form-item :label="$t('otaManage.romName')" prop="romName">
+                <el-input v-model="otaUpdateForm.romName" :placeholder="$t('placeholder.romName')"></el-input>
             </el-form-item>
             <el-form-item label="ROM CODE" prop="romCode">
-                <el-input v-model="otaUpdateForm.romCode"></el-input>
+                <el-input v-model="otaUpdateForm.romCode" :placeholder="$t('placeholder.romCode')"></el-input>
             </el-form-item>
-            <el-form-item label="打包类型" prop="romType">
-                <el-select v-model="otaUpdateForm.romType" placeholder="请选择活动区域">
+            <el-form-item :label="$t('otaManage.romType')" prop="romType">
+                <el-select v-model="otaUpdateForm.romType" placeholder="请选择打包类型">
                     <el-option label="full" value="1"></el-option>
                     <el-option label="delta" value="2"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布地区" prop="region">
+            <el-form-item :label="$t('otaManage.pushAddress')" prop="region">
                 <el-select v-model="otaUpdateForm.region" placeholder="请选择发布地区">
-                    <el-option label="中国" value="CN"></el-option>
-                    <el-option label="日本" value="JP"></el-option>
-                    <el-option label="英国" value="GB"></el-option>
-                    <el-option label="美国" value="US"></el-option>
+                    <el-option label="中国(China)" value="CN"></el-option>
+                    <el-option label="日本(Janpan)" value="JP"></el-option>
+                    <el-option label="英国(UK)" value="GB"></el-option>
+                    <el-option label="美国(US)" value="US"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布类型" prop="publishType">
+            <el-form-item :label="$t('otaManage.pushType')" prop="publishType">
                 <el-select v-model="otaUpdateForm.publishType" placeholder="请选择发布类型">
                     <el-option label="debug" value="0"></el-option>
                     <el-option label="test" value="1"></el-option>
                     <el-option label="release" value="2"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="发布状态" prop="publishState">
+            <el-form-item :label="$t('otaManage.pushStatus')" prop="publishState">
                 <el-select v-model="otaUpdateForm.publishState" placeholder="请选择发布状态">
                     <el-option label="testing" value="0"></el-option>
                     <el-option label="release" value="1"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="文件上传">
+            <el-form-item :label="$t('otaManage.fileUpload')">
                 <el-upload drag
                 action=""
                 ref="romUpload"
@@ -50,7 +50,7 @@
                 <el-progress v-for="(item,index) in percentArray" :key="item" :text-inside="true" :stroke-width="18" :percentage="item" status="success" v-if=" index+1 == percentArray.length"></el-progress>                
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="startUpload()">立即升级</el-button>
+                <el-button type="primary" @click="startUpload()">{{$t('otaManage.update')}}</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -63,8 +63,8 @@ export default {
     data() {
         return {                                   
             otaUpdateForm: {
-                romName: 'test',
-                romCode: '1',
+                romName: '',
+                romCode: '',
                 romType: '1',
                 region: 'JP',
                 publishType: '0',
@@ -216,7 +216,8 @@ export default {
 
 <style>
 .ota-add-page {
-    padding: 10px 15px;
+    padding: 20px 15px;
+    background-color: #fff;
 }
 .otaForm {
     width: 60%;

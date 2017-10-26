@@ -2,32 +2,32 @@
   <div class="trans-page" id="trans-page">
     <el-tabs type="border-card">
       <el-tab-pane>
-        <span slot="label"><i class="el-icon-date"></i> 菜品翻译</span>
+        <span slot="label"><i class="el-icon-date"></i> {{$t('translate.item')}}</span>
         <div class="tab-content" id="tab-content">
           <item-translate></item-translate>
         </div>        
       </el-tab-pane>
-      <el-tab-pane label="类目翻译">
+      <el-tab-pane :label="$t('translate.catalog')">
         <div class="tab-content">
             <catalogTranslate></catalogTranslate>
         </div>        
       </el-tab-pane>
-      <el-tab-pane label="属性翻译">
+      <el-tab-pane :label="$t('translate.attribute')">
         <div class="tab-content">
             <attrTranslate></attrTranslate>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="配菜翻译">
+      <el-tab-pane :label="$t('translate.sideDish')">
         <div class="tab-content">
             <sideDishTranslate></sideDishTranslate>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="提案组翻译">
+      <el-tab-pane :label="$t('translate.introGroup')">
         <div class="tab-content">
             <introGroupTranslate></introGroupTranslate>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="提案翻译">
+      <el-tab-pane :label="$t('translate.intro')">
         <div class="tab-content">
             <introTranslate></introTranslate>
         </div>
@@ -199,5 +199,14 @@ export default {
 <style>
   .td-padding {
     padding: 8px 0;
+  }
+  .tab-content {
+    overflow-y: auto;
+  }
+  .tab-content .el-input ,.tab-content .el-textarea{
+    margin: 2px 0;
+  }
+  .tab-content .el-textarea {    
+    line-height: 34px;
   }
 </style>

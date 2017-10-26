@@ -1,65 +1,87 @@
 <template>
     <div class="add-shop">
         <el-form :model="updateShopForm" :rules="updateShopFormRules" ref="updateShopForm" label-width="120px" class="addshopForm">
-            <el-form-item label="店铺名称" prop="name">
-                <el-input v-model="updateShopForm.name"></el-input>
+            <el-form-item :label="$t('shop.shopName')" prop="name">
+                <el-input v-model="updateShopForm.name" :placeholder="$t('placeholder.shopName')"></el-input>
             </el-form-item>
-            <el-form-item label="店铺联系人" prop="contactPerson">
-                <el-input v-model="updateShopForm.contactPerson"></el-input>
+            <el-form-item :label="$t('shop.contacts')" prop="contactPerson">
+                <el-input v-model="updateShopForm.contactPerson" :placeholder="$t('placeholder.shopContact')"></el-input>
             </el-form-item>
-            <el-form-item label="店铺联系方式" prop="shopTel">
-                <el-input v-model="updateShopForm.shopTel"></el-input>
+            <el-form-item :label="$t('shop.shopContact')" prop="shopTel">
+                <el-input v-model="updateShopForm.shopTel" :placeholder="$t('placeholder.shopTel')"></el-input>
             </el-form-item>
             <el-form-item label="语言" prop="language">
-                <el-radio-group v-model="updateShopForm.language">
+                <el-radio-group v-model="updateShopForm.language" :disabled="true">
                     <el-radio label="0">中文</el-radio>
-                    <el-radio label="1">英文</el-radio>
-                    <el-radio label="2">日文</el-radio>
+                    <el-radio label="1">English</el-radio>
+                    <el-radio label="2">日本語</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="邮编" prop="postcode" v-if="updateShopForm.language == '2'">
-                <el-input v-model="updateShopForm.postcode" placeholder="请输入邮编" class="percentage-width"></el-input>
-                <el-button type="primary" icon="search" @click="getjpAddress()">搜索</el-button>
+            <el-form-item :label="$t('shop.postCode')" prop="postcode" v-if="updateShopForm.language == '2'">
+                <el-input v-model="updateShopForm.postcode" :placeholder="$t('placeholder.postCode')" class="percentage-width"></el-input>
+                <el-button type="primary" icon="search" @click="getjpAddress()">{{$t('_global.search')}}</el-button>
             </el-form-item>
-            <el-form-item label="省" prop="province" v-if="updateShopForm.language == '2'">
-                <el-input v-model="updateShopForm.province" placeholder="请输入省" class="percentage-width"></el-input>
+            <el-form-item :label="$t('shop.province')" prop="province" v-if="updateShopForm.language == '2'">
+                <el-input v-model="updateShopForm.province" :placeholder="$t('placeholder.province')" class="percentage-width"></el-input>
             </el-form-item>
-            <el-form-item label="市" prop="city" v-if="updateShopForm.language == '2'">
-                <el-input v-model="updateShopForm.city" placeholder="请输入市" class="percentage-width"></el-input>
+            <el-form-item :label="$t('shop.city')" prop="city" v-if="updateShopForm.language == '2'">
+                <el-input v-model="updateShopForm.city" :placeholder="$t('placeholder.city')" class="percentage-width"></el-input>
             </el-form-item>
-            <el-form-item label="街道" prop="street" v-if="updateShopForm.language == '2'">
-                <el-input v-model="updateShopForm.street" placeholder="请输入街道" class="percentage-width"></el-input>
+            <el-form-item :label="$t('shop.street')" prop="street" v-if="updateShopForm.language == '2'">
+                <el-input v-model="updateShopForm.street" :placeholder="$t('placeholder.street')" class="percentage-width"></el-input>
             </el-form-item>
-            <el-form-item label="详细地址" prop="address">
-                <el-input v-model="updateShopForm.address"></el-input>
+            <el-form-item :label="$t('shop.shopAddress')" prop="address">
+                <el-input v-model="updateShopForm.address" :placeholder="$t('placeholder.address')"></el-input>
             </el-form-item>
-            <el-form-item label="商品价格" prop="haveRadioFee" v-if="updateShopForm.language == '2'">
+            <el-form-item :label="$t('shop.itemPrice')" prop="haveRadioFee" v-if="updateShopForm.language == '2'" :disabled="updateShopForm.language == '2'">
                 <el-radio-group v-model="updateShopForm.haveRadioFee">
-                    <el-radio label="0">不含税</el-radio>
-                    <el-radio label="1">含税</el-radio>
+                    <el-radio label="0">{{$t('shop.noTax')}}</el-radio>
+                    <el-radio label="1">{{$t('shop.haveTax')}}</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="税率" prop="taxRadio" v-if="updateShopForm.language == '2' && updateShopForm.haveRadioFee == 0">
-                <el-input v-model="updateShopForm.taxRadio"></el-input>
+            <el-form-item :label="$t('shop.taxRate')" prop="taxRadio" v-if="updateShopForm.language == '2' && updateShopForm.haveRadioFee == 0">
+                <el-input v-model="updateShopForm.taxRadio" :placeholder="$t('placeholder.taxRate')"></el-input>
             </el-form-item>
-            <el-form-item label="控制板密码" prop="custPanelAuthCode">
-                <el-input v-model="updateShopForm.custPanelAuthCode" :disabled="true" placeholder="请输入控制板密码"></el-input>
-            </el-form-item>
-            <el-form-item label="微信商铺收款ID" prop="wxMerchantId">
-                <el-input v-model="updateShopForm.wxMerchantId"></el-input>
-            </el-form-item>
-            <el-form-item label="微信商铺密钥" prop="wxPrivateKey">
-                <el-input v-model="updateShopForm.wxPrivateKey"></el-input>
-            </el-form-item>
-            <el-form-item label="是否测试店铺" prop="isTest">
-                <el-select v-model="updateShopForm.isTest" placeholder="请选择">
-                    <el-option label="是" value="true">是</el-option>
-                    <el-option label="否" value="false">否</el-option>
+            <el-form-item :label="$t('shop.isTest')" prop="isTest">
+                <el-select v-model="updateShopForm.isTest" :placeholder="$t('placeholder.select')">
+                    <el-option :label="$t('shop.yes')" value="true"></el-option>
+                    <el-option :label="$t('shop.no')" value="false"></el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item :label="$t('shop.perssion')" prop="perssion">
+                <el-select v-model="updateShopForm.currencyPrecision" :placeholder="$t('placeholder.select')">
+                    <el-option label="0" value="0"></el-option>
+                    <el-option label="1" value="1"></el-option>
+                    <el-option label="2" value="2"></el-option>
+                    <el-option label="3" value="3"></el-option>
+                    <el-option label="4" value="4"></el-option>
+                    <el-option label="5" value="5"></el-option>
+                    <el-option label="6" value="6"></el-option>
+                    <el-option label="7" value="7"></el-option>
+                    <el-option label="8" value="8"></el-option>
+                    <el-option label="9" value="9"></el-option>
+                    <el-option label="10" value="10"></el-option>            
+                </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
+                <el-select v-model="updateShopForm.currencyType" :placeholder="$t('placeholder.select')">
+                    <el-option label="¥ CHINESE" value="CHINESE"></el-option>
+                    <el-option label="$ US" value="US"></el-option>
+                    <el-option label="円 JAPAN" value="JAPAN"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('shop.authCode')" prop="custPanelAuthCode">
+                <el-input v-model="updateShopForm.custPanelAuthCode" :disabled="true" :placeholder="$t('placeholder.authCode')"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('shop.wechatPayId')" prop="wxMerchantId">
+                <el-input v-model="updateShopForm.wxMerchantId" :placeholder="$t('placeholder.wechatPayId')"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('shop.wechatPayKey')" prop="wxPrivateKey">
+                <el-input v-model="updateShopForm.wxPrivateKey" :placeholder="$t('placeholder.wechatPayKey')"></el-input>
+            </el-form-item>
+            
             <el-form-item>
-                <el-button type="primary" @click="submitForm('updateShopForm')">立即修改</el-button>
-                <!-- <el-button @click="resetForm('updateShopForm')">重置</el-button> -->
+                <el-button type="primary" @click="submitForm('updateShopForm')">{{$t('_global.lijiEdit')}}</el-button>                
             </el-form-item>
         </el-form>
     </div>
@@ -96,7 +118,9 @@ export default {
                 province: '',
                 city: '',
                 street: '',
-                custPanelAuthCode:''
+                custPanelAuthCode:'',
+                currencyPrecision:'0',
+                currencyType:''
             },
             updateShopFormRules: {
                 name: [
@@ -104,6 +128,12 @@ export default {
                 ],                
                 shopTel: [
                     { required: true, message: '请输入店铺联系电话', trigger: 'blur' }
+                ],
+                currencyPrecision: [
+                   { required: true, message: '请选择货币精度', trigger: 'blur' }
+                ],
+                currencyType: [
+                    { required: true, message: '请选择货币类型', trigger: 'blur' }
                 ],
                 haveRadioFee: [
                     { required: true, message: '请选择是否有税率', trigger: 'blur' }
@@ -130,6 +160,9 @@ export default {
     computed: {
         rShopDetailData() {
             return Lockr.get('shopDetailData');
+        },
+        _SHOPLANGUAGE(){            
+            return Cookies.get('SHOPLANGUAGE');
         }
     },
 
@@ -140,7 +173,8 @@ export default {
     methods: {
 
         getUpdateData() {
-            var data = this.rShopDetailData;            
+            var data = this.rShopDetailData;
+            
             this.updateShopForm.language = data.language + "";
             this.updateShopForm.address = data.address;
             if(data.language == 0){
@@ -159,10 +193,10 @@ export default {
                     this.updateShopForm.address = shopAddressParse.address;
                 } else {
                     this.updateShopForm.address = data.address;
-                }
-                
+                }                
             }            
-
+            this.updateShopForm.currencyPrecision = data.currencyPrecision;
+            this.updateShopForm.currencyType = data.currencyType;
             this.updateShopForm.contactPerson = data.contactPerson;
             this.updateShopForm.shopTel = data.shopTel;            
             this.updateShopForm.haveRadioFee = (data.haveRadioFee + 0) + "";
@@ -214,7 +248,7 @@ export default {
                 addressObj.street = this.updateShopForm.street;
                 addressObj.address = this.updateShopForm.address;
 
-                shopAddress = JSON.stringify(addressObj);                
+                shopAddress = JSON.stringify(addressObj);
             }
 
             const data = {
@@ -229,7 +263,9 @@ export default {
                 wxMerchantId: this.updateShopForm.wxMerchantId,
                 wxPrivateKey: this.updateShopForm.wxPrivateKey,
                 language: this.updateShopForm.language,
-                isTest: true
+                isTest: true,
+                currencyPrecision: parseInt(this.updateShopForm.currencyPrecision),
+                currencyType: this.updateShopForm.currencyType
             };
 
             $http.post('/coron-web/shop/update', data).then(res => {

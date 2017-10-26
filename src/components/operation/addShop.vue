@@ -1,71 +1,92 @@
 <template>
   <div class="add-shop">
     <el-form :model="addShopFrom" :rules="addShopFromRules" ref="addShopFrom" label-width="120px" class="addshopForm">
-      <el-form-item label="店铺名称" prop="name">
-        <el-input v-model="addShopFrom.name" placeholder="请输入店铺名称"></el-input>
+      <el-form-item :label="$t('shop.shopName')" prop="name">
+        <el-input v-model="addShopFrom.name" :placeholder="$t('placeholder.shopName')"></el-input>
       </el-form-item>      
-      <el-form-item label="店铺联系人" prop="contactPerson">
-        <el-input v-model="addShopFrom.contactPerson" placeholder="请输入店铺联系人"></el-input>
+      <el-form-item :label="$t('shop.contacts')" prop="contactPerson">
+        <el-input v-model="addShopFrom.contactPerson" :placeholder="$t('placeholder.shopContact')"></el-input>
       </el-form-item>
-      <el-form-item label="店铺联系方式" prop="shopTel">
-        <el-input v-model="addShopFrom.shopTel" placeholder="请输入店铺联系方式"></el-input>
+      <el-form-item :label="$t('shop.shopContact')" prop="shopTel">
+        <el-input v-model="addShopFrom.shopTel" :placeholder="$t('placeholder.shopTel')"></el-input>
       </el-form-item>
-      <el-form-item label="语言" prop="language">
+      <el-form-item :label="$t('shop.langSetting')" prop="language">
         <el-radio-group v-model="addShopFrom.language">
           <el-radio label="0">中文</el-radio>
-          <el-radio label="1">英文</el-radio>
-          <el-radio label="2">日文</el-radio>
+          <el-radio label="1">English</el-radio>
+          <el-radio label="2">日本語</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="邮编" prop="postcode" v-if="addShopFrom.language == '2'">
-        <el-input v-model="addShopFrom.postcode" placeholder="请输入邮编" class="percentage-width"></el-input>        
-        <el-button type="primary" icon="search" @click="getjpAddress()">搜索</el-button>
+      <el-form-item :label="$t('shop.postCode')" prop="postcode" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.postcode" :placeholder="$t('placeholder.postCode')" class="percentage-width"></el-input>        
+        <el-button type="primary" icon="search" @click="getjpAddress()">{{$t('_global.search')}}</el-button>
       </el-form-item>
-      <el-form-item label="省" prop="province" v-if="addShopFrom.language == '2'">
-        <el-input v-model="addShopFrom.province" placeholder="请输入省" class="percentage-width"></el-input>        
+      <el-form-item :label="$t('shop.province')" prop="province" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.province" :placeholder="$t('placeholder.province')" class="percentage-width"></el-input>        
       </el-form-item>
-      <el-form-item label="市" prop="city" v-if="addShopFrom.language == '2'">
-        <el-input v-model="addShopFrom.city" placeholder="请输入市" class="percentage-width"></el-input>        
+      <el-form-item :label="$t('shop.city')" prop="city" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.city" :placeholder="$t('placeholder.city')" class="percentage-width"></el-input>        
       </el-form-item>
-      <el-form-item label="街道" prop="street" v-if="addShopFrom.language == '2'">
-        <el-input v-model="addShopFrom.street" placeholder="请输入街道" class="percentage-width"></el-input>        
+      <el-form-item :label="$t('shop.street')" prop="street" v-if="addShopFrom.language == '2'">
+        <el-input v-model="addShopFrom.street" :placeholder="$t('placeholder.street')" class="percentage-width"></el-input>        
       </el-form-item>
-      <el-form-item label="详细地址" prop="address">
-        <el-input v-model="addShopFrom.address" placeholder="请输入店铺地址"></el-input>        
+      <el-form-item :label="$t('shop.shopAddress')" prop="address">
+        <el-input v-model="addShopFrom.address" :placeholder="$t('placeholder.address')"></el-input>        
       </el-form-item>
-      <el-form-item label="商品价格" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
+      <el-form-item :label="$t('shop.itemPrice')" prop="haveRadioFee" v-if="addShopFrom.language == '2'">
         <el-radio-group v-model="addShopFrom.haveRadioFee">          
-          <el-radio label='0'>不含税</el-radio>          
-          <el-radio label='1'>含税</el-radio>
+          <el-radio label='0'>{{$t('shop.noTax')}}</el-radio>          
+          <el-radio label='1'>{{$t('shop.haveTax')}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="税率" prop="taxRadio" v-if="addShopFrom.language == '2' && addShopFrom.haveRadioFee == 0">
-        <el-input v-model="addShopFrom.taxRadio" placeholder="请输入税率"></el-input>
+      <el-form-item :label="$t('shop.taxRate')" prop="taxRadio" v-if="addShopFrom.language == '2' && addShopFrom.haveRadioFee == 0">
+        <el-input v-model="addShopFrom.taxRadio" :placeholder="$t('placeholder.taxRate')"></el-input>
       </el-form-item>
-      <el-form-item label="是否测试店铺" prop="isTest">
-          <el-select v-model="addShopFrom.isTest" placeholder="请选择">
-              <el-option label="是" value="true"></el-option>
-              <el-option label="否" value="false"></el-option>
+      <el-form-item :label="$t('shop.isTest')" prop="isTest">
+          <el-select v-model="addShopFrom.isTest" :placeholder="$t('placeholder.select')">
+              <el-option :label="$t('shop.yes')" value="true"></el-option>
+              <el-option :label="$t('shop.no')" value="false"></el-option>
           </el-select>
       </el-form-item>
-      <el-form-item label="控制板密码" prop="custPanelAuthCode">
-        <el-input v-model="addShopFrom.custPanelAuthCode" placeholder="请输入控制板密码" :disabled="true"></el-input>
+      <el-form-item :label="$t('shop.perssion')" prop="perssion">
+        <el-select v-model="addShopFrom.currencyPrecision" :placeholder="$t('placeholder.select')">
+            <el-option label="0" value="0"></el-option>
+            <el-option label="1" value="1"></el-option>
+            <el-option label="2" value="2"></el-option>
+            <el-option label="3" value="3"></el-option>
+            <el-option label="4" value="4"></el-option>
+            <el-option label="5" value="5"></el-option>
+            <el-option label="6" value="6"></el-option>
+            <el-option label="7" value="7"></el-option>
+            <el-option label="8" value="8"></el-option>
+            <el-option label="9" value="9"></el-option>
+            <el-option label="10" value="10"></el-option>            
+        </el-select>
       </el-form-item>
-      <el-form-item label="微信商铺收款ID" prop="wxMerchantId">
-        <el-input v-model="addShopFrom.wxMerchantId" placeholder="请输入微信商铺收款ID"></el-input>
+      <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
+        <el-select v-model="addShopFrom.currencyType" :placeholder="$t('placeholder.select')">
+            <el-option label="¥ CHINESE" value="CHINESE"></el-option>
+            <el-option label="$ US" value="US"></el-option>
+            <el-option label="円 JAPAN" value="JAPAN"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="微信商铺密钥" prop="wxPrivateKey">
-        <el-input v-model="addShopFrom.wxPrivateKey" placeholder="请输入微信商铺密钥"></el-input>
+      <el-form-item :label="$t('shop.authCode')" prop="custPanelAuthCode">
+        <el-input v-model="addShopFrom.custPanelAuthCode" :placeholder="$t('placeholder.authCode')" :disabled="true"></el-input>
       </el-form-item>
-      <el-form-item label="用户名" prop="uname">
-        <el-input v-model="addShopFrom.uname" placeholder="请输入管理员账号"></el-input>
+      <el-form-item :label="$t('shop.wechatPayId')" prop="wxMerchantId">
+        <el-input v-model="addShopFrom.wxMerchantId" :placeholder="$t('placeholder.wechatPayId')"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('shop.wechatPayKey')" prop="wxPrivateKey">
+        <el-input v-model="addShopFrom.wxPrivateKey" :placeholder="$t('placeholder.wechatPayKey')"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('shop.id')" prop="uname">
+        <el-input v-model="addShopFrom.uname" :placeholder="$t('placeholder.userId')"></el-input>
       </el-form-item> 
-      <el-form-item label="密码" prop="upassword">
-        <el-input v-model="addShopFrom.upassword" placeholder="请输入账号密码"></el-input>
+      <el-form-item :label="$t('shop.password')" prop="upassword">
+        <el-input v-model="addShopFrom.upassword" :placeholder="$t('placeholder.password')"></el-input>
       </el-form-item>      
       <el-form-item>
-        <el-button type="primary" @click="submitForm('addShopFrom')">立即添加</el-button>
-        <!-- <el-button @click="resetForm('addShopFrom')">重置</el-button> -->
+        <el-button type="primary" @click="submitForm('addShopFrom')">{{$t('_global.lijiAdd')}}</el-button>        
       </el-form-item>
     </el-form>
   </div>
@@ -97,6 +118,8 @@ export default {
         taxRadio: '8',
         wxMerchantId: '',
         wxPrivateKey: '',
+        currencyPrecision:'0',
+        currencyType:'',
         custPanelAuthCode:Math.random().toString(36).substr(2).slice(2,8),
         language: "0",
         isTest: "true",
@@ -116,6 +139,12 @@ export default {
         ],
         shopTel: [
           { required: true, message: '请输入店铺联系电话', trigger: 'blur' }
+        ],
+        currencyPrecision: [
+          { required: true, message: '请选择货币精度', trigger: 'blur' }
+        ],
+        currencyType: [
+          { required: true, message: '请选择货币类型', trigger: 'blur' }
         ],
         haveRadioFee: [
           { required: true, message: '请选择是否有税率', trigger: 'blur' }
@@ -208,7 +237,9 @@ export default {
         wxMerchantId: this.addShopFrom.wxMerchantId,
         wxPrivateKey: this.addShopFrom.wxPrivateKey,
         language: this.addShopFrom.language,
-        isTest: true
+        isTest: true,
+        currencyPrecision: parseInt(this.addShopFrom.currencyPrecision),
+        currencyType: this.addShopFrom.currencyType
       };
 
       const postData = {
@@ -246,7 +277,6 @@ export default {
         $http.post('/coron-web/jpaddress/getByPostcode',{
           postcode:this.addShopFrom.postcode
         }).then(res => {
-
           console.log("获取的地址信息",res);
           if(res.status){
             this.addShopFrom.province = res.entry[0].province;
@@ -255,7 +285,6 @@ export default {
           } else {
             console.log("返回错误！");
           }
-
           
         }).catch(res => {
           this.$message({

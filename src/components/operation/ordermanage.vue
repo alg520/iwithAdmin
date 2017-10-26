@@ -1,9 +1,9 @@
 <template>
   <div class="orderPage">
     <el-form :inline="true" :model="orderFrom">
-      <el-form-item label="店铺列表">
-        <el-select v-model="selectedShopID" filterable placeholder="请选择" @change="changeShop()">
-          <el-option label="全部" value=""></el-option>
+      <el-form-item :label="$t('shop.list')">
+        <el-select v-model="selectedShopID" filterable :placeholder="$t('placeholder.select')" @change="changeShop()">
+          <el-option :label="$t('_global.all')" value=""></el-option>
           <el-option
             v-for="item in allShopLists"
             :key="item.id"
@@ -12,44 +12,44 @@
           </el-option>
         </el-select>        
       </el-form-item>
-      <el-form-item label="下单时段">
-        <el-date-picker v-model="startTrade" type="datetime" placeholder="选择开始日期时间" align="right" format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerTradetime">
+      <el-form-item :label="$t('shop.order.time')">
+        <el-date-picker v-model="startTrade" type="datetime" :placeholder="$t('placeholder.startTime')" align="right" format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerTradetime">
         </el-date-picker>
-        -至-
-        <el-date-picker v-model="endTrade" type="datetime" placeholder="选择结束日期时间" align="right" :picker-options="pickerTradetime">
+        -
+        <el-date-picker v-model="endTrade" type="datetime" :placeholder="$t('placeholder.endTime')" align="right" :picker-options="pickerTradetime">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="订单状态">
-        <el-select v-model="tradeStatus" placeholder="订单状态" @change="changeShop()">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="待审核" value="1"></el-option>
-          <el-option label="审核通过" value="2"></el-option>
-          <el-option label="人工退单" value="3"></el-option>
-          <el-option label="审核未通过" value="4"></el-option>
-          <el-option label="取消" value="5"></el-option>
+      <el-form-item :label="$t('shop.order.status')">
+        <el-select v-model="tradeStatus" :placeholder="$t('placeholder.orderStatus')" @change="changeShop()">
+          <el-option :label="$t('shop.order.all')" value=""></el-option>
+          <el-option :label="$t('shop.order.pendingAudit')" value="1"></el-option>
+          <el-option :label="$t('shop.order.auditPassed')" value="2"></el-option>
+          <el-option :label="$t('shop.order.manualWithdrawal')" value="3"></el-option>
+          <el-option :label="$t('shop.order.auditNotApproved')" value="4"></el-option>
+          <el-option :label="$t('shop.order.cancel')" value="5"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getSomeThing()">查询</el-button>
+        <el-button type="primary" @click="getSomeThing()">{{$t('_global.search')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="tradeLists" border style="width: 100%; text-align:center;">
-      <el-table-column prop="tradeId" label="订单编号" width="180">
+      <el-table-column prop="tradeId" :label="$t('shop.order.orderId')" width="180">
       </el-table-column>
-      <el-table-column prop="originalAmount" label="原价" width="180">
+      <el-table-column prop="originalAmount" :label="$t('shop.order.oldPrice')" width="180">
       </el-table-column>
-      <el-table-column prop="paidAmount" label="实际支付金额" width="180">
+      <el-table-column prop="paidAmount" :label="$t('shop.order.price')" width="180">
       </el-table-column>
-      <el-table-column prop="tradeStatus" label="订单状态" width="180">
+      <el-table-column prop="tradeStatus" :label="$t('shop.order.status')" width="180">
         <template scope="scope">
           <span>{{ scope.row.tradeStatus| orderStatus}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createdTime" label="下单时间">
+      <el-table-column prop="createdTime" :label="$t('shop.order.orderTime')">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :label="$t('_global.action')">
         <template scope="scope">
-          <el-button type="primary" size="small" @click="getDetailTrade(scope.row)">详情</el-button>
+          <el-button type="primary" size="small" @click="getDetailTrade(scope.row)">{{$t('shop.order.info')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,7 +58,7 @@
       </el-pagination>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import axios from "axios";

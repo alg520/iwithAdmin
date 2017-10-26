@@ -1,43 +1,43 @@
 <template>
   <div class="attrTrans-page">
       <el-table :data="attrDatas" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center;" max-height="550">
-              <el-table-column prop="itemAttrId" sortable label="编号" fixed width="90px">
+              <el-table-column prop="itemAttrId" sortable :label="$t('_global.number')" fixed width="90px">
               </el-table-column>
-              <el-table-column label="商品名称">
+              <el-table-column :label="$t('products.attrName')">
                   <template scope="scope">
                       <span v-if="_SHOPLANGUAGE == 0 && editTag !== scope.row.itemAttrId">{{scope.row.attrNameObject.zh}}</span>
                       <span v-if="_SHOPLANGUAGE == 1 && editTag !== scope.row.itemAttrId">{{scope.row.attrNameObject.en}}</span>
                       <span v-if="_SHOPLANGUAGE == 2 && editTag !== scope.row.itemAttrId">{{scope.row.attrNameObject.jp}}</span>
                       <div v-if="editTag == scope.row.itemAttrId" class="td-padding">
-                        <el-input placeholder="请输入中文名称" v-model="editForm.nameZH" :disabled="_SHOPLANGUAGE == 0">
+                        <el-input :placeholder="$t('placeholder.transNameZH')" v-model="editForm.nameZH" :disabled="_SHOPLANGUAGE == 0">
                           <template slot="prepend">中</template>
                         </el-input>
                         <br>
-                        <el-input placeholder="请输入日文名称" v-model="editForm.nameJP" :disabled="_SHOPLANGUAGE == 2">
+                        <el-input :placeholder="$t('placeholder.transNameJP')" v-model="editForm.nameJP" :disabled="_SHOPLANGUAGE == 2">
                           <template slot="prepend">日</template>
                         </el-input>
                         <br>
-                        <el-input placeholder="请输入英文名称" v-model="editForm.nameEN" :disabled="_SHOPLANGUAGE == 1">
+                        <el-input :placeholder="$t('placeholder.transNameEN')" v-model="editForm.nameEN" :disabled="_SHOPLANGUAGE == 1">
                           <template slot="prepend">英</template>
                         </el-input>
-                      </div>                      
+                      </div>
                   </template>                  
               </el-table-column>              
-              <el-table-column label="更新时间" width="200px">
+              <el-table-column :label="$t('products.updateTime')" width="200px">
                   <template scope="scope">                      
                       <span>{{scope.row.gmtUpdated}}</span>
                   </template>
               </el-table-column>              
-              <el-table-column label="操作" fixed="right" width="100px">
+              <el-table-column :label="$t('_global.action')" fixed="right" width="100px">
                   <template scope="scope">
                       <el-button type="text" size="small" @click="editTranslate(scope.row)" v-if="editTag !== scope.row.itemAttrId">
-                          <i class="el-icon-edit" title="翻译"></i>
+                          <i class="el-icon-edit" :title="$t('products.translate')"></i>
                       </el-button>
                       <el-button type="text" size="small" @click="confirmTranslate()" v-if="editTag == scope.row.itemAttrId">
-                          <i class="el-icon-circle-check" title="确认"></i>
+                          <i class="el-icon-circle-check" :title="$t('_global.confirm')"></i>
                       </el-button>
                       <el-button type="text" size="small" @click="cancelTranslate()" v-if="editTag == scope.row.itemAttrId">
-                          <i class="el-icon-circle-cross" title="取消"></i>
+                          <i class="el-icon-circle-cross" :title="$t('_global.cancel')"></i>
                       </el-button>                      
                   </template>
               </el-table-column>
