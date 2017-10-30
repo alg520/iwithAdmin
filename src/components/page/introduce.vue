@@ -82,7 +82,7 @@
                             <el-dialog :visible.sync="introDialogVisible" class="addDialog" v-bind:title="addTag ? $t('introduce.addIntroduce'):$t('introduce.updateIntroduce')" size="tiny">
                                 <el-form :model="introForm" :rules="introFormRules" ref="introForm" label-width="100px" style="width:100%;">
                                     <el-form-item :label="$t('introduce.introduceGroupName')" prop="introGroup">                                        
-                                        <el-select v-model="whichGroup" :placeholder="$t('placeholder.introGroup')">
+                                        <el-select v-model="whichGroup" :placeholder="$t('placeholder.introGroup')" :disabled="!addTag">
                                             <el-option v-for="item in introGroupDatas" :key="item.id" :label="item.groupNamePojo.zh" :value="item.id">
                                             </el-option>
                                         </el-select>

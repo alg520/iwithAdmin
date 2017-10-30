@@ -12,11 +12,11 @@
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.catalog')" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" :placeholder="$t('placeholder.catalog')">                                            
-                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="`${item.catalogId}`">
                                             </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="`${item.catalogId}`">
                                             </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="`${item.catalogId}`">
                                             </el-option> 
                                         </el-select>
                                     </el-form-item>
@@ -29,8 +29,8 @@
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.type')" prop="itemType">
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
-                                            <el-radio :label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
-                                            <el-radio :label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
+                                            <el-radio label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
+                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
                                             <!-- <el-radio :label="3">配菜</el-radio> -->
                                         </el-radio-group>
                                     </el-form-item>
@@ -357,14 +357,14 @@ export default {
             timeSelectVisible: false,
             timeLists: [],
             checkAll: true,
+            catalogDatas:[],
 
             itemTags: [],
             tagValue: '',
 
             dialogImageUrl: '',
             dialogVisible: false,
-            dynamicTags: ["标签1"],
-            catalogDatas: [],
+            dynamicTags: ["标签1"],            
             timeDatas: [],
             itemAttrDatas: [],
             checkAttrList: [],
@@ -406,7 +406,7 @@ export default {
                 catalogId: '',      //必填--所属分类
                 itemName: '',       //必填 -- 菜品名称
                 itemDesc: '',       //菜品描述
-                itemType: 1,        //必填  1单点 2套餐 3配菜
+                itemType: "1",        //必填  1单点 2套餐 3配菜
                 originPrice: '',    //必填  -- 原价
 
                 discountPrice: '',   //折扣价
@@ -450,16 +450,16 @@ export default {
                     { required: true, message: '请输入商品编号', trigger: 'blur' }
                 ],
                 catalogId: [
-                    { required: true, message: '请选择商品分类', trigger: 'blur' }
+                    { required: true, message: '请选择商品分类', trigger: 'change' }
                 ],
                 itemName: [
                     { required: true, message: '请输入商品名称', trigger: 'blur' }
                 ],
                 originPrice: [
-                    { required: true, message: '请输入商品原价', trigger: 'blur' }
+                    { required: true, message: '请输入商品原价', trigger: 'change' }
                 ],
                 itemType: [
-                    { required: true, message: '请选择商品类型', trigger: 'blur' }
+                    { required: true, message: '请选择商品类型', trigger: 'change' }
                 ]
             },
             currentPage:1,
@@ -495,6 +495,9 @@ export default {
             console.log("接受的数据", this.accepDatas);
             console.log(this.accepDatas.timeDurations);
             const data = this.accepDatas;
+            this.productForm.itemNo = data.itemNo;
+            this.productForm.catalogId = data.catalogId+"";
+
             if (this._SHOPLANGUAGE == 0) {
                 this.productForm.itemName = data.itemNameObject.zh;
                 this.productForm.itemDesc = data.itemDescObject.zh;
@@ -510,16 +513,21 @@ export default {
                 this.productForm.itemDesc = data.itemDescObject.jp;
                 this.itemTags = data.tagsObj.jp;
             }
-            this.productForm.catalogId = data.catalogId;
-            this.productForm.itemNo = data.itemNo;
-            this.productForm.itemType = data.itemType;
-            this.productForm.originPrice = data.originPrice;
+            
+            this.productForm.itemType = data.itemType+"";
+            this.productForm.originPrice = data.originPrice+"";
             this.productForm.discountPrice = data.discountPrice;
             this.timeLists = data.timeDurations;
             this.attrGroups = data.itemAttrs;
             this.productForm.picUrl = this.imageUrl = data.picUrl;
-            this.productForm.seq = data.seq;
-            data.itemType == 1 ? (this.sideDishGroups = data.childItems) : (this.setmealList = data.childItems);
+            this.productForm.seq = data.seq;            
+            
+            if(data.itemType == 1){
+                data.childItems.length > 0 ? this.sideDishGroups = data.childItems : this.sideDishGroups = [];
+            } else {
+                data.childItems.length > 0 ? this.setmealList = data.childItems[0].items : this.setmealList = [];
+            }
+
         },
 
         handleAvatarSuccess(res, file) {
@@ -822,76 +830,50 @@ export default {
                 discountPrice: this.productForm.discountPrice,                
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,                
                 itemType: this.productForm.itemType,
-                timeDurations: this.productForm.timeDurations.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.productForm.timeDurations,
+                timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
                 itemAttrs: this.attrGroups,
                 childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
                 seq: this.productForm.seq,
                 busiType: 1
-            };
+            };            
 
-            axios({
-                url: '/coron-web/item/update',
-                method: 'post',
-                data: updateParams,
-                headers: {
-                    Language: this._SHOPLANGUAGE
-                }
-            }).then(response => {
+            this.$refs['productForm'].validate((valid) => {
 
-                if (response.data.status == true) {
-                    this.$message({
-                        type: 'info',
-                        message: '菜品修改成功'
+                if(valid){
+                    axios({
+                        url: '/coron-web/item/update',
+                        method: 'post',
+                        data: updateParams,
+                        headers: {
+                            Language: this._SHOPLANGUAGE
+                        }
+                    }).then(response => {
+
+                        if (response.data.status == true) {
+                            this.$message({
+                                type: 'info',
+                                message: '菜品修改成功'
+                            })
+                            //添加成功后需要跳转到菜品列表页
+                            this.gobackList();
+                        }
+
+                    }).catch(error => {
+                        console.log(error);
+                        this.$message({
+                            type: 'error',
+                            message: '请求失败！'
+                        })
                     })
-                    //添加成功后需要跳转到菜品列表页
-                    this.gobackList();
+
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: '请填写必填字段'
+                    });
                 }
 
-            }).catch(error => {
-                console.log(error);
-                this.$message({
-                    type: 'error',
-                    message: '请求失败！'
-                })
             })
-
-            // this.$refs['productForm'].validate((valid) => {
-
-            //     if(valid){
-            //         axios({
-            //             url: '/coron-web/item/update',
-            //             method: 'post',
-            //             data: updateParams,
-            //             headers: {
-            //                 Language: 0
-            //             }
-            //         }).then(response => {
-
-            //             if (response.data.status == true) {
-            //                 this.$message({
-            //                     type: 'info',
-            //                     message: '菜品修改成功'
-            //                 })                    
-            //                 //添加成功后需要跳转到菜品列表页
-            //                 this.gobackList();
-            //             }
-
-            //         }).catch(error => {
-            //             console.log(error);
-            //             this.$message({
-            //                 type: 'error',
-            //                 message: '请求失败！'
-            //             })
-            //         })
-
-            //     } else {
-            //         this.$message({
-            //             type: 'warning',
-            //             message: '请填写必填字段'
-            //         });
-            //     }
-
-            // })
         },
 
 
@@ -1088,6 +1070,7 @@ export default {
             this.productForm.discountPrice = '';
             this.productForm.picUrl = '';
             this.productForm.timeDurations = [];
+            this.timeLists = [];
             this.setmealGroup = [];
             this.attrGroups = [];
             this.sideDishGroups = [];

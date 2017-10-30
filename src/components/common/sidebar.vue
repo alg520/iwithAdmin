@@ -30,7 +30,7 @@
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
             </el-submenu>
-
+            <!-- v-if="authType == 1 || authType == 2" -->
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
@@ -41,8 +41,9 @@
                 <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item>
             </el-submenu>
-
+            <!-- v-if="authType == 7" -->
             <el-submenu index="5" v-if="authType == 7">
                 <template slot="title">               
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
@@ -50,7 +51,7 @@
                 </template>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/apkmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>
@@ -71,6 +72,7 @@ import { getLoginUser } from '../../api/user'
         },
         created(){
             this.getLoginUserInfo();
+            console.log(this.$t('sidebar.snmanage'));
         },
         methods:{
             //获取登录信息

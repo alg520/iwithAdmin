@@ -42,7 +42,7 @@
                                             <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small" @change="getItemList()">
                                                 <el-option :label="$t('products.all')" value=""></el-option>
                                                 <el-option :label="$t('products.singleProduct')" value="1"></el-option>
-                                                <el-option :label="$t('products.package')" value="2"></el-option>
+                                                <el-option :label="$t('products.setmeal')" value="2"></el-option>
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">
@@ -68,7 +68,7 @@
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('products.itemDesc')" min-width="300px">
+                            <el-table-column :label="$t('products.itemDesc')" min-width="300px" show-overflow-tooltip>
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>

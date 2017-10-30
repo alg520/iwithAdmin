@@ -40,7 +40,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item :label="$t('shop.taxRate')" prop="taxRadio" v-if="addShopFrom.language == '2' && addShopFrom.haveRadioFee == 0">
-        <el-input v-model="addShopFrom.taxRadio" :placeholder="$t('placeholder.taxRate')"></el-input>
+        <el-input v-model="addShopFrom.taxRadio" type="number" :placeholder="$t('placeholder.taxRate')" class="percentage-width"></el-input><span>%</span>
       </el-form-item>
       <el-form-item :label="$t('shop.isTest')" prop="isTest">
           <el-select v-model="addShopFrom.isTest" :placeholder="$t('placeholder.select')">

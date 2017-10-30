@@ -267,7 +267,7 @@ export default {
         addUserPost() {
             const userData = {
                 uname: this.addUserForm.uname,
-                upassword: this.addUserForm.upassword,
+                upassword: MD5(this.addUserForm.upassword),
                 userType: 4
             }
             

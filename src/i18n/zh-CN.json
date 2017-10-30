@@ -1,24 +1,9 @@
-{
-  "time": {
-    "ago": "前",
-    "units": {
-      "minute": "分",
-      "hour": "时",
-      "day": "日"
-    }
-  },
+{  
   "locales": {
-    "en-US": "英文",
-    "zh-CN": "简体中文"
-  },
-  "skin": "皮肤",
-  "default": "默认",
-  "purple": "墨紫",
-  "introduction": "简述",
-  "navList": {
-    "one": "第一导航",
-    "two": "第二导航"
-  },
+    "en-US": "English",
+    "zh-CN": "简体中文",
+    "ja":"日本語"
+  },  
   "_global":{
     "all":"全部",
     "confirm":"确认",
@@ -38,6 +23,13 @@
     "saveAndAddNext":"保存并添加下一个",
     "back":"返回",
     "number":"编号"
+  },
+  "rules":{
+    "oldpwd":"请输入原密码",
+    "newpwd":"请输入新密码",
+    "must":"请输入必填字段",
+    "length":"长度在 6 到 12 个字符",
+    "numLetter":"请输入数字加字母"
   },
   "placeholder":{
     "itemNo":"请输入菜品编号",
@@ -87,6 +79,12 @@
     "romCode":"请输入ROM CODE",
     "appName":"请输入APP名称",
     "appCode":"请输入APP CODE"
+  },
+  "header":{
+    "changeLanguage":"切换语言",
+    "thisUser":"当前用户",
+    "updatePwd":"修改密码",
+    "logout":"退出"
   },
   "sidebar": {
     "homepage":"首页",
@@ -349,6 +347,9 @@
     "updateInfo":"修改信息",
     "fileUpload":"文件上传",
     "updateConfirm":"确认升级"
+  },
+  "tips":{
+    
   }
 
 }

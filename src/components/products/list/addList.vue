@@ -12,11 +12,11 @@
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.catalog')" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" :placeholder="$t('placeholder.catalog')">
-                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="`${item.catalogId}`">
                                             </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="`${item.catalogId}`">
                                             </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="item.catalogId">
+                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="`${item.catalogId}`">
                                             </el-option>                                            
                                         </el-select>
                                     </el-form-item>
@@ -29,8 +29,8 @@
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.type')" prop="itemType">
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
-                                            <el-radio :label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
-                                            <el-radio :label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
+                                            <el-radio label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
+                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
                                             <!-- <el-radio :label="3">配菜</el-radio> -->
                                         </el-radio-group>
                                     </el-form-item>
@@ -72,10 +72,10 @@
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.price')" prop="originPrice">
-                                        <el-input v-model="productForm.originPrice" :placeholder="$t('placeholder.price')"></el-input>
+                                        <el-input v-model="productForm.originPrice" type="number" :placeholder="$t('placeholder.price')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.offprice')" prop="discountPrice" v-if="productForm.itemType != 3">
-                                        <el-input v-model="productForm.discountPrice" :placeholder="$t('placeholder.offprice')"></el-input>
+                                        <el-input v-model="productForm.discountPrice" type="number" :placeholder="$t('placeholder.offprice')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.tag')" prop="discountPrice">
                                         <el-tag :key="tag" type="primary" v-for="tag in itemTags" :closable="true" :close-transition="false" @close="itemTagClose(tag)">
@@ -89,14 +89,7 @@
                                         <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
                                             <img v-if="imageUrl" :src="baseUrl + productForm.picUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                        </el-upload>
-
-                                        <!-- <el-upload action="/coron-web/upload/itemUpload" list-type="picture-card" class="avatar-uploader" :on-success="handleAvatarSuccess" :on-error="itemUploadError" :before-upload="beforeAvatarUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-                                                <i class="el-icon-plus"></i>
-                                            </el-upload>
-                                            <el-dialog v-model="dialogVisible" size="tiny">
-                                                <img width="100%" :src="dialogImageUrl" alt="">
-                                            </el-dialog> -->
+                                        </el-upload>                                        
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.salesTime')" prop="timeDurations" v-if="productForm.itemType != 3">                                        
                                         <el-tag v-for="tag in timeLists" :key="tag.id" :closable="true" type="primary" @close="timeTagClose(tag)">
@@ -406,7 +399,7 @@ export default {
                 catalogId: '',      //必填--所属分类
                 itemName: '',       //必填 -- 菜品名称
                 itemDesc: '',       //菜品描述
-                itemType: 1,        //必填  1单点 2套餐 3配菜
+                itemType: "1",        //必填  1单点 2套餐 3配菜
                 originPrice: '',    //必填  -- 原价
 
                 discountPrice: '',   //折扣价
@@ -454,7 +447,7 @@ export default {
                     { required: true, message: '请输入商品编号', trigger: 'blur' }
                 ],
                 catalogId: [
-                    { required: true, message: '请选择商品分类', trigger: 'blur' }
+                    { required: true, message: '请选择商品分类', trigger: 'change' }
                 ],
                 itemName: [
                     { required: true, message: '请输入商品名称', trigger: 'blur' }
@@ -463,7 +456,7 @@ export default {
                     { required: true, message: '请输入商品原价', trigger: 'blur' }
                 ],
                 itemType: [
-                    { required: true, message: '请选择商品类型', trigger: 'blur' }
+                    { required: true, message: '请选择商品类型', trigger: 'change' }
                 ]
             },
             currentPage:1,
@@ -589,8 +582,11 @@ export default {
         },
 
         // 翻页
-        handleCurrentChange(page) {            
+        handleCurrentChange(page) { 
+
+            console.log("翻页后的数据",this.setmealList);
             this.getItemList();
+
         },
 
         handleSizeChange(size) {
@@ -828,7 +824,7 @@ export default {
                 itemNo: this.productForm.itemNo,
                 itemNameObject: itemNameObj,
                 itemDescObject: itemDescObj,
-                catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
+                catalogId: this.productForm.catalogId ? this.productForm.catalogId+"" : -1,
                 originPrice: this.productForm.originPrice,
                 discountPrice: this.productForm.discountPrice,
                 tagsObj: tagsObj,
@@ -841,53 +837,53 @@ export default {
                 busiType: 1
             };
 
+            console.log("添加的参数",addParams);
 
-            axios({
-                url: '/coron-web/item/add',
-                method: 'post',
-                data: addParams,
-                headers: {
-                    Language: this._SHOPLANGUAGE
-                }
-            }).then(response => {
-                if (response.data.status == true) {
-                    this.$message({
-                        type: 'info',
-                        message: '菜品添加成功'
-                    });
-                    //添加成功后需要跳转到菜品列表页
-                    type == 'add' && this.gobackList();
-                    type == 'save' && this.addFromReset();
+
+            this.$refs['productForm'].validate((valid) => {
+
+                if(valid){
+
+                   axios({
+                        url: '/coron-web/item/add',
+                        method: 'post',
+                        data: addParams,
+                        headers: {
+                            Language: this._SHOPLANGUAGE
+                        }
+                    }).then(response => {
+                        if (response.data.status == true) {
+                            this.$message({
+                                type: 'info',
+                                message: '菜品添加成功'
+                            });
+                            //添加成功后需要跳转到菜品列表页
+                            type == 'add' && this.gobackList();
+                            type == 'save' && this.addFromReset();
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: response.data.message
+                            });
+                        }
+
+                    }).catch(error => {
+                        console.log(error);
+                        this.$message({
+                            type: 'info',
+                            message: '菜品添加失败'
+                        });
+
+                    })
+
                 } else {
                     this.$message({
-                        type: 'error',
-                        message: response.data.cnMessage
+                        type: 'warning',
+                        message: '请填写必填字段'
                     });
                 }
 
-            }).catch(error => {
-                console.log(error);
-                this.$message({
-                    type: 'info',
-                    message: '菜品添加失败'
-                });
-
             })
-
-            // this.$refs['productForm'].validate((valid) => {
-
-            //     if(valid){
-
-
-
-            //     } else {
-            //         this.$message({
-            //             type: 'warning',
-            //             message: '请填写必填字段'
-            //         });
-            //     }
-
-            // })
 
         },
 
@@ -1069,11 +1065,6 @@ export default {
 
             }
 
-        },
-
-        //查询单品事件
-        handleIconClick(ev) {
-            console.log(ev);
         },
 
         //添加表单重置

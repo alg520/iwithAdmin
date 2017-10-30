@@ -7,25 +7,25 @@
                     <span class="logo_prefix">iWith</span>
                     <span class="logo_suffix">Admin</span>
                 </div>
-            </el-col>    
+            </el-col>
             
             <!-- header right area-->
-            <el-col :xs="24" :sm="12" :md="{span:8,offset: 4}">
+            <!-- <el-col :xs="24" :sm="12" :md="{span:8,offset: 4}">
                 <div class="website" style="text-align:center;">
                     <span>{{$t('skin')}}+{{$t('navList.one')}}</span>
                     <span>Website:</span>
                     <span>www.iWith.com</span>
                 </div>
-            </el-col>
+            </el-col> -->
     
-            <el-col :xs="8" :sm="8" :md="8">
+            <el-col :xs="12" :sm="12" :md="20">
                 <div class="user-header pull-right">
                     <el-dropdown trigger="click" menu-align="start">
                         <img src="../../../static/images/b_header2.jpg" width="50px" />
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
                                 <div class="setting-div" @click="changeLanguage()">                                    
-                                    <span class="setting-string">切换语言</span>
+                                    <span class="setting-string">{{$t('header.changeLanguage')}}</span>
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item>
@@ -33,12 +33,12 @@
                                     <!-- <span class="setting-icon">
                                         <i class="iconfont icon-user"></i>
                                     </span> -->
-                                    <span class="setting-string">当前用户：{{loginUname}}</span>
+                                    <span class="setting-string">{{$t('header.thisUser')}}：{{loginUname}}</span>
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item>
                                 <div class="setting-div" @click="updatePassword()">                                    
-                                    <span class="setting-string">修改密码</span>
+                                    <span class="setting-string">{{$t('header.updatePwd')}}</span>
                                 </div>
                             </el-dropdown-item>
                             <el-dropdown-item divided>
@@ -46,7 +46,7 @@
                                     <!-- <span class="setting-icon">
                                         <i class="iconfont icon-tuichu"></i>
                                     </span> -->
-                                    <span class="setting-string"> 退出</span>
+                                    <span class="setting-string"> {{$t('header.logout')}}</span>
                                 </div>
                             </el-dropdown-item>
     
@@ -56,21 +56,21 @@
             </el-col>
         </el-row>
 
-        <el-dialog title="密码修改" :visible.sync="updatePWDDialogVisible" class="addDialog headerDialog" size="tiny">
+        <el-dialog :title="$t('header.updatePwd')" :visible.sync="updatePWDDialogVisible" class="addDialog headerDialog" size="tiny">
             <p>{{errorInfo}}</p>
             <el-form :model="updatepwdForm" :rules="updatepwdRules" ref="updatepwdForm" label-width="100px">
-                <el-form-item label="账号">
+                <el-form-item :label="$t('shop.id')">
                     <el-input type="text" v-model="updatepwdForm.uname" :disabled="true"></el-input>
                 </el-form-item>
-                <el-form-item label="原密码" prop="oldupassword">
+                <el-form-item :label="$t('shop.oldpwd')" prop="oldupassword">
                     <el-input type="password" v-model="updatepwdForm.oldupassword" ></el-input>
                 </el-form-item>
-                <el-form-item label="新密码" prop="newupassword">
+                <el-form-item :label="$t('shop.newpwd')" prop="newupassword">
                     <el-input type="password" v-model="updatepwdForm.newupassword" ></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="updatePasswordPost('updatepwdForm')">确认修改</el-button>                    
-                    <el-button @click="updatePWDDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="updatePasswordPost('updatepwdForm')">{{$t('_global.confirm')}}</el-button>                    
+                    <el-button @click="updatePWDDialogVisible = false">{{$t('_global.cancel')}}</el-button>
                 </el-form-item>
             </el-form>            
         </el-dialog>
@@ -155,7 +155,9 @@ export default {
 
             if(this.locale == 'ja'){
                 this.locale = 'zh-cn';
-            } else {
+            } else if (this.locale == 'zh-cn'){
+                this.locale = 'en-us';
+            } else if(this.locale = 'en-us'){
                 this.locale = 'ja';
             }
             

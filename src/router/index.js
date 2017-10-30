@@ -26,6 +26,7 @@ import OTAmanage from "@/components/operation/otamanage";
 import OTAadd from "@/components/operation/otaadd";
 import APKmanage from "@/components/operation/apkmanage";
 import APKadd from "@/components/operation/apkadd";
+import SN from "@/components/operation/sn"
 import Translate from "@/components/operation/translate";
 
 import ItemList from "@/components/products/list/itemList";
@@ -253,6 +254,17 @@ const router = new Router({
                   { name: "运营管理", path: "" },
                   { name: "APK升级管理", path: "/operation/apkmanage" },
                   { name: "APK升级", path: "" }
+                ]
+              }
+            },
+            {
+              path: "sn",
+              component: SN,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "开发者管理", path: "" },
+                  { name: "SN列表", path: "" }
                 ]
               }
             }
