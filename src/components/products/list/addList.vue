@@ -1036,7 +1036,16 @@ export default {
         //选取套餐中的单品
         handleSelectionChange(val) {
 
-            this.setmealList = val;
+            if(val.length > 0){
+
+                this.setmealList = val;
+
+            } else {
+
+                console.log(this.setmealList);
+
+            }
+            console.log(this.setmealList);
             console.log("选取的单品", val);
 
         },

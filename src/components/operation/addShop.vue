@@ -83,7 +83,7 @@
         <el-input v-model="addShopFrom.uname" :placeholder="$t('placeholder.userId')"></el-input>
       </el-form-item> 
       <el-form-item :label="$t('shop.password')" prop="upassword">
-        <el-input v-model="addShopFrom.upassword" :placeholder="$t('placeholder.password')"></el-input>
+        <el-input v-model="addShopFrom.upassword" type="password" :placeholder="$t('placeholder.password')"></el-input>
       </el-form-item>      
       <el-form-item>
         <el-button type="primary" @click="submitForm('addShopFrom')">{{$t('_global.lijiAdd')}}</el-button>        
@@ -153,19 +153,26 @@ export default {
           { required: true, message: '请输入店铺地址', trigger: 'blur' }
         ],
         postcode: [
-          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+          { required: true, message: '请输入邮编', trigger: 'blur' }
         ],
         province: [
-          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+          { required: true, message: '请输入省份', trigger: 'blur' }
         ],
         city: [
-          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+          { required: true, message: '请输入城市', trigger: 'blur' }
         ],
         street: [
-          { required: true, message: '请输入店铺地址', trigger: 'blur' }
+          { required: true, message: '请输入街道', trigger: 'blur' }
         ],
         isTest: [
           { required: true, message: '请选择是否测试店铺', trigger: 'blur' }
+        ],
+        uname: [          
+          { validator: validateNumLetter, trigger: 'onchange' },
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+        ],
+        upassword: [          
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
       }
     }

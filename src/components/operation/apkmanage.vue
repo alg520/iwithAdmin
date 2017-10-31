@@ -43,10 +43,8 @@
                     <span v-else>release</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="publishDate" :label="$t('apkManage.publishDate')" min-width="200px">
-            </el-table-column>
-            <el-table-column prop="remark" :label="$t('apkManage.remark')" min-width="230px">
-            </el-table-column>
+            <el-table-column prop="gmtCreated" :label="$t('apkManage.publishDate')" min-width="200px">
+            </el-table-column>           
             <el-table-column :label="$t('_global.action')" fixed="right" width="150">
                 <template scope="scope">
                     <el-button type="primary" size="small" @click="apkInfoEdit(scope.row)">{{$t('_global.edit')}}</el-button>

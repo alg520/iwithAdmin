@@ -309,7 +309,7 @@ export default {
                 this.productForm.itemDesc = item.itemDescObject.jp;
             }
 
-            this.productForm.originPrice = item.originPrice;
+            this.productForm.originPrice = item.originPrice+"";
 
             this.imageUrl = this.productForm.picUrl = item.picUrl;
             this.midObj = item;
@@ -319,7 +319,7 @@ export default {
             var self = this;
             self.$refs['productForm'].validate((valid) => {
                 if(valid){
-                    self.updateSideDish();    
+                    self.updateSideDish();
                 } else {
                     self.$message({
                         type:'warning',

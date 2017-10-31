@@ -132,10 +132,10 @@ export default {
           { required:true , message:'请输入舞蹈动作代码', trigger:'blur'}
         ],
         danceImg:[
-          { required:true , message:'请上传舞蹈动作图片', trigger:'blur'}
+          { required:true , message:'请上传舞蹈动作图片', trigger:'change'}
         ],
         danceMusic:[
-          { required:true , message:'请上传舞蹈动作音乐', trigger:'blur'}
+          { required:true , message:'请上传舞蹈动作音乐', trigger:'change'}
         ]
       },
       imgFilelists:[],
@@ -230,6 +230,11 @@ export default {
 
       if(!res.status){
         this.$message.error("上传失败：" + res.message);
+      } else {
+        this.$message({
+          type:'success',
+          message:'音乐上传成功'
+        });
       }
 
       console.log(fileList);
@@ -243,6 +248,7 @@ export default {
 
     handleRemove(file, fileList) {
       console.log(file, fileList);
+      this.robotDanceForm.danceMusic = '';
     },
 
     handlePreview(file) {
@@ -344,12 +350,28 @@ export default {
         }
       };
 
-      $http.post('/coron-web/robotDance/update',data).then(res => {
-        console.log(res);
+      this.$refs['robotDanceForm'].validate((valid) => {
 
-        this.getRobotDanceLists();
-        this.robotDanceDialogVisible = false;
-      })
+        if (valid) {
+          
+          $http.post('/coron-web/robotDance/update',data).then(res => {
+            console.log(res);
+
+            this.getRobotDanceLists();
+            this.robotDanceDialogVisible = false;
+          })
+
+        } else {
+          console.log('error submit!!');
+          this.$message({
+            type:'warning',
+            message:'请输入上传图片或音乐'
+          })
+          return false;
+        }
+
+      });
+      
     },
 
     delrobotDance(item){
@@ -386,11 +408,14 @@ export default {
 
     clearRobotForm(){
       this.robotDanceForm.danceName ='';
+      this.robotDanceForm.danceNameJP ='';
+      this.robotDanceForm.danceNameEN ='';
       this.robotDanceForm.danceCode = '';
       this.robotDanceForm.danceImg = '';
       this.imageUrl = '';
       this.robotDanceForm.danceMusic ='';
       this.musicFilelists = [];
+      this.fileList = [];
     }
 
   }
