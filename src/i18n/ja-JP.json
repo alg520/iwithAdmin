@@ -49,6 +49,7 @@
     "introName":"提案名を入力してください",
     "introContent":"提案内容を入力してください",
     "userId":"アカウントを入力してください",
+    "verificationCode":"確認コードを入力してください",
     "password":"パスワードを入力してください",
     "newpassword":"新しいパスワードを入力してください",
     "orderStatus":"オーダー状態を選択してください",
@@ -347,6 +348,18 @@
     "updateInfo":"情報変更",
     "fileUpload":"ファイルアップロード",
     "updateConfirm":"アップデート確認"
+  },
+  "login":{
+    "title":"IWITH 経営管理システム",
+    "username":"アカウント",
+    "password":"パスワード",
+    "button":"サインイン",
+    "contactus":"お問い合わせ",
+    "phone":"電話番号",
+    "telphone":"携帯電話",
+    "website":"IWITH 公式サイト",
+    "companyName":"深センAiwoer技術有限公司",
+    "copyright":"Copyright © すべての権利を保有"
   }
 
 }

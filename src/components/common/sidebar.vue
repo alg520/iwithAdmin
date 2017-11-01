@@ -72,7 +72,8 @@ import { getLoginUser } from '../../api/user'
         },
         created(){
             this.getLoginUserInfo();
-            console.log(this.$t('sidebar.snmanage'));
+            
+            console.log("登录",this.$t());
         },
         methods:{
             //获取登录信息

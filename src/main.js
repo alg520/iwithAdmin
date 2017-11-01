@@ -22,12 +22,13 @@ Vue.config.productionTip = false;
 
 //Register global utility filters
 Object.keys(filters).forEach(key => {
-  console.log("注册全局过滤器", key);
+  //console.log("注册全局过滤器", key);
   Vue.filter(key, filters[key]);
 });
 
 // import ElementLocale from 'element-ui/lib/locale'
 import i18n from './i18n';
+import {LANGS} from '@/i18n/lang';
 
 /* eslint-disable no-new */
 new Vue({
@@ -38,7 +39,13 @@ new Vue({
   components: { App },
   beforeCreate: function() {
     
-    console.log("beforeCreated.....");
+    console.log("beforeCreated.....");    
+    console.log(LANGS);    
        
+  },
+  created() {
+    
+    console.log("created .......");
+   
   }
 });

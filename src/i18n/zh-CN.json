@@ -50,6 +50,7 @@
     "introContent":"请输入提案内容",
     "userId":"请输入账号",
     "password":"请输入密码",
+    "verificationCode":"请输入验证码",
     "newpassword":"请输入新密码",
     "orderStatus":"请选择订单状态",
     "shopName":"请输入店铺名称",
@@ -347,6 +348,18 @@
     "updateInfo":"修改信息",
     "fileUpload":"文件上传",
     "updateConfirm":"确认升级"
+  },  
+  "login":{
+    "title":"IWITH 商家管理系统",
+    "username":"用户名",
+    "password":"密码",
+    "button":"登录",
+    "contactus":"联系我们",
+    "phone":"联系电话",
+    "telphone":"联系手机号",
+    "website":"IWITH 官网",
+    "companyName":"深圳市艾唯尔科技有限公司",
+    "copyright":"Copyright © 版权所有"
   },
   "tips":{
     

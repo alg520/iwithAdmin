@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
         <div class="login-title">
-            <span>IWITH 商家管理系统</span>
+            <span>{{$t('login.title')}}</span>
         </div>
         <div class="login-middle">
             <el-row :gutter="20">
@@ -14,22 +14,22 @@
                     <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="top" label-width="0px" class="login-form">
                         
                         <el-form-item prop="username">
-                            <p>用户名:</p>                            
-                            <el-input class="login-input" name="username" type="text" v-model="loginForm.username" placeholder="用户名" />
+                            <p>{{$t('login.username')}}:</p>
+                            <el-input class="login-input" name="username" type="text" v-model="loginForm.username" :placeholder="$t('placeholder.userId')" />
                         </el-form-item>
                         <el-form-item prop="upassword">
-                            <p>密码:</p>                            
-                            <el-input class="login-input" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" placeholder="密码"></el-input>
+                            <p>{{$t('login.password')}}:</p>
+                            <el-input class="login-input" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.upassword" :placeholder="$t('placeholder.password')"></el-input>
                         </el-form-item>
                         <el-form-item prop="authCode" class="authCode-Form">
-                            <el-input class="authCode-input" name="authCode" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.authCode" placeholder="请输入验证码"></el-input>
+                            <el-input class="authCode-input" name="authCode" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.authCode" :placeholder="$t('placeholder.verificationCode')"></el-input>
                             <a href="javascript:;" @click="getAuthCode()" style="display:inline-block;height:30px;" class="pull-right">
-                                <img :src="authCodeSrc" alt="验证码" class="authCodeImg">
+                                <img :src="authCodeSrc" class="authCodeImg">
                             </a>
                         </el-form-item>
                         <el-form-item>
                             <el-button class="loginBtn" style="width:100%;" @click.native.prevent="handleLogin">
-                                登录
+                                {{$t('login.button')}}
                             </el-button>
                         </el-form-item>
                     </el-form>
@@ -37,21 +37,23 @@
             </el-row>
         </div>
         <div class="login-footer">
-            <p>Copyright © 版权所有 深圳市艾唯尔科技有限公司 
+            <p>
+                <span>{{$t('login.copyright')}}</span>
+                <span>{{$t('login.companyName')}}</span>                 
                 <span style="padding-left:50px;">                     
                     <el-tooltip placement="top">
                         <div slot="content">                            
-                            <span>联系电话：（+86）0755-28219929</span>
+                            <span>{{$t('login.phone')}}:（+86）0755-28219929</span>
                             <br>
-                            <span>联系手机号：（+86）18666286292</span>
+                            <span>{{$t('login.telphone')}}:（+86）18666286292</span>
                         </div>
-                        <el-button type="text" class="footer-us">联系我们</el-button>
+                        <el-button type="text" class="footer-us">{{$t('login.contactus')}}</el-button>
                     </el-tooltip>
                 </span>
                 &emsp;|&emsp;
                 <span>
                     <el-button type="text" class="footer-web">
-                        <a href="http://www.iwith-smart.cn/" target="_blank">IWITH官网</a>
+                        <a href="http://www.iwith-smart.cn/" target="_blank">{{$t('login.website')}}</a>
                     </el-button>
                 </span>
             </p>
@@ -61,6 +63,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import axios from 'axios'
 import $http from '../../utils/http'
 import { getLoginUser } from '../../api/user'
@@ -105,12 +108,17 @@ export default {
         }
     },
 
+    mounted(){
+
+        //Vue.config.lang = 'zh-cn';
+        console.log("登录",this.$t('sidebar.snmanage'));
+    },
+
     created() {
 
         this.getOSLanguage();
         this.getLoginUserInfo();
         this.getAuthCode();
-
     },
 
     methods: {
@@ -125,6 +133,7 @@ export default {
             var language = getLanguage();
             console.log("当前浏览器语言是：",language);
             Lockr.set("LANGUAGE", language);
+            Vue.config.lang = language;
         },
 
         handleLogin() {
@@ -172,11 +181,28 @@ export default {
                     
                     if(res.entry.userType == 3 || res.entry.userType == 4){                        
                         console.log("店铺级别账号：",res.entry.shop);
-                        Cookies.set('SHOPLANGUAGE', res.entry.shop.language);
-                        Lockr.set("SHOPLANGUAGE", res.entry.shop.language);
-                    }
+                        let language = res.entry.shop.language;
+                        if(language == 0){
+                            Lockr.set("LANGUAGE", 'zh-cn');
+                            Cookies.set('LANGUAGE', 'zh-cn');
+                            Vue.config.lang = 'zh-cn';
 
-                    console.log("用户登录信息",res);
+                        } else if(language == 1){
+                            Lockr.set("LANGUAGE", 'en-us');
+                            Cookies.set('LANGUAGE', 'en-us');
+                            Vue.config.lang = 'en-us';
+
+                        } else if(language == 2){
+                            Lockr.set("LANGUAGE", 'ja');
+                            Cookies.set('LANGUAGE', 'ja');
+                            Vue.config.lang = 'ja';
+
+                        }
+                        Cookies.set('SHOPLANGUAGE', language);
+                        Lockr.set("SHOPLANGUAGE", language);
+
+                    }
+                    
                     if (getToken()) {
                         this.$router.push({
                             path: '/dashboard'

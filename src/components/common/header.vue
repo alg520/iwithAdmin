@@ -123,13 +123,14 @@ export default {
     computed : {
         USERINFO(){
             return Cookies.get('_UNAME');
-        }        
+        }
     },
     mounted(){
-        Vue.config.lang = this.locale;
+        Vue.config.lang = Lockr.get("LANGUAGE");
     },
     created(){
         console.log("langs:",LANGS);
+        Vue.config.lang = Cookies.get('LANGUAGE');
         getLoginUser().then(res => {
             if(res.status){
                 console.log("登录信息",res.entry);

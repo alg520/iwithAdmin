@@ -50,6 +50,7 @@
     "introContent":"Please enter proposal content",
     "userId":"Please enter account number",
     "password":"Please enter password",
+    "verificationCode":"Verification Code",
     "newpassword":"Please enter new password",
     "orderStatus":"Please choose order status",
     "shopName":"Please enter store name",
@@ -347,6 +348,18 @@
     "updateInfo":"Modify Info",
     "fileUpload":"Upload File",
     "updateConfirm":"Confirm Upgrade"
+  },
+  "login":{
+    "title":"IWITH 商家管理系统",
+    "username":"Username",
+    "password":"Password",
+    "button":"Login",
+    "contactus":"contact us",
+    "phone":"Phone",
+    "telphone":"Mobile phone",
+    "website":"IWITH Official website",
+    "companyName":"Shenzhen Aiwoer Technology Co., Ltd",
+    "copyright":"Copyright © all rights reserved"
   }
 
 }
