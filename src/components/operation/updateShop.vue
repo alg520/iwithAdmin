@@ -48,7 +48,7 @@
                     <el-option :label="$t('shop.no')" value="false"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item :label="$t('shop.perssion')" prop="perssion">
+            <!-- <el-form-item :label="$t('shop.perssion')" prop="perssion">
                 <el-select v-model="updateShopForm.currencyPrecision" :placeholder="$t('placeholder.select')">
                     <el-option label="0" value="0"></el-option>
                     <el-option label="1" value="1"></el-option>
@@ -62,7 +62,7 @@
                     <el-option label="9" value="9"></el-option>
                     <el-option label="10" value="10"></el-option>            
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
                 <el-select v-model="updateShopForm.currencyType" :placeholder="$t('placeholder.select')">
                     <el-option label="¥ CHINESE" value="CHINESE"></el-option>
@@ -251,21 +251,29 @@ export default {
                 shopAddress = JSON.stringify(addressObj);
             }
 
+            if(this.updateShopForm.language == '2' && this.updateShopForm.haveRadioFee == '0'){
+                this.updateShopForm.taxRadio = parseInt(this.updateShopForm.taxRadio)/100,
+                console.log(this.updateShopForm.taxRadio);
+            } else {
+                console.log(this.updateShopForm.taxRadio);
+                this.updateShopForm.taxRadio = null; 
+            }
+
             const data = {
                 id: this.rShopDetailData.id,
                 name: { zh: this.updateShopForm.name, jp: this.updateShopForm.name, en: this.updateShopForm.name },
                 shopTel: this.updateShopForm.shopTel,
                 haveRadioFee: parseInt(this.updateShopForm.haveRadioFee),
                 custPanelAuthCode: this.updateShopForm.custPanelAuthCode,
-                taxRadio: this.updateShopForm.taxRadio ? this.updateShopForm.taxRadio : 1,
+                taxRadio: this.updateShopForm.taxRadio,
                 address: shopAddress,
                 contactPerson: this.updateShopForm.contactPerson,
                 wxMerchantId: this.updateShopForm.wxMerchantId,
                 wxPrivateKey: this.updateShopForm.wxPrivateKey,
                 language: this.updateShopForm.language,
-                isTest: true,
-                currencyPrecision: parseInt(this.updateShopForm.currencyPrecision),
-                currencyType: this.updateShopForm.currencyType
+                isTest: true,                
+                currencyType: this.updateShopForm.currencyType,
+                currencyPrecision: this.updateShopForm.currencyType == 'JAPAN' ? 0 : 2
             };
 
             $http.post('/coron-web/shop/update', data).then(res => {

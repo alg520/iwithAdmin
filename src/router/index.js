@@ -44,8 +44,8 @@ Vue.use(Router);
 
 const router = new Router({
   mode: "history",
-  //base: __dirname,
-  base:'/coron-web/bigc/',
+  base: __dirname,
+  //base:'/coron-web/bigc/',
   routes: [
     {
       path: "/",

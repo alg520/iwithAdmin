@@ -48,7 +48,7 @@
               <el-option :label="$t('shop.no')" value="false"></el-option>
           </el-select>
       </el-form-item>
-      <el-form-item :label="$t('shop.perssion')" prop="perssion">
+      <!-- <el-form-item :label="$t('shop.perssion')" prop="perssion">
         <el-select v-model="addShopFrom.currencyPrecision" :placeholder="$t('placeholder.select')">
             <el-option label="0" value="0"></el-option>
             <el-option label="1" value="1"></el-option>
@@ -62,7 +62,7 @@
             <el-option label="9" value="9"></el-option>
             <el-option label="10" value="10"></el-option>            
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
         <el-select v-model="addShopFrom.currencyType" :placeholder="$t('placeholder.select')">
             <el-option label="¥ CHINESE" value="CHINESE"></el-option>
@@ -101,11 +101,16 @@ export default {
   data() {
     var validateNumLetter = (rule,value,callback) => {
 
+      if(value != ''){
         if(!/^[A-Za-z0-9]+$/i.test(value)){
             callback(new Error('请输入数字加字母！'));
         }else {
             callback();
         }
+      } else {
+        callback();
+      }
+        
 
     };
     return {
@@ -195,6 +200,7 @@ export default {
 
         } else {
           console.log('error submit!!');
+          console.log('请输入必填字段！！');
           return false;
         }
       });
@@ -229,24 +235,31 @@ export default {
 
         shopAddress = JSON.stringify(addressObj);
 
-        console.log(shopAddress);
-        //shopAddress = this.addShopFrom.province + '  ' + this.addShopFrom.city + '  ' + this.addShopFrom.street + '  ' + this.addShopFrom.address;
       }
+
+      if(this.addShopFrom.language == '2' && this.addShopFrom.haveRadioFee == '0'){
+        this.addShopFrom.taxRadio = parseInt(this.addShopFrom.taxRadio)/100,
+        console.log(this.addShopFrom.taxRadio);
+      } else {
+        console.log(this.addShopFrom.taxRadio);
+        this.addShopFrom.taxRadio = null;
+      }
+
 
       const data = {
         name: { zh: this.addShopFrom.name, jp: this.addShopFrom.name, en: this.addShopFrom.name },
         shopTel: this.addShopFrom.shopTel,
         haveRadioFee: parseInt(this.addShopFrom.haveRadioFee),
         custPanelAuthCode: this.addShopFrom.custPanelAuthCode,
-        taxRadio: this.addShopFrom.taxRadio ? this.addShopFrom.taxRadio : 1,
+        taxRadio: this.addShopFrom.taxRadio,
         address: shopAddress,
         contactPerson: this.addShopFrom.contactPerson,
         wxMerchantId: this.addShopFrom.wxMerchantId,
         wxPrivateKey: this.addShopFrom.wxPrivateKey,
         language: this.addShopFrom.language,
         isTest: true,
-        currencyPrecision: parseInt(this.addShopFrom.currencyPrecision),
-        currencyType: this.addShopFrom.currencyType
+        currencyType: this.addShopFrom.currencyType,
+        currencyPrecision: this.addShopFrom.currencyType == 'JAPAN' ? 0 : 2        
       };
 
       const postData = {
