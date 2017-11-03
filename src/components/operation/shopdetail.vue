@@ -226,22 +226,12 @@ export default {
     },
     methods:{
         getShopInfo(){
-            
-            //this.shop = this.shopInfo;
-            console.log(this.rShopDetailData);
+
             this.shop = this.rShopDetailData;
-
-            console.log("店铺信息",this.shop);
-
+            
             this.getShopUser(this.shop.id);
             this.getRobot(this.shop.id);
 
-            // axios.get('/coron-web/shop/getById',{
-            //     id:this.$route.params.item
-            // }).then(res => {
-            //     console.log("hahah",res);
-            //     this.shop = res.data.entry;
-            // })
         },
         
         getRobot(id){

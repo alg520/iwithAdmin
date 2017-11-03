@@ -2,7 +2,7 @@
     <div class="robotDancePage">
         <el-form :inline="true" style="text-align:center;">
             <el-form-item label="SN数量">
-                <el-input v-model="snFrom.name" type="number" min="1" max="20" :placeholder="$t('placeholder.shopName')" @keyup.enter="getSnLists()"></el-input>
+                <el-input v-model="snFrom.name" type="number" min="1" max="20" :placeholder="$t('placeholder.shopName')" readonly="readonly" @keyup.enter="getSnLists()"></el-input>
                 1 <input type="range" v-model="snFrom.name" name="points" min="1" max="20" /> 20
             </el-form-item>
             <el-form-item>
@@ -10,17 +10,12 @@
             </el-form-item>
         </el-form>
         <el-table :data="snLists" border style="width: 100%; text-align:center;">
-            <el-table-column
-            type="index"
-            width="80">
-            </el-table-column>
-            
+            <el-table-column type="index" width="80"></el-table-column>            
             <el-table-column label="sn" min-width="130px">
                 <template scope="scope">
                     <span> {{scope.row}}</span>
                 </template>
             </el-table-column>
-
         </el-table>
     </div>
 </template>

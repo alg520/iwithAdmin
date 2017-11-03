@@ -8,7 +8,7 @@
                             <div class="form-content">
                                 <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
                                     <el-form-item :label="$t('products.addItemPage.itemNo')" prop="itemNo">
-                                        <el-input type="number" v-model="productForm.itemNo" :placeholder="$t('placeholder.itemNo')"></el-input>                                        
+                                        <el-input type="number" v-model="productForm.itemNo" :placeholder="$t('placeholder.itemNo')" style="width:195px;"></el-input>                                        
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.catalog')" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" :placeholder="$t('placeholder.catalog')">
@@ -86,10 +86,11 @@
                                         <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">{{$t('products.addItemPage.addTag')}}</el-button>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.img')" prop="picUrl">
-                                        <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
+                                        <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="false" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
                                             <img v-if="imageUrl" :src="baseUrl + productForm.picUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>                                        
+                                        <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> {{$t('_global.delete')}}</el-button>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.salesTime')" prop="timeDurations" v-if="productForm.itemType != 3">                                        
                                         <el-tag v-for="tag in timeLists" :key="tag.id" :closable="true" type="primary" @close="timeTagClose(tag)">
@@ -477,11 +478,7 @@ export default {
         this.getTimeList();
         this.getItemAttrList();
         this.getItemList();
-        this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID;
-
-        console.log("店铺语言", this._SHOPLANGUAGE);
-        console.log("添加类目ID", this.addCatalogID);
-
+        this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID+"";
     },
     computed: {
         _SHOPLANGUAGE() {
@@ -526,6 +523,11 @@ export default {
                 this.$message.error('上传头像图片大小不能超过 2MB!');
             }
             return isJPG && isLt2M;
+        },
+
+        cancelUpload(){
+            this.imageUrl = '';
+            this.productForm.picUrl = '';
         },
 
         handleRemove(file, fileList) {
@@ -863,7 +865,7 @@ export default {
                         } else {
                             this.$message({
                                 type: 'error',
-                                message: response.data.message
+                                message: response.data.cnMessage
                             });
                         }
 
@@ -1079,12 +1081,12 @@ export default {
         //添加表单重置
         addFromReset() {
             this.productForm.itemNo = '';
-            this.productForm.catalogId = '';
+            //this.productForm.catalogId = '';
             this.productForm.itemName = '';
             this.productForm.itemDesc = '';
             this.productForm.originPrice = '';
             this.productForm.discountPrice = '';
-            this.productForm.picUrl = '';
+            this.productForm.picUrl = this.imageUrl = '';
             this.productForm.timeDurations = [];
             this.setmealGroup = [];
             this.attrGroups = [];

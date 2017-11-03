@@ -8,7 +8,7 @@
             
             <!-- v-if="authType == 3 || authType == 4" -->
             <el-menu-item index="/products" v-if="authType == 3 || authType == 4">
-                <span class="sb-icon"><i class="iconfont icon-caipinyugao"></i></span>                
+                <span class="sb-icon"><i class="iconfont icon-iconcpgl"></i></span>                
                 <span class="sb-cn">{{$t('sidebar.itemmanage')}}</span>
             </el-menu-item>
             
@@ -38,17 +38,18 @@
                 </template>
                 <el-menu-item index="/operation/shopmanage">{{$t('sidebar.shopmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/ordermanage">{{$t('sidebar.ordermanage')}}</el-menu-item>
-                <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
+                <!-- <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item> -->
             </el-submenu>
             <!-- v-if="authType == 7" -->
             <el-submenu index="5" v-if="authType == 7">
                 <template slot="title">               
-                    <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
+                    <span class="sb-icon"><i class="iconfont icon-user"></i></span>
                     <span class="sb-cn">{{$t('sidebar.devmanage')}}</span>
                 </template>
+                <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item>

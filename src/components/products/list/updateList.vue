@@ -8,7 +8,7 @@
                             <div class="form-content">
                                 <el-form ref="productForm" :model="productForm" :rules="rules" label-width="100px">
                                     <el-form-item :label="$t('products.addItemPage.itemNo')" prop="itemNo">
-                                        <el-input type="number" v-model="productForm.itemNo" :placeholder="$t('placeholder.itemNo')"></el-input>
+                                        <el-input type="number" v-model="productForm.itemNo" :placeholder="$t('placeholder.itemNo')" style="width:195px;"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.catalog')" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" :placeholder="$t('placeholder.catalog')">                                            
@@ -21,10 +21,10 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.itemName')" prop="itemName">
-                                        <el-input v-model="productForm.itemName" :placeholder="$t('placeholder.itemName')"></el-input>
+                                        <el-input v-model="productForm.itemName" :placeholder="$t('placeholder.itemName')" @blur="translateContent(productForm.itemName,'name')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.itemDesc')" prop="itemDesc">
-                                        <el-input type="textarea" :rows="2" :placeholder="$t('placeholder.itemDesc')" v-model="productForm.itemDesc">
+                                        <el-input type="textarea" :rows="2" :placeholder="$t('placeholder.itemDesc')" v-model="productForm.itemDesc" @blur="translateContent(productForm.itemDesc,'desc')">
                                         </el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.type')" prop="itemType">
@@ -91,10 +91,11 @@
                                         <el-button v-else class="button-new-tag" type="text" size="small" @click="showInput">{{$t('products.addItemPage.addTag')}}</el-button>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.img')" prop="picUrl">
-                                        <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="true" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
+                                        <el-upload class="avatar-uploader" action="/coron-web/upload/itemUpload" :show-file-list="false" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :before-upload="beforeAvatarUpload">
                                             <img v-if="imageUrl" :src="baseUrl + productForm.picUrl" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                        </el-upload>                                       
+                                        </el-upload>
+                                        <el-button v-if="imageUrl" size="small" type="text" @click="cancelUpload()"> {{$t('_global.delete')}}</el-button>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.salesTime')" v-if="productForm.itemType != 3">
                                         <el-tag v-for="tag in timeLists" :key="tag" :closable="true" type="primary" @close="timeTagClose(tag)">
@@ -358,10 +359,8 @@ export default {
             timeLists: [],
             checkAll: true,
             catalogDatas:[],
-
             itemTags: [],
             tagValue: '',
-
             dialogImageUrl: '',
             dialogVisible: false,
             dynamicTags: ["标签1"],            
@@ -560,6 +559,11 @@ export default {
             return isJPG && isLt2M;
         },
 
+        cancelUpload(){
+            this.imageUrl = '';
+            this.productForm.picUrl = '';
+        },
+
         handleRemove(file, fileList) {
             console.log(file, fileList);
             this.imageUrl = '';
@@ -729,6 +733,7 @@ export default {
 
         handleTagInputConfirm() {
             let inputValue = this.tagValue;
+            this.translateContent(inputValue, 'tag');
             if (inputValue) {
                 this.itemTags.push(inputValue);
             }
