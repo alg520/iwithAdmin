@@ -179,6 +179,7 @@ export default {
 <style>
 .orderDetail-page {
     padding: 15px 10px;
+    background-color: #fff;
 }
 
 .orderDetail-page .cell {

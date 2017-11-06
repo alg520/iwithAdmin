@@ -52,7 +52,8 @@
                 <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
                 <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/sn">{{$t('sidebar.snget')}}</el-menu-item>
+                <el-menu-item index="/operation/snmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

@@ -44,7 +44,7 @@
     "sideDishGroupName":"请输入配菜组名称",
     "timeName":"请输入时段名称",
     "startTime":"开始时间",
-    "endTime":"开始时间",
+    "endTime":"结束时间",
     "introGroup":"请选择提案组",
     "introName":"请输入提案名称",
     "introContent":"请输入提案内容",
@@ -99,6 +99,7 @@
     "introducemanage":"提案管理",
     "infomanage":"信息管理",
     "devmanage":"开发管理",
+    "snget":"SN获取",
     "snmanage":"SN管理"
   },
   "products": {
@@ -133,6 +134,7 @@
     "catalogSort":"类目排序",
     "catalogName":"类目名称",
     "addAttr":"添加属性",
+    "updateAttr":"修改属性",
     "attrName":"属性名称",
     "addTime":"添加时段",
     "timeName":"时段名称",

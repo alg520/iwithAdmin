@@ -23,7 +23,7 @@
       </el-table-column>
     </el-table>
   
-    <el-dialog :visible.sync="timeDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
+    <el-dialog :visible.sync="timeDialogVisible" class="addDialog" v-bind:title="btnTag == 'add' ? $t('products.addTime'):$t('products.updateTime')" size="tiny">
       <el-form :model="timeDurationForm" :rules="rules" ref="timeDurationForm">
         <el-form-item :label="$t('products.timeName')" :label-width="formLabelWidth" prop="name">
           <el-input v-model="timeDurationForm.name" :placeholder="$t('placeholder.timeName')" @blur="translateContent(timeDurationForm.name,'time')"></el-input>
@@ -46,8 +46,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="timeDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-        <el-button type="primary" @click="addTimeDuration('timeDurationForm')" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
-        <el-button type="primary" @click="updateTimeDurationPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
+        <el-button type="primary" @click="asyncAdd()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+        <el-button type="primary" @click="asyncUpdate()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -119,20 +119,36 @@ export default {
       this.resetForm();
     },
 
-    translateContent(itemName,type){
+    async translateContent(itemName,type){
         var self = this;
         let _language = self._SHOPLANGUAGE;
-        itemName !== ''
-        &&
-        baiduTranslate(itemName,_language).then(res => {
+        if(itemName !== ''){
+          var res = await baiduTranslate(itemName,_language);
           if(type == 'time'){
               self.timeNameTransArray = returnTransArray(res);
               console.log(" 添加时段 ",self.timeNameTransArray);
           }
-        })
+        }
+        // itemName !== ''
+        // &&
+        // baiduTranslate(itemName,_language).then(res => {
+        //   if(type == 'time'){
+        //       self.timeNameTransArray = returnTransArray(res);
+        //       console.log(" 添加时段 ",self.timeNameTransArray);
+        //   }
+        // })
     },
 
-    addTimeDuration(formName) {
+    asyncAdd: async function(){
+      await this.translateContent(this.timeDurationForm.name,'time');
+      await this.addTimeDuration();
+    },
+    asyncUpdate: async function(){
+      await this.translateContent(this.timeDurationForm.name,'time');
+      await this.updateTimeDurationPost();
+    },
+
+    addTimeDuration() {
 
       let timeNameObj = {zh:this.timeDurationForm.name,jp:this.timeDurationForm.name,en:this.timeDurationForm.name};
       if(this._SHOPLANGUAGE == 0){
@@ -155,7 +171,7 @@ export default {
         endTime: this.timeDurationForm.endTime
       };
       
-      this.$refs[formName].validate((valid) => {        
+      this.$refs['timeDurationForm'].validate((valid) => {        
 
         if (valid) {
           

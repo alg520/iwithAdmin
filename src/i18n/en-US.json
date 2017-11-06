@@ -98,7 +98,8 @@
     "apkmanage":"APK Upgrade",
     "introducemanage":"Proposal Management",
     "infomanage":"Info Management",
-    "devmanage":"Development Management",
+    "devmanage":"Development",
+    "snget":"GET SN",
     "snmanage":"SN Management"
   },
   "products": {
@@ -118,7 +119,7 @@
     "singleProduct":"Single Order",
     "setmeal":"Set Meal",
     "itemName_T":"Please enter dish name",
-    "addItem":"品Add Dish",
+    "addItem":"Add Dish",
     "updateItem":"Modify Dish",
     "itemSort":"Dish Sorted",
     "itemExport":"Dish Exported",
@@ -133,6 +134,7 @@
     "catalogSort":"Category Sorted",
     "catalogName":"Category Name",
     "addAttr":"Add Attribute",
+    "updateAttr":"Update Attribute",
     "attrName":"Attribute Name",
     "addTime":"Add time span",
     "timeName":"Time Span Title",

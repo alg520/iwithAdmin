@@ -56,8 +56,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="catalogDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-        <el-button type="primary" @click="addCatalogPost()" v-if="btnTag == 'add'">{{$t('_global.confirm')}}</el-button>
-        <el-button type="primary" @click="updateCatalogPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
+        <el-button type="primary" @click="asyncAdd()" v-if="btnTag == 'add'">{{$t('_global.confirm')}}</el-button>
+        <el-button type="primary" @click="asyncUpdate()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
 
@@ -136,17 +136,26 @@ export default {
 
     },
 
-    translateContent(itemName,type){
+  async translateContent(itemName,type){
         var self = this;
+
         let _language = self._SHOPLANGUAGE;
-        itemName !== ''
-        &&
-        baiduTranslate(itemName,_language).then(res => {
+        
+        if(itemName !== ''){
+          var res = await baiduTranslate(itemName,_language);
           if(type == 'name'){
               self.catalogNameTransArray = returnTransArray(res);
-              console.log(" 添加分类 ",self.catalogNameTransArray);
+              console.log(" 添加分类 ",self.catalogNameTransArray);              
           }
-        })
+
+        }
+        
+        // baiduTranslate(itemName,_language).then(res => {
+        //   if(type == 'name'){
+        //       self.catalogNameTransArray = returnTransArray(res);
+        //       console.log(" 添加分类 ",self.catalogNameTransArray);              
+        //   }
+        // })
 
     },
 
@@ -238,8 +247,10 @@ export default {
         jp: self.catalogForm.catalogName 
       };
 
+      console.log("修改后的数据",self.catalogNameTransArray);
+
       if(self.catalogNameTransArray.length > 0){
-        nameObj = Object.assign(nameObj,this.catalogNameTransArray[0]);
+        nameObj = Object.assign(nameObj,self.catalogNameTransArray[0]);
         console.log("修改合并后的分类对象",nameObj);
       }
 
@@ -279,6 +290,17 @@ export default {
           });
         }
       })
+    },
+
+    asyncAdd: async function(){
+      await this.translateContent(this.catalogForm.catalogName,'name');
+      await this.addCatalogPost();
+    },
+    asyncUpdate: async function(){
+
+      await this.translateContent(this.catalogForm.catalogName,'name');
+      await this.updateCatalogPost();
+
     },
 
     checkChildren(item) {

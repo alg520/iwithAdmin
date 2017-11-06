@@ -94,23 +94,7 @@
                                         <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50">
                                     </el-button>
                                 </template>                                
-                            </el-table-column>
-                            <!-- <el-table-column label="操作" fixed="right" width="100px">
-                                <template scope="scope">
-                                    <el-button type="text" size="small" @click="updateItem(scope.row)">
-                                        <i class="el-icon-edit" title="编辑"></i>
-                                    </el-button>
-                                    <el-button type="text" size="small" @click="confirmDel(scope.row)">
-                                        <i class="el-icon-delete" title="删除"></i>
-                                    </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="!scope.row.isSale">
-                                        <i class="el-icon-plus" title="上架"></i>
-                                    </el-button>
-                                    <el-button type="text" size="small" @click="switchSale(scope.row)" v-if="scope.row.isSale">
-                                        <i class="el-icon-minus" title="下架"></i>
-                                    </el-button>
-                                </template>
-                            </el-table-column> -->
+                            </el-table-column>                            
                         </el-table>
                         <div class="block turn-page" style="margin-top:10px;">
                             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">

@@ -31,7 +31,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="titleTag" size="tiny">
+        <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="btnTag == 'add' ? $t('products.addGarnish'):$t('products.updateItem')" size="tiny">
             <el-form :model="productForm" ref="productForm" :rules="rules" label-width="100px">
                 <!-- <el-form-item label="菜品编号" prop="itemNo">
                     <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
@@ -61,8 +61,8 @@
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="sidedishDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-                <el-button type="primary" @click="addSideDishPost()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
-                <el-button type="primary" @click="updateSideDishPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
+                <el-button type="primary" @click="asyncAdd()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+                <el-button type="primary" @click="asyncUpdate()" v-else>{{$t('_global.lijiEdit')}}</el-button>
             </div>
         </el-dialog>
     </div>
@@ -219,17 +219,34 @@ export default {
             })
         },
 
-        translateContent(itemName,type){
+        async translateContent(itemName,type){
             var self = this;
             let _language = self._SHOPLANGUAGE;
-            itemName !== ''
-            &&
-            baiduTranslate(itemName,_language).then(res => {
+            if(itemName !== ''){
+                let res = await baiduTranslate(itemName,_language);
                 if(type == 'name'){
                     self.sideDishTransArray = returnTransArray(res);
                     console.log(" 添加配菜 ",self.sideDishTransArray);
                 }
-            })
+
+            }
+            // itemName !== ''
+            // &&
+            // baiduTranslate(itemName,_language).then(res => {
+            //     if(type == 'name'){
+            //         self.sideDishTransArray = returnTransArray(res);
+            //         console.log(" 添加配菜 ",self.sideDishTransArray);
+            //     }
+            // })
+        },
+
+        asyncAdd: async function(){
+            await this.translateContent(this.productForm.itemName,'name');
+            await this.addSideDish();
+        },
+        asyncUpdate: async function(){
+            await this.translateContent(this.productForm.itemName,'name');
+            await this.updateSideDishPost();
         },
 
         addSideDish() {

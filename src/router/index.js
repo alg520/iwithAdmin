@@ -26,7 +26,8 @@ import OTAmanage from "@/components/operation/otamanage";
 import OTAadd from "@/components/operation/otaadd";
 import APKmanage from "@/components/operation/apkmanage";
 import APKadd from "@/components/operation/apkadd";
-import SN from "@/components/operation/sn"
+import SN from "@/components/operation/sn";
+import SNmanage from "@/components/operation/snmanage";
 import Translate from "@/components/operation/translate";
 
 import ItemList from "@/components/products/list/itemList";
@@ -264,7 +265,18 @@ const router = new Router({
                 requireAuth: true,
                 breadNav: [
                   { name: "开发者管理", path: "" },
-                  { name: "SN列表", path: "" }
+                  { name: "SN查询", path: "" }
+                ]
+              }
+            },
+            {
+              path: "snmanage",
+              component: SNmanage,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "开发者管理", path: "" },
+                  { name: "SN管理", path: "" }
                 ]
               }
             }

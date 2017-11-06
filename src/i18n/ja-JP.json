@@ -99,6 +99,7 @@
     "introducemanage":"提案管理",
     "infomanage":"情報管理",
     "devmanage":"開発管理",
+    "snget":"SNかちとる",
     "snmanage":"SN管理"
   },
   "products": {
@@ -133,6 +134,7 @@
     "catalogSort":"カテゴリー順番",
     "catalogName":"カテゴリー名",
     "addAttr":"属性追加",
+    "updateAttr":"属性編集",
     "attrName":"属性名",
     "addTime":"時間帯追加",
     "timeName":"時間帯名",

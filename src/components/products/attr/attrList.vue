@@ -23,7 +23,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="attrDialogVisible" class="addDialog tasteDialog" v-bind:title="titleTag" size="tiny">
+    <el-dialog :visible.sync="attrDialogVisible" class="addDialog tasteDialog" v-bind:title="titleTag== 'add' ? $t('products.addAttr'):$t('products.updateAttr')" size="tiny">
       <el-form :model="attrForm" :rules="rules" ref="attrForm">
         <el-form-item :label="$t('products.attrName')" :label-width="formLabelWidth" prop="attrName">
           <el-input v-model="attrForm.attrName" :placeholder="$t('placeholder.attrName')" @blur="translateContent(attrForm.attrName,'attr')"></el-input>
@@ -31,8 +31,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="attrDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-        <el-button type="primary" @click="addAttrPost('attrForm')" v-if="titleTag == '添加属性'">{{$t('_global.lijiAdd')}}</el-button>
-        <el-button type="primary" @click="editAttrPost('attrForm')" v-else>{{$t('_global.lijiEdit')}}</el-button>
+        <el-button type="primary" @click="asyncAdd()" v-if="titleTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+        <el-button type="primary" @click="asyncUpdate()" v-else>{{$t('_global.lijiEdit')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -47,7 +47,7 @@ import { getTranslateResult, baiduTranslate, returnTransArray } from '../../../u
 export default {
   data() {
     return {
-      titleTag: '',
+      titleTag: 'add',
       itemAttrDatas: [],
       attrDialogVisible: false,
       shopId: '',
@@ -98,24 +98,29 @@ export default {
     addAttr() {
       this.attrDialogVisible = true;
       this.attrForm.attrName = '';
-      this.titleTag = '添加属性';
+      this.titleTag = 'add';
     },
 
-    translateContent(itemName, type) {
+    async translateContent(itemName, type) {
       var self = this;
       let _language = self._SHOPLANGUAGE;
       if(itemName !== ''){
-        baiduTranslate(itemName, _language).then(res => {
-          if (type == 'attr') {
-            self.attrTransArray = returnTransArray(res);
-            console.log(" 添加属性 ", self.attrTransArray);
-          }
-        })
+
+        var res = await baiduTranslate(itemName,_language);
+        if (type == 'attr') {
+          self.attrTransArray = returnTransArray(res);          
+        }
+        // baiduTranslate(itemName, _language).then(res => {
+        //   if (type == 'attr') {
+        //     self.attrTransArray = returnTransArray(res);
+        //     console.log(" 添加属性 ", self.attrTransArray);
+        //   }
+        // })
       }        
 
     },
 
-    addAttrPost(formName) {
+    addAttrPost() {
 
       let attrNameObj = { zh: this.attrForm.attrName, jp: this.attrForm.attrName, en: this.attrForm.attrName };
       if (this._SHOPLANGUAGE == 0) {
@@ -136,7 +141,7 @@ export default {
         isDelete: false,
         attrNameObject: attrNameObj
       };
-      this.$refs[formName].validate((valid) => {
+      this.$refs['attrForm'].validate((valid) => {
         if (valid) {
 
           $http.post("/coron-web/itemAttr/add", addParams).then(response => {
@@ -177,10 +182,10 @@ export default {
       }
 
       this.itemAttrId = item.itemAttrId;
-      this.titleTag = '修改属性';
+      this.titleTag = 'update';
     },
 
-    editAttrPost(formName) {
+    editAttrPost() {
 
       let itemAttrObj = { zh: this.attrForm.attrName, jp: this.attrForm.attrName, en: this.attrForm.attrName };
       if (this._SHOPLANGUAGE == 0) {
@@ -200,7 +205,7 @@ export default {
         attrNameObject: itemAttrObj
       };
 
-      this.$refs[formName].validate((valid) => {
+      this.$refs['attrForm'].validate((valid) => {
 
         if (valid) {
 
@@ -229,6 +234,15 @@ export default {
         }
       });
 
+    },
+
+    asyncAdd: async function(){
+      await this.translateContent(this.attrForm.attrName,'attr');
+      await this.addAttrPost();
+    },
+    asyncUpdate: async function(){
+      await this.translateContent(this.attrForm.attrName,'attr');
+      await this.editAttrPost();
     },
 
     delAttr(item) {
