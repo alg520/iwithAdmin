@@ -23,11 +23,11 @@
                     <el-dropdown trigger="click" menu-align="start">
                         <img src="../../../static/images/b_header2.jpg" width="50px" />
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>
+                            <!-- <el-dropdown-item>
                                 <div class="setting-div" @click="changeLanguage()">                                    
                                     <span class="setting-string">{{$t('header.changeLanguage')}}</span>
                                 </div>
-                            </el-dropdown-item>
+                            </el-dropdown-item> -->
                             <el-dropdown-item>
                                 <div class="setting-div">
                                     <!-- <span class="setting-icon">
@@ -56,8 +56,7 @@
             </el-col>
         </el-row>
 
-        <el-dialog :title="$t('header.updatePwd')" :visible.sync="updatePWDDialogVisible" class="addDialog headerDialog" size="tiny">
-            <p>{{errorInfo}}</p>
+        <el-dialog :title="$t('header.updatePwd')" :visible.sync="updatePWDDialogVisible" class="addDialog headerDialog" size="tiny">            
             <el-form :model="updatepwdForm" :rules="updatepwdRules" ref="updatepwdForm" label-width="100px">
                 <el-form-item :label="$t('shop.id')">
                     <el-input type="text" v-model="updatepwdForm.uname" :disabled="true"></el-input>
@@ -101,8 +100,7 @@ export default {
             locale: 'zh-cn',
             langs: LANGS,
             loginUname:'',
-            updatePWDDialogVisible:false,
-            errorInfo:'',
+            updatePWDDialogVisible:false,            
             updatepwdForm:{
                 uname:'',
                 oldupassword:'',
@@ -199,8 +197,7 @@ export default {
                             this.$message({
                                 type:'error',
                                 message:res.message
-                            });
-                            this.errorInfo = res.message;
+                            });                            
                         }
 
                     })
@@ -230,7 +227,7 @@ export default {
     line-height: 66px;
     background-color: #324157;
     box-shadow: 2px 0 3px rgba(0, 0, 0, .5);
-    z-index: 1000;
+    z-index: 9000;
     padding: 0 32px 0 40px;
     overflow: hidden;
 }
@@ -353,6 +350,9 @@ export default {
 .zIndexMessage {
     z-index: 9999 !important;
     top: 300px;
+}
+.headerDialog {
+    z-index: 9999 !important;
 }
 
 </style>

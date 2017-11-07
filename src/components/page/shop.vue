@@ -29,10 +29,16 @@ export default {
         }
     },
     mounted: function() {
-
-        //动态计算属性导航的高度
-        var contentHeight = document.body.clientHeight - 151;
-        document.getElementById("content-list").style.height = contentHeight + 'px';
+        
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
+        getHeight();
+        function getHeight(){
+            //动态计算属性导航的高度
+            var contentHeight = document.body.clientHeight - 151;
+            document.getElementById("content-list").style.height = contentHeight + 'px';
+        }
 
     },
     computed:{
@@ -69,8 +75,7 @@ export default {
 </script>
 
 <style scoped>
-.content-list {
-    border: 1px solid #ccc;
+.content-list {    
     background-color: #fff;
     overflow-y: auto;
 }

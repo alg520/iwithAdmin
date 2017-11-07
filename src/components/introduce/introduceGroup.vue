@@ -83,10 +83,18 @@ export default {
 
     mounted() {
 
-        //动态计算属性导航的高度
-        var introGroupHeight = document.body.clientHeight - 196;
-        document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
-        // document.getElementById("content-list").style.height = introGroupHeight + 'px';
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
+        getHeight();
+        function getHeight(){            
+            
+            //动态计算属性导航的高度
+            var introGroupHeight = document.body.clientHeight - 196;
+            document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
+
+        }
+
 
     },
 
@@ -247,8 +255,6 @@ export default {
                     });
                     this.getIntroGroupList();
                 }
-
-
                 
             }).catch(error => {
                 console.log(error);

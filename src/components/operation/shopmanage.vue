@@ -102,9 +102,7 @@ export default {
       console.log(size);
     },
     // 翻页
-    handleCurrentChange(page) {
-      console.log(page);
-      console.log(this.currentPage);
+    handleCurrentChange(page) {      
       this.getShopList();
     },
 

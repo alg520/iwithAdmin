@@ -24,6 +24,7 @@
 
 <script>
 import vPageTitle from '../common/pageTitle.vue';
+import Cookies from 'js-cookie'
 export default {
     data() {
         return {
@@ -41,13 +42,23 @@ export default {
         onRoutes(){
             return this.$route.path.replace('/dashboard','/products/list');
         }
-    }, 
+    },
+
+    created(){
+        this.activeIndex = Cookies.get('activeIndex');
+    },
     
     mounted: function () {
-
-        //动态计算属性导航的高度
-        var contentHeight = document.body.clientHeight - 151;
-        document.getElementById("content-list").style.height = contentHeight + 'px';
+        
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
+        getHeight();
+        function getHeight(){
+            //动态计算属性导航的高度
+            var contentHeight = document.body.clientHeight - 151;
+            document.getElementById("content-list").style.height = contentHeight + 'px';
+        }
 
     },
     
@@ -55,8 +66,10 @@ export default {
         //添加 根据当前页面的status 修改 vtitle 的值
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
-
             console.log(this.$route.path)
+            
+            this.activeIndex = key;
+            Cookies.set('activeIndex', key);            
         }
     }    
 }

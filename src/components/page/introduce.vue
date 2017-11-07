@@ -158,11 +158,19 @@ export default {
     },
 
     mounted() {
+        
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
+        getHeight();
+        function getHeight(){
+            
+            //动态计算属性导航的高度
+            var introduceHeight = document.body.clientHeight - 286;
+            document.getElementById("intro-nav").style.height = introduceHeight + 'px';
+            document.getElementById("intro-content-list").style.height = introduceHeight + 'px';
 
-        //动态计算属性导航的高度
-        var introduceHeight = document.body.clientHeight - 286;
-        document.getElementById("intro-nav").style.height = introduceHeight + 'px';
-        document.getElementById("content-list").style.height = introduceHeight + 'px';
+        }
 
     },
 

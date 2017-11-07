@@ -70,7 +70,7 @@
                             </el-table-column>
                             <el-table-column :label="$t('products.itemDesc')" min-width="300px" show-overflow-tooltip>
                                 <template scope="scope">
-                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject.zh}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject ? scope.row.itemDescObject.zh:""}}</span>
                                     <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
                                     <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
                                 </template>
@@ -171,11 +171,19 @@ export default {
         }
     },
 
-    mounted: function() {
+    mounted: function() {        
 
-        //动态计算属性导航的高度
-        var catalogNavHeight = document.body.clientHeight - 171;
-        document.getElementById("catalog-nav").style.minHeight = catalogNavHeight + 'px';
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
+        getHeight();
+        function getHeight(){            
+            
+            //动态计算属性导航的高度
+            var catalogNavHeight = document.body.clientHeight - 171;
+            document.getElementById("catalog-nav").style.minHeight = catalogNavHeight + 'px';
+
+        }
 
     },
 
@@ -233,7 +241,7 @@ export default {
 
                     !!response.rows && (this.productsList = response.rows);
                     this.totalItems = response.total;
-                    console.log(this.productsList);
+                    console.log("商品列表",this.productsList);
 
                 })
                 .catch(error => {
@@ -401,4 +409,5 @@ ul.catalog-list li.selected {
 .turn-page {
     margin-top: 10px;
 }
+
 </style>

@@ -841,7 +841,6 @@ export default {
 
             console.log("添加的参数",addParams);
 
-
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){

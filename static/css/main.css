@@ -617,3 +617,12 @@ a {
 .addDialog .input193 {
     width: 193px;
 }
+
+.zIndexMessage {
+    z-index: 9999 !important;
+    top: 300px;
+}
+
+.el-tooltip__popper {
+    width: 300px;
+}

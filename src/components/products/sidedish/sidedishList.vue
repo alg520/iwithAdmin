@@ -354,7 +354,6 @@ export default {
                 console.log("合并后的配菜对象",sideDishNameObj);
             }
 
-
             const updateParams = {
                 itemId: this.midObj.itemId,
                 itemNo: this.productForm.itemNo,
