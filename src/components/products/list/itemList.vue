@@ -71,8 +71,8 @@
                             <el-table-column :label="$t('products.itemDesc')" min-width="300px" show-overflow-tooltip>
                                 <template scope="scope">
                                     <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemDescObject ? scope.row.itemDescObject.zh:""}}</span>
-                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject.en}}</span>
-                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject.jp}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemDescObject ? scope.row.itemDescObject.en:""}}</span>
+                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemDescObject ? scope.row.itemDescObject.jp:""}}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">

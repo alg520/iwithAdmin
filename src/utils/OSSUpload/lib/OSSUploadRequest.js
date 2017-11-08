@@ -1,14 +1,12 @@
-
 let config = null;
+let xhr;
 
 onmessage = function(e) {
-        
-    if(e.data.body){
-        config = e.data;
-        start(config.body);
-    }
-    
-}
+    console.log('on message');
+    config = e.data;
+
+    start(config.body);
+};
 
 
 function start(data) {
@@ -95,7 +93,10 @@ function startAppend() {
                 };
                 postMessage(appendResult);
             } else {
-                console.error(`error: ${resultObj}`);
+                let errorResult = {
+                    error : "文件已上传成功，不可重复上传!"
+                };
+                postMessage(errorResult);
                 return;
             }
 

@@ -50,7 +50,7 @@
                 <el-progress v-for="(item,index) in percentArray" :key="item" :text-inside="true" :stroke-width="18" :percentage="item" status="success" v-if=" index+1 == percentArray.length"></el-progress>                
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="startUpload()">{{$t('otaManage.update')}}</el-button>
+                <el-button type="primary" @click="otaUpload()">{{$t('otaManage.update')}}</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -72,16 +72,10 @@ export default {
             },
             otaUpdateFormRules: {
                 romName: [
-                    { required: true, message: '请输入舞蹈名称', trigger: 'blur' }
+                    { required: true, message: '请输入ROM名称', trigger: 'blur' }
                 ],
                 romCode: [
-                    { required: true, message: '请输入舞蹈动作代码', trigger: 'blur' }
-                ],
-                danceImg: [
-                    { required: true, message: '请上传舞蹈动作图片', trigger: 'blur' }
-                ],
-                danceMusic: [
-                    { required: true, message: '请上传舞蹈动作音乐', trigger: 'blur' }
+                    { required: true, message: '请输入ROM CODE', trigger: 'blur' }
                 ]
             },            
             fileList: [],            
@@ -144,8 +138,7 @@ export default {
             if(fileList.length > 1){                
                 this.$message.error("只能上传一个文件！");
                 fileList.pop();
-                console.log(fileList);
-                            
+                console.log(fileList);                            
             }
 
             if(beforeResult){
@@ -153,20 +146,32 @@ export default {
                 if(file.status == 'ready'){                                      
 
                     this.myOSSUpload = new OSSUpload(file.raw,1);
-                }
-
-                if(file.status == 'ready'){
-
-                }
+                }                
 
             } else {
                 
                 this.fileList = [];
-                console.log(this.$refs.romUpload);
+                console.log("beforeUpload .....",this.$refs.romUpload);
                 
             }          
 
             console.log(file);
+
+        },
+
+        otaUpload(){
+            
+            this.$refs['otaUpdateForm'].validate((valid) => {
+                if(valid){
+                    this.startUpload();
+                } else {
+                    console.log("请输入必填字段");
+                    this.$message({
+                        type:'warning',
+                        message:'请输入必填字段'
+                    })
+                }
+            })
 
         },
 
@@ -201,6 +206,13 @@ export default {
                 })
 
             });
+
+            self.myOSSUpload.on('error', function (err) {
+                console.log('上传错误',err);
+                self.$message.error(err);
+            });
+
+
 
             self.myOSSUpload.init();
         },

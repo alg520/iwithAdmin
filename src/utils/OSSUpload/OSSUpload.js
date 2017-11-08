@@ -21,7 +21,7 @@
 // 引用资源
 //document.write('<script language=javascript src=\'lib/browser-md5-file.js\'></script>');
 import './lib/browser-md5-file';
-import OSS from './lib/OSSUploadRequest';
+//import OSS from './lib/OSSUploadRequest';
 
 // 外网域名ll
 //let HOST = 'http://localhost:9010';
@@ -108,15 +108,13 @@ OSSUpload.prototype.start = function(body) {
         FILE : config.FILE,
         TYPE : config.TYPE,
         body : config.body
-    }
+    };
 
-    //let woker = new Worker('/static/js/OSSUploadRequest.js');
-    let woker = new Worker('/coron-web/bigc/static/js/OSSUploadRequest.js');
-    //let woker = new Worker(OSSUploadRequest);
+    //let worker = new Worker('lib/OSSUploadRequest.js');
+    //let worker = new Worker('/coron-web/bigc/static/js/OSSUploadRequest.js');
+    let worker = new Worker('/static/js/OSSUploadRequest.js');
 
-    console.log("123456",woker);
-
-    woker.onmessage = function (e) {
+    worker.onmessage = function (e) {
         let result = e.data;
         if (result.append) {
             emit('append', result.append);
@@ -124,9 +122,12 @@ OSSUpload.prototype.start = function(body) {
         if (result.finish) {
             emit('finish', result.finish);
         }
+        if (result.error) {
+            emit('error', result.error);
+        }
     };
 
-    woker.postMessage(temp);
+    worker.postMessage(temp);
 
 };
 

@@ -115,401 +115,407 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import vPageTitle from '../common/pageTitle.vue';
-import introduceGroup from '../introduce/introduceGroup.vue';
-import $http from '../../utils/http';
-import draggable from 'vuedraggable';
-export default {    
-    data() {
-        return {
-            activeName: 'intro',
-            introForm: {
-                introGroup: '',
-                title: '',
-                content: ''
-            },
-            introFormRules: {
-                title: [
-                    { required: true, message: '请输入活动名称', trigger: 'blur' }
-                ],
-                content: [
-                    { required: true, message: '请输入提案内容', trigger: 'blur' },
-                    { max: 200, message: '最多两百个字符', trigger: 'blur' }
-                ]
-            },
-            introGroupDatas: [],
-            introDatas: [],
-            whichGroup: '',
-            addTag: true,
-            sortTag: false,
-            isActive: 0,
-            middleObj: {},
-            introDialogVisible: false
-        }
-    },
+import store from "@/store/index";
+import vPageTitle from "../common/pageTitle.vue";
+import introduceGroup from "../introduce/introduceGroup.vue";
+import $http from "../../utils/http";
+import draggable from "vuedraggable";
+import { baiduTranslate, returnTransArray } from '../../utils/translate.js';
+export default {
+  data() {
+    return {
+      activeName: "intro",
+      introForm: {
+        introGroup: "",
+        title: "",
+        content: ""
+      },
+      introFormRules: {
+        title: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        content: [
+          { required: true, message: "请输入提案内容", trigger: "blur" },
+          { max: 200, message: "最多两百个字符", trigger: "blur" }
+        ]
+      },
+      introGroupDatas: [],
+      introDatas: [],
+      whichGroup: "",
+      addTag: true,
+      sortTag: false,
+      isActive: 0,
+      middleObj: {},
+      introDialogVisible: false,
+      introTransArray:[]
+    };
+  },
 
-    components: {
-        vPageTitle, introduceGroup, draggable
-    },
-
-    computed: {
-
-    },
-
-    mounted() {
-        
-        window.onresize = function(){
-            setTimeout(getHeight,500);
-        };
-        getHeight();
-        function getHeight(){
-            
-            //动态计算属性导航的高度
-            var introduceHeight = document.body.clientHeight - 286;
-            document.getElementById("intro-nav").style.height = introduceHeight + 'px';
-            document.getElementById("intro-content-list").style.height = introduceHeight + 'px';
-
-        }
-
-    },
-
-    created() {
-        //默认获取属性列表
-        this.getIntroGroupList();
-    },
-
-    methods: {
-
-        handleNavClick(tab, event){
-
-            if(tab.name == 'intro'){                
-                this.getIntroGroupList();
-            }
-            
-        },
-
-        getIntroGroupList() {
-            $http.get('/coron-web/introduceGroup/list').then(response => {
-                console.log("提案列表组", response);
-
-                response.status && (this.introGroupDatas = response.entry)
-                    && (this.isActive = this.whichGroup = response.entry[0].id)
-                    && (this.getIntroList(this.isActive));
-
-
-            }).catch(error => {
-                console.log(error);
-            })
-        },
-
-        getIntroList(itemId) {
-
-            let getParams = { groupId: itemId };
-
-            $http.get('/coron-web/introduce/list', { groupId: itemId }).then(response => {
-                console.log("获取提案列表", response);
-                response.status && (this.introDatas = response.rows);
-            }).catch(error => {
-                console.log(error);
-            })
-        },
-
-        newIntro() {
-            this.addTag = true;
-            this.addBtn = true;
-            this.introForm.title = '';
-            this.introForm.content = '';
-
-            this.introDialogVisible = true;
-        },
-
-        addIntro() {
-            var self = this;
-
-            let addParams = {
-                groupId: self.whichGroup,
-                titlePojo: { zh: self.introForm.title, jp: '', en: '' },
-                contentPojo: { zh: self.introForm.content, jp: '', en: '' },
-                type: 1,
-                position: 0
-            };
-
-            self.$refs['introForm'].validate((valid) => {
-
-                if(valid){
-                    $http.post('/coron-web/introduce/add', addParams).then(response => {
-                        console.log(response);
-                        if(response.status){
-                            self.addTag = false;
-                            self.getIntroList(self.whichGroup);
-                            self.introDialogVisible = false;
-                        } else {
-                            self.$message.error(response.responseCode);
-                        }                        
-
-                    }).catch(error => {
-                        console.log(error);
-                    })
-                } else {
-                    self.$message({
-                        type:'warning',
-                        message:'请输入必填字段！'
-                    })
-                }
-
-            });
-
-            
-
-        },
-
-        updateIntro(item) {
-            console.log(item);
-            this.addTag = false;
-            this.addBtn = false;
-            this.introDialogVisible = true;
-            this.introForm.title = item.titlePojo.zh;
-            this.introForm.content = item.contentPojo.zh;
-            this.whichGroup = item.groupId;
-            this.middleObj = item;
-        },
-
-        updateIntroPost() {
-            var self = this;
-
-            let updateParams = {
-                id: self.middleObj.id,
-                titlePojo: { zh: self.introForm.title, jp: '', en: '' },
-                contentPojo: { zh: self.introForm.content, jp: '', en: '' }
-            };
-
-            self.$refs['introForm'].validate((valid) => {
-                if(valid){
-                    $http.post('/coron-web/introduce/update', updateParams).then(response => {
-                        console.log(response);
-                        if(response.status){
-                            this.$message({
-                            type: 'success',
-                                message: '修改成功！'
-                            });
-                            this.addTag = false;
-                            this.introDialogVisible = false;
-                            this.getIntroList(this.whichGroup);
-                        } else {
-                            this.$message.error(response.responseCode);
-                        }
-                        
-                    }).catch(error => {
-                        console.log(error);
-                        this.$message({
-                            type: 'error',
-                            message: '请求错误'
-                        });
-                    })
-
-                } else {
-                    self.$message({
-                        type:'warning',
-                        message:'请输入必填字段！'
-                    })
-                }
-            })
-
-            
-
-        },
-
-        delIntro(item) {
-            $http.post('/coron-web/introduce/delete', {
-                id: item.id
-            }).then(response => {
-                console.log(response);
-                this.$message({
-                    type: 'success',
-                    message: '删除成功 '
-                });
-                this.getIntroList(this.isActive);
-            }).catch(error => {
-
-                console.log(error);
-
-            })
-        },
-
-        confirmDel(item) {
-            this.$confirm('确认要删除这个提案么?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                closeOnClickModal: false,
-                type: 'warning'
-            }).then(() => {
-
-                this.delIntro(item);
-
-            }).catch(() => {
-
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-
-            });
-        },
-
-        changeSelected: function(itemId) {
-            this.isActive = itemId;
-            this.whichGroup = itemId;
-            this.getIntroList(itemId);
-        },
-
-        cancelForm() {
-            // this.addTag = false;
-            // this.getIntroList();
-            this.introDialogVisible = false;
-        },
-
-        introSort() {
-            this.sortTag = true;
-        },
-        cancelSort() {
-            this.sortTag = false;
-        },
-
-        sortIntro(itemParams) {
-
-            $http.post('/coron-web/introduce/sort', itemParams).then(response => {
-
-                this.$message({
-                    type: 'success',
-                    message: '更新成功'
-                });
-                this.getIntroList();
-
-            }).catch(error => {
-                this.$message({
-                    type: 'error',
-                    message: '更新失败'
-                });
-            })
-        },
-
-        moved(evt) {
-
-            let newIndex = evt.moved.newIndex;
-            let oldIndex = evt.moved.oldIndex;
-
-            console.log(evt);
-            console.log(this.introDatas[evt.moved.newIndex + 1]);
-            console.log(this.introDatas[evt.moved.newIndex]);
-
-            if (newIndex > oldIndex) {
-                let oldItem = this.introDatas[evt.moved.newIndex],
-                    newItem = this.introDatas[evt.moved.newIndex - 1];
-
-                const item = {
-                    id: oldItem.id,
-                    groupId: newItem.groupId,
-                    oldIndex: oldItem.seq,
-                    newIndex: newItem.seq
-                };
-
-                this.sortIntro(item);
-
-            } else {
-
-                let oldItem = this.introDatas[evt.moved.newIndex],
-                    newItem = this.introDatas[evt.moved.newIndex + 1];
-
-                const item = {
-                    id: oldItem.id,
-                    groupId: newItem.groupId,
-                    oldIndex: oldItem.seq,
-                    newIndex: newItem.seq
-                };
-
-                this.sortIntro(item);
-            }
-
-        }
+  components: {
+    vPageTitle,
+    introduceGroup,
+    draggable
+  },
+  
+  computed: {
+    _SHOPLANGUAGE() {
+      return Cookies.get('SHOPLANGUAGE');
     }
-}
+  },
+
+  mounted() {
+    window.onresize = function() {
+      setTimeout(getHeight, 500);
+    };
+    getHeight();
+    function getHeight() {
+      //动态计算属性导航的高度
+      var introduceHeight = document.body.clientHeight - 286;
+      document.getElementById("intro-nav").style.height =
+        introduceHeight + "px";
+      document.getElementById("intro-content-list").style.height =
+        introduceHeight + "px";
+    }
+  },
+
+  created() {
+    //默认获取属性列表
+    this.getIntroGroupList();
+  },
+
+  methods: {
+    handleNavClick(tab, event) {
+      if (tab.name == "intro") {
+        this.getIntroGroupList();
+      }
+    },
+
+    getIntroGroupList() {
+      $http
+        .get("/coron-web/introduceGroup/list")
+        .then(response => {
+          console.log("提案列表组", response);
+
+          response.status &&
+            (this.introGroupDatas = response.entry) &&
+            (this.isActive = this.whichGroup = response.entry[0].id) &&
+            this.getIntroList(this.isActive);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    getIntroList(itemId) {
+      let getParams = { groupId: itemId };
+
+      $http
+        .get("/coron-web/introduce/list", { groupId: itemId })
+        .then(response => {
+          console.log("获取提案列表", response);
+          response.status && (this.introDatas = response.rows);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    newIntro() {
+      this.addTag = true;
+      this.addBtn = true;
+      this.introForm.title = "";
+      this.introForm.content = "";
+
+      this.introDialogVisible = true;
+    },
+
+    addIntro() {
+      var self = this;
+
+      let addParams = {
+        groupId: self.whichGroup,
+        titlePojo: { zh: self.introForm.title, jp: "", en: "" },
+        contentPojo: { zh: self.introForm.content, jp: "", en: "" },
+        type: 1,
+        position: 0
+      };
+
+      self.$refs["introForm"].validate(valid => {
+        if (valid) {
+          $http
+            .post("/coron-web/introduce/add", addParams)
+            .then(response => {
+              console.log(response);
+              if (response.status) {
+                self.addTag = false;
+                self.getIntroList(self.whichGroup);
+                self.introDialogVisible = false;
+              } else {
+                self.$message.error(response.responseCode);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        } else {
+          self.$message({
+            type: "warning",
+            message: "请输入必填字段！"
+          });
+        }
+      });
+    },
+
+    async translateContent(itemName, type) {
+        var self = this;
+        let _language = self._SHOPLANGUAGE;
+        if (itemName !== "") {
+
+            var res = await baiduTranslate(itemName, _language);
+
+            if (type == "intro") {
+                self.introTransArray = returnTransArray(res);
+            }
+            
+        }
+    },
+
+    updateIntro(item) {
+      console.log(item);
+      this.addTag = false;
+      this.addBtn = false;
+      this.introDialogVisible = true;
+      this.introForm.title = item.titlePojo.zh;
+      this.introForm.content = item.contentPojo.zh;
+      this.whichGroup = item.groupId;
+      this.middleObj = item;
+    },
+
+    updateIntroPost() {
+      var self = this;
+
+      let updateParams = {
+        id: self.middleObj.id,
+        titlePojo: { zh: self.introForm.title, jp: "", en: "" },
+        contentPojo: { zh: self.introForm.content, jp: "", en: "" }
+      };
+
+      self.$refs["introForm"].validate(valid => {
+        if (valid) {
+          $http
+            .post("/coron-web/introduce/update", updateParams)
+            .then(response => {
+              console.log(response);
+              if (response.status) {
+                this.$message({
+                  type: "success",
+                  message: "修改成功！"
+                });
+                this.addTag = false;
+                this.introDialogVisible = false;
+                this.getIntroList(this.whichGroup);
+              } else {
+                this.$message.error(response.responseCode);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              this.$message({
+                type: "error",
+                message: "请求错误"
+              });
+            });
+        } else {
+          self.$message({
+            type: "warning",
+            message: "请输入必填字段！"
+          });
+        }
+      });
+    },
+
+    delIntro(item) {
+      $http
+        .post("/coron-web/introduce/delete", {
+          id: item.id
+        })
+        .then(response => {
+          console.log(response);
+          this.$message({
+            type: "success",
+            message: "删除成功 "
+          });
+          this.getIntroList(this.isActive);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    confirmDel(item) {
+      this.$confirm("确认要删除这个提案么?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        type: "warning"
+      })
+        .then(() => {
+          this.delIntro(item);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+
+    changeSelected(itemId) {
+      this.isActive = itemId;
+      this.whichGroup = itemId;
+      this.getIntroList(itemId);
+    },
+
+    cancelForm() {
+      // this.addTag = false;
+      // this.getIntroList();
+      this.introDialogVisible = false;
+    },
+
+    introSort() {
+      this.sortTag = true;
+    },
+    cancelSort() {
+      this.sortTag = false;
+    },
+
+    sortIntro(itemParams) {
+      $http
+        .post("/coron-web/introduce/sort", itemParams)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "更新成功"
+          });
+          this.getIntroList();
+        })
+        .catch(error => {
+          this.$message({
+            type: "error",
+            message: "更新失败"
+          });
+        });
+    },
+
+    moved(evt) {
+      let newIndex = evt.moved.newIndex;
+      let oldIndex = evt.moved.oldIndex;
+
+      console.log(evt);
+      console.log(this.introDatas[evt.moved.newIndex + 1]);
+      console.log(this.introDatas[evt.moved.newIndex]);
+
+      if (newIndex > oldIndex) {
+        let oldItem = this.introDatas[evt.moved.newIndex],
+          newItem = this.introDatas[evt.moved.newIndex - 1];
+
+        const item = {
+          id: oldItem.id,
+          groupId: newItem.groupId,
+          oldIndex: oldItem.seq,
+          newIndex: newItem.seq
+        };
+
+        this.sortIntro(item);
+      } else {
+        let oldItem = this.introDatas[evt.moved.newIndex],
+          newItem = this.introDatas[evt.moved.newIndex + 1];
+
+        const item = {
+          id: oldItem.id,
+          groupId: newItem.groupId,
+          oldIndex: oldItem.seq,
+          newIndex: newItem.seq
+        };
+
+        this.sortIntro(item);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
-
 .el-tab-pane {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .intro-nav {
-    border-right: 1px solid #d1dbe5;
-    padding-top: 20px;
+  border-right: 1px solid #d1dbe5;
+  padding-top: 20px;
 }
 
 .intro-toolbar {
-    /* background: #f8f8f9; */
-    padding: 8px 0 20px 20px;
-    border-bottom: solid 1px #d1dbe5;
+  /* background: #f8f8f9; */
+  padding: 8px 0 20px 20px;
+  border-bottom: solid 1px #d1dbe5;
 }
 
 ul.intro-list {
-    list-style: none;
-    text-align: left;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  text-align: left;
+  padding: 0;
+  margin: 0;
 }
 
 ul.intro-list li {
-    height: 42px;
-    line-height: 42px;
-    padding: 0 18px;
+  height: 42px;
+  line-height: 42px;
+  padding: 0 18px;
 }
 
 ul.intro-list li a {
-    color: #6B6B6B;
+  color: #6b6b6b;
 }
 
 li.selected {
-    border-left: 3px solid #20A0FF;
-    background-color: rgba(242, 242, 242, 1);
+  border-left: 3px solid #20a0ff;
+  background-color: rgba(242, 242, 242, 1);
 }
 
 .content-list {
-    padding: 8px;
+  padding: 8px;
 }
 .intro-content-list {
-    padding: 8px;
-    overflow-y: auto;
+  padding: 8px;
+  overflow-y: auto;
 }
 .introduce-list {
-    padding: 0px;
+  padding: 0px;
 }
 
 .content-list .intro-card {
-    margin: 0 8px 8px 0;
+  margin: 0 8px 8px 0;
 }
 
 .card-body {
-    height: 200px;
-    overflow-y: auto;
+  height: 200px;
+  overflow-y: auto;
 }
 
 .content-list .intro-card p {
-    padding: 8px 10px;
-    margin: 10px 0;
-    text-indent: 2em;
+  padding: 8px 10px;
+  margin: 10px 0;
+  text-indent: 2em;
 }
 
 .add-intro-form {
-    padding: 20px 10px;
+  padding: 20px 10px;
 }
 
 .input440 {
-    width: 440px;
+  width: 440px;
 }
 
 .introSort {
-    padding: 30px 0 0 20px;
+  padding: 30px 0 0 20px;
 }
 </style>

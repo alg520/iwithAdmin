@@ -618,9 +618,8 @@ a {
     width: 193px;
 }
 
-.zIndexMessage {
-    z-index: 9999 !important;
-    top: 300px;
+.el-message,.zIndexMessage {
+    z-index: 9999 !important;    
 }
 
 .el-tooltip__popper {
