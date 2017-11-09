@@ -738,59 +738,59 @@ export default {
             this.addItems(type);
         },
 
-        translateContent(itemName, type) {
+        async translateContent(itemName, type) {
             var self = this;
             let _language = self._SHOPLANGUAGE;
-            itemName !== ''
-                &&
-                baiduTranslate(itemName, _language).then(res => {
-                    if (type == 'name') {
-                        console.log(" 添加菜品 ", res);
-                        var itemNameTrans = returnTransArray(res);
-                        self.itemNameTransArray = returnTransArray(res);
-                        console.log(" 添加菜品 ", itemNameTrans);
-                    }
-                    if (type == 'desc') {
-                        self.itemDescTransArray = returnTransArray(res);
-                        console.log(" 描述 ", self.itemDescTransArray);
-                    }
-                    if (type == 'attrGroup') {
-                        self.attrGnameTransArray = returnTransArray(res);
-                        console.log(" 属性组 ", self.attrGnameTransArray);
-                    }
-                    if (type == 'itemGname') {
-                        self.itemGnameTransArray = returnTransArray(res);
-                        console.log(" 附属商品组 ", self.itemGnameTransArray);
-                    }
-                    if (type == 'tag') {
-                        self.tagGnameTransArray = returnTransArray(res);
-                        console.log(" 标签组 ", self.tagGnameTransArray);
 
-                        if (self._SHOPLANGUAGE == 0) {
-                            self.tagGroupObj.zh = self.itemTags;
-                            self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
-                            self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
-                        }
-                        if (self._SHOPLANGUAGE == 1) {
-                            self.tagGroupObj.en = self.itemTags;
-                            self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
-                            self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
-                        }
-                        if (self._SHOPLANGUAGE == 2) {
-                            self.tagGroupObj.jp = self.itemTags;
-                            self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
-                            self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
-                        }
-
-                        console.log("标签对象组", self.tagGroupObj);
-
+            if(itemName !== ''){
+                var res = await baiduTranslate(itemName,_language);
+                switch(type){
+                    case 'name':
+                    var itemNameTrans = returnTransArray(res);
+                    self.itemNameTransArray = returnTransArray(res);
+                    console.log(" 添加菜品 ", itemNameTrans);
+                    break;
+                    case 'desc':
+                    self.itemDescTransArray = returnTransArray(res);
+                    console.log(" 描述 ", self.itemDescTransArray);
+                    break;
+                    case 'attrGroup':
+                    self.attrGnameTransArray = returnTransArray(res);
+                    console.log(" 属性组 ", self.attrGnameTransArray);
+                    break;
+                    case 'itemGname':
+                    self.itemGnameTransArray = returnTransArray(res);
+                    console.log(" 附属商品组 ", self.itemGnameTransArray);
+                    break;
+                    case 'tag':
+                    self.tagGnameTransArray = returnTransArray(res);
+                    console.log(" 标签组 ", self.tagGnameTransArray);
+                    if (self._SHOPLANGUAGE == 0) {
+                        self.tagGroupObj.zh = self.itemTags;
+                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
+                    } else if (self._SHOPLANGUAGE == 1) {
+                        self.tagGroupObj.en = self.itemTags;
+                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                        self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
+                    } else if (self._SHOPLANGUAGE == 2) {
+                        self.tagGroupObj.jp = self.itemTags;
+                        self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
+                        self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
                     }
+                    console.log("标签对象组", self.tagGroupObj);
+                    break;
+                }
 
-                })
 
+            }
+              
         },
 
-        addItems(type) {
+       async addItems(type) {
+
+            await this.translateContent(this.productForm.itemName,'name');
+            await this.translateContent(this.productForm.itemDesc,'desc');
 
             let itemNameObj = { zh: this.productForm.itemName, jp: this.productForm.itemName, en: this.productForm.itemName };
             let itemDescObj = { zh: this.productForm.itemDesc, jp: this.productForm.itemDesc, en: this.productForm.itemDesc };
@@ -840,7 +840,6 @@ export default {
             };
 
             console.log("添加的参数",addParams);
-
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){
@@ -924,7 +923,6 @@ export default {
             var self = this;
 
             self.productForm.itemGlist = [];
-
             self.sideDishDatas.forEach((item, index) => {
 
                 self.checkSideDishList.forEach((item2, index2) => {
@@ -969,7 +967,9 @@ export default {
 
         },
 
-        addAttrGroup() {
+        async addAttrGroup() {
+
+            await this.translateContent(this.productForm.attrGname,'attrGroup');
 
             let attrGname = { zh: this.productForm.attrGname, jp: this.productForm.attrGname, en: this.productForm.attrGname };
             if (this.attrGnameTransArray.length > 0) {
@@ -1000,7 +1000,9 @@ export default {
 
         },
 
-        addItemGroup() {
+        async addItemGroup() {
+
+            await this.translateContent(this.productForm.attrGname,'itemGname');
 
             let itemGname = { zh: this.productForm.itemGname, jp: this.productForm.itemGname, en: this.productForm.itemGname };
             if (this.itemGnameTransArray.length > 0) {

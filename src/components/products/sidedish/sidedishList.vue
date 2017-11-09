@@ -230,14 +230,6 @@ export default {
                 }
 
             }
-            // itemName !== ''
-            // &&
-            // baiduTranslate(itemName,_language).then(res => {
-            //     if(type == 'name'){
-            //         self.sideDishTransArray = returnTransArray(res);
-            //         console.log(" 添加配菜 ",self.sideDishTransArray);
-            //     }
-            // })
         },
 
         asyncAdd: async function(){

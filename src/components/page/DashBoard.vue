@@ -5,8 +5,9 @@
         <div class="clear"></div>
 
         <div style="margin:100px auto; text-align:center;">
-            <img src="../../../static/images/robot.png" alt="">
-            <img src="../../../static/images/logo.png" alt="">
+            <!-- <img src="../../../static/images/robot.png"> -->
+            <img src="/coron-web/bigc/static/images/robot.png">
+            <img src="../../../static/images/logo.png">
         </div>
 
         <!-- <div>

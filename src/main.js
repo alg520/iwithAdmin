@@ -14,6 +14,7 @@ import * as filters from "./filters/index";
 import getHost from "./utils/getHost";
 
 
+
 Vue.use(ElementUI);
 
 Vue.prototype.$ = $;
@@ -38,21 +39,13 @@ new Vue({
   store,
   template: "<App/>",
   components: { App },
-  beforeCreate: function() {
-    
-    console.log("beforeCreated.....");    
-    console.log(LANGS);
-    //if production create <base>
+  beforeCreate: function() {    
+    console.log("beforeCreated.....");
     if(process.env.NODE_ENV !== 'development'){
       getHost();
     }
-       
   },
-  created() {
-    
+  created() {    
     console.log("created .......");
-    console.log(process.env);
-
-   
   }
 });

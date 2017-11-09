@@ -112,7 +112,7 @@ OSSUpload.prototype.start = function(body) {
 
     //let worker = new Worker('lib/OSSUploadRequest.js');
     //let worker = new Worker('/coron-web/bigc/static/js/OSSUploadRequest.js');
-    let worker = new Worker('/static/js/OSSUploadRequest.js');
+    let worker = new Worker('/coron-web/bigc/static/js/OSSUploadRequest.js');
 
     worker.onmessage = function (e) {
         let result = e.data;

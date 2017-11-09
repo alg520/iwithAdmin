@@ -102,8 +102,8 @@ export default {
         },
 
         beforeRomUpload(file) {            
-            
-            const isZIP = file.raw.type === 'application/zip';
+
+            const isZIP = file.raw.name.slice(-4) === '.zip';
             const isLt500M = file.raw.size / 1024 / 1024 < 500;
 
             if (!isZIP) {
@@ -119,15 +119,12 @@ export default {
 
         handleAvatarSuccess(res, file, fileList) {
 
-            console.log(fileList);
-
             if (!res.status) {
                 this.$message.error("上传失败：" + res.message);
             }
             this.imageUrl = URL.createObjectURL(file.raw);
             this.robotDanceForm.danceImg = res.entry;
-            console.log(this.imageUrl);
-            console.log(this.robotDanceForm.danceImg);
+
         },
 
         handleChange(file,fileList){
@@ -143,19 +140,15 @@ export default {
 
             if(beforeResult){
 
-                if(file.status == 'ready'){                                      
-
+                if(file.status == 'ready'){
                     this.myOSSUpload = new OSSUpload(file.raw,1);
                 }                
 
             } else {
                 
                 this.fileList = [];
-                console.log("beforeUpload .....",this.$refs.romUpload);
                 
-            }          
-
-            console.log(file);
+            }
 
         },
 
@@ -200,7 +193,6 @@ export default {
 
             self.myOSSUpload.on('finish', function () {
                 console.log('上传完成',self.$router);
-
                 self.$router.push({
                     path:'/operation/otamanage'
                 })

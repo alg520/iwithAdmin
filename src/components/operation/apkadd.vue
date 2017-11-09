@@ -61,7 +61,7 @@ import $http from '../../utils/http'
 import OSSUpload from '../../utils/OSSUpload/OSSUpload'
 export default {
     data() {
-        return {                                   
+        return {
             apkAddForm: {
                 name: '',
                 code: '',
@@ -76,9 +76,9 @@ export default {
                 ],
                 code: [
                     { required: true, message: '请输入APK CODE', trigger: 'blur' }
-                ]                
-            },            
-            fileList: [],            
+                ]
+            },
+            fileList: [],
             middleObj: {},
             myOSSUpload:{},
             parent:0,

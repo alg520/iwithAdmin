@@ -38,27 +38,28 @@ export default {
     },
 
     computed: {
-        
         onRoutes(){
             return this.$route.path.replace('/dashboard','/products/list');
         }
     },
 
     created(){
-        this.activeIndex = Cookies.get('activeIndex');
+        this.activeIndex = Cookies.get('activeIndex') ? Cookies.get('activeIndex'):'list';
+        this.$router.push({
+            path:`/products/${this.activeIndex}`
+        })
     },
     
     mounted: function () {
         
-        window.onresize = function(){
-            setTimeout(getHeight,500);
-        };
-        getHeight();
         function getHeight(){
-            //动态计算属性导航的高度
             var contentHeight = document.body.clientHeight - 151;
             document.getElementById("content-list").style.height = contentHeight + 'px';
         }
+        getHeight();
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
 
     },
     
@@ -66,7 +67,7 @@ export default {
         //添加 根据当前页面的status 修改 vtitle 的值
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
-            console.log(this.$route.path)
+            console.log("123",this.$route.path)
             
             this.activeIndex = key;
             Cookies.set('activeIndex', key);            

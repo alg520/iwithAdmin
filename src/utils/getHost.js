@@ -1,7 +1,7 @@
 export default function getHost(){
 
     let _HOST = document.location.origin;
-    const _PATH = '/coron-web/bigc';
+    const _PATH = '/coron-web/bigc/';
 
     let base = document.createElement('base');
     base.href = _HOST + _PATH;

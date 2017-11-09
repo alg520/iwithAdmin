@@ -152,11 +152,17 @@ export default {
         }
     },
 
-    mounted: function() {
-
-        //动态计算属性导航的高度
-        var catalogNavHeight = document.body.clientHeight - 171;
-        document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+    mounted: function() {        
+        
+        function getHeight(){            
+             //动态计算属性导航的高度
+            var catalogNavHeight = document.body.clientHeight - 171;
+            document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+        }
+        getHeight();
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
 
     },
 

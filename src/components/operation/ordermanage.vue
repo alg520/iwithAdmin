@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column prop="tradeStatus" :label="$t('shop.order.status')" width="180">
         <template scope="scope">
-          <span>{{ scope.row.tradeStatus| orderStatus}}</span>
+          <span>{{ scope.row.tradeStatus| tradeStatus}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="createdTime" :label="$t('shop.order.orderTime')">
