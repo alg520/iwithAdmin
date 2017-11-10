@@ -1,6 +1,6 @@
 export default function getHost(){
 
-    let _HOST = document.location.origin;
+    let _HOST = window.location.origin;
     const _PATH = '/coron-web/bigc/';
 
     let base = document.createElement('base');

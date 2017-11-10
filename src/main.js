@@ -41,9 +41,9 @@ new Vue({
   components: { App },
   beforeCreate: function() {    
     console.log("beforeCreated.....");
-    if(process.env.NODE_ENV !== 'development'){
-      getHost();
-    }
+    // if(process.env.NODE_ENV !== 'development'){
+    //   getHost();
+    // }
   },
   created() {    
     console.log("created .......");

@@ -43,7 +43,7 @@ import axios from 'axios';
 import $http from '../../../utils/http';
 import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
-import { getTranslateResult, baiduTranslate, returnTransArray } from '../../../utils/translate.js';
+import { baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
   data() {
     return {
@@ -110,12 +110,7 @@ export default {
         if (type == 'attr') {
           self.attrTransArray = returnTransArray(res);          
         }
-        // baiduTranslate(itemName, _language).then(res => {
-        //   if (type == 'attr') {
-        //     self.attrTransArray = returnTransArray(res);
-        //     console.log(" 添加属性 ", self.attrTransArray);
-        //   }
-        // })
+
       }        
 
     },

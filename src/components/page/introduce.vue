@@ -120,6 +120,7 @@ import vPageTitle from "../common/pageTitle.vue";
 import introduceGroup from "../introduce/introduceGroup.vue";
 import $http from "../../utils/http";
 import draggable from "vuedraggable";
+import Cookies from 'js-cookie';
 import { baiduTranslate, returnTransArray } from '../../utils/translate.js';
 export default {
   data() {
@@ -145,7 +146,8 @@ export default {
       isActive: 0,
       middleObj: {},
       introDialogVisible: false,
-      introTransArray:[]
+      introTitleTransArray:[],
+      introContentTransArray:[]
     };
   },
 
@@ -192,8 +194,6 @@ export default {
       $http
         .get("/coron-web/introduceGroup/list")
         .then(response => {
-          console.log("提案列表组", response);
-
           response.status &&
             (this.introGroupDatas = response.entry) &&
             (this.isActive = this.whichGroup = response.entry[0].id) &&
@@ -209,8 +209,7 @@ export default {
 
       $http
         .get("/coron-web/introduce/list", { groupId: itemId })
-        .then(response => {
-          console.log("获取提案列表", response);
+        .then(response => {          
           response.status && (this.introDatas = response.rows);
         })
         .catch(error => {
@@ -223,21 +222,33 @@ export default {
       this.addBtn = true;
       this.introForm.title = "";
       this.introForm.content = "";
-
       this.introDialogVisible = true;
     },
 
-    addIntro() {
+   async addIntro() {
       var self = this;
+      await self.translateContent(self.introForm.title,'introTitle');
+      await self.translateContent(self.introForm.content,'introContent');
+
+      let introTitleObj = { zh: self.introForm.title, jp: self.introForm.title, en: self.introForm.title };
+      let introContentObj = { zh: self.introForm.content, jp: self.introForm.content, en: self.introForm.content};
+      if (self.introTitleTransArray.length > 0) {
+        introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);
+        console.log("合并后的title对象", introTitleObj);
+      }
+
+      if(self.introContentTransArray.length > 0){
+        introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);
+        console.log("合并后的content对象", introContentObj);
+      }
 
       let addParams = {
         groupId: self.whichGroup,
-        titlePojo: { zh: self.introForm.title, jp: "", en: "" },
-        contentPojo: { zh: self.introForm.content, jp: "", en: "" },
+        titlePojo: introTitleObj,
+        contentPojo: introContentObj,
         type: 1,
         position: 0
       };
-
       self.$refs["introForm"].validate(valid => {
         if (valid) {
           $http
@@ -268,13 +279,15 @@ export default {
         var self = this;
         let _language = self._SHOPLANGUAGE;
         if (itemName !== "") {
-
             var res = await baiduTranslate(itemName, _language);
-
-            if (type == "intro") {
-                self.introTransArray = returnTransArray(res);
-            }
-            
+            switch(type){
+              case 'introTitle':
+              self.introTitleTransArray = returnTransArray(res);
+              break;
+              case 'introContent':
+              self.introContentTransArray = returnTransArray(res);
+              break;
+            }            
         }
     },
 
@@ -289,13 +302,32 @@ export default {
       this.middleObj = item;
     },
 
-    updateIntroPost() {
+   async updateIntroPost() {
       var self = this;
+      let introTitleObj = { zh: self.introForm.title, jp: self.introForm.title, en: self.introForm.title };
+      let introContentObj = { zh: self.introForm.content, jp: self.introForm.content, en: self.introForm.content};
+
+      if(self.introForm.title === self.middleObj.titlePojo.zh || self.introForm.title === self.middleObj.titlePojo.en || self.introForm.title === self.middleObj.titlePojo.jp){          
+          introTitleObj = self.middleObj.titlePojo;
+      } else {
+        await self.translateContent(self.introForm.title,'introTitle');
+        if (self.introTitleTransArray.length > 0) {
+          introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);          
+        }
+      }
+      if(self.introForm.content === self.middleObj.contentPojo.zh || self.introForm.content === self.middleObj.contentPojo.en || self.introForm.content === self.middleObj.contentPojo.jp){          
+          introContentObj = self.middleObj.contentPojo;
+      } else {        
+        await self.translateContent(self.introForm.content,'introContent');
+        if(self.introContentTransArray.length > 0){
+          introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);          
+        }
+      }
 
       let updateParams = {
         id: self.middleObj.id,
-        titlePojo: { zh: self.introForm.title, jp: "", en: "" },
-        contentPojo: { zh: self.introForm.content, jp: "", en: "" }
+        titlePojo: introTitleObj,
+        contentPojo: introContentObj
       };
 
       self.$refs["introForm"].validate(valid => {

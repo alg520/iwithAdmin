@@ -59,6 +59,8 @@
 import axios from 'axios';
 import $http from '../../utils/http';
 import draggable from 'vuedraggable';
+import Cookies from 'js-cookie';
+import { baiduTranslate, returnTransArray } from '../../utils/translate.js';
 export default {
     components:{
         draggable
@@ -77,24 +79,27 @@ export default {
                 name: [
                     { required: true, message: '请输入提案组名称', trigger: 'blur' }                    
                 ]                
-            }                                 
+            },
+            introGroupTransArray:[]
         }
     },
 
+    computed: {
+        _SHOPLANGUAGE() {
+        return Cookies.get('SHOPLANGUAGE');
+        }
+    },
     mounted() {
 
+        function getHeight(){            
+            //动态计算属性导航的高度
+            var introGroupHeight = document.body.clientHeight - 196;
+            document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
+        }
         window.onresize = function(){
             setTimeout(getHeight,500);
         };
         getHeight();
-        function getHeight(){            
-            
-            //动态计算属性导航的高度
-            var introGroupHeight = document.body.clientHeight - 196;
-            document.getElementById("introGroup-manage").style.height = introGroupHeight + 'px';
-
-        }
-
 
     },
 
@@ -107,14 +112,23 @@ export default {
 
         getIntroGroupList() {
             $http.get('/coron-web/introduceGroup/list').then(response => {
-                console.log("提案列表组", response);
-
                 response.status && (this.introGroupDatas = response.entry);
-
-
             }).catch(error => {
                 console.log(error);
             })
+        },
+
+        async translateContent(itemName, type) {
+            var self = this;
+            let _language = self._SHOPLANGUAGE;
+            if (itemName !== "") {
+                var res = await baiduTranslate(itemName, _language);
+                switch(type){
+                    case 'introGroup':
+                    self.introGroupTransArray = returnTransArray(res);
+                    break;
+                }            
+            }
         },
 
         addIntroGroup(){
@@ -123,17 +137,25 @@ export default {
             this.introGroupDialogVisible = true;
         },
 
-        addIntroGroupPost(){
+       async addIntroGroupPost(){
             var self = this;
 
-            let addParams = {
-                groupNamePojo:{zh:self.introGroupForm.name,en:'',jp:''},
-                position:1
-            }
-
+            await self.translateContent(self.introGroupForm.name,'introGroup');
+            
             self.$refs['introGroupForm'].validate((valid) => {
 
                 if(valid){
+
+                    let introGroupObj = { zh: self.introGroupForm.name, jp: self.introGroupForm.name, en: self.introGroupForm.name };
+                    if (self.introGroupTransArray.length > 0) {
+                        introGroupObj = Object.assign(introGroupObj, self.introGroupTransArray[0]);                        
+                    }
+
+                    let addParams = {
+                        groupNamePojo: introGroupObj,
+                        position:1
+                    }
+
                     $http.post('/coron-web/introduceGroup/add',addParams).then(response => {
 
                         if(response.status){
@@ -163,20 +185,26 @@ export default {
             this.addTag = false;
             this.introGroupDialogVisible = true;
             this.introGroupForm.name = item.groupNamePojo.zh;
-
             this.middleObj = item;
-            
-            console.log(item);
-
         },
         
 
-        updateIntroGroupPost(){
+       async updateIntroGroupPost(){
             let self = this;
+
+            let introGroupObj = { zh: self.introGroupForm.name, jp: self.introGroupForm.name, en: self.introGroupForm.name };
+            if(self.introGroupForm.name === self.middleObj.groupNamePojo.zh || self.introGroupForm.name === self.middleObj.groupNamePojo.en || self.introGroupForm.name === self.middleObj.groupNamePojo.jp){          
+                introGroupObj = self.middleObj.groupNamePojo;
+            } else {
+                await self.translateContent(self.introGroupForm.name,'introGroup');
+                if (self.introGroupTransArray.length > 0) {
+                    introGroupObj = Object.assign(introGroupObj, self.introGroupTransArray[0]);                        
+                }
+            }
 
             let updateParams = {
                 id:self.middleObj.id,
-                groupNamePojo:{zh:self.introGroupForm.name,en:'',jp:''},
+                groupNamePojo:introGroupObj,
                 position:1
             };
 

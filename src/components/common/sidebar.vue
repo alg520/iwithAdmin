@@ -34,7 +34,7 @@
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
                 <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-yunying"></i></span>
-                    <span class="sb-cn">{{$t('sidebar.operationmanage')}}</span>                 
+                    <span class="sb-cn">{{$t('sidebar.operationmanage')}}</span>
                 </template>
                 <el-menu-item index="/operation/shopmanage">{{$t('sidebar.shopmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/ordermanage">{{$t('sidebar.ordermanage')}}</el-menu-item>
@@ -45,7 +45,7 @@
             </el-submenu>
             <!-- v-if="authType == 7" -->
             <el-submenu index="5" v-if="authType == 7">
-                <template slot="title">               
+                <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-user"></i></span>
                     <span class="sb-cn">{{$t('sidebar.devmanage')}}</span>
                 </template>
@@ -73,19 +73,14 @@ import { getLoginUser } from '../../api/user'
             }
         },
         created(){
-            this.getLoginUserInfo();
-            
-            console.log("登录",this.$t());
+            this.getLoginUserInfo();            
         },
         methods:{
             //获取登录信息
             getLoginUserInfo(){
                 getLoginUser().then( res => {
-                    if(res.status){
-
-                        console.log("用户登录信息",res.entry);
+                    if(res.status){                        
                         this.authType = res.entry.userType;
-
                     } else {
                         this.$router.push({
                             path:'/loginIn'
