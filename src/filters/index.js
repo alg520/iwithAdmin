@@ -63,21 +63,20 @@ export function tradeStatus(tradeStatus){
     }
     if(tradeStatus == '4'){
         return '下单'
-    } 
+    }
     if(tradeStatus == '6'){
         return '待支付'
-    } 
+    }
     if(tradeStatus == '7'){
         return '支付成功'
-    } 
+    }
     if(tradeStatus == '10'){
         return '完成'
-    } 
+    }
     if(tradeStatus == '11'){
         return '关闭'
-    }      
+    }
 }
-
 
 
 export function tradeType(type){

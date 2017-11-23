@@ -71,6 +71,10 @@
                                 </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">
+                                <template scope="scope">
+                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                    <span v-else>{{scope.row.originPrice}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column :label="$t('products.itemType')" min-width="150px">
                                 <template scope="scope">
@@ -88,10 +92,12 @@
                                         ref="popoverImg"
                                         placement="left"            
                                         trigger="hover">
-                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="200" height="200" style="margin-top:5px;">
+                                        <img :src="baseUrl + scope.row.picUrl" width="200" height="200" style="margin-top:5px;" v-if="!!scope.row.picUrl">
+                                        <span v-else>NO IMAGE <i class="iconfont icon-noimg"></i></span>
                                     </el-popover>          
                                     <el-button v-popover:popoverImg type="text">
-                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50">
+                                        <img :src="baseUrl + scope.row.picUrl" alt="图片" width="50" height="50" v-if="!!scope.row.picUrl">
+                                        <span v-else><i class="iconfont icon-noimg"></i></span>
                                     </el-button>
                                 </template>                                
                             </el-table-column>                            
@@ -146,9 +152,11 @@ export default {
         rShopDetailData(){
             return Lockr.get('shopDetailData');
         },
+        _currencyType(){
+            return Lockr.get('shopDetailData').currencyType;
+        },        
         _SHOPLANGUAGE(){            
-            return this.rShopDetailData.language;
-        
+            return this.rShopDetailData.language;        
         }
     },
 
@@ -192,9 +200,7 @@ export default {
             console.log(size);
         },
         // 翻页
-        handleCurrentChange(page) {
-            console.log(page);
-            console.log(this.currentPage);
+        handleCurrentChange(page) {            
             this.getItemList();
         },
 

@@ -46,7 +46,7 @@
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item label="">
-                                            <el-input size="small" :placeholder="$t('placeholder.itemName')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
+                                            <el-input size="small" :placeholder="$t('placeholder.itemName')" icon="search" v-model="itemsForm.itemName" @keyup.enter.native="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item>
@@ -76,6 +76,10 @@
                                 </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">
+                                <template scope="scope">
+                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                    <span v-else>{{scope.row.originPrice}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column :label="$t('products.itemType')" min-width="150px">
                                 <template scope="scope">
@@ -168,6 +172,13 @@ export default {
     computed: {
         _SHOPLANGUAGE(){            
             return Cookies.get('SHOPLANGUAGE');
+        },
+        _currencyType(){
+            if(Lockr.get("USERINFO").shop && Lockr.get("USERINFO").shop.currencyType){
+                return Lockr.get("USERINFO").shop.currencyType;
+            } else {
+                return false
+            }            
         }
     },
 

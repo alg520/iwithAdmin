@@ -479,6 +479,13 @@ export default {
         },
         _SHOPLANGUAGE() {
             return Cookies.get('SHOPLANGUAGE');
+        },
+        _currencyType(){
+            if(Lockr.get("USERINFO").shop && Lockr.get("USERINFO").shop.currencyType){
+                return Lockr.get("USERINFO").shop.currencyType;
+            } else {
+                return false
+            }            
         }
     },
     created() {
@@ -512,10 +519,16 @@ export default {
                 this.productForm.itemDesc = data.itemDescObject.jp;
                 this.itemTags = data.tagsObj.jp;
             }
-            
+
+            if(this._currencyType == 'CHINESE'){
+                this.productForm.originPrice = data.originPrice/100 + "";
+                this.productForm.discountPrice = !!data.discountPrice ? data.discountPrice/100 : "";
+            } else {
+                this.productForm.originPrice = data.originPrice + "";
+                this.productForm.discountPrice = !!data.discountPrice ? data.discountPrice : "";
+            }
+
             this.productForm.itemType = data.itemType+"";
-            this.productForm.originPrice = data.originPrice+"";
-            this.productForm.discountPrice = data.discountPrice;
             this.timeLists = data.timeDurations;
             this.attrGroups = data.itemAttrs;
             this.productForm.picUrl = this.imageUrl = data.picUrl;
@@ -532,7 +545,6 @@ export default {
         handleAvatarSuccess(res, file) {
 
             if (file.response.status) {
-
                 this.imageUrl = URL.createObjectURL(file.raw);
                 this.productForm.picUrl = file.response.entry;
                 this.$message({
@@ -585,9 +597,8 @@ export default {
         timeTagClose(tag) {
 
             let _index = this.itemTags.indexOf(tag);
-
             this.timeLists.splice(this.timeLists.indexOf(tag), 1);
-            console.log("当前选择的时间段", this.timeLists);
+            
         },
 
         handleCheckedTimesChange(value) {
@@ -601,8 +612,7 @@ export default {
             this.setmealDialogVisible = true;
         },
 
-        okTime() {
-            console.log("当前选择的时间", this.timeLists);
+        okTime() {            
             this.timeSelectVisible = false;
         },
 
@@ -647,8 +657,7 @@ export default {
                 !!response.entry && (this.catalogDatas = response.entry);
 
             }).catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问');
+                console.log(error);                
             })
         },
 
@@ -832,8 +841,8 @@ export default {
                 itemDescObject: itemDescObj,
                 tagsObj: tagsObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId : -1,
-                originPrice: this.productForm.originPrice,
-                discountPrice: this.productForm.discountPrice,                
+                originPrice: this._currencyType == 'CHINESE' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
+                discountPrice: this._currencyType == 'CHINESE' ? (!!this.productForm.discountPrice ? this.productForm.discountPrice * 100 : this.productForm.originPrice * 100) : (!!this.productForm.discountPrice ? this.productForm.discountPrice : this.productForm.originPrice),
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,                
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
@@ -841,8 +850,8 @@ export default {
                 childItems: this.productForm.itemType == 1 ? this.sideDishGroups : (this.productForm.itemType == 2 ? this.setmealGroup : null),
                 seq: this.productForm.seq,
                 busiType: 1
-            };            
-
+            };
+            
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){
@@ -882,7 +891,6 @@ export default {
             })
         },
 
-
         gobackList() {
             this.$router.push({
                 path: '/products/list'
@@ -897,7 +905,6 @@ export default {
             var self = this;
 
             self.productForm.attrGlist = [];
-
             self.itemAttrDatas.forEach((item, index) => {
 
                 self.checkAttrList.forEach((item2, index2) => {
@@ -930,8 +937,7 @@ export default {
                     }
                 })
 
-            })
-            console.log("添加的配菜", this.productForm.itemGlist);
+            })            
             this.itemListDialogVisible = false;
 
         },

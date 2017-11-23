@@ -64,7 +64,7 @@
                 </el-select>
             </el-form-item> -->
             <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
-                <el-select v-model="updateShopForm.currencyType" :placeholder="$t('placeholder.select')">
+                <el-select v-model="updateShopForm.currencyType" :placeholder="$t('placeholder.select')" :disabled="true">
                     <el-option label="¥ CHINESE" value="CHINESE"></el-option>
                     <el-option label="$ US" value="US"></el-option>
                     <el-option label="円 JAPAN" value="JAPAN"></el-option>

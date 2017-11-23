@@ -1,5 +1,9 @@
 <template>
     <div class="robotDancePage">        
+        <div style="padding:10px 0;">
+            <el-input v-model="snSearchForm.name" placeholder="请输入sn名称" style="width:200px"></el-input>
+            <el-button type="primary" @click="getSn()">{{$t('_global.search')}}</el-button>
+        </div>
         <el-table :data="snLists" border style="width: 100%; text-align:center;">
             <el-table-column label="ID" fixed="left" prop="robotId" width="80"></el-table-column>            
             <el-table-column label="机器人名称" fixed="left" prop="robotName" min-width="130px">                
@@ -72,11 +76,15 @@ export default {
       currentPage: 1,
       pageSize: 10,
       totalItems: 0,
+      snName:'',
       snDialogVisible:false,
       snForm: {
         robotId: '',
         isTest: ''
-      }
+      },
+      snSearchForm:{
+          name:''
+      }      
     }
   },
   created() {
@@ -103,22 +111,43 @@ export default {
         });
     },
 
+    getSn(){
+        $http.post('/coron-web/robot/getBySn',{
+            sn:this.snSearchForm.name
+        }).then( res => {            
+            if(res.status && res.entry){                
+                this.snLists = [];
+                this.snLists.push(res.entry);
+                this.totalItems = 1;
+            } else {
+                console.log("请求失败！");
+                this.$message({
+                    type:'warning',
+                    message:'未找到对应的sn'
+                });
+            }
+
+        }).catch( err => {
+            console.log(err);
+        })
+
+
+
+    },
+
     handleSizeChange(size) {
         console.log(size);
     },
     // 翻页
-    handleCurrentChange(page) {
-        console.log(page);
-        console.log(this.currentPage);
+    handleCurrentChange(page) {        
         this.getSnLists();
     },
 
     snUpdate(item){
-        console.log(item);
+        console.log(item);        
         this.snDialogVisible = true;
         this.snForm.robotId = item.robotId;
-        this.snForm.isTest = this.snForm.isTest ? item.isTest+"":"";
-
+        this.snForm.isTest = typeof item.isTest == "undefined" ? "":item.isTest+ "";      
     },
 
     changeTest(){
@@ -129,7 +158,6 @@ export default {
 
         $http.post('/coron-web/robot/update',data).then(res => {            
             if(res.status){
-                
                 this.snDialogVisible = false;
                 this.$message({
                     type:'success',

@@ -47,19 +47,35 @@
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="originPrice" :label="$t('products.addItemPage.itemPrice')">
+                                                <template scope="scope">
+                                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                                    <span v-else>{{scope.row.originPrice}}</span>
+                                                </template>
                                             </el-table-column>
                                             <el-table-column prop="childItems" :label="$t('products.addItemPage.sideDishList')">
                                                 <template scope="scope">
-                                                    <el-tag v-if="_SHOPLANGUAGE == 0" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
-                                                    <el-tag v-if="_SHOPLANGUAGE == 1" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.en}}</el-tag>
-                                                    <el-tag v-if="_SHOPLANGUAGE == 2" v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.jp}}</el-tag>
+                                                    <div v-if="_SHOPLANGUAGE == 0">
+                                                        <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.zh}}</el-tag>
+                                                    </div>
+                                                    <div v-if="_SHOPLANGUAGE == 1">
+                                                        <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.en}}</el-tag>
+                                                    </div>
+                                                    <div v-if="_SHOPLANGUAGE == 2">
+                                                        <el-tag v-for="item in scope.row.childItems" :key="item.seq" type="success">{{item.gname.jp}}</el-tag>
+                                                    </div>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="itemAttrs" :label="$t('products.addItemPage.attrList')">
                                                 <template scope="scope">
-                                                    <el-tag v-if="_SHOPLANGUAGE == 0" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.zh}}</el-tag>
-                                                    <el-tag v-if="_SHOPLANGUAGE == 1" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.en}}</el-tag>
-                                                    <el-tag v-if="_SHOPLANGUAGE == 2" v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.jp}}</el-tag>
+                                                    <div v-if="_SHOPLANGUAGE == 0">
+                                                        <el-tag v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.zh}}</el-tag>
+                                                    </div>
+                                                    <div v-if="_SHOPLANGUAGE == 1">
+                                                        <el-tag v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.en}}</el-tag>
+                                                    </div>
+                                                    <div v-if="_SHOPLANGUAGE == 2">
+                                                        <el-tag v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.jp}}</el-tag>
+                                                    </div>                                                    
                                                 </template>
                                             </el-table-column>
                                             <el-table-column :label="$t('_global.action')" width="80">
@@ -293,16 +309,23 @@
                     </el-dialog>
 
                     <el-dialog :title="$t('products.addItemPage.addSetmeal')" :visible.sync="setmealDialogVisible" class="addDialog">
-                        <el-form :inline="true" :model="itemsForm">
+                        <el-form :inline="true" :model="itemsForm" @submit.native.prevent>
                             <el-form-item label="">
-                                <el-input size="small" :placeholder="$t('placeholder.itemName')" v-model="itemsForm.itemName">
+                                <el-input size="small" :placeholder="$t('placeholder.itemName')" v-model="itemsForm.itemName" @keyup.enter.native="getItemList()" >
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button size="small" type="primary" @click="getItemList()">{{$t('products.addItemPage.getItem')}}</el-button>
                             </el-form-item>
                         </el-form>
-                        <el-table :data="productsList" ref="multipleTable" tooltip-effect="dark" style="width: 100%; text-align:center" max-height="450" @selection-change="handleSelectionChange">
+                        <el-table :data="productsList" 
+                        ref="setMealTable" 
+                        tooltip-effect="dark" 
+                        style="width: 100%; text-align:center" 
+                        max-height="450" 
+                        @selection-change="handleSelectionChange" 
+                        @select="handleSingle" 
+                        @select-all="handleAll">
                             <el-table-column type="selection" width="55">
                             </el-table-column>
                             <el-table-column prop="itemNameObject.zh" :label="$t('products.itemName')">
@@ -313,6 +336,10 @@
                                 </template>
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable :label="$t('products.price')">
+                                <template scope="scope">
+                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                    <span v-else>{{scope.row.originPrice}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column :label="$t('_global.type')">
                                 <template scope="scope">
@@ -376,6 +403,7 @@ export default {
             sideDishGroups: [],
             productsList: [],
             setmealList: [],
+            selectedSetmeals:[],
             setmealGroup: [],
             inputVisible: false,
             timeDialogVisible: false,
@@ -462,7 +490,7 @@ export default {
             },
             currentPage:1,
             pageSize: 10,
-            totalItems:'',
+            totalItems:0,
             itemNameTransArray: [],
             itemDescTransArray: [],
             attrGnameTransArray: [],
@@ -477,8 +505,9 @@ export default {
         this.getCatalogList();
         this.getTimeList();
         this.getItemAttrList();
-        this.getItemList();
+        //this.getItemList();
         this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID+"";
+        
     },
     computed: {
         _SHOPLANGUAGE() {
@@ -486,21 +515,27 @@ export default {
         },
         addCatalogID() {
             return Lockr.get("addCatalogID");
+        },        
+        _currencyType(){
+            if(Lockr.get("USERINFO").shop && Lockr.get("USERINFO").shop.currencyType){
+                return Lockr.get("USERINFO").shop.currencyType;
+            } else {
+                return false
+            }            
         }
     },
+    
     methods: {
         handleAvatarSuccess(res, file) {
 
             if (file.response.status) {
-
                 this.imageUrl = URL.createObjectURL(file.raw);
                 this.productForm.picUrl = file.response.entry;
                 this.$message({
                     type: 'success',
                     message: '图片上传成功！'
                 })
-            }
-            console.log(file.response);
+            }            
 
         },
 
@@ -562,14 +597,12 @@ export default {
         },
 
         timeTagClose(tag) {
-            this.timeLists.splice(this.timeLists.indexOf(tag), 1);
-            console.log("当前选择的时间段", this.timeLists);
+            this.timeLists.splice(this.timeLists.indexOf(tag), 1);            
         },
 
         handleCheckAllChange(event) {
             this.timeLists = event.target.checked ? this.timeDatas : [];
-            this.isIndeterminate = false;
-            console.log(this.timeLists);
+            this.isIndeterminate = false;            
         },
 
         handleCheckedCitiesChange(value) {
@@ -579,14 +612,14 @@ export default {
             console.log(this.timeLists);
         },
 
-        getSetmeal() {
-            this.setmealDialogVisible = true;
-        },
-
         // 翻页
-        handleCurrentChange(page) { 
+        handleCurrentChange(page) {
 
-            console.log("翻页后的数据",this.setmealList);
+            for (let [index, elem] of this.selectedSetmeals.entries()) {
+                if(JSON.stringify(this.setmealList).indexOf(JSON.stringify(elem)) ==-1 ){
+                    this.setmealList.push(elem);
+                }
+            }            
             this.getItemList();
 
         },
@@ -606,9 +639,11 @@ export default {
 
             $http.post('/coron-web/item/list', getParams)
                 .then(response => {
-
-                    !!response.rows && (this.productsList = response.rows);
-                    this.totalItems = response.total;                    
+                    console.log(response);
+                    if(response.status){
+                        this.productsList = response.rows;
+                        this.totalItems = response.total;
+                    }                    
 
                 })
                 .catch(error => {
@@ -701,9 +736,12 @@ export default {
             })
         },
 
-        itemTagClose(tag) {
+        itemTagClose(tag) {            
+
             let _index = this.itemTags.indexOf(tag);
+            console.log("删除标签",tag,_index);
             this.itemTags.splice(_index, 1);
+            console.log("删除后的标签",this.itemTags);
 
             if (this.tagGnameTransArray.length > 0) {
                 this.tagGroupObj.zh.splice(_index, 1);
@@ -820,15 +858,15 @@ export default {
             if (this.tagGnameTransArray.length > 0) {
                 tagsObj = Object.assign(tagsObj, this.tagGroupObj);
                 console.log("合并后的标签对象", tagsObj);
-            }
+            }            
 
             let addParams = {
                 itemNo: this.productForm.itemNo,
                 itemNameObject: itemNameObj,
                 itemDescObject: itemDescObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId+"" : -1,
-                originPrice: this.productForm.originPrice,
-                discountPrice: this.productForm.discountPrice,
+                originPrice: this._currencyType == 'CHINESE' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
+                discountPrice: this._currencyType == 'CHINESE' ? (!!this.productForm.discountPrice ? this.productForm.discountPrice * 100 : this.productForm.originPrice * 100) : (!!this.productForm.discountPrice ? this.productForm.discountPrice : this.productForm.originPrice),
                 tagsObj: tagsObj,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
@@ -839,7 +877,6 @@ export default {
                 busiType: 1
             };
 
-            console.log("添加的参数",addParams);
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){
@@ -921,7 +958,6 @@ export default {
         // 选中配菜列表
         selectedSideDish() {
             var self = this;
-
             self.productForm.itemGlist = [];
             self.sideDishDatas.forEach((item, index) => {
 
@@ -937,7 +973,6 @@ export default {
             })
             console.log("添加的配菜", this.productForm.itemGlist);
             this.itemListDialogVisible = false;
-
         },
 
         //根据索引删除已选中的标签
@@ -1036,21 +1071,43 @@ export default {
             //console.log(this.productForm.itemType);            
         },
 
+        async getSetmeal() {
+            var self = this;
+            await self.getItemList();
+            this.setmealDialogVisible = true;            
+        },
+
+        handleSingle(selection,item){
+            // if(JSON.stringify(this.setmealList).indexOf(JSON.stringify(item)) ==-1 ){
+            //     this.setmealList.push(item);
+            // }
+        },
+
+        handleAll(selection){
+            console.log("全选了",selection);
+        },
+
+        currentSelect(){
+
+        },
+
         //选取套餐中的单品
+        //添加套餐内商品：点击按钮打开单品列表，当勾选单品的时候保存单品到 _hold 对象里，
+        //当点击添加时遍历 _hold 对象添加到 setmealList 中去，或者当点击翻页的时候先添加 _hold 对象到setmeallist 中去再翻页
+        //然后再继续勾选添加
         handleSelectionChange(val) {
 
-            if(val.length > 0){
+            //保存当前选中的列表到list里,判断当前如果菜品已经存在不重复添加
+            for (let [index, elem] of val.entries()) {
 
-                this.setmealList = val;
-
-            } else {
-
-                console.log(this.setmealList);
+                if(JSON.stringify(this.selectedSetmeals).indexOf(JSON.stringify(elem)) ==-1 ){                    
+                    this.selectedSetmeals.push(elem);
+                }
 
             }
-            console.log(this.setmealList);
-            console.log("选取的单品", val);
 
+            // console.log("选中的单品",this.selectedSetmeals);
+            
         },
 
         addSetmealList() {
@@ -1063,16 +1120,18 @@ export default {
                 items: this.setmealList
             };
 
-            if (this.setmealList.length < 2) {
+            if (this.setmealList.length < 2){
+
                 this.$message({
                     type: 'warning',
                     message: '请至少选择2个单品！'
                 });
-            } else {
 
+
+            } else {
+                
                 this.setmealDialogVisible = false;
                 this.setmealGroup.push(setmealItem);
-
                 console.log(this.setmealGroup);
 
             }

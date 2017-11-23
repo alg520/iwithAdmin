@@ -1,8 +1,8 @@
 <template>
   <div class="shopmanage-page">
-    <el-form :inline="true" :model="shopFrom">
+    <el-form :inline="true" :model="shopFrom" @submit.native.prevent>
       <el-form-item :label="$t('shop.shopName')">
-        <el-input v-model="shopFrom.name" :placeholder="$t('placeholder.shopName')" @keyup.enter="getShopList()"></el-input>
+        <el-input v-model="shopFrom.name" :placeholder="$t('placeholder.shopName')" @keyup.enter.native="getShopList()"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getShopList()">{{$t('_global.search')}}</el-button>
@@ -41,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../utils/http';
 import Lockr from 'lockr';
 import { mapGetters,mapMutations} from 'vuex';
 export default {
@@ -74,11 +75,11 @@ export default {
         page:this.currentPage,
         rp:this.pageSize
       };
-      axios.post('/coron-web/shop/list',data).then(res => {
-        console.log("店铺列表",res.data);        
+      $http.post('/coron-web/shop/list',data).then(res => {
+        console.log("店铺列表2",res);        
         if(res.status){
-          this.shopLists = res.data.rows;
-          this.totalItems = res.data.total;
+          this.shopLists = res.rows;
+          this.totalItems = res.total;
         } else {
           this.$message.error('有错误！');
         }

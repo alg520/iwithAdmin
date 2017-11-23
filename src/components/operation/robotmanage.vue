@@ -297,10 +297,22 @@ export default {
         }
       };
 
-      $http.post('/coron-web/robotDance/add', data).then(res => {
-        console.log("舞蹈添加", res);
-        this.getRobotDanceLists();
-        this.robotDanceDialogVisible = false;
+      $http.post('/coron-web/robotDance/add', data).then(res => {                
+        
+        if(res.status){
+          this.robotDanceDialogVisible = false;
+          this.getRobotDanceLists();
+          this.$message({
+            type:'success',
+            message:'添加成功'
+          });
+        } else {
+          this.$message({
+            type:'error',
+            message:res.message
+          })
+        }
+
       })
     },
 
@@ -308,8 +320,7 @@ export default {
       this.uploadSuccessTag = false;
       this.robotDanceDialogVisible = true;
       this.btnTag = 'update';
-      this.middleObj = item;
-      console.log(item);
+      this.middleObj = item;      
       //根据当前不同的语言显示不同语言的内容
       this.fileList = [];
       let fileObj = {name:item.motionCodesPojo.zh.danceMusic, url:item.motionCodesPojo.zh.danceMusic};
@@ -354,11 +365,25 @@ export default {
 
         if (valid) {
           
-          $http.post('/coron-web/robotDance/update',data).then(res => {
-            console.log(res);
+          $http.post('/coron-web/robotDance/update',data).then(res => {           
+           
+            if(res.status){
+              this.robotDanceDialogVisible = false;
+              this.getRobotDanceLists();
+              this.$message({
+                type:'success',
+                message:'修改成功'
+              });
+            } else {
+              this.$message({
+                type:'error',
+                message:res.message
+              })
+            }
 
-            this.getRobotDanceLists();
-            this.robotDanceDialogVisible = false;
+
+
+
           })
 
         } else {
