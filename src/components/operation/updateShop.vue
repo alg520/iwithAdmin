@@ -47,22 +47,7 @@
                     <el-option :label="$t('shop.yes')" value="true"></el-option>
                     <el-option :label="$t('shop.no')" value="false"></el-option>
                 </el-select>
-            </el-form-item>
-            <!-- <el-form-item :label="$t('shop.perssion')" prop="perssion">
-                <el-select v-model="updateShopForm.currencyPrecision" :placeholder="$t('placeholder.select')">
-                    <el-option label="0" value="0"></el-option>
-                    <el-option label="1" value="1"></el-option>
-                    <el-option label="2" value="2"></el-option>
-                    <el-option label="3" value="3"></el-option>
-                    <el-option label="4" value="4"></el-option>
-                    <el-option label="5" value="5"></el-option>
-                    <el-option label="6" value="6"></el-option>
-                    <el-option label="7" value="7"></el-option>
-                    <el-option label="8" value="8"></el-option>
-                    <el-option label="9" value="9"></el-option>
-                    <el-option label="10" value="10"></el-option>            
-                </el-select>
-            </el-form-item> -->
+            </el-form-item>            
             <el-form-item :label="$t('shop.currencyType')" prop="currencyType">
                 <el-select v-model="updateShopForm.currencyType" :placeholder="$t('placeholder.select')" :disabled="true">
                     <el-option label="¥ CHINESE" value="CHINESE"></el-option>

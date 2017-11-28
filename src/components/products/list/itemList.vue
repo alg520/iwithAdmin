@@ -8,7 +8,7 @@
                         <a href="javascript:;">{{$t('products.all')}}</a>
                     </li>
                     <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
-                        <template>                                
+                        <template>
                             <span v-if="_SHOPLANGUAGE == 0">
                                 <a href="javascript:;" class="inblock" v-text="item.nameObject.zh"></a>
                             </span>

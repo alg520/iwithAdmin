@@ -5,6 +5,8 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { Loading } from 'element-ui';
 
+
+
 //创建 axios 实例
 const $http = axios.create({
   baseURL: process.env.BASE_API, //api的base_url

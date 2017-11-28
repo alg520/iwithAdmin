@@ -247,7 +247,7 @@ export default {
         language: this.addShopFrom.language,
         isTest: true,
         currencyType: this.addShopFrom.currencyType,
-        currencyPrecision: this.addShopFrom.currencyType == 'JAPAN' ? 0 : 2        
+        currencyPrecision: this.addShopFrom.currencyType == 'JAPAN' ? 0 : 2
       };
 
       const postData = {

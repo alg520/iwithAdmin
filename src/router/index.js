@@ -45,7 +45,8 @@ Vue.use(Router);
 
 const router = new Router({
   mode: "history",
-  base: __dirname,
+  //base: __dirname,
+  base:process.env.NODE_ENV === 'production' ? '/coron-web/bigc/':__dirname,
   //base:'/coron-web/bigc/',
   routes: [
     {

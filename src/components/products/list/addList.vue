@@ -30,8 +30,7 @@
                                     <el-form-item :label="$t('products.addItemPage.type')" prop="itemType">
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
                                             <el-radio label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
-                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
-                                            <!-- <el-radio :label="3">配菜</el-radio> -->
+                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>                                            
                                         </el-radio-group>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.setmealItems')" v-if="productForm.itemType == 2">
@@ -48,7 +47,7 @@
                                             </el-table-column>
                                             <el-table-column prop="originPrice" :label="$t('products.addItemPage.itemPrice')">
                                                 <template scope="scope">
-                                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                                    <span v-if="_currencyType !== 'JAPAN'">{{scope.row.originPrice/100}}</span>
                                                     <span v-else>{{scope.row.originPrice}}</span>
                                                 </template>
                                             </el-table-column>
@@ -117,7 +116,7 @@
                                                 <template>
                                                     <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">{{$t('_global.allCheck')}}</el-checkbox>
                                                     <div style="margin: 15px 0;"></div>
-                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedCitiesChange" class="time-checkbox">
+                                                    <el-checkbox-group v-model="timeLists" @change="handleCheckedTimesChange" class="time-checkbox">
                                                         <el-checkbox v-for="time in timeDatas" :label="time" :key="time">{{time.startTime}}~{{time.endTime}}</el-checkbox>
                                                     </el-checkbox-group>                                                    
                                                 </template>
@@ -252,12 +251,7 @@
                                                 </el-table>
                                             </el-card>
                                         </template>
-                                    </el-form-item>
-                                    <!-- <el-form-item>
-                                            <el-button type="primary" @click="addItems()">立即添加</el-button>
-                                            <el-button>保存并添加下一个商品</el-button>
-                                            <el-button @click="gobackList()">返回</el-button>
-                                        </el-form-item> -->
+                                    </el-form-item>                                    
                                 </el-form>
                                 <div class="btn-fixed">
                                     <el-button type="primary" @click="addItems('add')">{{$t('products.addItemPage.save')}}</el-button>
@@ -309,53 +303,69 @@
                     </el-dialog>
 
                     <el-dialog :title="$t('products.addItemPage.addSetmeal')" :visible.sync="setmealDialogVisible" class="addDialog">
-                        <el-form :inline="true" :model="itemsForm" @submit.native.prevent>
-                            <el-form-item label="">
-                                <el-input size="small" :placeholder="$t('placeholder.itemName')" v-model="itemsForm.itemName" @keyup.enter.native="getItemList()" >
-                                </el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button size="small" type="primary" @click="getItemList()">{{$t('products.addItemPage.getItem')}}</el-button>
-                            </el-form-item>
-                        </el-form>
-                        <el-table :data="productsList" 
-                        ref="setMealTable" 
-                        tooltip-effect="dark" 
-                        style="width: 100%; text-align:center" 
-                        max-height="450" 
-                        @selection-change="handleSelectionChange" 
-                        @select="handleSingle" 
-                        @select-all="handleAll">
-                            <el-table-column type="selection" width="55">
-                            </el-table-column>
-                            <el-table-column prop="itemNameObject.zh" :label="$t('products.itemName')">
-                                <template scope="scope">                                    
-                                    <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
-                                    <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
-                                    <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="originPrice" sortable :label="$t('products.price')">
-                                <template scope="scope">
-                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
-                                    <span v-else>{{scope.row.originPrice}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column :label="$t('_global.type')">
-                                <template scope="scope">
-                                    <span>{{scope.row.itemType | parseProductType}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column :label="$t('_global.status')">
-                                <template scope="scope">
-                                    <span>{{scope.row.isSale | parseIsSale}}</span>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div class="block turn-page" style="margin-top:10px;">
-                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
-                            </el-pagination>
-                        </div>
+                        <el-row :gutter="10">
+                            <el-col :span="6">
+                                <el-card class="box-card card-item-list">
+                                    <div slot="header" class="clearfix">
+                                        <span style="line-height: 47px;">已选单品</span>                                        
+                                    </div>
+                                    <ul>
+                                        <li v-for="(item,index) in setmealList" :key="item.itemId">
+                                            <el-button @click.native.prevent="deleteSetmealRow(index)" type="text" size="small">
+                                                <i class="el-icon-delete" :title="$t('_global.add')"></i>
+                                            </el-button>
+                                            <span>{{ item.itemNameObject.zh }}</span>
+                                        </li>
+                                    </ul>
+                                </el-card>
+                            </el-col>
+                            <el-col :span="18">
+                                <el-form :inline="true" :model="itemsForm" @submit.native.prevent>
+                                    <el-form-item label="">
+                                        <el-input size="small" :placeholder="$t('placeholder.itemName')" v-model="itemsForm.itemName" @keyup.enter.native="getItemList()" >
+                                        </el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button size="small" type="primary" @click="getItemList()">{{$t('products.addItemPage.getItem')}}</el-button>
+                                    </el-form-item>
+                                </el-form>
+                                <el-table :data="productsList" 
+                                ref="setMealTable" 
+                                tooltip-effect="dark" 
+                                style="width: 100%; text-align:center" 
+                                height="450">                                    
+                                    <el-table-column :label="$t('products.itemName')" fixed>
+                                        <template scope="scope">                                    
+                                            <span v-if="_SHOPLANGUAGE == 0">{{scope.row.itemNameObject.zh}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 1">{{scope.row.itemNameObject.en}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 2">{{scope.row.itemNameObject.jp}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="originPrice" sortable :label="$t('products.price')">
+                                        <template scope="scope">
+                                            <span v-if="_currencyType !== 'JAPAN'">{{scope.row.originPrice/100}}</span>
+                                            <span v-else>{{scope.row.originPrice}}</span>
+                                        </template>
+                                    </el-table-column>                                    
+                                    <el-table-column :label="$t('_global.status')">
+                                        <template scope="scope">
+                                            <span>{{scope.row.isSale | parseIsSale}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="$t('_global.action')" width="100px" fixed="right">
+                                        <template scope="scope">
+                                            <el-button type="text" size="small" @click="selectItem(scope.row)">
+                                                <i class="el-icon-plus" :title="$t('_global.add')"></i>
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                                <div class="block turn-page" style="margin-top:10px;">
+                                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
+                                    </el-pagination>
+                                </div>                                
+                            </el-col>
+                        </el-row>                       
 
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="setmealDialogVisible = false">{{$t('_global.cancel')}}</el-button>
@@ -539,8 +549,7 @@ export default {
 
         },
 
-        itemUploadError(file) {
-            console.log("文件上传失败", file);
+        itemUploadError(file) {            
             this.$message({
                 type: 'error',
                 message: '图片上传失败'
@@ -605,11 +614,23 @@ export default {
             this.isIndeterminate = false;            
         },
 
-        handleCheckedCitiesChange(value) {
+        handleCheckedTimesChange(value) {
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.timeDatas.length;
             this.isIndeterminate = checkedCount > 0 && checkedCount < this.timeDatas.length;
             console.log(this.timeLists);
+        },
+
+        selectItem(item){
+            console.log("选中的单品",item);
+            if(JSON.stringify(this.setmealList).indexOf(JSON.stringify(item)) == -1 ){
+                this.setmealList.push(item);
+            } else {
+                this.$message({
+                    type:'warning',
+                    message:'当前菜品已存在'
+                });
+            }
         },
 
         // 翻页
@@ -674,15 +695,12 @@ export default {
             $http.get('/coron-web/shopTimeDuration/list')
                 .then(response => {
 
-                    if (response.status) {
-                        //console.log("时段列表",response);
-                        //response.data.rows && (this.timeDatas = response.data.rows);
+                    if (response.status) {                        
                         //{name:'全天',timeDuration:{startTime:'00:00',endTime:'23:59'}}
                         if (response.rows && response.rows.length > 0) {
                             response.rows.forEach((item, index) => {
                                 let obj = { startTime: item.startTime, endTime: item.endTime };
-                                this.timeDatas.push(obj);
-                                //console.log("时段列表",this.timeDatas);                               
+                                this.timeDatas.push(obj);                                
                             });
                         }
 
@@ -738,17 +756,15 @@ export default {
 
         itemTagClose(tag) {            
 
-            let _index = this.itemTags.indexOf(tag);
-            console.log("删除标签",tag,_index);
-            this.itemTags.splice(_index, 1);
-            console.log("删除后的标签",this.itemTags);
-
+            let _index = this.itemTags.indexOf(tag);            
+            //因为删除会删除两次所以注释
+            //var tempTag = this.itemTags.splice(_index, 1);
             if (this.tagGnameTransArray.length > 0) {
                 this.tagGroupObj.zh.splice(_index, 1);
                 this.tagGroupObj.en.splice(_index, 1);
                 this.tagGroupObj.jp.splice(_index, 1);
             }
-            console.log(this.tagGroupObj);
+            
         },
 
         showInput() {
@@ -767,9 +783,7 @@ export default {
             }
             this.inputVisible = false;
             this.tagValue = '';
-
             console.log(this.itemTags);
-
         },
 
         saveAddNext(type) {
@@ -865,10 +879,10 @@ export default {
                 itemNameObject: itemNameObj,
                 itemDescObject: itemDescObj,
                 catalogId: this.productForm.catalogId ? this.productForm.catalogId+"" : -1,
-                originPrice: this._currencyType == 'CHINESE' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
-                discountPrice: this._currencyType == 'CHINESE' ? (!!this.productForm.discountPrice ? this.productForm.discountPrice * 100 : this.productForm.originPrice * 100) : (!!this.productForm.discountPrice ? this.productForm.discountPrice : this.productForm.originPrice),
+                originPrice: this._currencyType !== 'JAPAN' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
+                discountPrice: this._currencyType !== 'JAPAN' ? (!!this.productForm.discountPrice ? this.productForm.discountPrice * 100 : this.productForm.originPrice * 100) : (!!this.productForm.discountPrice ? this.productForm.discountPrice : this.productForm.originPrice),
                 tagsObj: tagsObj,
-                picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
+                picUrl: this.productForm.picUrl ? this.productForm.picUrl : "",
                 itemType: this.productForm.itemType,
                 timeDurations: this.timeLists.length == 0 ? [{ startTime: '00:00', endTime: '23:59' }] : this.timeLists,
                 itemAttrs: this.attrGroups,
@@ -1077,39 +1091,6 @@ export default {
             this.setmealDialogVisible = true;            
         },
 
-        handleSingle(selection,item){
-            // if(JSON.stringify(this.setmealList).indexOf(JSON.stringify(item)) ==-1 ){
-            //     this.setmealList.push(item);
-            // }
-        },
-
-        handleAll(selection){
-            console.log("全选了",selection);
-        },
-
-        currentSelect(){
-
-        },
-
-        //选取套餐中的单品
-        //添加套餐内商品：点击按钮打开单品列表，当勾选单品的时候保存单品到 _hold 对象里，
-        //当点击添加时遍历 _hold 对象添加到 setmealList 中去，或者当点击翻页的时候先添加 _hold 对象到setmeallist 中去再翻页
-        //然后再继续勾选添加
-        handleSelectionChange(val) {
-
-            //保存当前选中的列表到list里,判断当前如果菜品已经存在不重复添加
-            for (let [index, elem] of val.entries()) {
-
-                if(JSON.stringify(this.selectedSetmeals).indexOf(JSON.stringify(elem)) ==-1 ){                    
-                    this.selectedSetmeals.push(elem);
-                }
-
-            }
-
-            // console.log("选中的单品",this.selectedSetmeals);
-            
-        },
-
         addSetmealList() {
 
             this.setmealGroup = [];
@@ -1193,6 +1174,23 @@ export default {
 
 .el-card__header {
     padding: 2px 20px !important;
+}
+
+/* .card-item-list {
+
+} */
+.card-item-list .el-card__body {
+    padding:0; 
+}
+.card-item-list ul {
+    margin: 0;
+    padding: 8px;
+    height:440px; 
+    overflow:auto;    
+}
+.card-item-list li {
+    font-size: 14px;
+    padding: 7px 0 7px 0;
 }
 
 .el-tag {

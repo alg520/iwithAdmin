@@ -341,7 +341,23 @@ export default {
         },
 
         submitForm(formName){
-            this.addUserPost();
+            
+            this.$refs[formName].validate((valid) => {
+                
+                if (valid) {                    
+                    
+                    this.addUserPost();
+
+                } else {
+                    
+                    this.$message({
+                        type:'error',
+                        message:'校验失败,请检查'
+                    });
+                    return false;
+                }
+            });
+
         },
 
         resetForm(formName) {
