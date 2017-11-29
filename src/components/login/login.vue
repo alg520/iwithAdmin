@@ -109,13 +109,11 @@ export default {
     },
 
     mounted(){
-
         //Vue.config.lang = 'zh-cn';
         console.log("登录",this.$t('sidebar.snmanage'));
     },
 
     created() {
-
         this.getOSLanguage();
         this.getLoginUserInfo();
         this.getAuthCode();
@@ -147,7 +145,6 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 
                 if (valid) {
-
                     $http.post('/coron-web/login', data).then(res => {
                         console.log(res);
                         if (res.status) {                            
@@ -155,7 +152,7 @@ export default {
                             this.getLoginUserInfo();
                             this.$router.push({ path: '/dashboard' })
                         } else {
-                            this.$message.error(res.cnMessage);
+                            this.$message.error(res.message);
                         }
 
                     })
@@ -186,21 +183,17 @@ export default {
                             Lockr.set("LANGUAGE", 'zh-cn');
                             Cookies.set('LANGUAGE', 'zh-cn');
                             Vue.config.lang = 'zh-cn';
-
                         } else if(language == 1){
                             Lockr.set("LANGUAGE", 'en-us');
                             Cookies.set('LANGUAGE', 'en-us');
                             Vue.config.lang = 'en-us';
-
                         } else if(language == 2){
                             Lockr.set("LANGUAGE", 'ja');
                             Cookies.set('LANGUAGE', 'ja');
                             Vue.config.lang = 'ja';
-
                         }
                         Cookies.set('SHOPLANGUAGE', language);
                         Lockr.set("SHOPLANGUAGE", language);
-
                     }
                     
                     if (getToken()) {

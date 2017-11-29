@@ -283,7 +283,7 @@ export default {
                 } else {
                     this.$message({
                         type:'error',
-                        message:res.cnMessage
+                        message:res.message
                     })    
                 }
                 

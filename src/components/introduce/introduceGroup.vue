@@ -9,6 +9,11 @@
                 <el-table-column type="index" width="55" align="center">
                 </el-table-column>
                 <el-table-column prop="groupNamePojo.zh" :label="$t('introduce.introduceGroupName')" align="center">
+                    <template scope="scope">
+                        <span v-if="_SHOPLANGUAGE == 0">{{scope.row.groupNamePojo.zh}}</span>
+                        <span v-if="_SHOPLANGUAGE == 1">{{scope.row.groupNamePojo.en}}</span>
+                        <span v-if="_SHOPLANGUAGE == 2">{{scope.row.groupNamePojo.jp}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column :label="$t('_global.action')" width="100">
                     <template scope="scope">
@@ -27,7 +32,10 @@
                     <div><el-button @click="cancelSort()">{{$t('_global.back')}}</el-button></div>
                     <draggable :list="introGroupDatas" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                         <div class="list-complete-item" v-for="element in introGroupDatas" :key='element'>
-                            <div class="list-complete-item-handle">{{element.groupNamePojo.zh}}
+                            <div class="list-complete-item-handle">                                
+                                <span v-if="_SHOPLANGUAGE == 0">{{element.groupNamePojo.zh}}</span>
+                                <span v-if="_SHOPLANGUAGE == 1">{{element.groupNamePojo.en}}</span>
+                                <span v-if="_SHOPLANGUAGE == 2">{{element.groupNamePojo.jp}}</span>
                                 <span class="pull-right">
                                     <i class="el-icon-d-caret"></i>
                                 </span>
@@ -183,8 +191,14 @@ export default {
 
         updateIntroGroup(item){
             this.addTag = false;
-            this.introGroupDialogVisible = true;
-            this.introGroupForm.name = item.groupNamePojo.zh;
+            this.introGroupDialogVisible = true;            
+            if(this._SHOPLANGUAGE == 0){
+                this.introGroupForm.name = item.groupNamePojo.zh;
+            } else if(this._SHOPLANGUAGE == 1) {
+                this.introGroupForm.name = item.groupNamePojo.en;
+            } else if(this._SHOPLANGUAGE == 2){
+                this.introGroupForm.name = item.groupNamePojo.jp;
+            }
             this.middleObj = item;
         },
         

@@ -12,12 +12,12 @@
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.catalog')" prop="catalogId" v-if="productForm.itemType != 3">
                                         <el-select v-model="productForm.catalogId" :placeholder="$t('placeholder.catalog')">                                            
-                                            <el-option v-if="_SHOPLANGUAGE == 0" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.zh" :value="`${item.catalogId}`">
-                                            </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 1" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.en" :value="`${item.catalogId}`">
-                                            </el-option>
-                                            <el-option v-if="_SHOPLANGUAGE == 2" v-for="item in catalogDatas" :key="item.catalogId" :label="item.nameObject.jp" :value="`${item.catalogId}`">
-                                            </el-option> 
+                                            <el-option 
+                                            v-for="item in catalogDatas" 
+                                            :key="item.catalogId" 
+                                            :label=" _SHOPLANGUAGE == 0 ? item.nameObject.zh : (_SHOPLANGUAGE == 1 ? item.nameObject.en : item.nameObject.jp)"
+                                            :value="`${item.catalogId}`">
+                                            </el-option>                                            
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.itemName')" prop="itemName">
@@ -30,8 +30,7 @@
                                     <el-form-item :label="$t('products.addItemPage.type')" prop="itemType">
                                         <el-radio-group v-model="productForm.itemType" :change="itemTypeChange()">
                                             <el-radio label="1">{{$t('products.addItemPage.singleProduct')}}</el-radio>
-                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>
-                                            <!-- <el-radio :label="3">配菜</el-radio> -->
+                                            <el-radio label="2">{{$t('products.addItemPage.setmeal')}}</el-radio>                                            
                                         </el-radio-group>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.setmealItems')" v-if="productForm.itemType == 2">
@@ -70,13 +69,13 @@
                                                     </el-tag>
                                                 </template>
                                             </el-table-column>
-                                            <el-table-column :label="$t('_global.action')" width="80">
+                                            <!-- <el-table-column :label="$t('_global.action')" width="80">
                                                 <template scope="scope">
                                                     <el-button @click.native.prevent="deleteSetmealRow(scope.$index)" type="text" size="small">
                                                         {{$t('products.addItemPage.delete')}}
                                                     </el-button>
                                                 </template>
-                                            </el-table-column>
+                                            </el-table-column> -->
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.price')" prop="originPrice">                                        
@@ -297,14 +296,16 @@
                             <el-col :span="6">
                                 <el-card class="box-card card-item-list">
                                     <div slot="header" class="clearfix">
-                                        <span style="line-height: 47px;">已选单品</span>                                        
+                                        <span style="line-height: 47px;">{{$t('_global.selected')}}</span>                                        
                                     </div>
                                     <ul>
-                                        <li v-for="(item,index) in setmealList" :key="item.itemId">
+                                        <li v-for="(item,index) in selectedSetmeals" :key="item.itemId">
                                             <el-button @click.native.prevent="deleteSetmealRow(index)" type="text" size="small">
                                                 <i class="el-icon-delete" :title="$t('_global.add')"></i>
                                             </el-button>
-                                            <span>{{ item.itemNameObject.zh }}</span>
+                                            <span v-if="_SHOPLANGUAGE == 0">{{item.itemNameObject.zh}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 1">{{item.itemNameObject.en}}</span>
+                                            <span v-if="_SHOPLANGUAGE == 2">{{item.itemNameObject.jp}}</span>
                                         </li>
                                     </ul>
                                 </el-card>
@@ -358,7 +359,7 @@
                         </el-row>
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="setmealDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-                            <el-button type="primary" @click="addSetmealList()">{{$t('_global.lijiAdd')}}</el-button>
+                            <el-button type="primary" @click="addSetmealList()">{{$t('_global.save')}}</el-button>
                         </div>
                     </el-dialog>
                 </div>
@@ -398,6 +399,7 @@ export default {
             sideDishGroups: [],
             productsList: [],
             setmealList: [],
+            selectedSetmeals:[],
             setmealGroup: [],
             inputVisible: false,
             timeDialogVisible: false,
@@ -636,18 +638,36 @@ export default {
         },
 
         selectItem(item){            
-            if(JSON.stringify(this.setmealList).indexOf(JSON.stringify(item)) == -1 ){
-                this.setmealList.push(item);
-            } else {
-                this.$message({
+            var self = this;
+            if(self.selectedSetmeals.length > 10){
+                self.$message({
                     type:'warning',
-                    message:'当前菜品已存在'
+                    message:'最多选择10个单品'
                 });
-            }
+            } else {
+                if(JSON.stringify(self.selectedSetmeals).indexOf(JSON.stringify(item)) == -1 ){
+                    self.selectedSetmeals.push(item);
+                } else {
+                    self.$message({
+                        type:'warning',
+                        message:'当前菜品已存在'
+                    });
+                }
+            }      
         },
 
-        getSetmeal() {
-            this.setmealDialogVisible = true;
+        async getSetmeal() {
+            var self = this;
+            await self.getItemList();
+            if(self.setmealList.length > 0){
+                self.selectedSetmeals = [];
+                for (let [index, elem] of self.setmealList.entries()) {                                        
+                    self.selectedSetmeals.push(elem);
+                }
+            } else {
+                self.selectedSetmeals = [];
+            }
+            self.setmealDialogVisible = true; 
         },
 
         okTime() {            
@@ -1000,7 +1020,8 @@ export default {
 
         deleteSetmealRow(rowIndex) {
             //根据索引删除数据
-            this.setmealList.splice(rowIndex, 1);
+            //this.setmealList.splice(rowIndex, 1);
+            this.selectedSetmeals.splice(rowIndex,1);
         },
 
         //选中配菜列表
@@ -1076,26 +1097,34 @@ export default {
 
         addSetmealList() {
 
-            this.setmealGroup = [];
+            var self = this;
+            self.setmealGroup = [];
 
-            let setmealItem = {
-                gname: { zh: '', en: '', jp: '' },
-                selectType: 'single',
-                seq: 0,
-                items: this.setmealList
-            };
+            if(self.selectedSetmeals.length > 1 && self.selectedSetmeals.length < 10){
+                
+                self.setmealList = [];
+                
+                for (let [index, elem] of self.selectedSetmeals.entries()) {                    
+                    if(JSON.stringify(self.setmealList).indexOf(JSON.stringify(elem)) ==-1 ){
+                        self.setmealList.push(elem);
+                    }
+                }
+                let setmealItem = {
+                    gname: { zh: '', en: '', jp: '' },
+                    selectType: 'single',
+                    seq: 0,
+                    items: self.setmealList
+                };                
+                self.setmealGroup.push(setmealItem);
+                self.setmealDialogVisible = false;
 
-            if (this.setmealList.length < 2) {
-                this.$message({
-                    type: 'warning',
-                    message: '请至少选择2个单品！'
-                });
+
             } else {
 
-                this.setmealDialogVisible = false;
-                this.setmealGroup.push(setmealItem);
-
-                console.log(this.setmealGroup);
+                this.$message({
+                    type: 'warning',
+                    message: '单品的数量请大于1个且小于10个'
+                });
 
             }
 
@@ -1114,12 +1143,14 @@ export default {
             this.productForm.itemDesc = '';
             this.productForm.originPrice = '';
             this.productForm.discountPrice = '';
-            this.productForm.picUrl = '';
+            this.productForm.picUrl = this.imageUrl = '';
             this.productForm.timeDurations = [];
             this.timeLists = [];
             this.setmealGroup = [];
             this.attrGroups = [];
             this.sideDishGroups = [];
+            this.itemTags = [];
+            this.setmealList = [];
         }
     }
 }

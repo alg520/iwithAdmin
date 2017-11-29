@@ -14,6 +14,10 @@
                 </template>
             </el-table-column>
             <el-table-column prop="originPrice" sortable :label="$t('products.price')">
+                <template scope="scope">
+                    <span v-if="_currencyType !== 'JAPAN'">{{scope.row.originPrice/100}}</span>
+                    <span v-else>{{scope.row.originPrice}}</span>
+                </template>
             </el-table-column>            
             <el-table-column :label="$t('_global.action')" width="150">
                 <template scope="scope">
@@ -71,6 +75,7 @@
 <script>
 import axios from 'axios';
 import $http from '../../../utils/http';
+import Lockr from 'lockr';
 import Cookies from 'js-cookie';
 import getLanguage from '../../../utils/sysLanguage.js';
 import {baiduTranslate, returnTransArray} from '../../../utils/translate.js';
@@ -130,6 +135,13 @@ export default {
     computed:{
         _SHOPLANGUAGE(){            
             return Cookies.get('SHOPLANGUAGE');
+        },
+        _currencyType(){
+            if(Lockr.get("USERINFO").shop && Lockr.get("USERINFO").shop.currencyType){
+                return Lockr.get("USERINFO").shop.currencyType;
+            } else {
+                return false
+            }            
         }
     },
     methods: {
@@ -260,8 +272,8 @@ export default {
                 itemNo: this.productForm.itemNo,
                 itemNameObject: sideDishNameObj,
                 itemDescObject: { zh: this.productForm.itemDesc, jp: this.productForm.itemDesc, en: this.productForm.itemDesc },
-                catalogId: this.productForm.catalogId,
-                originPrice: this.productForm.originPrice,
+                catalogId: this.productForm.catalogId,                
+                originPrice: this._currencyType !== 'JAPAN' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
                 timeDurations: [{ startTime: '00:00', endTime: '23:59' }],
@@ -274,7 +286,7 @@ export default {
                 method: 'post',
                 data: addParams,
                 headers: {
-                    Language: 0
+                    Language: this._SHOPLANGUAGE
                 }
             }).then(response => {
 
@@ -287,7 +299,7 @@ export default {
                     this.getSideDishList();
                     this.clearForm();
                 } else {
-                    this.$message.error(response.data.cnMessage)
+                    this.$message.error(response.data.message)
                 }
 
             }).catch(error => {
@@ -318,7 +330,12 @@ export default {
                 this.productForm.itemDesc = item.itemDescObject.jp;
             }
 
-            this.productForm.originPrice = item.originPrice+"";
+            if(this._currencyType !== 'JAPAN'){
+                this.productForm.originPrice = item.originPrice/100+"";
+            } else {
+                this.productForm.originPrice = item.originPrice+"";
+            }            
+
 
             this.imageUrl = this.productForm.picUrl = item.picUrl;
             this.midObj = item;
@@ -351,8 +368,8 @@ export default {
                 itemNo: this.productForm.itemNo,
                 itemNameObject: sideDishNameObj,
                 itemDescObject: { zh: this.productForm.itemDesc, jp: this.productForm.itemName, en: this.productForm.itemName },
-                catalogId: this.productForm.catalogId,
-                originPrice: this.productForm.originPrice,
+                catalogId: this.productForm.catalogId,                
+                originPrice: this._currencyType !== 'JAPAN' ? this.productForm.originPrice * 100 : this.productForm.originPrice,
                 picUrl: this.productForm.picUrl ? this.productForm.picUrl : null,
                 itemType: this.productForm.itemType,
                 timeDurations: [{ startTime: '00:00', endTime: '23:59' }],
@@ -365,7 +382,7 @@ export default {
                 method: 'post',
                 data: updateParams,
                 headers: {
-                    Language: 0
+                    Language: this._SHOPLANGUAGE
                 }
             }).then(response => {
 
@@ -378,7 +395,7 @@ export default {
                     this.getSideDishList();
                     this.clearForm();
                 } else {
-                    this.$message.error(response.data.cnMessage)
+                    this.$message.error(response.data.message)
                 }
 
             }).catch(error => {

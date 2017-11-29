@@ -20,9 +20,11 @@
     "add":"追加",
     "lijiAdd":"直ちに追加",
     "lijiEdit":"直ちに変更",
+    "save":"保存",
     "saveAndAddNext":"保存してから次の商品を追加します",
     "back":"戻る",
-    "number":"番号"
+    "number":"番号",
+    "selected":"選択された"
   },
   "rules":{
     "oldpwd":"元パスワードを入力してください",

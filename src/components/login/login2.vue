@@ -98,7 +98,7 @@ export default {
                Cookies.set('Token',res.entry);
                this.$router.push({ path: '/dashboard' })
             } else {
-                this.$message.error(res.cnMessage);
+                this.$message.error(res.message);
             }
 
           })

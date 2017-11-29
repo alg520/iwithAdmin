@@ -20,9 +20,11 @@
     "add":"Add",
     "lijiAdd":"Add Now",
     "lijiEdit":"Modify Now",
+    "save":"Save",
     "saveAndAddNext":"Save and add next",
     "back":"Back",
-    "number":"NO."
+    "number":"NO.",
+    "selected":"Selected"
   },
   "rules":{
     "oldpwd":"Please enter the original password",

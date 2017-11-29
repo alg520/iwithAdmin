@@ -85,6 +85,7 @@ import Cookies from 'js-cookie';
 import MD5 from 'js-md5';
 import $http from '../../utils/http';
 import { getLoginUser,logout } from '../../api/user';
+import getLanguage from '../../utils/sysLanguage';
 export default {
     data() {
          var validateNumLetter = (rule,value,callback) => {
@@ -129,9 +130,9 @@ export default {
     created(){
         console.log("langs:",LANGS);
         Vue.config.lang = Cookies.get('LANGUAGE');
+
         getLoginUser().then(res => {
-            if(res.status){
-                console.log("登录信息",res.entry);
+            if(res.status){                
                 this.shopInfo = res.entry;
                 this.loginUname = res.entry.uname;
             }
@@ -149,6 +150,13 @@ export default {
                     });
                 }
             })
+        },
+
+        getOSLanguage(){
+            var language = getLanguage();
+            console.log("当前浏览器语言是：",language);
+            Lockr.set("LANGUAGE", language);
+            Vue.config.lang = language;
         },
         changeLanguage(){
 

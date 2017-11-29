@@ -1,9 +1,8 @@
 import axios from "axios";
-import { Message } from "element-ui";
+import { Message , Loading } from "element-ui";
 import router from "../router";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { Loading } from 'element-ui';
 
 
 
@@ -83,8 +82,7 @@ function checkStatus(response) {
     response.status === 304 ||
     response.status === 400
   ) {
-    //console.log("全局",response);
-
+    
     if (!response.data.status && response.data.responseCode == "10212") {
       Message({
         type: "error",

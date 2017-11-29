@@ -20,9 +20,11 @@
     "add":"添加",
     "lijiAdd":"立即添加",
     "lijiEdit":"立即修改",
+    "save":"保存",
     "saveAndAddNext":"保存并添加下一个",
     "back":"返回",
-    "number":"编号"
+    "number":"编号",
+    "selected":"已选择"
   },
   "rules":{
     "oldpwd":"请输入原密码",

@@ -274,7 +274,7 @@ export default {
                 } else {
                     this.$message({
                         type: 'success',
-                        message: res.data.cnMessage
+                        message: res.data.message
                     });
                 }
 

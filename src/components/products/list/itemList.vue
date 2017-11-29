@@ -77,7 +77,7 @@
                             </el-table-column>
                             <el-table-column prop="originPrice" sortable :label="$t('products.price')" min-width="150px">
                                 <template scope="scope">
-                                    <span v-if="_currencyType == 'CHINESE'">{{scope.row.originPrice/100}}</span>
+                                    <span v-if="_currencyType !== 'JAPAN'">{{scope.row.originPrice/100}}</span>
                                     <span v-else>{{scope.row.originPrice}}</span>
                                 </template>
                             </el-table-column>
@@ -283,7 +283,7 @@ export default {
                 } else {
                     this.$message({
                         type:'warning',
-                        message:response.cnMessage
+                        message:response.message
                     });
                 }
                 

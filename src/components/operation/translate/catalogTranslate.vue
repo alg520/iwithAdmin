@@ -151,7 +151,7 @@ export default {
                 } else {
                     this.$message({
                         type:'error',
-                        message:'翻译失败:'+response.cnMessage
+                        message:'翻译失败:'+response.message
                     });
                 }                
 

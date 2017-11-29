@@ -21,8 +21,10 @@
                                 <el-col :sm="4" :md="4" :lg="4">
                                     <div class="intro-nav" id="intro-nav">
                                         <ul class="intro-list" id="intro-list">
-                                            <li v-for="item in introGroupDatas" :key="item.id" @click="changeSelected(item.id)" :class="[isActive == item.id ? 'selected' :'']">
-                                                <a href="javascript:;">{{item.groupNamePojo.zh}}</a>
+                                            <li v-for="item in introGroupDatas" :key="item.id" @click="changeSelected(item.id)" :class="[isActive == item.id ? 'selected' :'']">                                                
+                                                <span v-if="_SHOPLANGUAGE == 0"><a href="javascript:;">{{item.groupNamePojo.zh}}</a></span>
+                                                <span v-if="_SHOPLANGUAGE == 1"><a href="javascript:;">{{item.groupNamePojo.en}}</a></span>
+                                                <span v-if="_SHOPLANGUAGE == 2"><a href="javascript:;">{{item.groupNamePojo.jp}}</a></span>
                                             </li>
                                         </ul>
                                     </div>
@@ -33,13 +35,18 @@
                                             <el-row>
                                                 <el-col :sm="24" :md="24" :lg="24" v-if="introDatas.length == 0">
                                                     <div style="text-align:center; padding-top:80px;">
-                                                        <h3>当前提案组下没有提案，请添加!!!</h3>
+                                                        <h3 v-if="_SHOPLANGUAGE == 0">当前提案组下没有提案，请添加</h3>
+                                                        <h3 v-if="_SHOPLANGUAGE == 1">There is no proposal under the current proposal group. Please add</h3>
+                                                        <h3 v-if="_SHOPLANGUAGE == 2">現在の提案グループの下に提案はありません。</h3>
+                                                        
                                                     </div>
                                                 </el-col>
                                                 <el-col :sm="8" :md="8" :lg="8" v-for="item in introDatas" :key="item.id">
                                                     <el-card class="box-card intro-card" :body-style="{ padding: '0px' }">
-                                                        <div slot="header" class="clearfix">
-                                                            <span style="line-height: 36px;">{{item.titlePojo.zh}}</span>
+                                                        <div slot="header" class="clearfix">                                                            
+                                                            <span style="line-height: 36px;" v-if="_SHOPLANGUAGE == 0">{{item.titlePojo.zh}}</span>
+                                                            <span style="line-height: 36px;" v-if="_SHOPLANGUAGE == 1">{{item.titlePojo.en}}</span>
+                                                            <span style="line-height: 36px;" v-if="_SHOPLANGUAGE == 2">{{item.titlePojo.jp}}</span>
                                                             <el-button style="float: right; margin-left:10px;" type="text" @click="confirmDel(item)">
                                                                 <i class="el-icon-delete"></i>
                                                             </el-button>
@@ -47,10 +54,10 @@
                                                                 <i class="el-icon-edit"></i>
                                                             </el-button>
                                                         </div>
-                                                        <div class="card-body">
-                                                            <p>
-                                                                {{item.contentPojo.zh}}
-                                                            </p>
+                                                        <div class="card-body">                                                            
+                                                            <p v-if="_SHOPLANGUAGE == 0">{{item.contentPojo.zh}}</p>
+                                                            <p v-if="_SHOPLANGUAGE == 1">{{item.contentPojo.en}}</p>
+                                                            <p v-if="_SHOPLANGUAGE == 2">{{item.contentPojo.jp}}</p>
                                                         </div>
                                                     </el-card>
                                                 </el-col>
@@ -66,7 +73,10 @@
                                             <div class="drapSortList-list">
                                                 <draggable :list="introDatas" class="dragArea" @change="moved" :options="{group:'introGroup'}">
                                                     <div class="list-complete-item" v-for="element in introDatas" :key='element'>
-                                                        <div class="list-complete-item-handle">{{element.titlePojo.zh}}
+                                                        <div class="list-complete-item-handle">
+                                                            <span v-if="_SHOPLANGUAGE == 0">{{element.titlePojo.zh}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 1">{{element.titlePojo.en}}</span>
+                                                            <span v-if="_SHOPLANGUAGE == 2">{{element.titlePojo.jp}}</span>
                                                             <span class="pull-right">
                                                                 <i class="el-icon-d-caret"></i>
                                                             </span>
@@ -83,7 +93,11 @@
                                 <el-form :model="introForm" :rules="introFormRules" ref="introForm" label-width="100px" style="width:100%;">
                                     <el-form-item :label="$t('introduce.introduceGroupName')" prop="introGroup">                                        
                                         <el-select v-model="whichGroup" :placeholder="$t('placeholder.introGroup')" :disabled="!addTag">
-                                            <el-option v-for="item in introGroupDatas" :key="item.id" :label="item.groupNamePojo.zh" :value="item.id">
+                                            <el-option 
+                                            v-for="item in introGroupDatas" 
+                                            :key="item.id"
+                                            :label=" _SHOPLANGUAGE == 0 ? item.groupNamePojo.zh : (_SHOPLANGUAGE == 1 ? item.groupNamePojo.en : item.groupNamePojo.jp)" 
+                                            :value="item.id">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -296,8 +310,16 @@ export default {
       this.addTag = false;
       this.addBtn = false;
       this.introDialogVisible = true;
-      this.introForm.title = item.titlePojo.zh;
-      this.introForm.content = item.contentPojo.zh;
+      if(this._SHOPLANGUAGE == 0){
+        this.introForm.title = item.titlePojo.zh;
+        this.introForm.content = item.contentPojo.zh;
+      } else if(this._SHOPLANGUAGE == 1) {
+        this.introForm.title = item.titlePojo.en;
+        this.introForm.content = item.contentPojo.en;
+      } else if(this._SHOPLANGUAGE == 2){
+        this.introForm.title = item.titlePojo.jp;
+        this.introForm.content = item.contentPojo.jp;
+      }
       this.whichGroup = item.groupId;
       this.middleObj = item;
     },
