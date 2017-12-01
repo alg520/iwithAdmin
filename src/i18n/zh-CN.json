@@ -366,7 +366,12 @@
     "copyright":"Copyright © 版权所有"
   },
   "tips":{
-    
+    "rules":{
+      "error":"校验失败，请检查"
+    },
+    "message":{
+      "test":"测试"
+    }
   }
 
 }

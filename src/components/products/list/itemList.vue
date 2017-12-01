@@ -233,13 +233,12 @@ export default {
             this.typeArray = [];
             if(!!this.itemsForm.itemType){
                 this.typeArray.push(this.itemsForm.itemType)
-            } 
+            }
 
             let getParams = {
                 itemName:this.itemsForm.itemName,
                 itemType: this.typeArray.length > 0 ? this.typeArray:[1,2],
-                isSale: this.itemsForm.isSale,
-                languageType:0,  //待修改
+                isSale: this.itemsForm.isSale,                
                 rp: 10,
                 page: this.currentPage,
                 catalogId: !!this.isActive ? this.isActive : null

@@ -11,14 +11,10 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-default/index.css";
 //引入项目中自定义过滤器
 import * as filters from "./filters/index";
-import getHost from "./utils/getHost";
-
-
 
 Vue.use(ElementUI);
 
 Vue.prototype.$ = $;
-
 
 Vue.config.productionTip = false;
 
@@ -40,10 +36,7 @@ new Vue({
   template: "<App/>",
   components: { App },
   beforeCreate: function() {    
-    console.log("beforeCreated.....");
-    // if(process.env.NODE_ENV !== 'development'){
-    //   getHost();
-    // }
+    console.log("beforeCreated.....");    
   },
   created() {    
     console.log("created .......");

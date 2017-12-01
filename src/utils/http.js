@@ -3,8 +3,10 @@ import { Message , Loading } from "element-ui";
 import router from "../router";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import Lockr from 'lockr';
+import Cookies from 'js-cookie';
 
-
+const _httpLanguage = Cookies.get('SHOPLANGUAGE');
 
 //创建 axios 实例
 const $http = axios.create({
@@ -12,7 +14,8 @@ const $http = axios.create({
   timeout: 10000, //请求超时时间
   responseType: "json",
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json", 
+    "Language": _httpLanguage
   }
 });
 

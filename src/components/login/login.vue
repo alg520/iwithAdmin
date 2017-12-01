@@ -117,6 +117,7 @@ export default {
         this.getOSLanguage();
         this.getLoginUserInfo();
         this.getAuthCode();
+        console.log("国际化测试",this.$t('tips.message.test'));
     },
 
     methods: {
@@ -131,6 +132,20 @@ export default {
             var language = getLanguage();
             console.log("当前浏览器语言是：",language);
             Lockr.set("LANGUAGE", language);
+            if(language == 'zh-cn'){
+                Cookies.set('SHOPLANGUAGE', 0);
+                Lockr.set("SHOPLANGUAGE", 0);
+            } else if (language == 'en-us'){
+                Cookies.set('SHOPLANGUAGE', 1);
+                Lockr.set("SHOPLANGUAGE", 1);
+            } else if (language == 'ja'){
+                Cookies.set('SHOPLANGUAGE', 2);
+                Lockr.set("SHOPLANGUAGE", 2);
+            } else {
+                Cookies.set('SHOPLANGUAGE', 0);
+                Lockr.set("SHOPLANGUAGE", 0);
+            }
+
             Vue.config.lang = language;
         },
 
@@ -161,7 +176,7 @@ export default {
                     console.log("error commit");
                     this.$message({
                         type:'error',
-                        message:'校验失败，请检查'
+                        message:this.$t('tips.rules.error')
                     })
                     return false;
                 }
@@ -177,7 +192,7 @@ export default {
                     Cookies.set('_UNAME', res.entry.uname);
                     
                     if(res.entry.userType == 3 || res.entry.userType == 4){                        
-                        console.log("店铺级别账号：",res.entry.shop);
+                        
                         let language = res.entry.shop.language;
                         if(language == 0){
                             Lockr.set("LANGUAGE", 'zh-cn');
@@ -194,6 +209,8 @@ export default {
                         }
                         Cookies.set('SHOPLANGUAGE', language);
                         Lockr.set("SHOPLANGUAGE", language);
+                    } else {
+
                     }
                     
                     if (getToken()) {
