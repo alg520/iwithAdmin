@@ -65,10 +65,7 @@ export default {
     
     methods: {
         //添加 根据当前页面的status 修改 vtitle 的值
-        handleSelect(key, keyPath) {
-            console.log(key, keyPath);
-            console.log("123",this.$route.path)
-            
+        handleSelect(key, keyPath) {                        
             this.activeIndex = key;
             Cookies.set('activeIndex', key);            
         }

@@ -76,14 +76,7 @@
                                                         <el-tag v-for="attr in scope.row.itemAttrs" :key="attr.seq" type="success">{{attr.gname.jp}}</el-tag>
                                                     </div>                                                    
                                                 </template>
-                                            </el-table-column>
-                                            <!-- <el-table-column :label="$t('_global.action')" width="80">
-                                                <template scope="scope">
-                                                    <el-button @click.native.prevent="deleteSetmealRow(scope.$index)" type="text" size="small">
-                                                        {{$t('products.addItemPage.delete')}}
-                                                    </el-button>
-                                                </template>
-                                            </el-table-column> -->
+                                            </el-table-column>                                            
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.price')" prop="originPrice">
@@ -485,19 +478,19 @@ export default {
             },
             rules: {
                 itemNo: [
-                    { required: true, message: '请输入商品编号', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.itemNo'), trigger: 'blur' }
                 ],
                 catalogId: [
-                    { required: true, message: '请选择商品分类', trigger: 'change' }
+                    { required: true, message: this.$t('tips.rules.catalog'), trigger: 'change' }
                 ],
                 itemName: [
-                    { required: true, message: '请输入商品名称', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.itemName'), trigger: 'blur' }
                 ],
                 originPrice: [
-                    { required: true, message: '请输入商品原价', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'blur' }
                 ],
                 itemType: [
-                    { required: true, message: '请选择商品类型', trigger: 'change' }
+                    { required: true, message: this.$t('tips.rules.itemType'), trigger: 'change' }
                 ]
             },
             currentPage:1,
@@ -516,10 +509,8 @@ export default {
         //获取默认列表
         this.getCatalogList();
         this.getTimeList();
-        this.getItemAttrList();
-        //this.getItemList();
-        this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID+"";
-        
+        this.getItemAttrList();        
+        this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID+"";        
     },
     computed: {
         _SHOPLANGUAGE() {
@@ -545,7 +536,7 @@ export default {
                 this.productForm.picUrl = file.response.entry;
                 this.$message({
                     type: 'success',
-                    message: '图片上传成功！'
+                    message: this.$t('tips.message.imgUploadSuccess')
                 })
             }            
 
@@ -554,7 +545,7 @@ export default {
         itemUploadError(file) {            
             this.$message({
                 type: 'error',
-                message: '图片上传失败'
+                message: this.$t('tips.message.imgUploadError')
             })
         },
 
@@ -563,10 +554,10 @@ export default {
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                this.$message.error(this.$t('tips.message.jpgorpng'));
             }
             if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
+                this.$message.error(this.$t('tips.message.picSize'));
             }
             return isJPG && isLt2M;
         },
@@ -576,8 +567,7 @@ export default {
             this.productForm.picUrl = '';
         },
 
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
+        handleRemove(file, fileList) {            
             this.imageUrl = '';
             this.productForm.picUrl = '';
         },
@@ -588,22 +578,18 @@ export default {
         },
 
         handleCheckedAttrsChange(value) {
-
-            console.log("属性选中更改事件", value);
-
+            
         },
 
         handleCheckedDishChange(value) {
-            console.log("选取的配菜", value);
+            
         },
 
         timeChange(val) {
-            this.timeLists = val;
-            console.log("所选择的时段", this.timeLists);
+            this.timeLists = val;            
         },
 
-        okTime() {
-            console.log("当前选择的时间", this.timeLists);
+        okTime() {            
             this.timeSelectVisible = false;
         },
 
@@ -619,17 +605,16 @@ export default {
         handleCheckedTimesChange(value) {
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.timeDatas.length;
-            this.isIndeterminate = checkedCount > 0 && checkedCount < this.timeDatas.length;
-            console.log(this.timeLists);
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.timeDatas.length;            
         },
 
         selectItem(item){
             var self = this;
 
-            if(self.selectedSetmeals.length > 10){
+            if(self.selectedSetmeals.length > 9){
                 self.$message({
                     type:'warning',
-                    message:'最多选择10个单品'
+                    message:this.$t('tips.message.itemCount')
                 });
             } else {
                 if(JSON.stringify(self.selectedSetmeals).indexOf(JSON.stringify(item)) == -1 ){
@@ -637,7 +622,7 @@ export default {
                 } else {
                     self.$message({
                         type:'warning',
-                        message:'当前菜品已存在'
+                        message:this.$t('tips.message.itemExist')
                     });
                 }
             }            
@@ -655,7 +640,7 @@ export default {
         handleSizeChange(size) {
             console.log(size);
         },
-        //会存放在vuex
+        
         getItemList() {
             //因为是套餐内商品所以默认查询所有单品
             let getParams = {
@@ -667,7 +652,7 @@ export default {
 
             $http.post('/coron-web/item/list', getParams)
                 .then(response => {
-                    console.log(response);
+                    
                     if(response.status){
                         this.productsList = response.rows;
                         this.totalItems = response.total;
@@ -678,8 +663,8 @@ export default {
                     console.log(error);                    
                     this.$message({
                         type:'error',
-                        message:'网络错误'
-                    })
+                        message:this.$t('tips.message.network')
+                    });
                 })
         },
         //会存放在vuex
@@ -693,7 +678,10 @@ export default {
 
             }).catch(error => {
                 console.log(error);
-                alert('网络错误，不能访问');
+                this.$message({
+                    type:'error',
+                    message:this.$t('tips.message.network')
+                });
             })
         },
         //会存放在vuex
@@ -714,14 +702,17 @@ export default {
                     } else {
                         this.$message({
                             type: 'info',
-                            message: '数据错误'
+                            message: response.message
                         });
                     }
 
                 })
                 .catch(error => {
                     console.log(error);
-                    alert('网络错误，不能访问');
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.message.network')
+                    });
                 })
         },
         //会存放在vuex
@@ -733,31 +724,32 @@ export default {
                 !!response.rows && (this.itemAttrDatas = response.rows);
             }).catch(error => {
                 console.log(error);
-                alert('网络错误，不能访问');
+                this.$message({
+                    type:'error',
+                    message:this.$t('tips.message.network')
+                });
             })
         },
         //获取配菜
         getSideDishes() {
             this.itemListDialogVisible = true;
-
             $http.get('/coron-web/item/getSideDishes').then(response => {
-                console.log("配菜列表", response.entry);
+                
                 if( response.status){
                     this.sideDishDatas = response.entry;
                 } else {
                     this.$message({
                         type:'error',
-                        message:'请求出错'
+                        message:response.message
                     })
                 }                
 
             }).catch(error => {
-
-                this.$message({
-                    type: 'info',
-                    message: '配菜列表请求失败！'
-                });
                 console.log(error);
+                this.$message({
+                    type:'error',
+                    message:this.$t('tips.message.network')
+                });                
             })
         },
 
@@ -790,7 +782,7 @@ export default {
             }
             this.inputVisible = false;
             this.tagValue = '';
-            console.log(this.itemTags);
+            
         },
 
         saveAddNext(type) {
@@ -806,24 +798,19 @@ export default {
                 switch(type){
                     case 'name':
                     var itemNameTrans = returnTransArray(res);
-                    self.itemNameTransArray = returnTransArray(res);
-                    console.log(" 添加菜品 ", itemNameTrans);
+                    self.itemNameTransArray = returnTransArray(res);                    
                     break;
                     case 'desc':
-                    self.itemDescTransArray = returnTransArray(res);
-                    console.log(" 描述 ", self.itemDescTransArray);
+                    self.itemDescTransArray = returnTransArray(res);                    
                     break;
                     case 'attrGroup':
-                    self.attrGnameTransArray = returnTransArray(res);
-                    console.log(" 属性组 ", self.attrGnameTransArray);
+                    self.attrGnameTransArray = returnTransArray(res);                    
                     break;
                     case 'itemGname':
-                    self.itemGnameTransArray = returnTransArray(res);
-                    console.log(" 附属商品组 ", self.itemGnameTransArray);
+                    self.itemGnameTransArray = returnTransArray(res);                    
                     break;
                     case 'tag':
-                    self.tagGnameTransArray = returnTransArray(res);
-                    console.log(" 标签组 ", self.tagGnameTransArray);
+                    self.tagGnameTransArray = returnTransArray(res);                    
                     if (self._SHOPLANGUAGE == 0) {
                         self.tagGroupObj.zh = self.itemTags;
                         self.tagGroupObj.jp.push(self.tagGnameTransArray[0].jp);
@@ -836,11 +823,9 @@ export default {
                         self.tagGroupObj.jp = self.itemTags;
                         self.tagGroupObj.zh.push(self.tagGnameTransArray[0].zh);
                         self.tagGroupObj.en.push(self.tagGnameTransArray[0].en);
-                    }
-                    console.log("标签对象组", self.tagGroupObj);
+                    }                    
                     break;
                 }
-
 
             }
               
@@ -869,16 +854,13 @@ export default {
             }
 
             if (this.itemNameTransArray.length > 0) {
-                itemNameObj = Object.assign(itemNameObj, this.itemNameTransArray[0]);
-                console.log("合并后的菜名对象", itemNameObj);
+                itemNameObj = Object.assign(itemNameObj, this.itemNameTransArray[0]);                
             }
             if (this.itemDescTransArray.length > 0) {
-                itemDescObj = Object.assign(itemDescObj, this.itemDescTransArray[0]);
-                console.log("合并后的描述对象", itemDescObj);
+                itemDescObj = Object.assign(itemDescObj, this.itemDescTransArray[0]);                
             }
             if (this.tagGnameTransArray.length > 0) {
-                tagsObj = Object.assign(tagsObj, this.tagGroupObj);
-                console.log("合并后的标签对象", tagsObj);
+                tagsObj = Object.assign(tagsObj, this.tagGroupObj);                
             }            
 
             let addParams = {
@@ -901,7 +883,6 @@ export default {
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){
-
                    axios({
                         url: '/coron-web/item/add',
                         method: 'post',
@@ -913,7 +894,7 @@ export default {
                         if (response.data.status == true) {
                             this.$message({
                                 type: 'info',
-                                message: '菜品添加成功'
+                                message: this.$t('tips.message.addSuccess')
                             });
                             //添加成功后需要跳转到菜品列表页
                             type == 'add' && this.gobackList();
@@ -928,16 +909,15 @@ export default {
                     }).catch(error => {
                         console.log(error);
                         this.$message({
-                            type: 'info',
-                            message: '菜品添加失败'
+                            type: 'error',
+                            message: this.$t('tips.message.addError')
                         });
-
                     })
 
                 } else {
                     this.$message({
                         type: 'warning',
-                        message: '请填写必填字段'
+                        message: this.$t('tips.rules.error')
                     });
                 }
 
@@ -991,8 +971,7 @@ export default {
                     }
                 })
 
-            })
-            console.log("添加的配菜", this.productForm.itemGlist);
+            })            
             this.itemListDialogVisible = false;
         },
 
@@ -1037,16 +1016,15 @@ export default {
 
             if (this.productForm.attrGname != '' && this.productForm.attrGlist.length > 0) {
 
-                this.attrGroups.push(attrItem);
-                console.log("添加后的属性组", this.attrGroups);
+                this.attrGroups.push(attrItem);                
                 this.productForm.attrGname = '';
                 this.productForm.attrGlist = [];
                 this.checkAttrList = [];
 
             } else {
                 this.$message({
-                    type: 'info',
-                    message: '属性组名称不能为空！'
+                    type: 'warning',
+                    message: this.$t('tips.message.attrNotNull')
                 });
             }
 
@@ -1069,15 +1047,14 @@ export default {
             };
 
             if (this.productForm.itemGname != '' && this.productForm.itemGlist.length > 0) {
-                this.sideDishGroups.push(itemSideDish);
-                console.log("添加后的配菜组", this.sideDishGroups);
+                this.sideDishGroups.push(itemSideDish);                
                 this.productForm.itemGname = '';
                 this.productForm.itemGlist = [];
                 this.checkSideDishList = [];
             } else {
                 this.$message({
-                    type: 'info',
-                    message: '附属商品组名称不能为空！'
+                    type: 'warning',
+                    message: this.$t('tips.message.sideDishNotNull')
                 });
             }
 
@@ -1106,7 +1083,9 @@ export default {
             var self = this;
             self.setmealGroup = [];
 
-            if(self.selectedSetmeals.length > 1 && self.selectedSetmeals.length < 10){
+            console.log("LENGTH",self.selectedSetmeals.length);
+
+            if(self.selectedSetmeals.length > 1 && self.selectedSetmeals.length < 11){
                 
                 self.setmealList = [];
                 
@@ -1129,7 +1108,7 @@ export default {
 
                 this.$message({
                     type: 'warning',
-                    message: '单品的数量请大于1个且小于10个'
+                    message: this.$t('tips.message.num1to10')
                 });
 
             }

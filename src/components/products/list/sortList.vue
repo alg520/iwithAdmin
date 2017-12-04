@@ -38,8 +38,7 @@
                         <div class="drapSortList-list">                        
                             <draggable :list="productsList" :move="checkMove" @change="moved" class="dragArea" :options="{group:'introGroup'}">
                                 <div class="list-complete-item" v-if="productsList.length == 0">
-                                    <div class="list-complete-item-handle">
-                                        当前分类下暂无菜品！
+                                    <div class="list-complete-item-handle">                                        
                                         <span v-if="_SHOPLANGUAGE == 0">当前分类下暂无菜品！</span>
                                         <span v-if="_SHOPLANGUAGE == 1">NO DATA</span>
                                         <span v-if="_SHOPLANGUAGE == 2">データなし</span>
@@ -98,8 +97,14 @@ export default {
     mounted: function() {
 
         //动态计算属性导航的高度
-        var catalogNavHeight = document.body.clientHeight - 171;
-        document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+        function getHeight(){
+            var catalogNavHeight = document.body.clientHeight - 171;
+            document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+        }
+        getHeight();
+        window.onresize = function(){
+            setTimeout(getHeight,500);
+        };
 
     },
 
@@ -115,15 +120,17 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
-                    alert('网络错误，不能访问');
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.message.network')
+                    });
+                    
                 })
         },
 
-        changeSelected: function(itemId) {
-            
+        changeSelected: function(itemId) {            
             this.isActive = itemId;
             this.getItemList();
-
         },
         
 
@@ -137,13 +144,15 @@ export default {
                 .then(response => {
 
                     !!response.rows && (this.productsList = response.rows);
-                    this.totalItems = response.total;
-                    console.log(this.productsList);
+                    this.totalItems = response.total;                    
 
                 })
                 .catch(error => {
                     console.log(error);
-                    alert('网络错误，不能访问,请刷新页面重试！');
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.message.network')
+                    });                    
                 })
         },
 
@@ -156,13 +165,13 @@ export default {
                 if(res.status){
                     this.$message({
                         type:'success',
-                        message:'交换成功'
+                        message:this.$t('tips.message.exchangeSuccess')
                     });
                     this.getItemList();
                 }else {
                     this.$message({
-                        type:'error',
-                        message:'交换失败'
+                        type:'error',                        
+                        message:this.$t('tips.message.exchangeError')
                     });
                 }
             })
@@ -170,11 +179,7 @@ export default {
         
         moved(evt) {
             let newIndex = evt.moved.newIndex;
-            let oldIndex = evt.moved.oldIndex;
-
-            console.log(evt);
-            console.log(this.productsList[evt.moved.newIndex+1]);
-            console.log(this.productsList[evt.moved.newIndex]);
+            let oldIndex = evt.moved.oldIndex;            
 
             if(newIndex > oldIndex){
                 let oldItem = this.productsList[evt.moved.newIndex],

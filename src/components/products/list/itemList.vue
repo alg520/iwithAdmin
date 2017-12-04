@@ -203,29 +203,26 @@ export default {
                 page:1,
                 rp:100
             }).then(response => {
-
                 !!response.entry && (this.catalogDatas = response.entry);
-
             }).catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问');
+                console.log(error);                
+                this.$message({
+                    type:'error',
+                    message:this.$t('tips.message.network')
+                });
             })
         },
 
-        changeSelected: function(itemId) {
-            console.log(itemId);
+        changeSelected: function(itemId) {            
             this.isActive = itemId;
             this.getItemList();
-
         },
 
         handleSizeChange(size) {
             console.log(size);
         },
         // 翻页
-        handleCurrentChange(page) {
-            console.log(page);
-            console.log(this.currentPage);
+        handleCurrentChange(page) {            
             this.getItemList();
         },
 
@@ -246,37 +243,34 @@ export default {
 
             $http.post('/coron-web/item/list', getParams)
                 .then(response => {
-
                     !!response.rows && (this.productsList = response.rows);
                     this.totalItems = response.total;
-                    console.log("商品列表",this.productsList);
-
                 })
                 .catch(error => {
                     console.log(error);
-                    alert('网络错误，不能访问,请刷新页面重试！');
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.message.network')
+                    });
                 })
         },
 
-        updateItem(item) {
-            console.log("更新数据", item);
+        updateItem(item) {            
             Lockr.set("itemUpdateData", item);
             this.$router.push({
                 path: '/products/update'
             });
-
         },
         //删除菜品
         delItem(item) {
             $http.post('/coron-web/item/del', {
                 itemId: item.itemId
             }).then(response => {
-                console.log(response);
-
+                
                 if(response.status){
                     this.$message({
                         type: 'info',
-                        message: '删除成功'
+                        message: this.$t('tips.message.delSuccess')
                     });
                     this.getItemList();
                 } else {
@@ -292,22 +286,18 @@ export default {
         },
 
         confirmDel(item) {            
-            this.$confirm('确定要删除这个菜品吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('tips.message.confirmDel'), this.$t('tips.message.hint'), {
+                confirmButtonText: this.$t('tips.message.ok'),
+                cancelButtonText: this.$t('tips.message.cancel'),
                 closeOnClickModal: false,
                 type: 'warning'
             }).then(() => {
-
                 this.delItem(item);
-
             }).catch(() => {
-
                 this.$message({
-                type: 'info',
-                message: '已取消删除'
+                    type: 'info',
+                    message: this.$t('tips.message.canceled')
                 });
-
             });            
         },
 
@@ -316,25 +306,22 @@ export default {
             $http.post('/coron-web/item/switchSale', {
                 itemId: item.itemId,
                 isSale: !item.isSale
-            }).then(response => {
-                console.log(response);
+            }).then(response => {                
                 this.$message({
                     type: 'info',
-                    message: '状态更新成功'
+                    message: this.$t('tips.message.updateSuccess')
                 });
                 this.getItemList();
             }).catch(error => {
                 console.log(error);
                 this.$message({
                     type: 'error',
-                    message: '状态更新失败'
+                    message: this.$t('tips.message.updateError')
                 });
             })
         },
 
-        handleIconClick(ev) {
-            console.log(ev);
-            console.log(this.itemsForm.itemName);
+        handleIconClick(ev) {            
             this.getItemList();
         },
 

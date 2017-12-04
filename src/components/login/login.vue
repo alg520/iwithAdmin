@@ -76,7 +76,7 @@ export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
             if(!/^[A-Za-z0-9]+$/i.test(value)){
-                callback(new Error('请输入数字加字母！'));
+                callback(new Error(this.$t('tips.rules.letterornum')));                
             }else {
                 callback();
             }
@@ -90,14 +90,14 @@ export default {
             },
             loginRules: {
                 username: [
-                    { required: true, message: '请输入账号', trigger: 'blur' },
+                    { required: true, message: this.$t('tips.rules.username'), trigger: 'blur' },
                     { validator: validateNumLetter , trigger:'onchange'}
                 ],
                 upassword: [
-                    { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.password'), trigger: 'blur' },
+                    { min: 6, max: 12, message: this.$t('tips.rules.length'), trigger: 'blur' }
                 ],
-                authCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
+                authCode: [{ required: true, message: this.$t('tips.rules.authCode'), trigger: 'blur' }]
             }
         }
     },
@@ -109,8 +109,7 @@ export default {
     },
 
     mounted(){
-        //Vue.config.lang = 'zh-cn';
-        console.log("登录",this.$t('sidebar.snmanage'));
+        //Vue.config.lang = 'zh-cn';        
     },
 
     created() {
@@ -129,8 +128,7 @@ export default {
         },
 
         getOSLanguage(){
-            var language = getLanguage();
-            console.log("当前浏览器语言是：",language);
+            var language = getLanguage();            
             Lockr.set("LANGUAGE", language);
             if(language == 'zh-cn'){
                 Cookies.set('SHOPLANGUAGE', 0);

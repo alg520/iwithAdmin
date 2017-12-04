@@ -367,10 +367,42 @@
   },
   "tips":{
     "rules":{
-      "error":"校验失败，请检查"
+      "username":"请输入账号",
+      "password":"请输入密码",
+      "authCode":"请输入验证码",
+      "length":"长度在6到12个字符",
+      "letterornum":"请输入字母加数字",
+      "itemNo":"请输入商品编号",
+      "catalog":"请选择商品分类",
+      "itemName":"请输入商品名称",
+      "originPrice":"请输入商品原价",
+      "itemType":"请选择商品类型",
+      "error":"校验失败，请检查必填字段"
     },
     "message":{
-      "test":"测试"
+      "test":"测试",
+      "network":"网络错误，请刷新重试",
+      "delSuccess":"删除成功",
+      "confirmDel":"确定要删除吗？",
+      "hint":"提示",
+      "ok":"确定",
+      "cancel":"取消",
+      "canceled":"已取消删除",
+      "addSuccess":"添加成功",
+      "addError":"添加失败",
+      "updateSuccess":"更新成功",
+      "updateError":"更新失败",
+      "imgUploadSuccess":"图片上传成功",
+      "imgUploadError":"图片上传失败",
+      "jpgorpng":"上传图片只能是 JPG 或 PNG 格式",
+      "picSize":"上传图片大小不能超过 2MB",
+      "itemCount":"最多选择10个单品",
+      "num1to10":"单品的数量请大于1个且小于10个",
+      "itemExist":"当前菜品已存在",
+      "attrNotNull":"属性组名称不能为空",
+      "sideDishNotNull":"配菜组名称不允许为空",
+      "exchangeSuccess":"交换成功",
+      "exchangeError":"交换失败"
     }
   }
 
