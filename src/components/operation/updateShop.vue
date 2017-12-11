@@ -81,7 +81,7 @@ export default {
         var validateNumLetter = (rule,value,callback) => {
 
             if(!/^[A-Za-z0-9]+$/i.test(value)){
-                callback(new Error('请输入数字加字母！'));
+                callback(new Error(this.$t('tips.rules.letterornum')));
             }else {
                 callback();
             }
@@ -109,34 +109,34 @@ export default {
             },
             updateShopFormRules: {
                 name: [
-                    { required: true, message: '请输入店铺名称', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.shopname'), trigger: 'blur' }
                 ],                
                 shopTel: [
-                    { required: true, message: '请输入店铺联系电话', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.shoptel'), trigger: 'blur' }
                 ],
                 currencyPrecision: [
-                   { required: true, message: '请选择货币精度', trigger: 'blur' }
+                   { required: true, message: this.$t('tips.rules.currencyPrecision'), trigger: 'blur' }
                 ],
                 currencyType: [
-                    { required: true, message: '请选择货币类型', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.currencyType'), trigger: 'blur' }
                 ],
                 haveRadioFee: [
-                    { required: true, message: '请选择是否有税率', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.haveRadioFee'), trigger: 'blur' }
                 ],
                 address: [
-                    { required: true, message: '请输入店铺地址', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.shopaddress'), trigger: 'blur' }
                 ],                
                 province: [
-                    { required: true, message: '请输入店铺地址', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.province'), trigger: 'blur' }
                 ],
                 city: [
-                    { required: true, message: '请输入店铺地址', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.city'), trigger: 'blur' }
                 ],
                 street: [
-                    { required: true, message: '请输入店铺地址', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.street'), trigger: 'blur' }
                 ],
                 isTest: [
-                    { required: true, message: '请选择是否是测试店铺', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.istestShop'), trigger: 'blur' }
                 ]
             }
         }
@@ -202,7 +202,10 @@ export default {
                 if (valid) {
                     this.updateShop();
                 } else {
-                    console.log('error submit!!');
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.rules.error')
+                    });
                     return false;
                 }
             });
@@ -237,10 +240,10 @@ export default {
             }
 
             if(this.updateShopForm.language == '2' && this.updateShopForm.haveRadioFee == '0'){
-                this.updateShopForm.taxRadio = parseInt(this.updateShopForm.taxRadio)/100,
-                console.log(this.updateShopForm.taxRadio);
+                this.updateShopForm.taxRadio = parseInt(this.updateShopForm.taxRadio)/100;
+                
             } else {
-                console.log(this.updateShopForm.taxRadio);
+                
                 this.updateShopForm.taxRadio = null; 
             }
 
@@ -266,7 +269,7 @@ export default {
                 if (res.status) {
                     this.$message({
                         type: 'success',
-                        message: '店铺修改成功！'
+                        message: this.$t('tips.message.updateSuccess')
                     });
                     this.$router.push({
                         path: '/operation/shopmanage'
@@ -287,27 +290,23 @@ export default {
                 $http.post('/coron-web/jpaddress/getByPostcode', {
                     postcode: this.updateShopForm.postcode
                 }).then(res => {
-
-                    console.log("获取的地址信息", res);
+                    
                     if (res.status) {
                         this.updateShopForm.province = res.entry[0].province;
                         this.updateShopForm.city = res.entry[0].city;
                         this.updateShopForm.street = res.entry[0].street;
-                    } else {
-                        console.log("返回错误！");
-                    }
-
+                    } 
 
                 }).catch(res => {
                     this.$message({
                         type: 'error',
-                        message: '请求错误！'
+                        message: this.$t('tips.rules.rightCode')
                     });
                 })
             } else {
                 this.$message({
                     type: 'warning',
-                    message: '请输入邮编！'
+                    message: this.$t('tips.rules.postCode')
                 });
             }
 

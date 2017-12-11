@@ -146,10 +146,10 @@ export default {
         content: ""
       },
       introFormRules: {
-        title: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        title: [{ required: true, message: this.$t('tips.rules.introTitle'), trigger: "blur" }],
         content: [
-          { required: true, message: "请输入提案内容", trigger: "blur" },
-          { max: 200, message: "最多两百个字符", trigger: "blur" }
+          { required: true, message: this.$t('tips.rules.introContent'), trigger: "blur" },
+          { max: 200, message: this.$t('tips.rules.intromaxChars'), trigger: "blur" }
         ]
       },
       introGroupDatas: [],
@@ -247,13 +247,11 @@ export default {
       let introTitleObj = { zh: self.introForm.title, jp: self.introForm.title, en: self.introForm.title };
       let introContentObj = { zh: self.introForm.content, jp: self.introForm.content, en: self.introForm.content};
       if (self.introTitleTransArray.length > 0) {
-        introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);
-        console.log("合并后的title对象", introTitleObj);
+        introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);        
       }
 
       if(self.introContentTransArray.length > 0){
-        introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);
-        console.log("合并后的content对象", introContentObj);
+        introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);        
       }
 
       let addParams = {
@@ -283,7 +281,7 @@ export default {
         } else {
           self.$message({
             type: "warning",
-            message: "请输入必填字段！"
+            message: this.$t('tips.rules.error')
           });
         }
       });
@@ -361,26 +359,26 @@ export default {
               if (response.status) {
                 this.$message({
                   type: "success",
-                  message: "修改成功！"
+                  message: this.$t('tips.message.updateSuccess')
                 });
                 this.addTag = false;
                 this.introDialogVisible = false;
                 this.getIntroList(this.whichGroup);
               } else {
-                this.$message.error(response.responseCode);
+                this.$message.error(response.message);
               }
             })
             .catch(error => {
               console.log(error);
               this.$message({
                 type: "error",
-                message: "请求错误"
+                message: this.$t('tips.message.network')
               });
             });
         } else {
           self.$message({
             type: "warning",
-            message: "请输入必填字段！"
+            message: this.$t('tips.rules.error')
           });
         }
       });
@@ -392,12 +390,15 @@ export default {
           id: item.id
         })
         .then(response => {
-          console.log(response);
-          this.$message({
-            type: "success",
-            message: "删除成功 "
-          });
-          this.getIntroList(this.isActive);
+          
+          if(response.status){
+            this.$message({
+              type: "success",
+              message: this.$t('tips.message.delSuccess')
+            });
+            this.getIntroList(this.isActive);
+          }
+          
         })
         .catch(error => {
           console.log(error);
@@ -405,9 +406,9 @@ export default {
     },
 
     confirmDel(item) {
-      this.$confirm("确认要删除这个提案么?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t('tips.message.delIntro'), this.$t('tips.message.hint'), {
+        confirmButtonText: this.$t('tips.message.ok'),
+        cancelButtonText: this.$t('tips.message.cancel'),
         closeOnClickModal: false,
         type: "warning"
       })
@@ -417,7 +418,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: this.$t('tips.message.canceled')
           });
         });
     },
@@ -428,9 +429,7 @@ export default {
       this.getIntroList(itemId);
     },
 
-    cancelForm() {
-      // this.addTag = false;
-      // this.getIntroList();
+    cancelForm() {      
       this.introDialogVisible = false;
     },
 
@@ -447,14 +446,14 @@ export default {
         .then(response => {
           this.$message({
             type: "success",
-            message: "更新成功"
+            message: this.$t('tips.message.updateSuccess')
           });
           this.getIntroList();
         })
         .catch(error => {
           this.$message({
             type: "error",
-            message: "更新失败"
+            message: this.$t('tips.message.updateError')
           });
         });
     },
@@ -462,10 +461,6 @@ export default {
     moved(evt) {
       let newIndex = evt.moved.newIndex;
       let oldIndex = evt.moved.oldIndex;
-
-      console.log(evt);
-      console.log(this.introDatas[evt.moved.newIndex + 1]);
-      console.log(this.introDatas[evt.moved.newIndex]);
 
       if (newIndex > oldIndex) {
         let oldItem = this.introDatas[evt.moved.newIndex],

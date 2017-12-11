@@ -143,6 +143,8 @@ export default {
                 if (res.status) {
                     this.apkLists = res.rows;
                     this.totalItems = res.total;
+                } else {
+                    this.$message.error(res.message)
                 }
             })
         },
@@ -157,7 +159,6 @@ export default {
 
         apkInfoEdit(item) {
             this.apkUpdateDialogVisible = true;
-
             this.middleObj = item;
             this.apkUpdateForm.name = item.name;
             this.apkUpdateForm.code = item.code;
@@ -176,19 +177,19 @@ export default {
                 type: this.middleObj.type,
                 publishState: this.apkUpdateForm.publishState,
                 publishType: this.apkUpdateForm.publishType
-            };
-
-            console.log(data);
+            };            
 
             $http.post('/coron-web/apk/update', data).then(res => {
-                console.log("修改成功", res);
+                
                 if (res.status) {
                     this.$message({
                         type: 'success',
-                        message: '修改成功'
+                        message: this.$t('tips.message.updateSuccess')
                     });
                     this.apkUpdateDialogVisible = false;
                     this.getAPKLists();
+                } else {
+                    this.$message.error(res.message);
                 }
 
             })
@@ -204,19 +205,18 @@ export default {
             $http.post('/coron-web/apk/del', {
                 id: item.id
             }).then(res => {
-                console.log(res);
+                
                 if (res.status) {
-
                     this.$message({
                         type: 'success',
-                        message: '删除成功'
+                        message: this.$t('tips.message.delSuccess')
                     })
                     this.getAPKLists();
 
                 } else {
                     this.$message({
                         type: 'error',
-                        message: '删除失败'
+                        message: res.message
                     })
                 }
 
@@ -224,9 +224,9 @@ export default {
         },
 
         confirmDel(item) {
-            this.$confirm('确定删除这条ROM记录么？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('tips.message.confirmDel'), this.$t('tips.message.hint'), {
+                confirmButtonText: this.$t('tips.message.ok'),
+                cancelButtonText: this.$t('tips.message.cancel'),
                 type: 'warning',
             }).then(() => {
 
@@ -235,7 +235,7 @@ export default {
             }).catch(() => {
                 this.$message({
                     type: 'info',
-                    message: '已取消删除'
+                    message: this.$t('tips.message.canceled')
                 });
             })
         }

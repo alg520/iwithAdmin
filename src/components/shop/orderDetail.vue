@@ -89,6 +89,9 @@
                                 <el-table-column :label="$t('shop.order.itemId')" prop="itemId">
                                 </el-table-column>
                                 <el-table-column :label="$t('shop.order.itemName')" prop="name.zh">
+                                    <template scope="scope">
+                                        <span>{{scope.row.name.zh}}</span>
+                                    </template>
                                 </el-table-column>
                                 <el-table-column :label="$t('shop.order.originalPrice')" prop="itemOriginalPrice">
                                 </el-table-column>
@@ -122,12 +125,9 @@ export default {
         this.getDetailInfo();
     },
     methods: {
-        getDetailInfo() {
-            console.log(this.middleLocal);
+        getDetailInfo() {            
             this.tradeInfo = this.middleLocal.trade;
-            this.orders = this.middleLocal.orders;
-
-            console.log(this.middleLocal.orders);
+            this.orders = this.middleLocal.orders;            
 
             this.attrs = this.getAttrs(this.middleLocal.orders);
             this.sideDishs = this.getSideDish(this.middleLocal.orders);
@@ -150,16 +150,13 @@ export default {
                 })
 
             })
-
-            console.log("循环好得属性数组",newAttrs);
-
+            
             return newAttrs;
         },
 
         getSideDish(array) {
             let newDish = [];
             array.forEach((item1, index1) => {
-
                 item1.itemGroupList.forEach((item2, index2) => {
 
                     item2.items.forEach((item3, index3) => {

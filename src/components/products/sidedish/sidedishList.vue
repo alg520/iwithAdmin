@@ -36,37 +36,18 @@
         </div>
 
         <el-dialog :visible.sync="sidedishDialogVisible" class="addDialog" v-bind:title="btnTag == 'add' ? $t('products.addGarnish'):$t('products.updateItem')" size="tiny">
-            <el-form :model="productForm" ref="productForm" :rules="rules" label-width="100px">
-                <!-- <el-form-item label="菜品编号" prop="itemNo">
-                    <el-input v-model="productForm.itemNo" placeholder="菜品编号"></el-input>
-                </el-form-item> -->
-                <el-form-item :label="$t('products.itemName')">
+            <el-form :model="productForm" ref="productForm" :rules="rules" label-width="100px">                
+                <el-form-item :label="$t('products.itemName')" prop="itemName">
                     <el-input v-model="productForm.itemName" :placeholder="$t('placeholder.itemName')" @blur="translateContent(productForm.itemName,'name')"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="菜品介绍" prop="itemDesc">
-                    <el-input type="textarea" :rows="3" placeholder="请输入菜品介绍" v-model="productForm.itemDesc">
-                    </el-input>
-                </el-form-item> -->
+                </el-form-item>                
                 <el-form-item :label="$t('products.price')" prop="originPrice">
                     <el-input type="number" v-model="productForm.originPrice" :placeholder="$t('placeholder.price')"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="图片" prop="picUrl">
-                    <el-upload class="avatar-uploader" ref="sidedishUpload"
-                    action="/coron-web/upload/itemUpload" 
-                    :show-file-list="true" 
-                    :on-success="handleItemPicSuccess" 
-                    :on-remove="handleItemPicRemove"
-                    :before-upload="beforeItemPicUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>                    
-                </el-form-item> -->
+                </el-form-item>               
             </el-form>
-
             <div slot="footer" class="dialog-footer">
                 <el-button @click="sidedishDialogVisible = false">{{$t('_global.cancel')}}</el-button>
-                <el-button type="primary" @click="asyncAdd()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
-                <el-button type="primary" @click="asyncUpdate()" v-else>{{$t('_global.lijiEdit')}}</el-button>
+                <el-button type="primary" @click="addSideDishPost()" v-if="btnTag == 'add'">{{$t('_global.lijiAdd')}}</el-button>
+                <el-button type="primary" @click="updateSideDishPost()" v-else>{{$t('_global.lijiEdit')}}</el-button>
             </div>
         </el-dialog>
     </div>
@@ -77,7 +58,6 @@ import axios from 'axios';
 import $http from '../../../utils/http';
 import Lockr from 'lockr';
 import Cookies from 'js-cookie';
-import getLanguage from '../../../utils/sysLanguage.js';
 import {baiduTranslate, returnTransArray} from '../../../utils/translate.js';
 export default {
     data() {
@@ -113,13 +93,13 @@ export default {
             },
             rules: {
                 itemNo: [
-                    { required: true, message: '请输入菜品编号', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.itemNo'), trigger: 'blur' }
                 ],
                 itemName: [
-                    { required: true, message: '请输入菜品名称', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.itemName'), trigger: 'blur' }
                 ],
                 originPrice: [
-                    { required: true, message: '请输入配菜价格', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'blur' }
                 ]
             },
             formLabelWidth: '120px',
@@ -157,10 +137,10 @@ export default {
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                this.$message.error(this.$t('tips.message.jpgorpng'));
             }
             if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
+                this.$message.error(this.$t('tips.message.picSize'));
             }
             return isJPG && isLt2M;
         },
@@ -168,12 +148,10 @@ export default {
         handleItemPicSuccess(res, file, fileList) {
                         
             if (!res.status) {
-                this.$message.error("上传失败：" + res.message);
+                this.$message.error(res.message);
             }
             this.imageUrl = URL.createObjectURL(file.raw);
-            this.productForm.picUrl = res.entry;
-            console.log(this.imageUrl);
-            console.log(this.productForm.picUrl);
+            this.productForm.picUrl = res.entry;            
         },
 
         handleItemPicRemove(file, fileList){
@@ -200,19 +178,22 @@ export default {
 
             $http.post('/coron-web/item/list', getParams).then(response => {
 
-                !!response.rows && (this.productsList = response.rows);
-                this.totalItems = response.total;
-                console.log(this.productsList);
-
+                if(response.status){
+                    !!response.rows && (this.productsList = response.rows);
+                    this.totalItems = response.total;
+                }                
+                
             }).catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问,请刷新页面重试！');
+                console.log(error);                
+                this.$message({
+                    type:'error',
+                    message:this.$t('tips.message.network')
+                });
             })
         },
 
         addsideDishDialog() {
-            this.btnTag = 'add';
-            this.titleTag = "添加配菜";
+            this.btnTag = 'add';            
             this.sidedishDialogVisible = true;
             this.clearForm();
         },
@@ -221,11 +202,11 @@ export default {
             var self = this;
             self.$refs['productForm'].validate((valid) => {
                 if(valid){
-                    self.addSideDish();    
+                    self.asyncAdd();    
                 } else {
                     self.$message({
                         type:'warning',
-                        message:'请输入必填字段！'
+                        message: self.$t('tips.rules.error')
                     })
                 }
             })
@@ -237,8 +218,7 @@ export default {
             if(itemName !== ''){
                 let res = await baiduTranslate(itemName,_language);
                 if(type == 'name'){
-                    self.sideDishTransArray = returnTransArray(res);
-                    console.log(" 添加配菜 ",self.sideDishTransArray);
+                    self.sideDishTransArray = returnTransArray(res);                    
                 }
 
             }
@@ -250,11 +230,12 @@ export default {
         },
         asyncUpdate: async function(){
             await this.translateContent(this.productForm.itemName,'name');
-            await this.updateSideDishPost();
+            await this.updateSideDish();
         },
 
         addSideDish() {
             let sideDishNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
+            
             if(this._SHOPLANGUAGE == 0){
                 sideDishNameObj.zh = this.productForm.itemName;
             } else if (this._SHOPLANGUAGE == 1){
@@ -264,8 +245,7 @@ export default {
             }
 
             if(this.sideDishTransArray.length > 0){
-                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);
-                console.log("合并后的配菜对象",sideDishNameObj);
+                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);                
             }
 
             const addParams = {
@@ -293,7 +273,7 @@ export default {
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
-                        message: '配菜添加成功'
+                        message: this.$t('tips.message.addSuccess')
                     })                         
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
@@ -306,14 +286,13 @@ export default {
                 console.log(error);                
                 this.$message({
                     type:'error',
-                    message:'添加失败'
+                    message:this.$t('tips.message.addError')
                 })
             })
         },
 
         updatesideDishDialog(item) {
-            this.btnTag = 'update';
-            this.titleTag = '修改配菜';
+            this.btnTag = 'update';            
             this.sidedishDialogVisible = true;
 
             this.productForm.itemNo = item.itemNo;
@@ -334,9 +313,7 @@ export default {
                 this.productForm.originPrice = item.originPrice/100+"";
             } else {
                 this.productForm.originPrice = item.originPrice+"";
-            }            
-
-
+            }
             this.imageUrl = this.productForm.picUrl = item.picUrl;
             this.midObj = item;
         },
@@ -345,11 +322,11 @@ export default {
             var self = this;
             self.$refs['productForm'].validate((valid) => {
                 if(valid){
-                    self.updateSideDish();
+                    self.asyncUpdate();
                 } else {
                     self.$message({
                         type:'warning',
-                        message:'请输入必填字段！'
+                        message:self.$t('tips.rules.error')
                     })
                 }
             })
@@ -359,8 +336,7 @@ export default {
 
             let sideDishNameObj = {zh:this.productForm.itemName,jp:this.productForm.itemName,en:this.productForm.itemName};
             if(this.sideDishTransArray.length > 0){
-                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);
-                console.log("合并后的配菜对象",sideDishNameObj);
+                sideDishNameObj = Object.assign(sideDishNameObj,this.sideDishTransArray[0]);                
             }
 
             const updateParams = {
@@ -389,7 +365,7 @@ export default {
                 if (response.data.status == true) {
                     this.$message({
                         type: 'info',
-                        message: '配菜修改成功'
+                        message: this.$t('tips.message.updateSuccess')
                     })                    
                     this.sidedishDialogVisible = false;                    
                     this.getSideDishList();
@@ -402,10 +378,9 @@ export default {
                 console.log(error);
                 this.$message({
                     type:'error',
-                    message:'添加失败'
+                    message:this.$t('tips.message.updateError')
                 })
             })
-
 
         },
 
@@ -413,21 +388,29 @@ export default {
             $http.post('/coron-web/item/del', {
                 itemId: item.itemId
             }).then(response => {
-                console.log(response);
-                this.$message({
-                    type: 'info',
-                    message: '删除成功'
-                });
-                this.getSideDishList();
+                
+                if(response.status){
+                    this.$message({
+                        type: 'info',
+                        message: this.$t('tips.message.delSuccess')
+                    });
+                    this.getSideDishList();
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: response.message
+                    });
+                }
+                
             }).catch(error => {
                 console.log(error);
             })
         },
 
         confirmDel(item) {
-            this.$confirm('确定要删除这个配菜吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('tips.message.delSidedish'), this.$t('tips.message.hint'), {
+                confirmButtonText: this.$t('tips.message.ok'),
+                cancelButtonText: this.$t('tips.message.cancel'),
                 closeOnClickModal: false,
                 type: 'warning'
             }).then(() => {
@@ -438,7 +421,7 @@ export default {
 
                 this.$message({
                     type: 'info',
-                    message: '已取消删除'
+                    message: this.$t('tips.message.canceled')
                 });
 
             });
@@ -450,17 +433,24 @@ export default {
                 itemId: item.itemId,
                 isSale: !item.isSale
             }).then(response => {
-                console.log(response);
-                this.$message({
-                    type: 'info',
-                    message: '状态更新成功'
-                });
-                this.getSideDishList();
+                if(response.status){
+                    this.$message({
+                        type: 'info',
+                        message: this.$t('tips.message.updateSuccess')
+                    });
+                    this.getSideDishList();
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: response.message
+                    });
+                }
+                
             }).catch(error => {
                 console.log(error);
                 this.$message({
                     type: 'error',
-                    message: '状态更新失败'
+                    message: this.$t('tips.message.updateError')
                 });
             })
         },

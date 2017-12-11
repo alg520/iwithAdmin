@@ -133,6 +133,7 @@
     "putaway":"On Sale",
     "soldout":"Not on Sale",
     "addCatalog":"Add Category",
+    "updateCatalog":"Update Category",
     "catalogSort":"Category Sorted",
     "catalogName":"Category Name",
     "addAttr":"Add Attribute",
@@ -295,7 +296,9 @@
     "attribute":"Attribute Translation",
     "sideDish":"Side Dish Translation",
     "introGroup":"Proposal Group Translation",
-    "intro":"Proposal Translation"
+    "intro":"Proposal Translation",
+    "success":"Translate Done",
+    "error":"Translation Failure"
   },
   "robot":{
     "addDance":"Add Dance",

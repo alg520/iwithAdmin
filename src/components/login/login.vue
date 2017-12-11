@@ -115,8 +115,7 @@ export default {
     created() {
         this.getOSLanguage();
         this.getLoginUserInfo();
-        this.getAuthCode();
-        console.log("国际化测试",this.$t('tips.message.test'));
+        this.getAuthCode();        
     },
 
     methods: {
@@ -143,7 +142,6 @@ export default {
                 Cookies.set('SHOPLANGUAGE', 0);
                 Lockr.set("SHOPLANGUAGE", 0);
             }
-
             Vue.config.lang = language;
         },
 
@@ -159,7 +157,7 @@ export default {
                 
                 if (valid) {
                     $http.post('/coron-web/login', data).then(res => {
-                        console.log(res);
+                        
                         if (res.status) {                            
                             Cookies.set('Token', res.entry);
                             this.getLoginUserInfo();
@@ -171,7 +169,7 @@ export default {
                     })
 
                 } else {
-                    console.log("error commit");
+                    
                     this.$message({
                         type:'error',
                         message:this.$t('tips.rules.error')

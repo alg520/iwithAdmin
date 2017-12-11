@@ -85,8 +85,8 @@ export default {
             },
             introGroupFormRules:{
                 name: [
-                    { required: true, message: '请输入提案组名称', trigger: 'blur' }                    
-                ]                
+                    { required: true, message: this.$t('tips.rules.introGroupTitle'), trigger: 'blur' }                    
+                ]
             },
             introGroupTransArray:[]
         }
@@ -94,7 +94,7 @@ export default {
 
     computed: {
         _SHOPLANGUAGE() {
-        return Cookies.get('SHOPLANGUAGE');
+            return Cookies.get('SHOPLANGUAGE');
         }
     },
     mounted() {
@@ -119,7 +119,7 @@ export default {
     methods: {
 
         getIntroGroupList() {
-            $http.get('/coron-web/introduceGroup/list').then(response => {
+            $http.get('/coron-web/introduceGroup/list').then(response => {                
                 response.status && (this.introGroupDatas = response.entry);
             }).catch(error => {
                 console.log(error);
@@ -169,7 +169,7 @@ export default {
                         if(response.status){
                             self.$message({
                                 type:'success',
-                                message:'提案组添加成功！'
+                                message: self.$t('tips.message.addSuccess')
                             });
                         }
                         self.introGroupDialogVisible = false;
@@ -182,7 +182,7 @@ export default {
                 } else {
                     self.$message({
                         type:'warning',
-                        message:'请输入必填字段！'
+                        message:self.$t('tips.rules.error')
                     })
                 }
 
@@ -228,7 +228,7 @@ export default {
                     $http.post('/coron-web/introduceGroup/update',updateParams).then(response => {
                         self.$message({
                             type:'success',
-                            message:'修改成功'
+                            message: self.$t('tips.message.updateSuccess')
                         });
                         self.introGroupDialogVisible = false;
                         self.getIntroGroupList();
@@ -240,7 +240,7 @@ export default {
                 } else {
                     self.$message({
                         type:'warning',
-                        message:'请输入必填字段！'
+                        message:self.$t('tips.rules.error')
                     })
                 }
             })
@@ -250,14 +250,14 @@ export default {
             var self = this;
             self.checkNotChild(item).then(res => {
                 if(res.data.rows && res.data.rows.length > 0){
-                    self.$alert('该分类下有提案时，不可直接删除分类','提示',{
-                        confirmButtonText:'我知道了',
+                    self.$alert(self.$t('tips.message.groupHaveChild'),self.$t('tips.message.hint'),{
+                        confirmButtonText:self.$t('tips.message.iknow'),
                         type: 'warning'
                     })
                 } else {
-                    self.$confirm('确认删除该分类吗?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
+                    self.$confirm(self.$t('tips.message.delIntroGroup'), self.$t('tips.message.hint'), {
+                        confirmButtonText: self.$t('tips.message.ok'),
+                        cancelButtonText: self.$t('tips.message.cancel'),
                         closeOnClickModal:false,
                         type: 'warning'
                     }).then(() => {
@@ -265,12 +265,12 @@ export default {
                     }).catch(() => {
                         self.$message({
                             type: 'info',
-                            message: '已取消删除'
+                            message: self.$t('tips.message.canceled')
                         });
                     });
                 }
             }).catch(res => {
-                console.log("错误提示",res);
+                console.log("error",res);
             })            
         },
 
@@ -288,12 +288,12 @@ export default {
                 if(!response.status){
                     this.$message({
                         type:'warning',
-                        message:'该分组下有提案，请先删除分组下得提案！'
+                        message:response.message
                     });
                 } else {
                     this.$message({
                         type:'success',
-                        message:'删除成功！'
+                        message:this.$t('tips.message.delSuccess')
                     });
                     this.getIntroGroupList();
                 }
@@ -307,16 +307,23 @@ export default {
             
             $http.post('/coron-web/introduceGroup/sort',itemParams).then(response => {
 
-                this.$message({
-                    type:'success',
-                    message:'更新成功'
-                });
-                this.getIntroGroupList();
+                if(response.status){
+                    this.$message({
+                        type:'success',
+                        message:this.$t('tips.message.exchangeSuccess')
+                    });
+                    this.getIntroGroupList();
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:this.$t('tips.message.exchangeError')
+                    });
+                }
 
             }).catch(error => {
                 this.$message({
                     type:'error',
-                    message:'更新失败'
+                    message:this.$t('tips.message.exchangeError')
                 });
             })
         },
@@ -333,15 +340,10 @@ export default {
             this.sortPage = false;
         },
 
-
         moved(evt) {
 
             let newIndex = evt.moved.newIndex;
-            let oldIndex = evt.moved.oldIndex;
-
-            console.log(evt);
-            console.log(this.introGroupDatas[evt.moved.newIndex+1]);
-            console.log(this.introGroupDatas[evt.moved.newIndex]);
+            let oldIndex = evt.moved.oldIndex;           
 
             if(newIndex > oldIndex){
                 let oldItem = this.introGroupDatas[evt.moved.newIndex],

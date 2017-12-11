@@ -37,8 +37,20 @@
       <el-table-column prop="tradeId" :label="$t('shop.order.orderId')" width="180">
       </el-table-column>
       <el-table-column prop="originalAmount" :label="$t('shop.order.oldPrice')" width="180">
+        <template scope="scope">          
+          <span v-if="scope.row.currencyPrecision != 0">
+            {{scope.row.originalAmount / Math.pow(10,scope.row.currencyPrecision)}}
+          </span>
+          <span v-else>{{scope.row.originalAmount}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="paidAmount" :label="$t('shop.order.price')" width="180">
+        <template scope="scope">          
+          <span v-if="scope.row.currencyPrecision != 0">
+            {{scope.row.paidAmount / Math.pow(10,scope.row.currencyPrecision)}}
+          </span>
+          <span v-else>{{scope.row.paidAmount}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="tradeStatus" :label="$t('shop.order.status')" width="180">
         <template scope="scope">
@@ -83,13 +95,13 @@ export default {
       pickerTradetime: {
         shortcuts: [
           {
-            text: "今天",
+            text: this.$t('tips.time.today'),
             onClick(picker) {
               picker.$emit("pick", new Date());
             }
           },
           {
-            text: "昨天",
+            text: this.$t('tips.time.yestoday'),
             onClick(picker) {
               const date = new Date();
               date.setTime(date.getTime() - 3600 * 1000 * 24);
@@ -97,7 +109,7 @@ export default {
             }
           },
           {
-            text: "一周前",
+            text: this.$t('tips.time.aweekago'),
             onClick(picker) {
               const date = new Date();
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
@@ -118,8 +130,15 @@ export default {
     getAllShopList() {
       //获取所有店铺列表，绑定到可搜索的下拉列表
       $http.get("/coron-web/shop/getAll", {}).then(res => {
-        console.log("所有店铺列表", res);
-        this.allShopLists = res.entry;
+        
+        if(res.status){
+          this.allShopLists = res.entry;
+        } else {
+          this.$message({
+            type:'error',
+            message:res.message
+          });
+        }        
         //this.selectedShopID = res.entry[0].id;
       });
     },
@@ -141,28 +160,39 @@ export default {
       };
 
       $http.post("/coron-web/trade/getByShop", getData).then(res => {
-        console.log("获取交易记录", res.data);
-        this.tradeLists = res.rows;
-        this.totalItems = res.total;
+        
+        if(res.status){
+          this.tradeLists = res.rows;
+          this.totalItems = res.total;
+        } else {
+          this.$message({
+            type:'error',
+            message:res.message
+          });
+        }
+
       });
     },
 
     getDetailTrade(item) {
       var self = this;
-
       $http
         .post("/coron-web/trade/getTradeInfo", {
           tradeId: item.tradeId
         })
         .then(res => {
-          console.log("交易详情", res.entry);
-          self.tradeDetailInfo = res.entry;
-
-          Lockr.set("tradeDetailInfo", self.tradeDetailInfo);
-
-          this.$router.push({
-            path: "/operation/orderdetail"
-          });
+          if(res.status){
+            self.tradeDetailInfo = res.entry;
+            Lockr.set("tradeDetailInfo", self.tradeDetailInfo);
+              this.$router.push({
+              path: "/operation/orderdetail"
+            });
+          } else {
+            this.$message({
+              type:'error',
+              message:res.message
+            });
+          }
         });
     },
 
@@ -170,9 +200,7 @@ export default {
       console.log(size);
     },
     // 翻页
-    handleCurrentChange(page) {
-      console.log(page);
-      console.log(this.currentPage);
+    handleCurrentChange(page) {      
       this.getTrade();
     },
 
@@ -180,8 +208,7 @@ export default {
       this.getTrade();
     },
 
-    changeShop() {
-      console.log(this.selectedShopID);
+    changeShop() {      
       this.getTrade();
     }
   }

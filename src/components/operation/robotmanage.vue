@@ -157,10 +157,14 @@ export default {
 
     getRobotDanceLists() {
       $http.get('/coron-web/robotDance/getByShop').then(res => {
-        console.log("舞蹈列表", res);
-
+        
         if (res.status) {
           this.robotDanceLists = res.entry;
+        } else {
+          this.$message({
+            type:'error',
+            message:res.message
+          });
         }
 
       })
@@ -178,28 +182,24 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+        this.$message.error(this.$t('tips.message.jpgorpng'));
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error(this.$t('tips.message.picSize'));
       }
       return isJPG && isLt2M;
     },
 
     handleAvatarSuccess(res, file ,fileList) {
-
-      console.log(fileList);
-
+      
       if(!res.status){
-        this.$message.error("图片上传失败：" + res.message);
+        this.$message.error(this.$t('tips.message.imgUploadError') + res.message);
       } else {
-        this.$message.success("图片上传成功");
+        this.$message.success(this.$t('tips.message.imgUploadSuccess'));
         this.uploadSuccessTag = true;
       }
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.robotDanceForm.danceImg = res.entry;
-      console.log(this.imageUrl);
-      console.log(this.robotDanceForm.danceImg);
+      this.robotDanceForm.danceImg = res.entry;      
     },
 
     cancelUpload(){
@@ -213,10 +213,10 @@ export default {
       const isLt15M = file.size / 1024 /1024 < 15;
 
       if (!isMP3) {
-        this.$message.error('上传舞蹈音乐只能是 MP3 格式!');
+        this.$message.error(this.$t('tips.musicUpload.type'));
       }
       if (!isLt15M) {
-        this.$message.error('上传舞蹈音乐大小不能超过 15MB!');
+        this.$message.error(this.$t('tips.musicUpload.size'));
       }
       
       return isMP3 && isLt15M;
@@ -229,25 +229,21 @@ export default {
       this.fileList.push(file);
 
       if(!res.status){
-        this.$message.error("上传失败：" + res.message);
+        this.$message.error(this.$t('tips.message.uploadError') + res.message);
       } else {
         this.$message({
           type:'success',
-          message:'音乐上传成功'
+          message:this.$t('tips.message.uploadSuccess')
         });
       }
 
-      console.log(fileList);
-      console.log(file);
-
+     
       //this.robotDanceForm.danceMusic = URL.createObjectURL(file.raw);
-      this.robotDanceForm.danceMusic = file.response.entry;      
-      console.log(this.robotDanceForm.danceMusic);
+      this.robotDanceForm.danceMusic = file.response.entry;
 
     },
 
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleRemove(file, fileList) {      
       this.robotDanceForm.danceMusic = '';
     },
 
@@ -264,7 +260,12 @@ export default {
           this.robotDanceAdd();
 
         } else {
-          console.log('error submit!!');
+          
+          this.$message({
+            type:'error',
+            message: this.$t('tips.rules.error')
+          });
+
           return false;
         }
 
@@ -304,7 +305,7 @@ export default {
           this.getRobotDanceLists();
           this.$message({
             type:'success',
-            message:'添加成功'
+            message:this.$t('tips.message.addSuccess')
           });
         } else {
           this.$message({
@@ -372,7 +373,7 @@ export default {
               this.getRobotDanceLists();
               this.$message({
                 type:'success',
-                message:'修改成功'
+                message:this.$t('tips.message.updateSuccess')
               });
             } else {
               this.$message({
@@ -384,10 +385,10 @@ export default {
           })
 
         } else {
-          console.log('error submit!!');
+          
           this.$message({
             type:'warning',
-            message:'请输入上传图片或音乐'
+            message:this.$t('tips.rules.error')
           })
           return false;
         }
@@ -401,20 +402,26 @@ export default {
         robotDanceId:item.robotDanceId
       }).then(res => {
 
-        console.log("删除成功",res);
-        this.getRobotDanceLists();
-        this.$message({
-          type:'success',
-          message:'删除成功'
-        })        
+        if(res.status){
+          this.getRobotDanceLists();
+          this.$message({
+            type:'success',
+            message:this.$t('tips.message.delSuccess')
+          })
+        } else {
+          this.$message({
+            type:'error',
+            message:res.message
+          })
+        }
         
       })
     },
 
     confirmDel(item){
-      this.$confirm('确定删除当前舞蹈动作么？','提示',{
-        confirmButtonText:'确定',
-        cancelButtonText:'取消',
+      this.$confirm(this.$t('tips.message.confirmDel'),this.$t('tips.message.hint'),{
+        confirmButtonText:this.$t('tips.message.ok'),
+        cancelButtonText:this.$t('tips.message.cancel'),
         type:'warning',
       }).then( () => {
         
@@ -423,7 +430,7 @@ export default {
       }).catch(() => {
         this.$message({
           type:'info',
-          message:'已取消删除'
+          message:this.$t('tips.message.canceled')
         });
       })
     },

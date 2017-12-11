@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" :title="titleTag" size="tiny">
+    <el-dialog :visible.sync="catalogDialogVisible" class="addDialog" :title="btnTag == 'add' ? $t('products.addCatalog') : $t('products.updateCatalog')" size="tiny">
       <el-form :model="catalogForm" :rules="rules" ref="catalogForm">
         <el-form-item :label="$t('products.catalogName')" :label-width="formLabelWidth" prop="catalogName">
           <el-input v-model="catalogForm.catalogName" :placeholder="$t('placeholder.catalogName')" @blur="translateContent(catalogForm.catalogName,'name')"></el-input>
@@ -88,7 +88,7 @@ export default {
       },
       rules: {
         catalogName: [
-          { required: true, message: '请输入类目名称', trigger: 'blur' }
+          { required: true, message: this.$t('tips.rules.catalogName'), trigger: 'blur' }
         ]
       },
       formLabelWidth: '120px',
@@ -114,49 +114,36 @@ export default {
         page:this.currentPage,
         rp:this.pageSize
       }).then(response => {          
-          
-          !!response.entry && (this.catalogDatas = response.entry);
-          
+          !!response.entry && (this.catalogDatas = response.entry);          
         }).catch(error => {
           console.log(error);
-          alert('网络错误，不能访问');
+          this.$message({
+            type:'error',
+            message:this.$t('tips.message.network')
+          });          
         })
     },
 
-    addCatalog() {
-      this.titleTag = '添加类目';
+    addCatalog() {      
       this.btnTag = 'add';
       this.catalogDialogVisible = true;
     },
 
     cancelDialog() {
-
       this.catalogDialogVisible = false;
       this.catalogForm.catalogName = '';
-
     },
 
   async translateContent(itemName,type){
         var self = this;
-
-        let _language = self._SHOPLANGUAGE;
-        
+        let _language = self._SHOPLANGUAGE;        
         if(itemName !== ''){
           var res = await baiduTranslate(itemName,_language);
           if(type == 'name'){
-              self.catalogNameTransArray = returnTransArray(res);
-              console.log(" 添加分类 ",self.catalogNameTransArray);              
+              self.catalogNameTransArray = returnTransArray(res);              
           }
 
         }
-        
-        // baiduTranslate(itemName,_language).then(res => {
-        //   if(type == 'name'){
-        //       self.catalogNameTransArray = returnTransArray(res);
-        //       console.log(" 添加分类 ",self.catalogNameTransArray);              
-        //   }
-        // })
-
     },
 
     addCatalogPost() {
@@ -171,8 +158,7 @@ export default {
           catalogObj.jp = this.catalogForm.catalogName;
       }
       if(self.catalogNameTransArray.length > 0){
-        catalogObj = Object.assign(catalogObj,this.catalogNameTransArray[0]);
-        console.log("合并后的分类对象",catalogObj);
+        catalogObj = Object.assign(catalogObj,this.catalogNameTransArray[0]);        
       }
       
       //添加的时候需要 商铺id 和 属性名称
@@ -188,33 +174,30 @@ export default {
 
       self.$refs['catalogForm'].validate((valid) => {
         if (valid) {
-
           $http.post("/coron-web/catalog/add", params).then(response => {
 
             if (response.status) {
               self.$message({
                 type: 'success',
-                message: '类目添加成功！'
+                message: self.$t('tips.message.addSuccess')
               });
               self.getCatalogList();
               self.cancelDialog();
             } else {
               self.$message({
                 type: 'error',
-                message: '类目添加失败:' + response.responseCode
+                message: response.message
               });
             }
 
-
-          }).catch(error => {
-            console.log(error);
-            self.$message.error('请求错误！');
+          }).catch(error => {            
+            self.$message.error(self.$t('tips.message.network'));
           })
 
         } else {
           self.$message({
             type: 'warning',
-            message: '请填写必填字段'
+            message: self.$t('tips.rules.error')
           });
         }
 
@@ -224,8 +207,7 @@ export default {
 
     updateCatalog(item) {
 
-      this.btnTag = 'update';
-      this.titleTag = '修改类目';
+      this.btnTag = 'update';      
       this.catalogDialogVisible = true;
       this.middleObj = item;
       this.catalogForm.catalogName = item.nameObject.zh;
@@ -245,13 +227,10 @@ export default {
         zh: self.catalogForm.catalogName, 
         en: self.catalogForm.catalogName, 
         jp: self.catalogForm.catalogName 
-      };
-
-      console.log("修改后的数据",self.catalogNameTransArray);
+      };      
 
       if(self.catalogNameTransArray.length > 0){
-        nameObj = Object.assign(nameObj,self.catalogNameTransArray[0]);
-        console.log("修改合并后的分类对象",nameObj);
+        nameObj = Object.assign(nameObj,self.catalogNameTransArray[0]);        
       }
 
       //更新列表请求
@@ -269,7 +248,7 @@ export default {
             if (response.status) {
               self.$message({
                 type: 'success',
-                message: '更新成功'
+                message: self.$t('tips.message.updateSuccess')
               });
             }
             self.cancelDialog();
@@ -279,14 +258,14 @@ export default {
             console.log(error);
             self.$message({
               type: 'error',
-              message: '更新失败'
+              message: self.$t('tips.message.updateError')
             });
           })
 
         } else {
           self.$message({
             type: 'warning',
-            message: '请填写必填字段'
+            message: self.$t('tips.rules.error')
           });
         }
       })
@@ -318,7 +297,7 @@ export default {
         if (response.status) {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: this.$t('tips.message.delSuccess')
           });
           this.getCatalogList();
         } else {
@@ -339,32 +318,25 @@ export default {
       self.checkChildren(item).then(res => {
 
         if (res.data.rows && res.data.rows.length > 0) {
-          self.$alert('该分类下有菜品时，不可直接删除分类', '提示', {
-            confirmButtonText: '我知道了',
+          self.$alert(self.$t('tips.message.catalogHaveChild'), self.$t('tips.message.hint'), {
+            confirmButtonText: self.$t('tips.message.iknow'),
             type: 'warning'
           })
         } else {
-
-          this.$confirm('确认删除该分类吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          self.$confirm(self.$t('tips.message.delCatalog'), self.$t('tips.message.hint'), {
+            confirmButtonText: self.$t('tips.message.ok'),
+            cancelButtonText: self.$t('tips.message.cancel'),
             closeOnClickModal: false,
             type: 'warning'
           }).then(() => {
-
             self.delCatalog(item);
-
           }).catch(() => {
-
             self.$message({
               type: 'info',
-              message: '已取消删除'
+              message: self.$t('tips.message.canceled')
             });
-
           });
-
         }
-
       })
     },
 
@@ -383,12 +355,12 @@ export default {
                 if(response.status){
                   this.$message({
                       type: 'success',
-                      message: '更新成功'
+                      message: this.$t('tips.message.exchangeSuccess')
                   });
                 } else {
                   this.$message({
                       type: 'error',
-                      message: `更新失败：${response.message}`
+                      message: response.message
                   });
                 }
                 
@@ -398,7 +370,7 @@ export default {
                 
                 this.$message({
                     type: 'error',
-                    message: '更新失败'
+                    message: this.$t('tips.message.exchangeError')
                 });
                 this.getCatalogList();
                 
@@ -408,11 +380,7 @@ export default {
     moved(evt) {
 
       let newIndex = evt.moved.newIndex;
-      let oldIndex = evt.moved.oldIndex;
-
-      console.log(evt);
-      console.log(this.catalogDatas[evt.moved.newIndex + 1]);
-      console.log(this.catalogDatas[evt.moved.newIndex]);
+      let oldIndex = evt.moved.oldIndex;      
 
       if (newIndex > oldIndex) {
         let oldItem = this.catalogDatas[evt.moved.newIndex],
@@ -443,7 +411,6 @@ export default {
       }
 
     }
-
 
   }
 }

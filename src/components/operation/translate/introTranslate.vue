@@ -117,14 +117,12 @@ export default {
       };
       
       $http.get("/coron-web/introduce/list", getParams)
-        .then(response => {
-            console.log("提案",response);
+        .then(response => {            
           !!response.rows && (this.introList = response.rows);
           this.totalItems = response.total;
         })
         .catch(error => {
-          console.log(error);
-          alert("网络错误，不能访问,请刷新页面重试！");
+          console.log(error);          
         });
     },
     handleSizeChange(size) {
@@ -136,7 +134,7 @@ export default {
     },
 
     editTranslate(item) {
-      console.log("编辑翻译", item);
+      
       this.middleObj = item;
       this.editTag = item.id;
       this.editForm.titleZH = item.titlePojo.zh;
@@ -178,10 +176,10 @@ export default {
           Language: this._SHOPLANGUAGE
         }
       }).then(response => {
-          if (response.data.status == true) {
+          if (response.data.status) {
             this.$message({
-              type: "info",
-              message: "提案翻译成功"
+              type: "success",
+              message: this.$t('translate.success')
             });
             this.editTag = 0;
             this.getIntroList();
@@ -191,7 +189,7 @@ export default {
           console.log(error);
           this.$message({
             type: "error",
-            message: "请求失败！"
+            message: this.$t('translate.error')
           });
         });
     }

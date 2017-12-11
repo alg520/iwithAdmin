@@ -72,10 +72,10 @@ export default {
             },
             otaUpdateFormRules: {
                 romName: [
-                    { required: true, message: '请输入ROM名称', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.romname'), trigger: 'blur' }
                 ],
                 romCode: [
-                    { required: true, message: '请输入ROM CODE', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.romcode'), trigger: 'blur' }
                 ]
             },            
             fileList: [],            
@@ -86,7 +86,7 @@ export default {
         }
     },
     created() {
-        console.log(OSSUpload);
+        
     },
     computed: {
         percentage(){
@@ -107,11 +107,11 @@ export default {
             const isLt500M = file.raw.size / 1024 / 1024 < 500;
 
             if (!isZIP) {
-                this.$message.error('上传文件只能是 ZIP 格式!');
+                this.$message.error(this.$t('tips.otaUpload.type'));
                 return false;
             }
             if (!isLt500M) {
-                this.$message.error('上传文件大小不能超过 500MB!');
+                this.$message.error(this.$t('tips.otaUpload.size'));
                 return false;
             }
             return isZIP && isLt500M;
@@ -120,7 +120,7 @@ export default {
         handleAvatarSuccess(res, file, fileList) {
 
             if (!res.status) {
-                this.$message.error("上传失败：" + res.message);
+                this.$message.error(res.message);
             }
             this.imageUrl = URL.createObjectURL(file.raw);
             this.robotDanceForm.danceImg = res.entry;
@@ -131,11 +131,9 @@ export default {
 
             const beforeResult = this.beforeRomUpload(file);
             
-            console.log(beforeResult);
             if(fileList.length > 1){                
-                this.$message.error("只能上传一个文件！");
-                fileList.pop();
-                console.log(fileList);                            
+                this.$message.error(this.$t('tips.apkUpload.num'));
+                fileList.pop();                                           
             }
 
             if(beforeResult){
@@ -158,10 +156,10 @@ export default {
                 if(valid){
                     this.startUpload();
                 } else {
-                    console.log("请输入必填字段");
+                    
                     this.$message({
                         type:'warning',
-                        message:'请输入必填字段'
+                        message: this.$t('tips.rules.error')
                     })
                 }
             })
@@ -185,32 +183,25 @@ export default {
             });
 
             self.myOSSUpload.on('append', function (data) {
-                console.log('进度条: ' + data);
+                
                 this.percent = parseInt(data*100);                
                 self.percentArray.push(this.percent);
 
             });
 
             self.myOSSUpload.on('finish', function () {
-                console.log('上传完成',self.$router);
+                
                 self.$router.push({
                     path:'/operation/otamanage'
                 })
 
             });
 
-            self.myOSSUpload.on('error', function (err) {
-                console.log('上传错误',err);
+            self.myOSSUpload.on('error', function (err) {                
                 self.$message.error(err);
             });
 
-
-
             self.myOSSUpload.init();
-        },
-
-        cancelUpload() {
-            
         }
 
     }

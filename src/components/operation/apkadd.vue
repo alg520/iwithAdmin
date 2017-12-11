@@ -16,7 +16,7 @@
             <el-form-item :label="$t('apkManage.pushAddress')" prop="region">
                 <el-select v-model="apkAddForm.region" placeholder="请选择发布地区">
                     <el-option label="中国(China)" value="CN"></el-option>
-                    <el-option label="日本(Janpan)" value="JP"></el-option>
+                    <el-option label="日本(Japan)" value="JP"></el-option>
                     <el-option label="英国(UK)" value="GB"></el-option>
                     <el-option label="美国(US)" value="US"></el-option>
                 </el-select>
@@ -42,10 +42,10 @@
                 :file-list="fileList"               
                 :on-change="handleChange">
                     <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或
-                        <em>点击上传</em>
+                    <div class="el-upload__text">
+                        {{$t('tips.apkUpload.style')}}<em>{{$t('tips.apkUpload.click')}}</em>
                     </div>
-                    <div class="el-upload__tip" slot="tip">只能上传.apk文件</div>
+                    <div class="el-upload__tip" slot="tip">{{$t('tips.apkUpload.type')}}</div>
                 </el-upload>
                 <el-progress v-for="(item,index) in percentArray" :key="item" :text-inside="true" :stroke-width="18" :percentage="item" status="success" v-if=" index+1 == percentArray.length"></el-progress>                
             </el-form-item>
@@ -72,10 +72,10 @@ export default {
             },
             apkAddFormRules: {
                 name: [
-                    { required: true, message: '请输入APP名称', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.appname'), trigger: 'blur' }
                 ],
                 code: [
-                    { required: true, message: '请输入APK CODE', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.appcode'), trigger: 'blur' }
                 ]
             },
             fileList: [],
@@ -86,7 +86,7 @@ export default {
         }
     },
     created() {
-        console.log(OSSUpload);
+        
     },
     computed: {
         percentage(){
@@ -104,16 +104,13 @@ export default {
         beforeRomUpload(file) {            
             
             const isAPK = file.raw.name.slice(-4) === '.apk';
-            
-            console.log("文件类型",file.raw.name.slice(-4));
-
             const isLt200M = file.raw.size / 1024 / 1024 < 200;
 
             if (!isAPK) {
-                this.$message.error('上传文件只能是 .APK 格式!');                
+                this.$message.error(this.$t('tips.apkUpload.type'));
             }
             if (!isLt200M) {
-                this.$message.error('上传文件大小不能超过 200MB!');                
+                this.$message.error(this.$t('tips.apkUpload.size'));                
             }
             return isAPK && isLt200M;
         },
@@ -121,7 +118,7 @@ export default {
         handleAvatarSuccess(res, file, fileList) {
 
             if (!res.status) {
-                this.$message.error("上传失败：" + res.message);
+                this.$message.error(res.message);
             }
             this.imageUrl = URL.createObjectURL(file.raw);
             this.robotDanceForm.danceImg = res.entry;
@@ -132,9 +129,8 @@ export default {
 
             const beforeResult = this.beforeRomUpload(file);
             
-            console.log(beforeResult);
             if(fileList.length > 1){                
-                this.$message.error("只能上传一个文件！");
+                this.$message.error(this.$t('tips.apkUpload.num'));
                 fileList.pop();                                        
             }
 
@@ -150,8 +146,7 @@ export default {
                 this.fileList = [];
                 
             }          
-            console.log(file);
-
+            
         },
 
         apkUpload(){
@@ -159,11 +154,10 @@ export default {
             this.$refs['apkAddForm'].validate((valid) => {
                 if(valid){
                     this.startUpload();
-                } else {
-                    console.log("请输入必填字段");
+                } else {                    
                     this.$message({
                         type:'warning',
-                        message:'请输入必填字段'
+                        message:this.$t('tips.rules.error')
                     })
                 }
             })
@@ -186,32 +180,23 @@ export default {
                 self.myOSSUpload.start(data);
             });
 
-            self.myOSSUpload.on('append', function (data) {
-                console.log('进度条: ' + data);
+            self.myOSSUpload.on('append', function (data) {                
                 this.percent = parseInt(data*100);                
                 self.percentArray.push(this.percent);
-
             });
 
-            self.myOSSUpload.on('finish', function () {
-                console.log('上传完成');
-
+            self.myOSSUpload.on('finish', function () {                
                 self.$router.push({
                     path:'/operation/apkmanage'
                 })
 
             });
 
-            self.myOSSUpload.on('error', function (err) {
-                console.log('上传错误',err);
+            self.myOSSUpload.on('error', function (err) {                
                 self.$message.error(err);
             });
 
             self.myOSSUpload.init();
-        },
-
-        cancelUpload() {
-            
         }
 
     }

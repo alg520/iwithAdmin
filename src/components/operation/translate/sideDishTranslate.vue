@@ -105,22 +105,18 @@ export default {
           this.totalItems = response.total;
         })
         .catch(error => {
-          console.log(error);
-          alert("网络错误，不能访问,请刷新页面重试！");
+          console.log(error);         
         });
     },
     handleSizeChange(size) {
       console.log(size);
     },
     // 翻页
-    handleCurrentChange(page) {
-      console.log(page);
-      console.log(this.currentPage);
+    handleCurrentChange(page) {      
       this.getItemList();
     },
 
-    editTranslate(item) {
-      console.log("编辑翻译", item);
+    editTranslate(item) {      
       this.middleObj = item;
       this.editTag = item.itemId;
       this.editForm.nameZH = item.itemNameObject.zh;
@@ -165,7 +161,7 @@ export default {
           if (response.data.status == true) {
             this.$message({
               type: "info",
-              message: "菜品翻译成功"
+              message: this.$t('translate.success')
             });
             this.editTag = 0;
             this.getItemList();
@@ -175,7 +171,7 @@ export default {
           console.log(error);
           this.$message({
             type: "error",
-            message: "请求失败！"
+            message: this.$t('translate.error')
           });
         });
     }

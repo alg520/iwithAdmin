@@ -133,6 +133,7 @@
     "putaway":"上架",
     "soldout":"下架",
     "addCatalog":"添加类目",
+    "updateCatalog":"修改类目",
     "catalogSort":"类目排序",
     "catalogName":"类目名称",
     "addAttr":"添加属性",
@@ -295,7 +296,9 @@
     "attribute":"属性翻译",
     "sideDish":"配菜翻译",
     "introGroup":"提案组翻译",
-    "intro":"提案翻译"
+    "intro":"提案翻译",
+    "success":"翻译成功",
+    "error":"翻译失败"
   },
   "robot":{
     "addDance":"添加舞蹈",
@@ -365,11 +368,46 @@
     "companyName":"深圳市艾唯尔科技有限公司",
     "copyright":"Copyright © 版权所有"
   },
+  "snManage":{
+    "placeholderName":"请输入sn名称",
+    "robotName":"机器人名称",
+    "romVersion":"ROM 版本",
+    "appVersion":"APP 版本",
+    "isTest":"是否测试",
+    "tableNo":"桌号",
+    "shopId":"所属店铺ID",
+    "managerId":"所属店员ID",
+    "update":"修改",
+    "robotId":"机器人ID",
+    "noSN":"未找到对应SN"
+  },
   "tips":{
+    "time":{
+      "today":"今天",
+      "yestoday":"昨天",
+      "aweekago":"一周前"
+    },
+    "apkUpload":{
+      "style":"将文件拖到此处，或",
+      "click":"点击上传",
+      "type":"只能上传 .apk 文件",
+      "size":"上传文件大小不能超过200MB",
+      "num":"只能上传一个文件"
+    },
+    "otaUpload":{
+      "type":"只能上传 .zip 文件",
+      "size":"上传文件大小不能超过500MB"
+    },
+    "musicUpload":{
+      "type":"上传舞蹈音乐只能是 MP3 格式",
+      "size":"上传舞蹈音乐大小不能超过 15MB"
+    },
     "rules":{
       "username":"请输入账号",
       "password":"请输入密码",
       "authCode":"请输入验证码",
+      "oldpassword":"请输入原密码",
+      "newpassword":"请输入新密码",
       "length":"长度在6到12个字符",
       "letterornum":"请输入字母加数字",
       "itemNo":"请输入商品编号",
@@ -377,7 +415,36 @@
       "itemName":"请输入商品名称",
       "originPrice":"请输入商品原价",
       "itemType":"请选择商品类型",
-      "error":"校验失败，请检查必填字段"
+      "catalogName":"请输入类目名称",
+      "attrName":"请输入属性名称",
+      "timeName":"请输入时段名称",
+      "introTitle":"请输入提案标题",
+      "introContent":"请输入提案内容",
+      "intromaxChars":"最多输入两百个字符",
+      "introGroupTitle":"请输入提案组名称",
+      "error":"校验失败，请检查必填字段",
+      "postCode":"请输入邮编",
+      "rightCode":"获取失败,请检查邮编是否正确",
+      "shopname":"请输入店铺名称",
+      "shoptel":"请输入店铺联系电话",
+      "currencyPrecision":"请选择货币精度",
+      "currencyType":"请选择货币类型",
+      "haveRadioFee":"请选择是否含有税率",
+      "shopaddress":"请输入店铺地址",
+      "province":"请输入省份",
+      "city":"请输入市",
+      "street":"请输入街道",
+      "istestShop":"请选择是否测试店铺",
+      "appname":"请输入APP名称",
+      "appcode":"请输入APK CODE",
+      "romname":"请输入ROM名称",
+      "romcode":"请输入ROM CODE",
+      "dancename":"请输入舞蹈名称",
+      "dancenameEn":"请输入舞蹈英文名称",
+      "dancenameJp":"请输入舞蹈日文名称",
+      "danceCode":"请输入舞蹈动作代码",
+      "danceImg":"请上传舞蹈动作图片",
+      "danceMusic":"请上传舞蹈动作音乐"
     },
     "message":{
       "test":"测试",
@@ -394,6 +461,8 @@
       "updateError":"更新失败",
       "imgUploadSuccess":"图片上传成功",
       "imgUploadError":"图片上传失败",
+      "uploadSuccess":"上传成功",
+      "uploadError":"上传失败",
       "jpgorpng":"上传图片只能是 JPG 或 PNG 格式",
       "picSize":"上传图片大小不能超过 2MB",
       "itemCount":"最多选择10个单品",
@@ -402,7 +471,16 @@
       "attrNotNull":"属性组名称不能为空",
       "sideDishNotNull":"配菜组名称不允许为空",
       "exchangeSuccess":"交换成功",
-      "exchangeError":"交换失败"
+      "exchangeError":"交换失败",
+      "catalogHaveChild":"该分类下有菜品时，不可直接删除分类",
+      "iknow":"我知道了",
+      "delCatalog":"确定要删除该分类吗？",
+      "delAttr":"确定要删除该属性吗？",
+      "delTime":"确定要删除该时段吗？",
+      "delSidedish":"确定要删除该配菜吗？",
+      "delIntro":"确定要删除这个提案吗？",
+      "groupHaveChild":"该分组下有提案时，不可直接删除",
+      "delIntroGroup":"确定要删除该分组吗？"
     }
   }
 

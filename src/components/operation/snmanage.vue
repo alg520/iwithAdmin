@@ -1,39 +1,35 @@
 <template>
     <div class="robotDancePage">        
         <div style="padding:10px 0;">
-            <el-input v-model="snSearchForm.name" placeholder="请输入sn名称" style="width:200px"></el-input>
+            <el-input v-model="snSearchForm.name" :placeholder="$t('snManage.placeholderName')" style="width:200px"></el-input>
             <el-button type="primary" @click="getSn()">{{$t('_global.search')}}</el-button>
         </div>
         <el-table :data="snLists" border style="width: 100%; text-align:center;">
             <el-table-column label="ID" fixed="left" prop="robotId" width="80"></el-table-column>            
-            <el-table-column label="机器人名称" fixed="left" prop="robotName" min-width="130px">                
+            <el-table-column :label="$t('snManage.robotName')" fixed="left" prop="robotName" min-width="130px">                
             </el-table-column>           
-            <el-table-column label="ROM 版本" prop="romVersion" min-width="230px">                
+            <el-table-column :label="$t('snManage.romVersion')" prop="romVersion" min-width="230px">                
             </el-table-column>
-            <el-table-column label="APP 版本" prop="appVersion" min-width="130px">
+            <el-table-column :label="$t('snManage.appVersion')" prop="appVersion" min-width="130px">
             </el-table-column>
             <el-table-column label="sn" min-width="230px" prop="sn">                
             </el-table-column>
-            <el-table-column label="是否测试" min-width="130px" prop="isTest">
+            <el-table-column :label="$t('snManage.isTest')" min-width="130px" prop="isTest">
                 <template scope="scope">
-                    <span v-if="scope.row.isTest == 1">是</span>
-                    <span v-if="scope.row.isTest == 0">否</span>
+                    <span v-if="scope.row.isTest == 1">{{$t('shop.yes')}}</span>
+                    <span v-if="scope.row.isTest == 0">{{$t('shop.no')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="桌号" min-width="130px" prop="tableNo">                
+            <el-table-column :label="$t('snManage.tableNo')" min-width="130px" prop="tableNo">                
             </el-table-column>
-            <el-table-column label="所属商铺ID" min-width="130px" prop="shopId">                
+            <el-table-column :label="$t('snManage.shopId')" min-width="130px" prop="shopId">                
             </el-table-column>
-            <el-table-column label="所属店员ID" min-width="130px" prop="managerId">                
-            </el-table-column>
-            <el-table-column label="控制板ID" min-width="130px" prop="managerId">                
+            <el-table-column :label="$t('snManage.managerId')" min-width="130px" prop="managerId">                
             </el-table-column>            
-            <!-- <el-table-column label="机器人状态" min-width="130px" prop="robotStatusId">                
-            </el-table-column> -->
-            <el-table-column label="操作" fixed="right" width="100px">
+            <el-table-column :label="$t('_global.action')" fixed="right" width="100px">
                 <template scope="scope">                    
                     <el-button type="text" size="small" @click="snUpdate(scope.row)">
-                        <i class="el-icon-edit" title="编辑"></i>
+                        <i class="el-icon-edit" :title="$t('_global.edit')"></i>
                     </el-button>
                 </template>
             </el-table-column>
@@ -44,23 +40,23 @@
         </div>
 
         <el-dialog
-        title="修改"
+        :title="$t('snManage.update')"
         :visible.sync="snDialogVisible"
         size="tiny">
             <el-form label-width="80px" :model="snForm">
-                <el-form-item label="机器人ID">
+                <el-form-item :label="$t('snManage.robotId')">
                     <el-input v-model="snForm.robotId" :disabled="true"></el-input>
                 </el-form-item>
-                <el-form-item label="是否测试">
+                <el-form-item :label="$t('snManage.isTest')">
                     <el-select v-model="snForm.isTest">
-                        <el-option label="否" value="0"></el-option>
-                        <el-option label="是" value="1"></el-option>
+                        <el-option :label="$t('shop.yes')" value="0"></el-option>
+                        <el-option :label="$t('shop.no')" value="1"></el-option>
                     </el-select>
                 </el-form-item>                
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="snDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="changeTest()">确 定</el-button>
+                <el-button @click="snDialogVisible = false">{{$t('_global.cancel')}}</el-button>
+                <el-button type="primary" @click="changeTest()">{{$t('_global.confirm')}}</el-button>
             </span>
         </el-dialog>
     </div>
@@ -102,11 +98,6 @@ export default {
           if (res.status) {            
             this.snLists = res.entry.rows;
             this.totalItems = res.entry.total;
-          } else {
-            this.$message({
-              type: "error",
-              message: res.message
-            });
           }
         });
     },
@@ -119,11 +110,10 @@ export default {
                 this.snLists = [];
                 this.snLists.push(res.entry);
                 this.totalItems = 1;
-            } else {
-                console.log("请求失败！");
+            } else {                
                 this.$message({
-                    type:'warning',
-                    message:'未找到对应的sn'
+                    type:'error',
+                    message:this.$t('snManage.noSN')
                 });
             }
 
@@ -143,8 +133,7 @@ export default {
         this.getSnLists();
     },
 
-    snUpdate(item){
-        console.log(item);        
+    snUpdate(item){        
         this.snDialogVisible = true;
         this.snForm.robotId = item.robotId;
         this.snForm.isTest = typeof item.isTest == "undefined" ? "":item.isTest+ "";      
@@ -161,13 +150,13 @@ export default {
                 this.snDialogVisible = false;
                 this.$message({
                     type:'success',
-                    message:"修改成功"
+                    message:this.$t('tips.message.updateSuccess')
                 });
                 this.getSnLists();
             } else {
                 this.$message({
                     type:'error',
-                    message:"修改失败"
+                    message:this.$t('tips.message.updateError')
                 });
             }
         })        

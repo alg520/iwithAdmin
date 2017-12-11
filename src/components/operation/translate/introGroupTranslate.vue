@@ -102,14 +102,11 @@ export default {
         })
     },
     // 翻页
-    handleCurrentChange(page) {
-      console.log(page);
-      console.log(this.currentPage);
+    handleCurrentChange(page) {      
       this.getIntroGroupList();
     },
 
-    editTranslate(item) {
-      console.log("编辑翻译", item);
+    editTranslate(item) {      
       this.middleObj = item;
       this.editTag = item.id;
       this.editForm.nameZH = item.groupNamePojo.zh;
@@ -142,10 +139,10 @@ export default {
           Language: this._SHOPLANGUAGE
         }
       }).then(response => {
-          if (response.data.status == true) {
+          if (response.data.status) {
             this.$message({
-              type: "info",
-              message: "提案组翻译成功"
+              type: "success",
+              message: this.$t('translate.error')
             });
             this.editTag = 0;
             this.getIntroGroupList();
@@ -155,7 +152,7 @@ export default {
           console.log(error);
           this.$message({
             type: "error",
-            message: "请求失败！"
+            message: this.$t('translate.error')
           });
         });
     }

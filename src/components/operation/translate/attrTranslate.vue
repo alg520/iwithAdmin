@@ -97,13 +97,12 @@ export default {
                 } else {
                     this.$message({
                         type:'error',
-                        message:'属性请求失败'
+                        message: response.message
                     })
                 }
                 
             }).catch(error => {
-                console.log(error);
-                alert('网络错误，不能访问');
+                console.log(error);                
             })
         },
 
@@ -115,8 +114,7 @@ export default {
             this.getCatalogList();
         },
 
-        editTranslate(item) {
-            console.log("编辑翻译", item);
+        editTranslate(item) {            
             this.middleObj = item;
             this.editTag = item.itemAttrId;
             this.editForm.nameZH = item.attrNameObject.zh;
@@ -144,14 +142,14 @@ export default {
                 if (response.status) {
                     this.$message({
                         type: 'success',
-                        message: '更新成功'
+                        message: this.$t('translate.success')
                     });
                     this.getAttrList();
                     this.cancelTranslate();
                 } else {
                     this.$message({
                         type:'error',
-                        message:'翻译失败:'+response.message
+                        message: response.message
                     });
                 }                
 
@@ -159,7 +157,7 @@ export default {
                 console.log(error);
                 this.$message({
                     type: 'error',
-                    message: '请求失败'
+                    message: this.$t('translate.error')
                 });
             })
         }

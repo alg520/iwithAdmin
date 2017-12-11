@@ -8,9 +8,16 @@
                             <a href="javascript:;">{{$t('products.all')}}</a>
                         </li>
                         <li v-for="item in catalogDatas" :key="item.catalogId" @click="changeSelected(item.catalogId)" :class="[isActive == item.catalogId ? 'selected' :'']">
-                            <template>
-                                <a href="javascript:;" class="inblock" v-text="item.nameObject.zh">
-                                </a>
+                            <template>                                
+                                <span v-if="_SHOPLANGUAGE == 0">
+                                    <a href="javascript:;" class="inblock" v-text="item.nameObject.zh"></a>
+                                </span>
+                                <span v-if="_SHOPLANGUAGE == 1">
+                                    <a href="javascript:;" class="inblock" v-text="item.nameObject.en"></a>
+                                </span>
+                                <span v-if="_SHOPLANGUAGE == 2">
+                                    <a href="javascript:;" class="inblock" v-text="item.nameObject.jp"></a>
+                                </span>
                             </template>
                         </li>
                     </ul>
@@ -25,22 +32,7 @@
                         <el-row>
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
-                                    <el-form :inline="true" :model="itemsForm">
-                                        <!-- <el-form-item label="状态">
-                                            <el-select v-model="itemsForm.isSale" placeholder="状态" size="small" @change="getItemList()">
-                                                <el-option label="全部" value=""></el-option>
-                                                <el-option label="未上架" value="true"></el-option>
-                                                <el-option label="已上架" value="false"></el-option>
-                                            </el-select>
-                                        </el-form-item>
-                                        <el-form-item label="商品类型">
-                                            <el-select v-model="itemsForm.itemType" placeholder="商品类型" size="small" @change="getItemList()">
-                                                <el-option label="全部" value=""></el-option>
-                                                <el-option label="单点" value="1"></el-option>
-                                                <el-option label="套餐" value="2"></el-option>
-                                                <el-option label="配菜" value="3"></el-option>
-                                            </el-select>
-                                        </el-form-item> -->
+                                    <el-form :inline="true" :model="itemsForm">                                        
                                         <el-form-item label="">
                                             <el-input size="small" :placeholder="$t('placeholder.itemName')" icon="search" v-model="itemsForm.itemName" @keyup.enter="getItemList()" :on-icon-click="handleIconClick">
                                             </el-input>
@@ -143,9 +135,7 @@ export default {
     created() {
         //默认获取属性列表
         this.getCatalogList();
-        this.getItemList();
-        console.log("店铺信息",this.rShopDetailData);
-        console.log("店铺语言",this._SHOPLANGUAGE);
+        this.getItemList();        
     },
 
     computed: {
@@ -165,7 +155,7 @@ export default {
         function getHeight(){            
              //动态计算属性导航的高度
             var catalogNavHeight = document.body.clientHeight - 171;
-            document.getElementById("catalog-nav").style.height = catalogNavHeight + 'px';
+            document.getElementById("catalog-list").style.height = catalogNavHeight + 'px';
         }
         getHeight();
         window.onresize = function(){
@@ -179,21 +169,29 @@ export default {
         getCatalogList: function() {
             $http.get('/coron-web/catalog/getByShop',{shopId:this.rShopDetailData.id})
                 .then(response => {
-
-                    !!response.entry && (this.catalogDatas = response.entry);
+                    
+                    if(response.status){
+                        !!response.entry && (this.catalogDatas = response.entry);
+                    } else {
+                        this.$message({
+                            type:'error',
+                            message: response.message
+                        });
+                    }
 
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('网络错误，不能访问');
+                    console.log(error);                    
+                    this.$message({
+                        type:'error',
+                        message: error
+                    });
                 })
         },
 
-        changeSelected: function(itemId) {
-            console.log(itemId);
+        changeSelected (itemId) {            
             this.isActive = itemId;
             this.getItemList();
-
         },
 
         handleSizeChange(size) {
@@ -234,13 +232,11 @@ export default {
                 })
         },
 
-        updateItem(item) {
-            console.log("更新数据", item);
+        updateItem(item) {            
             Lockr.set("itemUpdateData", item);
             this.$router.push({
                 path: '/products/update'
             });
-
         },
         //删除菜品
         delItem(item) {
@@ -299,9 +295,7 @@ export default {
             })
         },
 
-        handleIconClick(ev) {
-            console.log(ev);
-            console.log(this.itemsForm.itemName);
+        handleIconClick(ev) {            
             this.getItemList();
         },
 
@@ -331,6 +325,7 @@ export default {
 .catalog-nav {
     border-right: 1px solid #ccc;
     padding-top: 20px;
+    overflow-y:auto;
 }
 
 ul.catalog-list {

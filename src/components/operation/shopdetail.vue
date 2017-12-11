@@ -163,7 +163,7 @@ export default {
     data() {
         var validateNumLetter = (rule,value,callback) => {
             if(!/^[A-Za-z0-9]+$/i.test(value)){
-                callback(new Error('请输入数字加字母！'));
+                callback(new Error(this.$t('tips.rules.letterornum')));
             }else {
                 callback();
             }
@@ -180,13 +180,13 @@ export default {
             },
             adduserRules:{
                 uname: [
-                    { required: true, message: '请输入账号', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' },
+                    { required: true, message: this.$t('tips.rules.username'), trigger: 'blur' },
+                    { min: 6, max: 12, message: this.$t('tips.rules.length'), trigger: 'blur' },
                     { validator: validateNumLetter , trigger:'blur'}
                 ],
                 upassword:[
-                    { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
+                    { required: true, message: this.$t('tips.rules.password'), trigger: 'blur' },
+                    { min: 6, max: 12, message: this.$t('tips.rules.length'), trigger: 'blur' }                    
                 ]
             },
             updatepwdForm:{
@@ -196,12 +196,12 @@ export default {
             },
             updatepwdRules:{
                 oldupassword:[
-                    { required: true, message: '请输入原密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.oldpassword'), trigger: 'blur' },
+                    { min: 6, max: 12, message: this.$t('tips.rules.length'), trigger: 'blur' }
                 ],
                 newupassword:[
-                    { required: true, message: '请输入新密码', trigger: 'blur' },
-                    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }                    
+                    { required: true, message: this.$t('tips.rules.newpassword'), trigger: 'blur' },
+                    { min: 6, max: 12, message: this.$t('tips.rules.length'), trigger: 'blur' }                    
                 ]
             },
             accountLists:[],
@@ -209,9 +209,7 @@ export default {
         }
     },
     created(){
-        this.getShopInfo();        
-        //this.getRobot();
-        //this.getShopUser();
+        this.getShopInfo();
     },
     computed:{
         ...mapGetters([
@@ -226,32 +224,35 @@ export default {
     },
     methods:{
         getShopInfo(){
-
-            this.shop = this.rShopDetailData;
-            
+            this.shop = this.rShopDetailData;            
             this.getShopUser(this.shop.id);
             this.getRobot(this.shop.id);
-
         },
-        
         getRobot(id){
 
-            getRobotByShop(id).then(res => {
-                console.log("店铺里的机器人",res);
+            getRobotByShop(id).then(res => {                
                 if(res.status){
                     this.equipmentInfos = res.entry;
-                }
-                
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:res.message
+                    })
+                }                
             })
-
         },
 
         getShopUser(id){
 
-            user.getShopUser(id).then(res => {
-                console.log("当前店铺的用户",res);
+            user.getShopUser(id).then(res => {                
+                
                 if(res.status){
                     this.accountLists = res.entry;
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:res.message
+                    })
                 }
                 
             })
@@ -276,7 +277,7 @@ export default {
                 if(res.status){
                     this.$message({
                         type:'success',
-                        message:'添加成功！'
+                        message:this.$t('tips.message.addSuccess')
                     });
                     this.getShopUser(this.shop.id);
                     this.addUserDialogVisible = false;
@@ -298,13 +299,13 @@ export default {
                 if(res.status){
                     this.$message({
                         type:'success',
-                        message:'删除成功'
+                        message:this.$t('tips.message.delSuccess')
                     });
                     this.getShopUser(this.shop.id);
                 } else {
                     this.$message({
                         type:'error',
-                        message:'删除失败'
+                        message:res.message
                     });
                     return false;
                 }
@@ -312,9 +313,9 @@ export default {
         },
 
         confirmDel(item){
-            this.$confirm('确认删除？','提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('tips.message.confirmDel'),this.$t('tips.message.hint'), {
+                confirmButtonText: this.$t('tips.message.ok'),
+                cancelButtonText: this.$t('tips.message.cancel'),
                 closeOnClickModal: false,
                 type: 'warning'})
             .then(_ => {
@@ -323,7 +324,7 @@ export default {
             .catch(_ => {
                 this.$message({
                     type:'warning',
-                    message:'已取消删除'
+                    message:this.$t('tips.message.canceled')
                 });
             });
         },
@@ -352,7 +353,7 @@ export default {
                     
                     this.$message({
                         type:'error',
-                        message:'校验失败,请检查'
+                        message:this.$t('tips.rules.error')
                     });
                     return false;
                 }
@@ -393,7 +394,7 @@ export default {
                         if(res.status){
                             this.$message({
                                 type:'success',
-                                message:'修改成功'
+                                message:this.$t('tips.message.updateSuccess')
                             });
                             this.updatePWDDialogVisible = false;
                         } else {
@@ -402,7 +403,6 @@ export default {
                                 message:res.message
                             });
                         }
-
                     })
 
                 } else {

@@ -133,6 +133,7 @@
     "putaway":"販売中",
     "soldout":"未販売",
     "addCatalog":"カテゴリー追加",
+    "updateCatalog":"カテゴリー 編集",
     "catalogSort":"カテゴリー順番",
     "catalogName":"カテゴリー名",
     "addAttr":"属性追加",
@@ -295,7 +296,9 @@
     "attribute":"属性翻訳",
     "sideDish":"トッピング翻訳",
     "introGroup":"提案グループ翻訳",
-    "intro":"提案翻訳"
+    "intro":"提案翻訳",
+    "success":"翻訳が完成する",
+    "error":"翻訳エラー"
   },
   "robot":{
     "addDance":"ダンス追加",

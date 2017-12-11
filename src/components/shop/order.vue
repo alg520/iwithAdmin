@@ -50,8 +50,10 @@
 
 <script>
 import axios from 'axios';
+import $http from '../../utils/http';
 import Lockr from 'lockr';
-import formatDate from '../../utils/formatDate'
+import Cookies from 'js-cookie';
+import formatDate from '../../utils/formatDate';
 export default {
   data() {
     return {
@@ -67,19 +69,19 @@ export default {
       tradeDetailInfo:'',
       pickerTradetime: {
         shortcuts: [{
-          text: '今天',
+          text: this.$t('tips.time.today'),
           onClick(picker) {
             picker.$emit('pick', new Date());
           }
         }, {
-          text: '昨天',
+          text: this.$t('tips.time.yestoday'),
           onClick(picker) {
             const date = new Date();
             date.setTime(date.getTime() - 3600 * 1000 * 24);
             picker.$emit('pick', date);
           }
         }, {
-          text: '一周前',
+          text: this.$t('tips.time.aweekago'),
           onClick(picker) {
             const date = new Date();
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
@@ -104,29 +106,28 @@ export default {
         rp: 10,
       };
 
-      axios.post('/coron-web/trade/getByShop', getData).then(res => {
-        console.log("获取交易记录", res.data);
-        this.tradeLists = res.data.rows;
-        this.totalItems = res.data.total;
-
+      $http.post('/coron-web/trade/getByShop', getData).then(res => {
+        if(res.status){
+          this.tradeLists = res.data.rows;
+          this.totalItems = res.data.total;
+        }
       })
     },
     
     getDetailTrade(item) {
 
       var self = this;
-
-      axios.post('/coron-web/trade/getTradeInfo', {
+      $http.post('/coron-web/trade/getTradeInfo', {
         tradeId: item.tradeId
       }).then(res => {
-        console.log("交易详情", res.data.entry);
-        self.tradeDetailInfo = res.data.entry;
 
-        Lockr.set("tradeDetailInfo",self.tradeDetailInfo);
-
-        this.$router.push({
-          path:'/shop/orderdetail'
-        });
+        if(res.status){
+          self.tradeDetailInfo = res.data.entry;
+          Lockr.set("tradeDetailInfo",self.tradeDetailInfo);
+          this.$router.push({
+            path:'/shop/orderdetail'
+          });
+        }
       })
     },
 
@@ -134,17 +135,13 @@ export default {
       console.log(size);
     },
     // 翻页
-    handleCurrentChange(page) {
-      console.log(page);
-      console.log(this.currentPage);
+    handleCurrentChange(page) {      
       this.getTrade();
     },
 
 
     getSomeThing() {      
-      
-      this.getTrade();            
-
+      this.getTrade();
     }
 
   }

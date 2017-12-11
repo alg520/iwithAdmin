@@ -76,12 +76,12 @@ export default {
         rp:this.pageSize
       };
       $http.post('/coron-web/shop/list',data).then(res => {
-        console.log("店铺列表2",res);        
+        
         if(res.status){
           this.shopLists = res.rows;
           this.totalItems = res.total;
         } else {
-          this.$message.error('有错误！');
+          this.$message.error(res.message);
         }
         
       })
@@ -90,7 +90,6 @@ export default {
     getShopDetail(item){     
 
       Lockr.set('shopDetailData',item);
-      
       this.$router.push({
         name:'shopdetail',
         params:{

@@ -74,7 +74,7 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入属性名称', trigger: 'blur' }
+          { required: true, message: this.$t('tips.rules.timeName'), trigger: 'blur' }
         ]
       },     
       formLabelWidth: '120px',
@@ -101,20 +101,22 @@ export default {
             response.rows && (this.timeDatas = response.rows);
           } else {
             this.$message({
-              type: 'info',
-              message: '数据错误'
+              type: 'error',
+              message: response.message
             });
           }
 
         }).catch(error => {
-          console.log(error);
-          alert('网络错误，不能访问');
+          console.log(error);          
+          this.$message({
+            type:'error',
+            message:this.$t('tips.rules.error')
+          });
         })
     },
 
     addDialog(){
-      this.btnTag = 'add';
-      this.titleTag="添加时段";
+      this.btnTag = 'add';      
       this.timeDialogVisible = true;
       this.resetForm();
     },
@@ -125,18 +127,9 @@ export default {
         if(itemName !== ''){
           var res = await baiduTranslate(itemName,_language);
           if(type == 'time'){
-              self.timeNameTransArray = returnTransArray(res);
-              console.log(" 添加时段 ",self.timeNameTransArray);
+              self.timeNameTransArray = returnTransArray(res);              
           }
-        }
-        // itemName !== ''
-        // &&
-        // baiduTranslate(itemName,_language).then(res => {
-        //   if(type == 'time'){
-        //       self.timeNameTransArray = returnTransArray(res);
-        //       console.log(" 添加时段 ",self.timeNameTransArray);
-        //   }
-        // })
+        }        
     },
 
     asyncAdd: async function(){
@@ -160,8 +153,7 @@ export default {
       }
 
       if(this.timeNameTransArray.length > 0){
-          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);
-          console.log("合并后的时段对象",timeNameObj);
+          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);          
       }
 
       let timeParams = {
@@ -181,19 +173,18 @@ export default {
             this.getTimeList();            
             this.$message({
               type:'success',
-              message:'添加成功'
+              message:this.$t('tips.message.addSuccess')
             });
             this.resetForm();
 
           }).catch(error => {
-            console.log(error);
-            alert('网络错误不能访问');
+            console.log(error);            
           })
 
         } else {
           this.$message({
-            type: 'info',
-            message: '要添加的的时段名不能为空！'
+            type: 'error',
+            message: this.$t('tips.rules.error')
           });
           return false;
         }
@@ -208,44 +199,43 @@ export default {
         timeDurationId: item.timeDurationId
 
       }).then(response => {
-        console.log(response);
 
         if(response.status){
           this.$message({
             type:'success',
-            message:'删除成功'
+            message:this.$t('tips.message.delSuccess')
+          });
+        } else {
+          this.$message({
+            type:'success',
+            message:response.message
           });
         }
         
         this.getTimeList();
 
-      }).catch(error => {
-        
+      }).catch(error => {        
         console.log(error);
-        alert('请求错误');
-
       })
 
     },
 
     confirmDel(item) {
-        this.$confirm('确定要删除该时段吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+        this.$confirm(this.$t('tips.message.delTime'), this.$t('tips.message.hint'), {
+            confirmButtonText: this.$t('tips.message.ok'),
+            cancelButtonText: this.$t('tips.message.cancel'),
             type: 'warning'
         }).then(() => {
             this.delTimeDuration(item);
         }).catch(() => {
             this.$message({
                 type: 'info',
-                message: '已取消删除'
+                message: this.$t('tips.message.canceled')
             });
         });
     },
 
-    updateTimeDuration(item){
-      
-      this.titleTag = '修改时段';
+    updateTimeDuration(item){      
       this.btnTag = 'update';
       this.timeDialogVisible = true;
       this.timeDurationForm.name = item.nameGL.zh;
@@ -259,15 +249,13 @@ export default {
       this.timeDurationForm.startTime = item.startTime;
       this.timeDurationForm.endTime = item.endTime;
       this.timeDurationId = item.timeDurationId;
-
     },
 
     updateTimeDurationPost(){
 
       let timeNameObj = {zh:this.timeDurationForm.name,jp:this.timeDurationForm.name,en:this.timeDurationForm.name};
       if(this.timeNameTransArray.length > 0){
-          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);
-          console.log("合并后的时段对象",timeNameObj);
+          timeNameObj = Object.assign(timeNameObj,this.timeNameTransArray[0]);          
       }
 
       let updateParams = {
@@ -278,24 +266,30 @@ export default {
       };
       
       $http.post('/coron-web/shopTimeDuration/update',updateParams).then(response => {
-        
-        this.$message({
-          type:'success',
-          message:'修改成功'
-        });
-        this.timeDialogVisible = false;
-        this.getTimeList();
+
+        if(response.status){
+          this.$message({
+            type:'success',
+            message:this.$t('tips.message.updateSuccess')
+          });
+          this.timeDialogVisible = false;
+          this.getTimeList();          
+        } else {
+          this.$message({
+            type:'error',
+            message:response.message
+          });
+        }
+
       }).catch(error => {
         console.log(error);
       })
     },
 
-    resetForm() {
-      
+    resetForm() {      
       this.timeDurationForm.name = '';
       this.timeDurationForm.startTime ='';
       this.timeDurationForm.endTime = '';
-
     }
   }
 }

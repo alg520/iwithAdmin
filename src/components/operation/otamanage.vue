@@ -148,6 +148,11 @@ export default {
                 if (res.status) {
                     this.romLists = res.rows;
                     this.totalItems = res.total;
+                } else {
+                    this.$message({
+                        type:'error',
+                        message:res.message
+                    });
                 }
             })
         },
@@ -164,7 +169,6 @@ export default {
             this.otaUpdateDialogVisible = true;
 
             this.middleObj = item;
-
             this.otaUpdateForm.romName = item.romName;
             this.otaUpdateForm.romCode = item.romCode;
             this.otaUpdateForm.romType = item.romType.toString();
@@ -178,16 +182,13 @@ export default {
             const data = {
                 romId: this.middleObj.romId,                
                 publishState: this.otaUpdateForm.publishState               
-            };
-
-            console.log(data);
-
+            };            
             $http.post('/coron-web/otarom/update', data).then(res => {
                 
                 if (res.status) {
                     this.$message({
                         type: 'success',
-                        message: '修改成功'
+                        message: this.$t('tips.message.updateSuccess')
                     });
                     this.otaUpdateDialogVisible = false;
                     this.getRomLists();
@@ -209,18 +210,17 @@ export default {
                 romId: item.romId
             }).then(res => {
                 console.log(res);
-                if(res.status){
-                    
+                if(res.status){                    
                     this.$message({
                         type: 'success',
-                        message: '删除成功'
+                        message: this.$t('tips.message.delSuccess')
                     })
                     this.getRomLists();
                     
                 } else {
                     this.$message({
                         type: 'error',
-                        message: '删除失败'
+                        message: res.message
                     })
                 }               
 
@@ -228,9 +228,9 @@ export default {
         },
 
         confirmDel(item) {
-            this.$confirm('确定删除这条ROM记录么？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('tips.message.confirmDel'), this.$t('tips.message.hint'), {
+                confirmButtonText: this.$t('tips.message.ok'),
+                cancelButtonText: this.$t('tips.message.cancel'),
                 type: 'warning',
             }).then(() => {
 
@@ -239,7 +239,7 @@ export default {
             }).catch(() => {
                 this.$message({
                     type: 'info',
-                    message: '已取消删除'
+                    message: this.$t('tips.message.canceled')
                 });
             })
         }

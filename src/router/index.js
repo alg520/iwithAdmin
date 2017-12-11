@@ -255,7 +255,7 @@ const router = new Router({
                 breadNav: [
                   { name: "运营管理", path: "" },
                   { name: "APK升级管理", path: "/operation/apkmanage" },
-                  { name: "APK升级", path: "" }
+                  { name: "APK升级", path: "" }                  
                 ]
               }
             },
@@ -342,9 +342,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   //let token = getToken();
   let token = getToken();
-
-  console.log("ROUTER", token);
-
+    
   if (to.meta.requireAuth) {
     if (token) {
       next();

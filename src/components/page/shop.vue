@@ -46,17 +46,15 @@ export default {
             'user'
         ])
     },
-    created(){
-        console.log("vuex user",this.user);
+    created(){        
         this.getUserList();
         this.getLoginInfo();
     },    
     methods :{
 
         getUserList(){
-            user.getUserList({}).then(response => {
+            user.getUserList({}).then(response => {                
                 
-                console.log("用户列表",response);
                 this.setUserList(response.rows)
 
             })

@@ -98,9 +98,7 @@ export default {
 
   created() {
     //默认获取属性列表
-    this.getItemList();
-    console.log("店铺信息", this.rShopDetailData);
-    console.log("店铺语言", this._SHOPLANGUAGE);
+    this.getItemList();    
   },
 
   methods: {

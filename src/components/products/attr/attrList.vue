@@ -57,7 +57,7 @@ export default {
       },
       rules: {
         attrName: [
-          { required: true, message: '请输入属性名称', trigger: 'blur' }
+          { required: true, message: this.$t('tips.rules.attrName'), trigger: 'blur' }
         ]
       },
       formLabelWidth: '120px',
@@ -89,8 +89,11 @@ export default {
 
       }).catch(error => {
 
-        console.log(error);
-        alert('网络错误，不能访问');
+        console.log(error);        
+        this.$message({
+          type:error,
+          message:this.$t('tips.message.network')
+        });
 
       })
     },
@@ -127,8 +130,7 @@ export default {
       }
 
       if (this.attrTransArray.length > 0) {
-        attrNameObj = Object.assign(attrNameObj, this.attrTransArray[0]);
-        console.log("合并后的属性对象", attrNameObj);
+        attrNameObj = Object.assign(attrNameObj, this.attrTransArray[0]);        
       }
 
       let addParams = {
@@ -144,7 +146,7 @@ export default {
             if (response.status) {
               this.$message({
                 type: 'success',
-                message: '添加成功！'
+                message: this.$t('tips.message.addSuccess')
               });
               this.getItemAttrList();
               this.attrForm.attrName = '';
@@ -157,10 +159,9 @@ export default {
 
         } else {
           this.$message({
-            type: 'info',
-            message: '要添加的属性名不能为空！'
-          });
-          return false;
+            type: 'error',
+            message: this.$t('tips.rules.error')
+          });          
         }
       });
     },
@@ -175,7 +176,6 @@ export default {
       } else if (this._SHOPLANGUAGE == 2) {
         this.attrForm.attrName = item.attrNameObject.jp;
       }
-
       this.itemAttrId = item.itemAttrId;
       this.titleTag = 'update';
     },
@@ -191,8 +191,7 @@ export default {
         itemAttrObj.jp = this.attrForm.attrName;
       }
       if (this.attrTransArray.length > 0) {
-        itemAttrObj = Object.assign(itemAttrObj, this.attrTransArray[0]);
-        console.log("合并后的属性对象", itemAttrObj);
+        itemAttrObj = Object.assign(itemAttrObj, this.attrTransArray[0]);        
       }
 
       let updateParams = {
@@ -209,7 +208,7 @@ export default {
             if (response.status) {
               this.$message({
                 type: 'success',
-                message: '修改成功！'
+                message: this.$t('tips.message.updateSuccess')
               });
               this.getItemAttrList();
               this.attrForm.attrName = '';
@@ -222,10 +221,9 @@ export default {
 
         } else {
           this.$message({
-            type: 'info',
-            message: '要修改的属性名不能为空！'
-          });
-          return false;
+            type: 'error',
+            message: this.$t('tips.rules.error')
+          });          
         }
       });
 
@@ -244,10 +242,9 @@ export default {
       $http.post('/coron-web/itemAttr/del', { itemAttrId: item.itemAttrId }).then(response => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message:this.$t('tips.message.delSuccess')
         });
         this.getItemAttrList();
-        console.log("删除成功", response);
 
       }).catch(error => {
         console.log(error);
@@ -255,16 +252,16 @@ export default {
     },
 
     confirmDel(item) {
-      this.$confirm('确定要删除该属性吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('tips.message.delAttr'), this.$t('tips.message.hint'), {
+        confirmButtonText: this.$t('tips.message.ok'),
+        cancelButtonText: this.$t('tips.message.cancel'),
         type: 'warning'
       }).then(() => {
         this.delAttr(item);
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: this.$t('tips.message.canceled')
         });
       });
     }
