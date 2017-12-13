@@ -103,8 +103,7 @@
 import $http from '../../utils/http'
 export default {
   data() {
-    return {
-      baseUrl:'http://www.52iwith.com/coron-web/',
+    return {      
       robotDanceLists: [],
       robotDanceDialogVisible: false,
       formLabelWidth: '120px',
@@ -151,7 +150,9 @@ export default {
     this.getRobotDanceLists();
   },
   computed: {
-
+    baseUrl(){
+        return `${window.location.origin}/coron-web/`;
+    }
   },
   methods: {
 

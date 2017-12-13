@@ -142,8 +142,7 @@ import Lockr from 'lockr';
 import Cookies from 'js-cookie';
 export default {
     data() {
-        return {            
-            baseUrl:'http://www.52iwith.com/coron-web/',
+        return {
             isActive: 0,
             catalogDatas: [],
             productsList: [],
@@ -170,6 +169,9 @@ export default {
     },
 
     computed: {
+        baseUrl(){
+            return `${window.location.origin}/coron-web/`;
+        },
         _SHOPLANGUAGE(){            
             return Cookies.get('SHOPLANGUAGE');
         },

@@ -370,8 +370,7 @@ import Cookies from 'js-cookie';
 import {baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
-        return {
-            baseUrl:'http://www.52iwith.com/coron-web/',
+        return {            
             activeName: 'first',
             imageUrl: '',
             timeSelectVisible: false,
@@ -493,6 +492,10 @@ export default {
 
     },
     computed: {
+
+        baseUrl(){
+            return `${window.location.origin}/coron-web/`;
+        },
         accepDatas() {
             return Lockr.get("itemUpdateData");
         },

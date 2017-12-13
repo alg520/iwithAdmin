@@ -51,8 +51,7 @@ export default {
     itemTranslate,catalogTranslate,attrTranslate,sideDishTranslate,introGroupTranslate,introTranslate
   },
   data() {
-    return {
-      baseUrl: "http://www.52iwith.com/coron-web/",
+    return {      
       catalogDatas: [],
       productsList: [],
       editForm: {
@@ -88,6 +87,9 @@ export default {
   },
 
   computed: {
+    baseUrl(){
+        return `${window.location.origin}/coron-web/`;
+    },
     rShopDetailData() {
       return Lockr.get("shopDetailData");
     },

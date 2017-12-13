@@ -111,8 +111,7 @@ import $http from '../../utils/http';
 import Lockr from 'lockr';
 export default {
     data() {
-        return {
-            baseUrl:'http://www.52iwith.com/coron-web/',
+        return {            
             isActive: 0,
             catalogDatas: [],
             productsList: [],
@@ -139,6 +138,9 @@ export default {
     },
 
     computed: {
+        baseUrl(){
+            return `${window.location.origin}/coron-web/`;
+        },
         rShopDetailData(){
             return Lockr.get('shopDetailData');
         },

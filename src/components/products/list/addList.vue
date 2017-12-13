@@ -384,8 +384,7 @@ import getLanguage from '../../../utils/sysLanguage.js';
 import { baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
-        return {
-            baseUrl:'http://www.52iwith.com/coron-web/',
+        return {            
             activeName: 'first',
             imageUrl: '',
             timeSelectVisible: false,
@@ -506,13 +505,16 @@ export default {
 
     },
     created() {
-        //获取默认列表
+        //获取默认列表        
         this.getCatalogList();
         this.getTimeList();
         this.getItemAttrList();        
         this.productForm.catalogId = this.addCatalogID == 0 ? '' : this.addCatalogID+"";        
     },
     computed: {
+        baseUrl(){
+            return `${window.location.origin}/coron-web/`;
+        },
         _SHOPLANGUAGE() {
             return Cookies.get('SHOPLANGUAGE');
         },
