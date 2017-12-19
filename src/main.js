@@ -4,6 +4,10 @@ import Vue from "vue";
 import $ from "jquery";
 import App from "./App";
 import Lockr from "lockr";
+// import ElementLocale from 'element-ui/lib/locale'
+import i18n from "./i18n";
+import { LANGS } from "@/i18n/lang";
+
 import router from "./router";
 import store from "./store";
 import ElementUI from "element-ui";
@@ -20,13 +24,8 @@ Vue.config.productionTip = false;
 
 //Register global utility filters
 Object.keys(filters).forEach(key => {
-  //console.log("注册全局过滤器", key);
   Vue.filter(key, filters[key]);
 });
-
-// import ElementLocale from 'element-ui/lib/locale'
-import i18n from './i18n';
-import {LANGS} from '@/i18n/lang';
 
 /* eslint-disable no-new */
 new Vue({
@@ -35,10 +34,10 @@ new Vue({
   store,
   template: "<App/>",
   components: { App },
-  beforeCreate: function() {    
-    console.log("beforeCreated.....");    
+  beforeCreate: function() {
+    console.log("beforeCreated.....");
   },
-  created() {    
+  created() {
     console.log("created .......");
   }
 });

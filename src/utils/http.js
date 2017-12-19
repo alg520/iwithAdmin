@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css';
 import Lockr from 'lockr';
 import Cookies from 'js-cookie';
 
-const _httpLanguage = Cookies.get('SHOPLANGUAGE');
+const _httpLanguage = !!Cookies.get('SHOPLANGUAGE') ? Cookies.get('SHOPLANGUAGE'):0;
 
 //创建 axios 实例
 const $http = axios.create({
@@ -26,6 +26,11 @@ $http.interceptors.request.use(
   config => {
     //NProgress.start();
     loadingScreen = Loading.service({ fullscreen: true });
+
+    if(config.headers.Language !== Cookies.get('SHOPLANGUAGE')){
+      config.headers.Language = Cookies.get('SHOPLANGUAGE');
+    }    
+
     return config;
   },
   error => {

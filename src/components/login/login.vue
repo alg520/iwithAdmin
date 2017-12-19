@@ -115,7 +115,7 @@ export default {
     created() {
         this.getOSLanguage();
         this.getLoginUserInfo();
-        this.getAuthCode();        
+        this.getAuthCode();
     },
 
     methods: {
@@ -127,7 +127,7 @@ export default {
         },
 
         getOSLanguage(){
-            var language = getLanguage();            
+            var language = getLanguage();
             Lockr.set("LANGUAGE", language);
             if(language == 'zh-cn'){
                 Cookies.set('SHOPLANGUAGE', 0);

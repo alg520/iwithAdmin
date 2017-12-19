@@ -2,3 +2,16 @@
 
 node_modules/
 dist/
+
+
+# Markdown
+
+*.md
+
+
+# Mac
+
+
+# Windows
+
+
