@@ -34,7 +34,14 @@
       </el-form-item>
     </el-form>
     <el-table :data="tradeLists" border style="width: 100%; text-align:center;">
-      <el-table-column prop="tradeId" :label="$t('shop.order.orderId')" width="180">
+      <el-table-column prop="shopName" label="所属店铺" width="200" fixed>
+        <template scope="scope">
+          <span v-if="_LANGUAGE == 0">{{scope.row.shopName.zh}}</span>
+          <span v-if="_LANGUAGE == 1">{{scope.row.shopName.en}}</span>
+          <span v-if="_LANGUAGE == 2">{{scope.row.shopName.jp}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="tradeId" :label="$t('shop.order.orderId')">
       </el-table-column>
       <el-table-column prop="originalAmount" :label="$t('shop.order.oldPrice')" width="180">
         <template scope="scope">          
@@ -57,9 +64,9 @@
           <span>{{ scope.row.tradeStatus| tradeStatus}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createdTime" :label="$t('shop.order.orderTime')">
+      <el-table-column prop="createdTime" :label="$t('shop.order.orderTime')" width="180">
       </el-table-column>
-      <el-table-column :label="$t('_global.action')">
+      <el-table-column :label="$t('_global.action')" fixed="right">
         <template scope="scope">
           <el-button type="primary" size="small" @click="getDetailTrade(scope.row)">{{$t('shop.order.info')}}</el-button>
         </template>
@@ -76,6 +83,7 @@
 import axios from "axios";
 import $http from "../../utils/http";
 import Lockr from "lockr";
+import Cookies from 'js-cookie';
 import formatDate from "../../utils/formatDate";
 export default {
   data() {
@@ -125,6 +133,11 @@ export default {
   created() {
     this.getTrade();
     this.getAllShopList();
+  },
+  computed : {
+    _LANGUAGE(){
+        return Cookies.get('SHOPLANGUAGE');
+    }
   },
   methods: {
     getAllShopList() {

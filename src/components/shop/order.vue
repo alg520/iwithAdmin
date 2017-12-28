@@ -21,7 +21,7 @@
         <el-button type="primary" @click="getSomeThing()">{{$t('_global.search')}}</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="tradeLists" border style="width: 100%; text-align:center;">
+    <el-table :data="tradeLists" border style="width: 100%; text-align:center;">      
       <el-table-column prop="tradeId" :label="$t('shop.order.orderId')" width="180">
       </el-table-column>
       <el-table-column prop="originalAmount" :label="$t('shop.order.oldPrice')" width="180">
@@ -108,8 +108,8 @@ export default {
 
       $http.post('/coron-web/trade/getByShop', getData).then(res => {
         if(res.status){
-          this.tradeLists = res.data.rows;
-          this.totalItems = res.data.total;
+          this.tradeLists = res.rows;
+          this.totalItems = res.total;
         }
       })
     },
@@ -122,7 +122,7 @@ export default {
       }).then(res => {
 
         if(res.status){
-          self.tradeDetailInfo = res.data.entry;
+          self.tradeDetailInfo = res.entry;
           Lockr.set("tradeDetailInfo",self.tradeDetailInfo);
           this.$router.push({
             path:'/shop/orderdetail'

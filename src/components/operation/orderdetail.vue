@@ -78,12 +78,14 @@
                                                 <span v-if="currencyPrecision != 0">{{ props.row.totalPaidPrice / Math.pow(10,currencyPrecision) }}</span>
                                                 <span v-else>{{ props.row.totalPaidPrice }}</span>
                                             </el-form-item>
-                                            <el-form-item :label="$t('shop.order.attrList')">
+
+                                            <!-- <el-form-item :label="$t('shop.order.attrList')">
                                                 <el-tag v-for="attr in attrs" :key="attr.attrId">{{attr.name.zh}}</el-tag>
                                             </el-form-item>
                                             <el-form-item :label="$t('shop.order.sideDishList')">
                                                 <el-tag v-for="item in sideDishs" :key="item.itemId">{{item.itemNameObject.zh}}</el-tag>
-                                            </el-form-item>
+                                            </el-form-item>                                              -->
+
                                         </el-form>
                                     </template>
                                 </el-table-column>
@@ -141,8 +143,7 @@ export default {
             console.log(this.middleLocal);
             this.tradeInfo = this.middleLocal.tradeVo;
             this.currencyPrecision = this.middleLocal.tradeVo.currencyPrecision;
-            this.orders = this.middleLocal.orders;            
-
+            this.orders = this.middleLocal.orders;
             this.attrs = this.getAttrs(this.middleLocal.orders);
             this.sideDishs = this.getSideDish(this.middleLocal.orders);            
         },
@@ -156,9 +157,11 @@ export default {
                 item1.attrGroups.forEach((item2, index2) => {
 
                     item2.attrs.forEach((item3, index3) => {
+
                         if (item3.selected) {
                             newAttrs.push(item3);
                         }
+
                     })
 
                 })

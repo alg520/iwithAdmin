@@ -10,6 +10,8 @@
       </el-form-item>
     </el-form>
     <el-table :data="shopLists" border style="width: 100%; text-align:center;">
+      <el-table-column label="ID" prop="id" >
+      </el-table-column>
       <el-table-column prop="name.zh" :label="$t('shop.shopName')">
         <template scope="scope">
           <span v-if=" scope.row.language == 0">{{ scope.row.name.zh }}</span>
