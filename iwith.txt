@@ -459,6 +459,27 @@ sn获取页面  ***
   
   2017-12-13
     1. 页面检查
+     
+
+
+2017-12-29
+
+element ui 从1.4 升级到 2.0 版本
+
+（如何从现有版本升级到element UI2.0）
+http://blog.csdn.net/wojiaomaxiaoqi/article/details/78428738
+
+高效升级插件
+npm-check-updates
+
+安装： npm install -g npm-check-updates
+查看最新的版本：npm-check-updates
+简写： ncu
+
+ncu -a  升级全部项目中可升级的包
+
+
+
 
 
 
