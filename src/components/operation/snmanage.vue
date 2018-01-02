@@ -49,8 +49,8 @@
                 </el-form-item>
                 <el-form-item :label="$t('snManage.isTest')">
                     <el-select v-model="snForm.isTest">
-                        <el-option :label="$t('shop.yes')" value="0"></el-option>
-                        <el-option :label="$t('shop.no')" value="1"></el-option>
+                        <el-option :label="$t('shop.yes')" value="1"></el-option>
+                        <el-option :label="$t('shop.no')" value="0"></el-option>
                     </el-select>
                 </el-form-item>                
             </el-form>
