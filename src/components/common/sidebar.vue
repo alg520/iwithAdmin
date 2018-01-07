@@ -29,6 +29,7 @@
                 </template>
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
+                <el-menu-item index="/shop/advertising"> 广告管理 </el-menu-item>
             </el-submenu>
             <!-- v-if="authType == 1 || authType == 2" -->
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
@@ -54,6 +55,7 @@
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/sn">{{$t('sidebar.snget')}}</el-menu-item>
                 <el-menu-item index="/operation/snmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
+                <el-menu-item index="/operation/motion"> 动作管理 </el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

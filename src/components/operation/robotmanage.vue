@@ -365,8 +365,7 @@ export default {
 
       this.$refs['robotDanceForm'].validate((valid) => {
 
-        if (valid) {
-          
+        if (valid) {          
           $http.post('/coron-web/robotDance/update',data).then(res => {           
            
             if(res.status){

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+
 import Home from "@/components/common/Home";
 import Login from "@/components/login/login";
 
@@ -12,6 +13,7 @@ import Shop from "@/components/page/shop";
 import Shopinfo from "@/components/shop/info";
 import Shoporder from "@/components/shop/order";
 import Orderdetail from "@/components/shop/orderDetail";
+import Advertising from "@/components/shop/advertising";
 
 import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
@@ -29,6 +31,8 @@ import APKadd from "@/components/operation/apkadd";
 import SN from "@/components/operation/sn";
 import SNmanage from "@/components/operation/snmanage";
 import Translate from "@/components/operation/translate";
+import Motion from "@/components/operation/motion";
+
 
 import ItemList from "@/components/products/list/itemList";
 import AddList from "@/components/products/list/addList";
@@ -175,8 +179,8 @@ const router = new Router({
                   { name: "商品列表", path: "/operation/itemlist" },
                   { name: "翻译", path: "" }
                 ]
-              }
-            },
+              }              
+            },            
             {
               path: "ordermanage",
               component: Ordermanage,
@@ -280,8 +284,20 @@ const router = new Router({
                   { name: "SN管理", path: "" }
                 ]
               }
+            },
+            {
+              path: "motion",
+              name: "motion",
+              component: Motion,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "开发者管理", path: "" },
+                  { name: "动作管理", path: "" }                  
+                ]
+              }
             }
-          ]
+          ]            
         },
         {
           path: "/shop",
@@ -313,14 +329,24 @@ const router = new Router({
             },
             {
               path: "orderdetail",
-              component: Orderdetail,
-              meta: ["商家管理", "订单管理", "订单详情"],
+              component: Orderdetail,              
               meta: {
                 requireAuth: true,
                 breadNav: [
                   { name: "商家管理", path: "" },
                   { name: "订单管理", path: "/shop/order" },
                   { name: "订单详情", path: "" }
+                ]
+              }
+            },
+            {
+              path:"advertising",
+              component: Advertising,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  { name: "商家管理", path: "" },
+                  { name: "广告管理", path: "" }                  
                 ]
               }
             }
