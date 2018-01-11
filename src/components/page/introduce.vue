@@ -101,6 +101,18 @@
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
+                                    
+                                    <el-form-item label="提案动作">
+                                      <el-select v-model="introMotion" placeholder="请选择提案动作" @change="motionChange()">
+                                        <el-option label="请选提案动作" value="0"></el-option>
+                                        <el-option 
+                                        v-for="motion in motionLists" :key="motion.motionId" 
+                                        :label="_SHOPLANGUAGE == 0 ? motion.motionNamePojo.zh : (_SHOPLANGUAGE == 1 ? motion.motionNamePojo.en : motion.motionNamePojo.jp)"
+                                        :value="motion.motionId">
+                                        </el-option>
+                                      </el-select>
+                                    </el-form-item>
+
                                     <el-form-item :label="$t('introduce.introduceName')" prop="title">
                                         <el-input v-model="introForm.title" :placeholder="$t('placeholder.introName')"></el-input>
                                     </el-form-item>
@@ -134,8 +146,8 @@ import vPageTitle from "../common/pageTitle.vue";
 import introduceGroup from "../introduce/introduceGroup.vue";
 import $http from "../../utils/http";
 import draggable from "vuedraggable";
-import Cookies from 'js-cookie';
-import { baiduTranslate, returnTransArray } from '../../utils/translate.js';
+import Cookies from "js-cookie";
+import { baiduTranslate, returnTransArray } from "../../utils/translate.js";
 export default {
   data() {
     return {
@@ -146,10 +158,24 @@ export default {
         content: ""
       },
       introFormRules: {
-        title: [{ required: true, message: this.$t('tips.rules.introTitle'), trigger: "blur" }],
+        title: [
+          {
+            required: true,
+            message: this.$t("tips.rules.introTitle"),
+            trigger: "blur"
+          }
+        ],
         content: [
-          { required: true, message: this.$t('tips.rules.introContent'), trigger: "blur" },
-          { max: 200, message: this.$t('tips.rules.intromaxChars'), trigger: "blur" }
+          {
+            required: true,
+            message: this.$t("tips.rules.introContent"),
+            trigger: "blur"
+          },
+          {
+            max: 200,
+            message: this.$t("tips.rules.intromaxChars"),
+            trigger: "blur"
+          }
         ]
       },
       introGroupDatas: [],
@@ -160,8 +186,11 @@ export default {
       isActive: 0,
       middleObj: {},
       introDialogVisible: false,
-      introTitleTransArray:[],
-      introContentTransArray:[]
+      introTitleTransArray: [],
+      introContentTransArray: [],
+      motionLists: [],
+      introMotion: "",
+      introMotionObj: {}
     };
   },
 
@@ -170,10 +199,10 @@ export default {
     introduceGroup,
     draggable
   },
-  
+
   computed: {
     _SHOPLANGUAGE() {
-      return Cookies.get('SHOPLANGUAGE');
+      return Cookies.get("SHOPLANGUAGE");
     }
   },
 
@@ -195,12 +224,46 @@ export default {
   created() {
     //默认获取属性列表
     this.getIntroGroupList();
+    this.getMotionList();
   },
 
   methods: {
     handleNavClick(tab, event) {
       if (tab.name == "intro") {
         this.getIntroGroupList();
+      }
+    },
+
+    async getMotionList() {
+      var res = await $http.get("/coron-web/robotMotion/list", {
+        rp: 100,
+        page: 1
+      });
+      if (res.status) {
+        this.motionLists = res.rows;
+      } else {
+        this.$message({
+          type: "error",
+          message: res.message
+        });
+      }
+    },
+
+    motionChange() {
+      if (this.introMotion == "0") {
+        this.introMotionObj = {};
+      } else {
+        this.introMotionObj = {};
+        this.motionLists.forEach((value, key) => {
+          if (value.motionId == this.introMotion) {
+            this.introMotionObj.motionId = this.motionLists[key].motionId;
+            this.introMotionObj.motionCode = this.motionLists[key].motionCode;
+            this.introMotionObj.motionNamePojo = this.motionLists[
+              key
+            ].motionNamePojo;
+          }
+        });
+        console.log(this.introMotionObj);
       }
     },
 
@@ -223,7 +286,7 @@ export default {
 
       $http
         .get("/coron-web/introduce/list", { groupId: itemId })
-        .then(response => {          
+        .then(response => {
           response.status && (this.introDatas = response.rows);
         })
         .catch(error => {
@@ -236,26 +299,42 @@ export default {
       this.addBtn = true;
       this.introForm.title = "";
       this.introForm.content = "";
+      this.introMotion = '0';
       this.introDialogVisible = true;
     },
 
-   async addIntro() {
+    async addIntro() {
       var self = this;
-      await self.translateContent(self.introForm.title,'introTitle');
-      await self.translateContent(self.introForm.content,'introContent');
+      await self.translateContent(self.introForm.title, "introTitle");
+      await self.translateContent(self.introForm.content, "introContent");
 
-      let introTitleObj = { zh: self.introForm.title, jp: self.introForm.title, en: self.introForm.title };
-      let introContentObj = { zh: self.introForm.content, jp: self.introForm.content, en: self.introForm.content};
+      let introTitleObj = {
+        zh: self.introForm.title,
+        jp: self.introForm.title,
+        en: self.introForm.title
+      };
+      let introContentObj = {
+        zh: self.introForm.content,
+        jp: self.introForm.content,
+        en: self.introForm.content
+      };
       if (self.introTitleTransArray.length > 0) {
-        introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);        
+        introTitleObj = Object.assign(
+          introTitleObj,
+          self.introTitleTransArray[0]
+        );
       }
 
-      if(self.introContentTransArray.length > 0){
-        introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);        
+      if (self.introContentTransArray.length > 0) {
+        introContentObj = Object.assign(
+          introContentObj,
+          this.introContentTransArray[0]
+        );
       }
 
       let addParams = {
         groupId: self.whichGroup,
+        motionsPojo: self.introMotionObj,
         titlePojo: introTitleObj,
         contentPojo: introContentObj,
         type: 1,
@@ -281,26 +360,26 @@ export default {
         } else {
           self.$message({
             type: "warning",
-            message: this.$t('tips.rules.error')
+            message: this.$t("tips.rules.error")
           });
         }
       });
     },
 
     async translateContent(itemName, type) {
-        var self = this;
-        let _language = self._SHOPLANGUAGE;
-        if (itemName !== "") {
-            var res = await baiduTranslate(itemName, _language);
-            switch(type){
-              case 'introTitle':
-              self.introTitleTransArray = returnTransArray(res);
-              break;
-              case 'introContent':
-              self.introContentTransArray = returnTransArray(res);
-              break;
-            }            
+      var self = this;
+      let _language = self._SHOPLANGUAGE;
+      if (itemName !== "") {
+        var res = await baiduTranslate(itemName, _language);
+        switch (type) {
+          case "introTitle":
+            self.introTitleTransArray = returnTransArray(res);
+            break;
+          case "introContent":
+            self.introContentTransArray = returnTransArray(res);
+            break;
         }
+      }
     },
 
     updateIntro(item) {
@@ -308,44 +387,74 @@ export default {
       this.addTag = false;
       this.addBtn = false;
       this.introDialogVisible = true;
-      if(this._SHOPLANGUAGE == 0){
+      if (this._SHOPLANGUAGE == 0) {
         this.introForm.title = item.titlePojo.zh;
         this.introForm.content = item.contentPojo.zh;
-      } else if(this._SHOPLANGUAGE == 1) {
+      } else if (this._SHOPLANGUAGE == 1) {
         this.introForm.title = item.titlePojo.en;
         this.introForm.content = item.contentPojo.en;
-      } else if(this._SHOPLANGUAGE == 2){
+      } else if (this._SHOPLANGUAGE == 2) {
         this.introForm.title = item.titlePojo.jp;
         this.introForm.content = item.contentPojo.jp;
       }
+      this.introMotion = !!item.motionsPojo ? item.motionsPojo.motionId : '0';
+
       this.whichGroup = item.groupId;
       this.middleObj = item;
+      console.log(this.middleObj);
+      this.motionChange();
     },
 
-   async updateIntroPost() {
+    async updateIntroPost() {
       var self = this;
-      let introTitleObj = { zh: self.introForm.title, jp: self.introForm.title, en: self.introForm.title };
-      let introContentObj = { zh: self.introForm.content, jp: self.introForm.content, en: self.introForm.content};
 
-      if(self.introForm.title === self.middleObj.titlePojo.zh || self.introForm.title === self.middleObj.titlePojo.en || self.introForm.title === self.middleObj.titlePojo.jp){          
-          introTitleObj = self.middleObj.titlePojo;
+      console.log(self.middleObj);
+
+      let introTitleObj = {
+        zh: self.introForm.title,
+        jp: self.introForm.title,
+        en: self.introForm.title
+      };
+      let introContentObj = {
+        zh: self.introForm.content,
+        jp: self.introForm.content,
+        en: self.introForm.content
+      };
+
+      if (
+        self.introForm.title === self.middleObj.titlePojo.zh ||
+        self.introForm.title === self.middleObj.titlePojo.en ||
+        self.introForm.title === self.middleObj.titlePojo.jp
+      ) {
+        introTitleObj = self.middleObj.titlePojo;
       } else {
-        await self.translateContent(self.introForm.title,'introTitle');
+        await self.translateContent(self.introForm.title, "introTitle");
         if (self.introTitleTransArray.length > 0) {
-          introTitleObj = Object.assign(introTitleObj, self.introTitleTransArray[0]);          
+          introTitleObj = Object.assign(
+            introTitleObj,
+            self.introTitleTransArray[0]
+          );
         }
       }
-      if(self.introForm.content === self.middleObj.contentPojo.zh || self.introForm.content === self.middleObj.contentPojo.en || self.introForm.content === self.middleObj.contentPojo.jp){          
-          introContentObj = self.middleObj.contentPojo;
-      } else {        
-        await self.translateContent(self.introForm.content,'introContent');
-        if(self.introContentTransArray.length > 0){
-          introContentObj = Object.assign(introContentObj, this.introContentTransArray[0]);          
+      if (
+        self.introForm.content === self.middleObj.contentPojo.zh ||
+        self.introForm.content === self.middleObj.contentPojo.en ||
+        self.introForm.content === self.middleObj.contentPojo.jp
+      ) {
+        introContentObj = self.middleObj.contentPojo;
+      } else {
+        await self.translateContent(self.introForm.content, "introContent");
+        if (self.introContentTransArray.length > 0) {
+          introContentObj = Object.assign(
+            introContentObj,
+            this.introContentTransArray[0]
+          );
         }
       }
 
       let updateParams = {
         id: self.middleObj.id,
+        motionsPojo: self.introMotionObj,
         titlePojo: introTitleObj,
         contentPojo: introContentObj
       };
@@ -359,7 +468,7 @@ export default {
               if (response.status) {
                 this.$message({
                   type: "success",
-                  message: this.$t('tips.message.updateSuccess')
+                  message: this.$t("tips.message.updateSuccess")
                 });
                 this.addTag = false;
                 this.introDialogVisible = false;
@@ -372,13 +481,13 @@ export default {
               console.log(error);
               this.$message({
                 type: "error",
-                message: this.$t('tips.message.network')
+                message: this.$t("tips.message.network")
               });
             });
         } else {
           self.$message({
             type: "warning",
-            message: this.$t('tips.rules.error')
+            message: this.$t("tips.rules.error")
           });
         }
       });
@@ -390,15 +499,13 @@ export default {
           id: item.id
         })
         .then(response => {
-          
-          if(response.status){
+          if (response.status) {
             this.$message({
               type: "success",
-              message: this.$t('tips.message.delSuccess')
+              message: this.$t("tips.message.delSuccess")
             });
             this.getIntroList(this.isActive);
           }
-          
         })
         .catch(error => {
           console.log(error);
@@ -406,19 +513,23 @@ export default {
     },
 
     confirmDel(item) {
-      this.$confirm(this.$t('tips.message.delIntro'), this.$t('tips.message.hint'), {
-        confirmButtonText: this.$t('tips.message.ok'),
-        cancelButtonText: this.$t('tips.message.cancel'),
-        closeOnClickModal: false,
-        type: "warning"
-      })
+      this.$confirm(
+        this.$t("tips.message.delIntro"),
+        this.$t("tips.message.hint"),
+        {
+          confirmButtonText: this.$t("tips.message.ok"),
+          cancelButtonText: this.$t("tips.message.cancel"),
+          closeOnClickModal: false,
+          type: "warning"
+        }
+      )
         .then(() => {
           this.delIntro(item);
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: this.$t('tips.message.canceled')
+            message: this.$t("tips.message.canceled")
           });
         });
     },
@@ -429,7 +540,7 @@ export default {
       this.getIntroList(itemId);
     },
 
-    cancelForm() {      
+    cancelForm() {
       this.introDialogVisible = false;
     },
 
@@ -446,14 +557,14 @@ export default {
         .then(response => {
           this.$message({
             type: "success",
-            message: this.$t('tips.message.updateSuccess')
+            message: this.$t("tips.message.updateSuccess")
           });
           this.getIntroList();
         })
         .catch(error => {
           this.$message({
             type: "error",
-            message: this.$t('tips.message.updateError')
+            message: this.$t("tips.message.updateError")
           });
         });
     },

@@ -1,41 +1,42 @@
 <template>
     <div class="ad-info">
         <el-form :inline="true">            
-            <el-form-item label="广告类型">
+            <el-form-item :label="$t('advert.type')">
                 <el-select v-model="adType" placeholder="请选择广告类型"  @change="getadvertList()">
-                    <el-option label="视频广告" value="1"></el-option>
-                    <el-option label="图片广告" value="2"></el-option>                    
+                    <el-option :label="$t('advert.video')" value="1"></el-option>
+                    <el-option :label="$t('advert.picture')" value="2"></el-option>                    
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="openAddDialog()">添加广告</el-button>
+                <el-button type="primary" @click="openAddDialog()">{{$t('advert.add')}}</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="adLists" border style="width: 100%; text-align:center;">      
-            <el-table-column prop="advertId" label="广告ID" width="180">
+            <el-table-column prop="advertId" :label="$t('advert.ID')" width="180">
             </el-table-column>
-            <el-table-column prop="advertName" label="广告名称" width="180">
+            <el-table-column prop="advertName" :label="$t('advert.name')" width="180">
             </el-table-column> 
-            <el-table-column prop="advertName" label="广告图片展示">
+            <el-table-column :label="$t('advert.picShow')" width="150">
                 <template scope="scope">
-                    <img :src="baseUrl + scope.row.advertUrlPojo.zh.imgUrl" alt="广告图片" width="50" height="50" style="margin-top:5px;">
+                    <img :src="baseUrl + scope.row.advertUrlPojo.zh.imgUrl" width="80" height="80" style="margin-top:5px;">
                 </template>
             </el-table-column> 
-            <el-table-column prop="advertType" label="广告类型">
+            <el-table-column prop="advertType" :label="$t('advert.type')" width="120">
             </el-table-column>
-            <el-table-column prop="advertType" label="广告文案">
+            <el-table-column prop="advertTextPojo.zh" :label="$t('advert.text')">
                 <template scope="scope">
-                    <span>中文：{{scope.row.advertTextPojo.zh}}</span>
+                    <span>ZH：{{scope.row.advertTextPojo.zh}}</span>
                     <br>
-                    <span>英文：{{scope.row.advertTextPojo.en}}</span>
+                    <span>EN：{{scope.row.advertTextPojo.en}}</span>
                     <br>
-                    <span>日文：{{scope.row.advertTextPojo.jp}}</span>
+                    <span>JP：{{scope.row.advertTextPojo.jp}}</span>
                 </template>
             </el-table-column>
-            <el-table-column :label="$t('_global.action')">
+            <el-table-column :label="$t('_global.action')" width="220" fixed="right">
                 <template scope="scope">
-                    <el-button type="primary" size="small" @click="updateAdvert(scope.row)">修改</el-button>
-                    <el-button type="danger" size="small" @click="confirmDel(scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" @click="changeSaleStatus(scope.row)">{{ scope.row.sale ? $t('products.soldout'):$t('products.putaway')}}</el-button>
+                    <el-button type="primary" size="small" @click="updateAdvert(scope.row)">{{$t('_global.edit')}}</el-button>
+                    <el-button type="danger" size="small" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -44,22 +45,22 @@
             </el-pagination>
         </div>
 
-        <el-dialog :title=" btnTag == 'add' ? '添加广告':'修改广告'" :visible.sync="addAdvertDialogVisible" class="addDialog">
+        <el-dialog :title=" btnTag == 'add' ? $t('advert.add'):$t('advert.update')" :visible.sync="addAdvertDialogVisible" class="addDialog">
             <el-form :model="addAdvertForm" :rules="addAdvertFormRules" ref="addAdvertForm" label-width="150px">
-                <el-form-item label="展示类型" prop="adType">
+                <el-form-item :label="$t('advert.type')" prop="adType">
                     <el-select v-model="addAdvertForm.adType" placeholder="请选择广告类型"  @change="getadvertList()">
-                        <el-option label="视频广告" value="1"></el-option>
-                        <el-option label="图片广告" value="2"></el-option>                    
+                        <el-option :label="$t('advert.video')" value="1"></el-option>
+                        <el-option :label="$t('advert.picture')" value="2"></el-option>                    
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="广告名称" prop="adName">
+                <el-form-item :label="$t('advert.name')" prop="adName">
                     <el-input type="text" v-model="addAdvertForm.adName" placeholder="请输入广告名称"></el-input>
                 </el-form-item>
 
-                <el-form-item label="广告图片" prop="imgUrl">
+                <el-form-item :label="$t('advert.picShow')" prop="imgUrl">
                     <el-upload class="avatar-uploader" action="/coron-web/upload/advertImgUpload" 
-                    :show-file-list="false" 
+                    :show-file-list="false"
                     :before-upload="beforeAdvertPicUpload"
                     :on-success="handleAdvertPicSuccess">
                         <img v-if="advertImgUrl" :src="imgUploadSuccessTag ? advertImgUrl : baseUrl + addAdvertForm.imgUrl" class="avatar">
@@ -68,12 +69,12 @@
                     <el-button v-if="advertImgUrl" size="small" type="text" @click="cancelUpload()"> {{$t('_global.delete')}}</el-button>
                 </el-form-item>
 
-                <el-form-item label="中文广告词" prop="advertTextZH">
+                <el-form-item :label="$t('advert.textZH')" prop="advertTextZH">
                     <el-input v-model="addAdvertForm.advertTextZH" placeholder="请输入中文广告词"></el-input>
                 </el-form-item>
 
-                <el-form-item label="中文广告音频" prop="advertTextZH">
-                    <el-upload action="/coron-web/upload/advertMusicUpload" 
+                <el-form-item :label="$t('advert.audioZH')">
+                    <el-upload action="/coron-web/upload/advertUploadMusic" 
                     :before-upload="beforeAdvertAudioUpload"
                     :on-success="handleAdvertAudioSuccessZH"
                     :on-error="handleAdvertAudioErrorZH"                    
@@ -82,41 +83,55 @@
                         <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
                         <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
                     </el-upload>
+                    <span>{{ addAdvertForm.audioUrlZH}}</span>
+                    <audio :src="baseUrl + addAdvertForm.audioUrlZH" controls="controls">
+                        Your browser does not support the audio element.
+                    </audio>                    
                 </el-form-item>
 
-                <el-form-item label="日文广告词" prop="advertTextJP">
+                <el-form-item :label="$t('advert.textJP')" prop="advertTextJP">
                     <el-input v-model="addAdvertForm.advertTextJP" placeholder="请输入日文广告词"></el-input>
                 </el-form-item>
 
-                <el-form-item label="日文广告音频">
-                    <el-upload action="/coron-web/upload/advertMusicUpload" 
+                <el-form-item :label="$t('advert.audioJP')">
+                    <el-upload action="/coron-web/upload/advertUploadMusic" 
                     :before-upload="beforeAdvertAudioUpload"
-                    :on-success="handleAdvertAudioSuccessJP"                    
+                    :on-success="handleAdvertAudioSuccessJP"
+                    :on-error="handleAdvertAudioErrorJP"
                     :on-remove="handleRemove"
                     :file-list="fileListJP">
-                        <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
+                        <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>                        
                         <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
                     </el-upload>
+                    <span>{{ addAdvertForm.audioUrlJP}}</span>
+                    <audio :src="baseUrl + addAdvertForm.audioUrlJP" controls="controls">
+                        Your browser does not support the audio element.
+                    </audio> 
                 </el-form-item>
 
-                <el-form-item label="英文广告词" prop="advertTextEN">
+                <el-form-item :label="$t('advert.textEN')" prop="advertTextEN">
                     <el-input v-model="addAdvertForm.advertTextEN" placeholder="请输入英文广告词"></el-input>
                 </el-form-item>
 
-                <el-form-item label="英文广告音频">
-                    <el-upload action="/coron-web/upload/advertMusicUpload" 
+                <el-form-item :label="$t('advert.audioEN')">
+                    <el-upload action="/coron-web/upload/advertUploadMusic" 
                     :before-upload="beforeAdvertAudioUpload"
-                    :on-success="handleAdvertAudioSuccessEN"                    
+                    :on-success="handleAdvertAudioSuccessEN"
+                    :on-error="handleAdvertAudioErrorEN"
                     :on-remove="handleRemove"
                     :file-list="fileListEN">
                         <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
                         <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
                     </el-upload>
+                    <span>{{ addAdvertForm.audioUrlEN}}</span>
+                    <audio :src="baseUrl + addAdvertForm.audioUrlEN" controls="controls">
+                        Your browser does not support the audio element.
+                    </audio>
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
-                    <el-button type="primary" @click="updateValidate()">修改</el-button>
+                    <el-button v-if="btnTag == 'add'" type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
+                    <el-button v-else type="primary" @click="updateValidate()">{{$t('_global.lijiEdit')}}</el-button>
                     <el-button @click="addAdvertDialogVisible = false">{{$t('_global.cancel')}}</el-button>
                 </el-form-item>
             </el-form>
@@ -142,11 +157,11 @@ export default {
         adType: "2",
         adName: "",
         imgUrl: "",
-        audioUrlZH: "/jp/pic.mp3",
+        audioUrlZH: "",
         advertTextZH: "",
-        audioUrlEN: "/jp/pic.mp3",
+        audioUrlEN: "",
         advertTextEN: "",
-        audioUrlJP: "/jp/pic.mp3",
+        audioUrlJP: "",
         advertTextJP: ""
       },
       addAdvertFormRules: {
@@ -156,16 +171,13 @@ export default {
         imgUrl:[
             { required:true, message:'请选择图片',trigger:'change'}
         ],
-        advertTextZH:[
-            { required:true , message:'请输入中文广告词', trigger:'blur'},
+        advertTextZH:[            
             { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
         ],
-        advertTextEN:[
-            { required:true , message:'请输入英文广告词', trigger:'blur'},
+        advertTextEN:[            
             { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
         ],
-        advertTextJP:[
-            { required:true , message:'请输入日文广告词', trigger:'blur'},
+        advertTextJP:[            
             { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
         ]
       },
@@ -174,6 +186,7 @@ export default {
       advertAudioUrlEN:'',
       advertAudioUrlJP:'',
       imgUploadSuccessTag:false,
+      editTag:false,
       fileListZH: [],
       fileListEN: [],
       fileListJP: [],
@@ -197,7 +210,7 @@ export default {
           page: this.currentPage
         })
         .then(res => {
-          console.log("广告列表", res);
+          
           if(res.status){
               this.adLists = res.rows;
               this.totalItems = res.total;
@@ -225,29 +238,27 @@ export default {
       const isJPGORPNG = file.name.slice(-4) === '.jpg' || file.name.slice(-4) === '.png' || file.name.slice(-5) === '.jpeg';
       const isLt1M = file.size / 1024 / 1024 < 1;
       if (!isJPGORPNG) {
-        this.$message.error("图片格式不支持请重新上传");
+        this.$message.error(this.$t('advert.upload.pictypeError'));
       }
       if (!isLt1M) {
-        this.$message.error("图片大小不能超过1M");
+        this.$message.error(this.$t('advert.upload.picsizeError'));
       }
       return isJPGORPNG && isLt1M;
 
     },
     handleAdvertPicSuccess(res, file, fileList) {
-        console.log("文件参数",file);
-        console.log("上传成功",res);
 
         if(res.status){
             this.$message({
                 type:"success",
-                message:"图片上传成功"
+                message:this.$t('advert.upload.success')
             });
             this.imgUploadSuccessTag = true;
             this.advertImgUrl = URL.createObjectURL(file.raw);            
             this.addAdvertForm.imgUrl = res.entry;
 
         } else {
-            this.$message.error('图片上传失败');
+            this.$message.error(this.$t('advert.upload.error'));
         }        
         
     },
@@ -263,41 +274,43 @@ export default {
         const isLt1M = file.size / 1024 / 1024 < 10;
 
         if (!isMP3) {
-            this.$message.error("音频格式不支持请重新上传");
+            this.$message.error(this.$t('advert.upload.audiotypeError'));
         }
         if (!isLt1M) {
-            this.$message.error("音频大小不能超过1M");
+            this.$message.error(this.$t('advert.upload.audiosizeError'));
         }
         return isMP3 && isLt1M;
     },
 
     handleAdvertAudioSuccessZH(res, file, fileList) {
 
-        console.log("音频上传",res);
         this.fileListZH = [];
         this.fileListZH.push(file);
         
         if(res.status){
             this.$message({
                 type:"success",
-                message:"中文音频上传成功"
+                message:this.$t('advert.upload.success')
             });           
 
             this.advertAudioUrlZH = res.entry;
+            this.addAdvertForm.audioUrlZH = res.entry;
         } else {
             this.$message({
                 type:'error',
-                message:"中文音频上传失败"
+                message:this.$t('advert.upload.error')
             });
         }
 
     },
 
     handleAdvertAudioErrorZH(err, file, fileList){
-        console.log("中文音频上传失败",err);        
+        console.log(err);        
     },
 
     handleAdvertAudioSuccessEN(res, file, fileList) {
+
+        this.editTag = false;
 
         this.fileListEN = [];
         this.fileListEN.push(file);
@@ -305,42 +318,50 @@ export default {
         if(res.status){
             this.$message({
                 type:"success",
-                message:"英文音频上传成功"
+                message:this.$t('advert.upload.success')
             });           
 
-            this.advertAudioUrlZH = res.entry;
+            this.advertAudioUrlEN = res.entry;
+            this.addAdvertForm.audioUrlEN= res.entry;
         } else {
             this.$message({
                 type:'error',
-                message:"英文音频上传失败"
+                message:this.$t('advert.upload.error')
             });
         }
 
     },
 
+    handleAdvertAudioErrorEN(err, file, fileList){
+        console.log(err);        
+    },
+
     handleAdvertAudioSuccessJP(res, file, fileList) {
 
+        this.editTag = false;
         this.fileListJP = [];
         this.fileListJP.push(file);
         
         if(res.status){
             this.$message({
                 type:"success",
-                message:"日文音频上传成功"
+                message:this.$t('advert.upload.success')
             });           
 
-            this.advertAudioUrlZH = res.entry;
+            this.advertAudioUrlJP = res.entry;
+            this.addAdvertForm.audioUrlJP = res.entry;
         } else {
             this.$message({
                 type:'error',
-                message:"日文音频上传失败"
+                message:this.$t('advert.upload.error')
             });
         }
 
     },
 
-
-
+    handleAdvertAudioErrorJP(err, file, fileList){
+        console.log("日文音频上传失败",err);        
+    },
 
     handleRemove(file, fileList) {      
       
@@ -356,8 +377,7 @@ export default {
 
     addAdvert() {
       const advertData = {
-        advertName: this.addAdvertForm.adName,
-        //advertName: "我们要打广告啦",
+        advertName: this.addAdvertForm.adName,        
         advertType: this.addAdvertForm.adType,
         advertTextPojo: {
             zh:this.addAdvertForm.advertTextZH,
@@ -377,7 +397,8 @@ export default {
                 imgUrl:this.addAdvertForm.imgUrl,                
                 fileUrl:this.addAdvertForm.audioUrlJP
             }
-        }
+        },
+        sale:true
       };
       
 
@@ -388,7 +409,7 @@ export default {
           } else {
               this.$message({
                   type:'error',
-                  message:'添加失败'
+                  message:res.message
               })
           }
 
@@ -420,11 +441,35 @@ export default {
           
     },
 
+    changeSaleStatus(item){
+
+        $http.post('/coron-web/advert/update',{
+            advertId:item.advertId,
+            sale:!item.sale
+        }).then(res => {
+          
+          if(res.status){
+              
+              this.$message({
+                  type:'success',
+                  message:this.$t('advert.updateSuccess')
+              });
+              this.getadvertList();
+          } else {
+              this.$message({
+                  type:'error',
+                  message:res.message
+              });
+          }
+        })
+
+    },
+
     updateAdvert(item){
         this.btnTag = 'update';
+        this.editTag = true;
         this.addAdvertDialogVisible = true;
-        this.imgUploadSuccessTag = false;
-        console.log("更新的参数",item);
+        this.imgUploadSuccessTag = false;        
         this.midddleObj = item;
         this.addAdvertForm.adName = item.advertName;
         this.addAdvertForm.adType = item.advertType + "";
@@ -432,10 +477,9 @@ export default {
         this.addAdvertForm.advertTextZH = item.advertTextPojo.zh;
         this.addAdvertForm.advertTextEN = item.advertTextPojo.en;
         this.addAdvertForm.advertTextJP = item.advertTextPojo.jp;
-        this.addAdvertForm.advertAudioUrlZH = item.advertUrlPojo.zh.fileUrl;
-        this.addAdvertForm.advertAudioUrlEN = item.advertUrlPojo.en.fileUrl;
-        this.addAdvertForm.advertAudioUrlJP = item.advertUrlPojo.jp.fileUrl;
-
+        this.addAdvertForm.audioUrlZH = item.advertUrlPojo.zh.fileUrl;
+        this.addAdvertForm.audioUrlEN = item.advertUrlPojo.en.fileUrl;
+        this.addAdvertForm.audioUrlJP = item.advertUrlPojo.jp.fileUrl;
     },
 
 
@@ -453,15 +497,15 @@ export default {
             advertUrlPojo: {
                 zh:{
                     imgUrl:this.addAdvertForm.imgUrl,
-                    fileUrl:"/zh/pic.mp3"
+                    fileUrl:this.addAdvertForm.audioUrlZH,
                 },
                 en:{
                     imgUrl:this.addAdvertForm.imgUrl,
-                    fileUrl:"/en/pic.mp3"
+                    fileUrl:this.addAdvertForm.audioUrlEN,
                 },
                 jp:{
                     imgUrl:this.addAdvertForm.imgUrl,
-                    fileUrl:"/jp/pic.mp3"
+                    fileUrl:this.addAdvertForm.audioUrlJP,
                 }
             }
         };
@@ -471,7 +515,7 @@ export default {
             if(res.status){
                 this.$message({
                     type:'success',
-                    message:'修改成功'
+                    message:this.$t('advert.editSuccess')
                 });
                 this.getadvertList();
             } else {
@@ -529,12 +573,10 @@ export default {
         
       })
 
-
-
     },
 
     confirmDel(item){
-        this.$confirm("确定要删除这个广告么？",this.$t('tips.message.hint'),{
+        this.$confirm(this.$t('advert.sureDelete'),this.$t('tips.message.hint'),{
             confirmButtonText:this.$t('tips.message.ok'),
             cancelButtonText:this.$t('tips.message.cancel'),
             type:'warning',
@@ -551,15 +593,17 @@ export default {
     },
 
     addAdvertFormReset(){
-
         this.addAdvertForm.adName = "";
-        this.addAdvertForm.imgUrl = "";
+        this.addAdvertForm.imgUrl = this.advertImgUrl = "";
         this.addAdvertForm.advertTextZH = "";
         this.addAdvertForm.advertTextEN = "";
         this.addAdvertForm.advertTextJP = "";
-        this.addAdvertForm.advertAudioUrlZH = "";
-        this.addAdvertForm.advertAudioUrlEN = "";
-        this.addAdvertForm.advertAudioUrlJP = "";
+        this.addAdvertForm.audioUrlZH = "";
+        this.addAdvertForm.audioUrlEN = "";
+        this.addAdvertForm.audioUrlJP = "";
+        this.fileListZH = [];
+        this.fileListEN = [];
+        this.fileListJP = [];
     }
   }
 };
