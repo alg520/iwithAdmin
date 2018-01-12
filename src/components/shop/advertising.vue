@@ -2,7 +2,7 @@
     <div class="ad-info">
         <el-form :inline="true">            
             <el-form-item :label="$t('advert.type')">
-                <el-select v-model="adType" placeholder="请选择广告类型"  @change="getadvertList()">
+                <el-select v-model="adType" :placeholder="$t('placeholder.advertType')"  @change="getadvertList()">
                     <el-option :label="$t('advert.video')" value="1"></el-option>
                     <el-option :label="$t('advert.picture')" value="2"></el-option>                    
                 </el-select>
@@ -48,14 +48,14 @@
         <el-dialog :title=" btnTag == 'add' ? $t('advert.add'):$t('advert.update')" :visible.sync="addAdvertDialogVisible" class="addDialog">
             <el-form :model="addAdvertForm" :rules="addAdvertFormRules" ref="addAdvertForm" label-width="150px">
                 <el-form-item :label="$t('advert.type')" prop="adType">
-                    <el-select v-model="addAdvertForm.adType" placeholder="请选择广告类型"  @change="getadvertList()">
+                    <el-select v-model="addAdvertForm.adType" :placeholder="$t('placeholder.advertType')"  @change="getadvertList()">
                         <el-option :label="$t('advert.video')" value="1"></el-option>
                         <el-option :label="$t('advert.picture')" value="2"></el-option>                    
                     </el-select>
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.name')" prop="adName">
-                    <el-input type="text" v-model="addAdvertForm.adName" placeholder="请输入广告名称"></el-input>
+                    <el-input type="text" v-model="addAdvertForm.adName" :placeholder="$t('placeholder.advertName')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.picShow')" prop="imgUrl">
@@ -70,7 +70,7 @@
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.textZH')" prop="advertTextZH">
-                    <el-input v-model="addAdvertForm.advertTextZH" placeholder="请输入中文广告词"></el-input>
+                    <el-input v-model="addAdvertForm.advertTextZH" :placeholder="$t('placeholder.advertTextZH')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.audioZH')">
@@ -81,16 +81,16 @@
                     :on-remove="handleRemove"
                     :file-list="fileListZH">
                         <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
-                        <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
+                        <div slot="tip" class="el-upload__tip">{{$t('advert.upload.limit')}}</div>
                     </el-upload>
-                    <span>{{ addAdvertForm.audioUrlZH}}</span>
+                    <span v-if="editTag">{{ addAdvertForm.audioUrlZH}}</span>
                     <audio :src="baseUrl + addAdvertForm.audioUrlZH" controls="controls">
                         Your browser does not support the audio element.
                     </audio>                    
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.textJP')" prop="advertTextJP">
-                    <el-input v-model="addAdvertForm.advertTextJP" placeholder="请输入日文广告词"></el-input>
+                    <el-input v-model="addAdvertForm.advertTextJP" :placeholder="$t('placeholder.advertTextJP')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.audioJP')">
@@ -101,16 +101,16 @@
                     :on-remove="handleRemove"
                     :file-list="fileListJP">
                         <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>                        
-                        <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
+                        <div slot="tip" class="el-upload__tip">{{$t('advert.upload.limit')}}</div>
                     </el-upload>
-                    <span>{{ addAdvertForm.audioUrlJP}}</span>
+                    <span v-if="editTag">{{ addAdvertForm.audioUrlJP}}</span>
                     <audio :src="baseUrl + addAdvertForm.audioUrlJP" controls="controls">
                         Your browser does not support the audio element.
                     </audio> 
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.textEN')" prop="advertTextEN">
-                    <el-input v-model="addAdvertForm.advertTextEN" placeholder="请输入英文广告词"></el-input>
+                    <el-input v-model="addAdvertForm.advertTextEN" :placeholder="$t('placeholder.advertTextEN')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('advert.audioEN')">
@@ -121,9 +121,9 @@
                     :on-remove="handleRemove"
                     :file-list="fileListEN">
                         <el-button size="small" type="primary">{{$t('robot.clickUploadMusic')}}</el-button>
-                        <div slot="tip" class="el-upload__tip">{{$t('robot.uploadLimit')}}</div>
+                        <div slot="tip" class="el-upload__tip">{{$t('advert.upload.limit')}}</div>
                     </el-upload>
-                    <span>{{ addAdvertForm.audioUrlEN}}</span>
+                    <span v-if="editTag">{{ addAdvertForm.audioUrlEN}}</span>
                     <audio :src="baseUrl + addAdvertForm.audioUrlEN" controls="controls">
                         Your browser does not support the audio element.
                     </audio>
@@ -166,19 +166,19 @@ export default {
       },
       addAdvertFormRules: {
         adName:[
-            { required:true , message:'请输入广告名称', trigger:'blur'}
+            { required:true , message:this.$t('advert.rules.adName'), trigger:'blur'}
         ],
         imgUrl:[
-            { required:true, message:'请选择图片',trigger:'change'}
+            { required:true, message:this.$t('advert.rules.imgUrl'),trigger:'change'}
         ],
         advertTextZH:[            
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { min: 1, max: 200, message: this.$t('advert.rules.maxText'), trigger: 'blur' }
         ],
         advertTextEN:[            
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { min: 1, max: 200, message: this.$t('advert.rules.maxText'), trigger: 'blur' }
         ],
         advertTextJP:[            
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { min: 1, max: 200, message: this.$t('advert.rules.maxText'), trigger: 'blur' }
         ]
       },
       advertImgUrl:'',
@@ -231,6 +231,7 @@ export default {
     openAddDialog(){
         this.addAdvertDialogVisible = true;
         this.btnTag = 'add';
+        this.editTag = false;
         this.addAdvertFormReset();
     },
     beforeAdvertPicUpload(file) {
@@ -283,6 +284,8 @@ export default {
     },
 
     handleAdvertAudioSuccessZH(res, file, fileList) {
+
+        this.editTag = false;
 
         this.fileListZH = [];
         this.fileListZH.push(file);
@@ -425,16 +428,16 @@ export default {
 
             if (valid) {
             
-            this.addAdvert();
+                this.addAdvert();
 
             } else {
             
-            this.$message({
-                type:'error',
-                message: this.$t('tips.rules.error')
-            });
+                this.$message({
+                    type:'error',
+                    message: this.$t('tips.rules.error')
+                });
 
-            return false;
+                return false;
             }
 
         });
@@ -466,6 +469,7 @@ export default {
     },
 
     updateAdvert(item){
+        this.addAdvertFormReset();
         this.btnTag = 'update';
         this.editTag = true;
         this.addAdvertDialogVisible = true;

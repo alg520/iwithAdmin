@@ -102,9 +102,9 @@
                                         </el-select>
                                     </el-form-item>
                                     
-                                    <el-form-item label="提案动作">
-                                      <el-select v-model="introMotion" placeholder="请选择提案动作" @change="motionChange()">
-                                        <el-option label="请选提案动作" value="0"></el-option>
+                                    <el-form-item :label="$t('introduce.introMotion')">
+                                      <el-select v-model="introMotion" @change="motionChange()">
+                                        <el-option :label="$t('introduce.selectMotion')" value="0"></el-option>
                                         <el-option 
                                         v-for="motion in motionLists" :key="motion.motionId" 
                                         :label="_SHOPLANGUAGE == 0 ? motion.motionNamePojo.zh : (_SHOPLANGUAGE == 1 ? motion.motionNamePojo.en : motion.motionNamePojo.jp)"

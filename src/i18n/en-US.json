@@ -81,7 +81,12 @@
     "romName":"Please enter ROM name",
     "romCode":"Please enter ROM CODE",
     "appName":"Please enter APP name",
-    "appCode":"Please enter APP CODE"
+    "appCode":"Please enter APP CODE",
+    "advertType":"Please select an ad type",
+    "advertName":"Please enter the name of the ad",
+    "advertTextZH":"Please enter the Chinese ad",
+    "advertTextJP":"Please enter Japanese advertisement",
+    "advertTextEN":"Please enter English advertisement"
   },
   "header":{
     "changeLanguage":"Switch Language",
@@ -203,7 +208,9 @@
     "updateIntroduceGroup":"Modify Proposal Group",
     "introduceGroupName":"Proposal Sub-group Name",
     "introduceName":"Proposal Name",
-    "introduceContent":"Proposal Content"
+    "introduceContent":"Proposal Content",
+    "introMotion":"Proposal action",
+    "selectMotion":"Please choose a proposal action"
   },
   "shop":{
     "list":"Store List",
@@ -481,6 +488,63 @@
       "delIntro":"Are you sure you want to delete this proposal?",
       "groupHaveChild":"This proposal can not be deleted directly under the sub-group",
       "delIntroGroup":"Are you sure you want to delete this group?"
+    }
+  },
+  "advert":{
+    "type":"advertisement type",
+    "picture":"Image ads",
+    "video":"Video ad",
+    "add":"Add ads",
+    "update":"Edit the ad",
+    "ID":"Advertising ID",
+    "name":"Ad name",
+    "picShow":"Ad Image",
+    "text":"Advertising proposal",
+    "textZH":"Chinese advertising words",
+    "textJP":"Japanese advertising words",
+    "textEN":"English advertisement",
+    "audioZH":"Chinese advertising audio",
+    "audioJP":"Japanese advertising audio",
+    "audioEN":"English advertising audio",
+    "addSuccess":"Added successfully",
+    "addError":"Add failed",    
+    "updateSuccess":"Status update successful",
+    "editSuccess":"Successfully modified",
+    "sureDelete":"Are you sure you want to delete this ad?",    
+    "upload":{
+      "pictypeError":"Image format is not supported, please re-upload",
+      "picsizeError":"Image size can not exceed 1M",
+      "audiotypeError":"Audio format is not supported, please re-upload",
+      "audiosizeError":"Audio size can not exceed 1M",
+      "success":"Upload successfully",
+      "error":"upload failed",
+      "limit":"Can only upload mp3 files, and not more than 1MB"
+    },
+    "rules":{
+      "adName":"Please enter the name of the ad",
+      "imgUrl":"Please select a picture",
+      "maxText":"Enter up to 200 characters"
+    }
+  },
+  "motion":{
+    "add":"Add action",
+    "update":"Modify the action",
+    "id":"Action ID",
+    "code":"Action number",
+    "name":"Action name",
+    "nameZH":"Chinese action name",
+    "nameJP":"Japanese action name",
+    "nameEN":"English action name",
+    "addSuccess":"Added successfully",
+    "addError":"Add failed",
+    "updateSuccess":"Successfully modified",
+    "sureDel":"Are you sure you want to delete this action?",
+    "rules":{
+      "code":"Please enter the action number",
+      "nameZH":"Please enter the name of the Chinese action",
+      "nameJP":"Please enter the name of the Japanese action",
+      "nameEN":"Please enter the English action name",
+      "maxText":"Enter up to 200 characters"
     }
   }
 

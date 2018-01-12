@@ -2,15 +2,15 @@
     <div class="monrion-info">
         <el-form :inline="true">
             <el-form-item>
-                <el-button type="primary" @click="openAddDialog()">添加动作</el-button>
+                <el-button type="primary" @click="openAddDialog()">{{$t('motion.add')}}</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="motionLists" border style="width: 100%; text-align:center;">      
-            <el-table-column prop="motionId" label="动作ID" width="180">
+            <el-table-column prop="motionId" :label="$t('motion.id')" width="180">
             </el-table-column>            
-            <el-table-column prop="motionCode" label="动作编号">                
+            <el-table-column prop="motionCode" :label="$t('motion.code')">                
             </el-table-column>            
-            <el-table-column prop="advertType" label="动作名称">
+            <el-table-column prop="advertType" :label="$t('motion.name')">
                 <template scope="scope">
                     <span>中文：{{scope.row.motionNamePojo.zh}}</span>
                     <br>
@@ -19,36 +19,41 @@
                     <span>日文：{{scope.row.motionNamePojo.jp}}</span>
                 </template>
             </el-table-column>
-            <el-table-column :label="$t('_global.action')">
+            <el-table-column :label="$t('_global.action')" width="180" fixed="right">
                 <template scope="scope">
-                    <el-button type="primary" size="small" @click="updateMotion(scope.row)">修改</el-button>
-                    <el-button type="danger" size="small" @click="confirmDel(scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" @click="updateMotion(scope.row)">{{$t('_global.edit')}}</el-button>
+                    <el-button type="danger" size="small" @click="confirmDel(scope.row)">{{$t('_global.delete')}}</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-dialog :title=" btnTag == 'add' ? '添加动作':'修改动作'" :visible.sync="addMotionDialogVisible" class="addDialog">
+        <div class="block turn-page" style="margin-top:10px;">
+            <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems">
+            </el-pagination>
+        </div>
+
+        <el-dialog :title=" btnTag == 'add' ? $t('motion.add'):$t('motion.update')" :visible.sync="addMotionDialogVisible" class="addDialog">
             <el-form :model="addMotionForm" :rules="addMotionFormRules" ref="addMotionForm" label-width="150px">                
 
-                <el-form-item label="动作编号" prop="motionCode">
+                <el-form-item :label="$t('motion.code')" prop="motionCode">
                     <el-input type="text" v-model="addMotionForm.motionCode" placeholder="请输入动作编号"></el-input>
                 </el-form-item>
 
-                <el-form-item label="中文动作名称" prop="motionNameZH">
+                <el-form-item :label="$t('motion.nameZH')" prop="motionNameZH">
                     <el-input v-model="addMotionForm.motionNameZH" placeholder="请输入中文动作名称"></el-input>
                 </el-form-item>
 
-                <el-form-item label="日文动作名称" prop="motionNameJP">
+                <el-form-item :label="$t('motion.nameJP')" prop="motionNameJP">
                     <el-input v-model="addMotionForm.motionNameJP" placeholder="请输入日文动作名称"></el-input>
                 </el-form-item>                
 
-                <el-form-item label="英文动作名称" prop="motionNameEN">
+                <el-form-item :label="$t('motion.nameEN')" prop="motionNameEN">
                     <el-input v-model="addMotionForm.motionNameEN" placeholder="请输入英文动作名称"></el-input>
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
-                    <el-button type="primary" @click="updateValidate()">修改</el-button>
+                    <el-button v-if="btnTag == 'add'" type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
+                    <el-button v-else type="primary" @click="updateValidate()">{{$t('_global.lijiEdit')}}</el-button>
                     <el-button @click="addMotionDialogVisible = false">{{$t('_global.cancel')}}</el-button>
                 </el-form-item>
             </el-form>
@@ -77,19 +82,19 @@ export default {
       },
       addMotionFormRules: {
         motionCode:[
-            { required:true , message:'请输入动作编号', trigger:'blur'}
+            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
         ],        
         motionNameZH:[
-            { required:true , message:'请输入中文动作名称', trigger:'blur'},
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { required:true , message:this.$t('motion.rules.nameZH'), trigger:'blur'},
+            { min: 1, max: 200, message: this.$t('motion.rules.maxText'), trigger: 'blur' }
         ],
         motionNameEN:[
-            { required:true , message:'请输入英文动作名称', trigger:'blur'},
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { required:true , message:this.$t('motion.rules.nameEN'), trigger:'blur'},
+            { min: 1, max: 200, message: this.$t('motion.rules.maxText'), trigger: 'blur' }
         ],
         motionNameJP:[
-            { required:true , message:'请输入日文动作名称', trigger:'blur'},
-            { min: 1, max: 200, message: '最多200个字符', trigger: 'blur' }
+            { required:true , message:this.$t('motion.rules.nameJP'), trigger:'blur'},
+            { min: 1, max: 200, message: this.$t('motion.rules.maxText'), trigger: 'blur' }
         ]
       },
       midddleObj:{}
@@ -144,14 +149,14 @@ export default {
           if(res.status){
               this.$message({
                   type:'success',
-                  message:'添加成功'
+                  message:this.$t('motion.addSuccess')
               })
               this.getRobotMotionList();
               this.addMotionFormReset();
           } else {
               this.$message({
                   type:'error',
-                  message:'添加失败'
+                  message:this.$t('motion.addError') + res.message
               })
           }
 
@@ -167,16 +172,16 @@ export default {
 
             if (valid) {
             
-            this.addMotion();
+                this.addMotion();
 
             } else {
             
-            this.$message({
-                type:'error',
-                message: this.$t('tips.rules.error')
-            });
+                this.$message({
+                    type:'error',
+                    message: this.$t('tips.rules.error')
+                });
 
-            return false;
+                return false;
             }
 
         });
@@ -185,8 +190,7 @@ export default {
 
     updateMotion(item){
         this.btnTag = 'update';
-        this.addMotionDialogVisible = true;
-        console.log("更新的参数",item);
+        this.addMotionDialogVisible = true;        
         this.midddleObj = item;
         this.addMotionForm.motionCode = item.motionCode;
         this.addMotionForm.motionNameZH = item.motionNamePojo.zh;
@@ -212,7 +216,7 @@ export default {
             if(res.status){
                 this.$message({
                     type:'success',
-                    message:'修改成功'
+                    message:this.$t('motion.updateSuccess')
                 });
 
                 this.addMotionDialogVisible = false;
@@ -229,6 +233,10 @@ export default {
 
 
         })
+    },
+
+    handleCurrentChange(page) {            
+        this.getRobotMotionList();
     },
 
     updateValidate(){
@@ -280,7 +288,7 @@ export default {
     },
 
     confirmDel(item){
-        this.$confirm("确定要删除这个动作么？",this.$t('tips.message.hint'),{
+        this.$confirm(this.$t('motion.sureDel'),this.$t('tips.message.hint'),{
             confirmButtonText:this.$t('tips.message.ok'),
             cancelButtonText:this.$t('tips.message.cancel'),
             type:'warning',

@@ -81,7 +81,12 @@
     "romName":"ROM名を入力してください",
     "romCode":"ROM CODEを入力してください",
     "appName":"APP名を入力してください",
-    "appCode":"APP CODEを入力してください"
+    "appCode":"APP CODEを入力してください",
+    "advertType":"広告タイプを選択してください",
+    "advertName":"広告の名前を入力してください",
+    "advertTextZH":"中国の広告を入力してください",
+    "advertTextJP":"日本の広告を入力してください",
+    "advertTextEN":"英語の広告を入力してください"
   },
   "header":{
     "changeLanguage":"言語変更",
@@ -203,7 +208,9 @@
     "updateIntroduceGroup":"提案グループ変更",
     "introduceGroupName":"提案グループ名",
     "introduceName":"提案名",
-    "introduceContent":"提案内容"
+    "introduceContent":"提案内容",
+    "introMotion":"提案アクション",
+    "selectMotion":"提案アクションを選択してください"
   },
   "shop":{
     "list":"店舗リスト",
@@ -481,6 +488,63 @@
       "delIntro":"このプロポーザルを削除してもよろしいですか？",
       "groupHaveChild":"この提案はサブグループの下で直接削除することはできません",
       "delIntroGroup":"このグループを削除してもよろしいですか？"
+    }
+  },
+  "advert":{
+    "type":"広告タイプ",
+    "picture":"イメージ広告",
+    "video":"動画広告",
+    "add":"広告を追加する",
+    "update":"広告を編集する",
+    "ID":"広告ID",
+    "name":"広告名",
+    "picShow":"広告写真",
+    "text":"広告コピー",
+    "textZH":"中国の広告語",
+    "textJP":"日本の広告語",
+    "textEN":"英語の広告",
+    "audioZH":"中国の広告オーディオ",
+    "audioJP":"日本の広告オーディオ",
+    "audioEN":"英語の広告音声",
+    "addSuccess":"追加されました",
+    "addError":"追加に失敗しました",    
+    "updateSuccess":"ステータス更新に成功しました",
+    "editSuccess":"変更に成功しました",
+    "sureDelete":"この広告を削除してもよろしいですか？",    
+    "upload":{
+      "pictypeError":"イメージ形式はサポートされていません。再アップロードしてください",
+      "picsizeError":"画像サイズは1Mを超えることはできません",
+      "audiotypeError":"オーディオフォーマットはサポートされていません。再アップロードしてください",
+      "audiosizeError":"オーディオサイズは1Mを超えることはできません",
+      "success":"アップロードに成功しました",
+      "error":"アップロードに失敗しました",
+      "limit":"mp3ファイルをアップロードできるのは1MB以下です"
+    },
+    "rules":{
+      "adName":"広告の名前を入力してください",
+      "imgUrl":"写真を選択してください",
+      "maxText":"200文字以内で入力してください"
+    }
+  },
+  "motion":{
+    "add":"アクションを追加",
+    "update":"アクションを変更する",
+    "id":"アクションID",
+    "code":"アクション番号",
+    "name":"アクション名",
+    "nameZH":"中国のアクション名",
+    "nameJP":"日本語のアクション名",
+    "nameEN":"英語のアクション名",
+    "addSuccess":"追加されました",
+    "addError":"追加に失敗しました",
+    "updateSuccess":"変更に成功しました",
+    "sureDel":"このアクションを削除してもよろしいですか？",
+    "rules":{
+      "code":"アクション番号を入力してください",
+      "nameZH":"中国の行動の名前を入力してください",
+      "nameJP":"日本の行動の名前を入力してください",
+      "nameEN":"英語のアクション名を入力してください",
+      "maxText":"200文字以内で入力してください"
     }
   }
 
