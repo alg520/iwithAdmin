@@ -8,7 +8,7 @@
         <el-table :data="motionLists" border style="width: 100%; text-align:center;">      
             <el-table-column prop="motionId" :label="$t('motion.id')" width="180">
             </el-table-column>            
-            <el-table-column prop="motionCode" :label="$t('motion.code')">                
+            <el-table-column prop="motionCode" :label="$t('motion.code')" width="180">                
             </el-table-column>            
             <el-table-column prop="advertType" :label="$t('motion.name')">
                 <template scope="scope">

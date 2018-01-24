@@ -39,22 +39,22 @@ export function itemToType(itemType){
     }
 }
 
-export function orderStatus(tradeStatus){
-    if(tradeStatus == '1'){
+export function orderStatus(orderStatus){
+    if(orderStatus == '1'){
         return '待审核'
     }
-    if(tradeStatus == '2'){
+    if(orderStatus == '2'){
         return '审核通过'
     } 
-    if(tradeStatus == '3'){
+    if(orderStatus == '3'){
         return '人工退单'
     } 
-    if(tradeStatus == '4'){
+    if(orderStatus == '4'){
         return '审核未通过'
     } 
-    if(tradeStatus == '5'){
+    if(orderStatus == '5'){
         return '取消'
-    }     
+    }    
 }
 
 export function tradeStatus(tradeStatus){

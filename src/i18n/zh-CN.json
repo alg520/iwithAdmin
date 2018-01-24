@@ -289,6 +289,12 @@
       "type":"交易类型",
       "ID":"交易ID",
       "status":"交易状态",
+      "pendingAudit":"待审核",
+      "order":"下单",
+      "unpaid":"待支付",
+      "paySuccess":"支付成功",
+      "complete":"完成",
+      "closed":"关闭",
       "time":"创建时间",
       "price":"原价",
       "paidAmount":"折后价",
@@ -545,6 +551,33 @@
       "nameJP":"请输入日文动作名称",
       "nameEN":"请输入英文动作名称",
       "maxText":"最多输入200个字符"
+    }
+  },
+  "scene":{
+    "add":"添加场景",
+    "update":"修改场景",
+    "id":"场景ID",
+    "name":"场景名称",
+    "parameter":"场景参数",
+    "corpus":"默认语料",
+    "operator":"操作人",
+    "updatetime":"更新时间",
+    "nameZH":"中文场景名称",
+    "nameJP":"日文场景名称",
+    "nameEN":"英文场景名称",
+    "parameterList":"参数列表",
+    "case":"默认案例",
+    "rules":{      
+      "nameZH":"请输入中文场景名称",
+      "nameJP":"请输入日文场景名称",
+      "nameEN":"请输入英文场景名称",
+      "paramers":"请输入场景参数",
+      "corpusZH":"请输入中文语料",
+      "corpusJP":"请输入日文语料",
+      "corpusEN":"请输入英文语料",
+      "sceneCaseZH":"请输入中文案例",
+      "sceneCaseJP":"请输入日文案例",
+      "sceneCaseEN":"请输入英文案例"
     }
   }
 

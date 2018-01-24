@@ -7,14 +7,15 @@
         <el-date-picker v-model="endTrade" type="datetime" :placeholder="$t('placeholder.endTime')" align="right" :picker-options="pickerTradetime">
         </el-date-picker>
       </el-form-item>
-      <el-form-item :label="$t('shop.order.status')">
+      <el-form-item :label="$t('shop.trade.status')">
         <el-select v-model="tradeStatus" :placeholder="$t('placeholder.orderStatus')"  @change="getSomeThing()">
           <el-option :label="$t('shop.order.all')" value=""></el-option>
-          <el-option :label="$t('shop.order.pendingAudit')" value="1"></el-option>
-          <el-option :label="$t('shop.order.auditPassed')" value="2"></el-option>
-          <el-option :label="$t('shop.order.manualWithdrawal')" value="3"></el-option>
-          <el-option :label="$t('shop.order.auditNotApproved')" value="4"></el-option>
-          <el-option :label="$t('shop.order.cancel')" value="5"></el-option>
+          <el-option :label="$t('shop.trade.pendingAudit')" value="1"></el-option>
+          <el-option :label="$t('shop.trade.order')" value="4"></el-option>
+          <el-option :label="$t('shop.trade.unpaid')" value="6"></el-option>
+          <el-option :label="$t('shop.trade.paySuccess')" value="7"></el-option>
+          <el-option :label="$t('shop.trade.complete')" value="10"></el-option>
+          <el-option :label="$t('shop.trade.closed')" value="11"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -25,12 +26,24 @@
       <el-table-column prop="tradeId" :label="$t('shop.order.orderId')" width="180">
       </el-table-column>
       <el-table-column prop="originalAmount" :label="$t('shop.order.oldPrice')" width="180">
+        <template scope="scope">          
+          <span v-if="scope.row.currencyPrecision != 0">
+            {{scope.row.originalAmount / Math.pow(10,scope.row.currencyPrecision)}}
+          </span>
+          <span v-else>{{scope.row.originalAmount}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="paidAmount" :label="$t('shop.order.price')" width="180">
+      <el-table-column prop="paidAmount" :label="$t('shop.order.price')" width="180">        
+        <template scope="scope">
+          <span v-if="scope.row.currencyPrecision != 0">
+            {{scope.row.paidAmount / Math.pow(10,scope.row.currencyPrecision)}}
+          </span>
+          <span v-else>{{scope.row.paidAmount}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="tradeStatus" :label="$t('shop.order.status')" width="180">
         <template scope="scope">
-          <span>{{ scope.row.tradeStatus| orderStatus}}</span>
+          <span>{{ scope.row.tradeStatus| tradeStatus}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="createdTime" :label="$t('shop.order.orderTime')">

@@ -142,7 +142,7 @@ export default {
         getDetailInfo() {
             console.log(this.middleLocal);
             this.tradeInfo = this.middleLocal.tradeVo;
-            this.currencyPrecision = this.middleLocal.tradeVo.currencyPrecision;
+            this.currencyPrecision = this.middleLocal.tradeVo.currencyPrecision || 2;
             this.orders = this.middleLocal.orders;
             this.attrs = this.getAttrs(this.middleLocal.orders);
             this.sideDishs = this.getSideDish(this.middleLocal.orders);            

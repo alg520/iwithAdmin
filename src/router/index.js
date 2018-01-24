@@ -32,6 +32,7 @@ import SN from "@/components/operation/sn";
 import SNmanage from "@/components/operation/snmanage";
 import Translate from "@/components/operation/translate";
 import Motion from "@/components/operation/motion";
+import RobotReply from "@/components/operation/robotReply";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -294,6 +295,18 @@ const router = new Router({
                 breadNav: [
                   { name: "开发者管理", path: "" },
                   { name: "动作管理", path: "" }                  
+                ]
+              }
+            },
+            {
+              path: "robotreply",
+              name: "robotreply",
+              component: RobotReply,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "开发者管理", path: "" },
+                  { name: "场景管理", path: "" }                  
                 ]
               }
             }

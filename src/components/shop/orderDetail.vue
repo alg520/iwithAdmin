@@ -35,14 +35,16 @@
                         </el-col>
                         <el-col :span="12">
                             <p>
-                                <span>{{$t('shop.trade.price')}}:</span>
-                                <span v-text="tradeInfo.originalAmount"></span>
+                                <span>{{$t('shop.trade.price')}}:</span>                                
+                                <span v-if="currencyPrecision != 0">{{ tradeInfo.originalAmount / Math.pow(10,tradeInfo.currencyPrecision)}}</span>
+                                <span v-else>{{ tradeInfo.originalAmount}}</span>
                             </p>
                         </el-col>
                         <el-col :span="12">
                             <p>
                                 <span>{{$t('shop.trade.paidAmount')}}:</span>
-                                <span v-text="tradeInfo.paidAmount"></span>
+                                <span v-if="currencyPrecision != 0">{{ tradeInfo.paidAmount / Math.pow(10,tradeInfo.currencyPrecision)}}</span>
+                                <span v-else>{{ tradeInfo.paidAmount}}</span>                                
                             </p>
                         </el-col>
                         <el-col :span="12">
@@ -74,26 +76,33 @@
                                             <el-form-item :label="$t('shop.order.num')">
                                                 <span>{{ props.row.itemNum }}</span>
                                             </el-form-item>
-                                            <el-form-item :label="$t('shop.order.totalPaidPrice')">
-                                                <span>{{ props.row.totalPaidPrice }}</span>
+                                            <el-form-item :label="$t('shop.order.totalPaidPrice')">                                                
+                                                <span v-if="currencyPrecision != 0">{{ props.row.totalPaidPrice / Math.pow(10,currencyPrecision) }}</span>
+                                                <span v-else>{{ props.row.totalPaidPrice }}</span>
                                             </el-form-item>
-                                            <el-form-item :label="$t('shop.order.attrList')">
+                                            <!-- <el-form-item :label="$t('shop.order.attrList')">
                                                 <el-tag v-for="attr in attrs" :key="attr.attrId">{{attr.name.zh}}</el-tag>
                                             </el-form-item>
                                             <el-form-item :label="$t('shop.order.sideDishList')">
                                                 <el-tag v-for="item in sideDishs" :key="item.itemId">{{item.itemNameObject.zh}}</el-tag>
-                                            </el-form-item>
+                                            </el-form-item> -->
                                         </el-form>
                                     </template>
                                 </el-table-column>
                                 <el-table-column :label="$t('shop.order.itemId')" prop="itemId">
                                 </el-table-column>
-                                <el-table-column :label="$t('shop.order.itemName')" prop="name.zh">
+                                <el-table-column :label="$t('shop.order.itemName')" prop="name.zh">                                    
                                     <template scope="scope">
-                                        <span>{{scope.row.name.zh}}</span>
+                                        <span v-if=" _LANGUAGE == 0">{{scope.row.name.zh}}</span>
+                                        <span v-if=" _LANGUAGE == 1">{{scope.row.name.en}}</span>
+                                        <span v-if=" _LANGUAGE == 2">{{scope.row.name.jp}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column :label="$t('shop.order.originalPrice')" prop="itemOriginalPrice">
+                                    <template scope="scope">
+                                        <span v-if="currencyPrecision != 0">{{ scope.row.itemOriginalPrice / Math.pow(10,currencyPrecision) }}</span>
+                                        <span v-else>{{ scope.row.itemOriginalPrice }}</span>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </el-col>
@@ -107,18 +116,23 @@
 <script>
 import Lockr from 'lockr';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 export default {
     data() {
         return {
             tradeInfo: '',
             orders: [],
             attrs: [],
-            sideDishs: []
+            sideDishs: [],
+            currencyPrecision:2
         }
     },
     computed: {
         middleLocal() {
             return Lockr.get("tradeDetailInfo");
+        },
+        _LANGUAGE(){
+            return Cookies.get('SHOPLANGUAGE');
         }
     },
     created() {
@@ -128,7 +142,7 @@ export default {
         getDetailInfo() {            
             this.tradeInfo = this.middleLocal.trade;
             this.orders = this.middleLocal.orders;            
-
+            this.currencyPrecision = this.middleLocal.trade.currencyPrecision || 2;
             this.attrs = this.getAttrs(this.middleLocal.orders);
             this.sideDishs = this.getSideDish(this.middleLocal.orders);
         },
