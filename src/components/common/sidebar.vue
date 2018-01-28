@@ -30,6 +30,7 @@
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
                 <el-menu-item index="/shop/advertising"> 广告管理 </el-menu-item>
+                <el-menu-item index="/shop/robotreply"> 场景回复管理 </el-menu-item>
             </el-submenu>
             <!-- v-if="authType == 1 || authType == 2" -->
             <el-submenu index="4" v-if="authType == 1 || authType == 2">

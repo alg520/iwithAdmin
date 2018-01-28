@@ -2,8 +2,8 @@
     <div class="robotDancePage">
         <el-form :inline="true" style="text-align:center;">
             <el-form-item label="SN数量">
-                <el-input v-model="snFrom.num" type="number" min="1" max="20" :placeholder="$t('placeholder.shopName')" readonly="readonly" @keyup.enter="getSnLists()"></el-input>
-                1 <input type="range" v-model="snFrom.num" name="points" min="1" max="20" /> 20
+                <el-input v-model="snFrom.num" type="number" min="1" max="100" :placeholder="$t('placeholder.shopName')" readonly="readonly" @keyup.enter="getSnLists()"></el-input>
+                1 <input type="range" v-model="snFrom.num" name="points" min="1" max="100" /> 100
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="getSnLists()">{{$t('_global.search')}}</el-button>

@@ -55,94 +55,91 @@
         <el-dialog :title=" btnTag == 'add' ? $t('scene.add'):$t('scene.update')" :visible.sync="addSceneDialogVisible" class="addDialog">
             <el-form :model="addSceneForm" :rules="addSceneFormRules" ref="addSceneForm" label-width="150px">                
 
-                <el-form-item :label="$t('scene.nameZH')" prop="senceNameZH">
-                    <el-input type="text" v-model="addSceneForm.senceNameZH" placeholder="请输入中文场景名称"></el-input>
+                <el-form-item :label="$t('scene.nameZH')" prop="sceneNameZH">
+                    <el-input type="text" v-model="addSceneForm.sceneNameZH" placeholder="请输入中文场景名称"></el-input>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.nameJP')" prop="sceneCaseJP">
-                    <el-input type="text" v-model="addSceneForm.senceNameJP" placeholder="请输入日文场景名称"></el-input>
+                <el-form-item :label="$t('scene.nameJP')" prop="sceneNameJP">
+                    <el-input type="text" v-model="addSceneForm.sceneNameJP" placeholder="请输入日文场景名称"></el-input>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.nameEN')" prop="sceneCaseEN">
-                    <el-input type="text" v-model="addSceneForm.senceNameEN" placeholder="请输入英文场景名称"></el-input>
+                <el-form-item :label="$t('scene.nameEN')" prop="sceneNameEN">
+                    <el-input type="text" v-model="addSceneForm.sceneNameEN" placeholder="请输入英文场景名称"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('scene.parameterList')" prop="parameters">
-                    <!-- <el-popover
-                    ref="popoverParameter"
-                    placement="right"
-                    width="400"
-                    trigger="click">
-                        <el-checkbox-group 
-                        v-model="checkedParameters">
-                            <el-checkbox v-for="parameter in parameters" :label="parameter.namePojo.zh" :key="parameter.id">{{parameter.namePojo.zh}}</el-checkbox>
-                        </el-checkbox-group>
-                    </el-popover> -->
-                    <!-- <el-tag
-                    v-for="parameter in checkedParameters"
-                    :key="parameter.id"
-                    :closable="true"
-                    type="success"
-                    >
-                    {{parameter.namePojo.zh}}
-                    </el-tag> -->
-                    <!-- <el-button type="primary" v-popover:popoverParameter icon="plus" size="small" @click="getParameters()"></el-button> -->
                     <el-select
                     v-model="checkedParameters"
                     multiple
-                    filterable                        
                     placeholder="请选择场景参数"
-                    value-key="id"
                     @change="parameterChange()">
                         <el-option
                         v-for="parameter in parameters"
                         :key="parameter.id"
                         :label="parameter.namePojo.zh"
-                        :value="parameter">
+                        :value="parameter.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.corpus')" prop="motionNameZH">
-                    <p> 
-                        <b>中文参数</b>
+                <el-form-item :label="$t('scene.corpus')" prop="corpusZH">
+                    <p>
                         <el-button 
-                        v-for="parameter in checkedParameters"
+                        v-for="parameter in selectedParameters"
                         :key="parameter.id"                        
                         type="info" size="mini" @click="insertParameter(parameter,'zh')">
                         {{parameter.namePojo.zh}}
                         </el-button>
                     </p>
-                    <el-input v-model="addSceneForm.corpusZH" placeholder="请输入中文语料">                        
-                    </el-input>
-                    <p>
-                        <b>日文参数</b>
+                    <el-row>
+                      <el-col :span="10">
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusZH" placeholder="请输入中文语料"></el-input>
+                      </el-col>
+                      <el-col :span="14">
+                          <div class="corpusShow" v-html="corpusNameZH">{{corpusNameZH}}</div>
+                      </el-col>
+                    </el-row>                    
+                </el-form-item>
+
+                <el-form-item prop="corpusJP">
+                    <p>                       
                         <el-button 
-                        v-for="parameter in checkedParameters"
+                        v-for="parameter in selectedParameters"
                         :key="parameter.id"
                         type="info" size="mini" @click="insertParameter(parameter,'jp')">
                         {{parameter.namePojo.jp}}
                         </el-button>
                     </p>
-                    <el-input v-model="addSceneForm.corpusJP" placeholder="请输入日文语料">                        
-                    </el-input>
-                    <p>
-                        <b>英文参数</b>
-                        <el-button 
-                        v-for="parameter in checkedParameters"
+                    <el-row>
+                      <el-col :span="10">
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusJP" placeholder="请输入日文语料"></el-input>
+                      </el-col>
+                      <el-col :span="14">
+                          <div class="corpusShow" v-html="corpusNameJP">{{corpusNameJP}}</div>
+                      </el-col>
+                    </el-row>
+                </el-form-item>
+
+                <el-form-item prop="corpusEN">
+                    <p>                        
+                        <el-button
+                        v-for="parameter in selectedParameters"
                         :key="parameter.id"
                         type="info" size="mini" @click="insertParameter(parameter,'en')">
                         {{parameter.namePojo.en}}
-                        </el-button>                        
-                    </p>                    
-                    <el-input v-model="addSceneForm.corpusEN" placeholder="请输入英文语料">                        
-                    </el-input>
-                    <!-- <div contenteditable="true">
-                        <p>点击输入语料</p>
-                    </div> -->
+                        </el-button>
+                    </p>
+                    <el-row>
+                      <el-col :span="10">
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusEN" placeholder="请输入英文语料"></el-input>
+                      </el-col>
+                      <el-col :span="14">
+                          <div class="corpusShow" v-html="corpusNameEN">{{corpusNameEN}}</div>
+                      </el-col>
+                    </el-row>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.case')" prop="motionNameJP">
+                <el-form-item :label="$t('scene.case')" prop="sceneCaseZH">
                     <el-input v-model="addSceneForm.sceneCaseZH" type="textarea" placeholder="请输入中文案例">                        
                     </el-input>
                     <p></p>
@@ -173,15 +170,19 @@ export default {
       sceneLists: [],
       parameters:[],
       checkedParameters:[],
+      selectedParameters:[],
+      selectedParameterNamesZH:[],
+      selectedParameterNamesJP:[],
+      selectedParameterNamesEN:[],
       currentPage: 1,
       pageSize: 10,
       totalItems: 0,
       addSceneDialogVisible: false,
       btnTag:'add',
       addSceneForm: {
-        senceNameZH:"",
-        senceNameJP:"",
-        senceNameEN:"",
+        sceneNameZH:"",
+        sceneNameJP:"",
+        sceneNameEN:"",
         parameters:[],        
         corpusZH:"",
         corpusJP:"",
@@ -191,47 +192,150 @@ export default {
         sceneCaseEN:""
       },
       addSceneFormRules: {
-        senceNameZH:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+        sceneNameZH:[
+            { required:true , message:"请输入中文场景名称", trigger:'blur'}
         ],
-        senceNameJP:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+        sceneNameJP:[
+            { required:true , message:"请输入日文场景名称", trigger:'blur'}
         ],
-        senceNameEN:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
-        ],
-        senceNameZH:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
-        ],
+        sceneNameEN:[
+            { required:true , message:"请输入英文场景名称", trigger:'blur'}
+        ],        
         corpusZH:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+            { required:true , message:"请输入中文语料", trigger:'blur'}
         ],
         corpusJP:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+            { required:true , message:"请输入中文语料", trigger:'blur'}
         ],
         corpusEN:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+            { required:true , message:"请输入中文语料", trigger:'blur'}
         ],
         sceneCaseZH:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+            { required:true , message:"请输入中文案例", trigger:'blur'}
         ],
         sceneCaseJP:[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+            { required:true , message:"请输入日文案例", trigger:'blur'}
         ],
-        sceneCaseEN                                                    :[
-            { required:true , message:this.$t('motion.rules.code'), trigger:'blur'}
+        sceneCaseEN:[
+            { required:true , message:"请输入英文案例", trigger:'blur'}
         ]
       },
-      midddleObj:{}
+      midddleObj:{},
+      corpusNameZH:"",
+      corpusNameEN:"",
+      corpusNameJP:"",
+      corpusValueZH:"",
+      corpusValueEN:"",
+      corpusValueJP:""
     };
   },
   created() {
     this.getSceneList();
+    this.getParameters();
   },
   computed: {
     baseUrl(){
         return `${window.location.origin}/coron-web/`;
     }
+  },
+  watch:{
+      'addSceneForm.corpusZH':function(val){
+        let regex,
+            corpus = val;
+        //需要反向的把name 值替换成value 再提交
+        this.selectedParameters.forEach((item,i) => {
+
+            var regex2 = new RegExp(item.namePojo.zh,'gim');
+            var value2 = corpus.match(regex2);
+            if(value2 && value2[0]){
+                var rpValue = value2[0];
+                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.zh);
+                this.corpusValueZH = corpus;
+            }
+            
+        })
+
+        this.selectedParameterNamesZH.forEach((elem,i) => {
+            
+            //var regex = new RegExp(`(${elem})`,'gim');
+            regex = new RegExp(elem,'gim');                 
+            var value = val.match(regex);
+            if(value && value[0]){
+                var strValue = value[0];
+                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                this.corpusNameZH = val;
+            } else {
+                this.corpusNameZH = val;
+            }
+            
+        });
+ 
+        //var value = val.match(/\{(.|\\n)+?\}/gim);
+
+      },
+      'addSceneForm.corpusJP':function(val){
+          let regex,
+            corpus = val;
+        //需要反向的把name 值替换成value 再提交
+        this.selectedParameters.forEach((item,i) => {
+
+            var regex2 = new RegExp(item.namePojo.jp,'gim');
+            var value2 = corpus.match(regex2);
+            if(value2 && value2[0]){
+                var rpValue = value2[0];
+                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.jp);
+                this.corpusValueJP = corpus;
+            }
+            
+        })
+
+        this.selectedParameterNamesJP.forEach((elem,i) => {
+            
+            //var regex = new RegExp(`(${elem})`,'gim');
+            regex = new RegExp(elem,'gim');          
+            var value = val.match(regex);
+            if(value && value[0]){
+                var strValue = value[0];
+                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                this.corpusNameJP = val;
+            } else {
+                this.corpusNameJP = val;
+            }
+            
+        });
+      },
+      'addSceneForm.corpusEN':function(val){
+          let regex,
+            corpus = val;
+        //需要反向的把name 值替换成value 再提交
+        this.selectedParameters.forEach((item,i) => {
+
+            var regex2 = new RegExp(item.namePojo.en,'gim');
+            var value2 = corpus.match(regex2);
+            if(value2 && value2[0]){
+                var rpValue = value2[0];
+                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.en);
+                this.corpusValueEN = corpus;
+            }
+            
+        })
+
+        this.selectedParameterNamesEN.forEach((elem,i) => {
+            
+            //var regex = new RegExp(`(${elem})`,'gim');
+            regex = new RegExp(elem,'gim');                    
+            var value = val.match(regex);
+            if(value && value[0]){
+                var strValue = value[0];
+                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                this.corpusNameEN = val;
+            } else {
+                this.corpusNameEN = val;
+            }
+            
+        });
+      }
+
   },
   methods: {
     getSceneList() {
@@ -239,8 +343,7 @@ export default {
         .post("/coron-web/scene/list", {          
           rp: this.pageSize,
           page: this.currentPage
-        })
-        .then(res => {
+        }).then(res => {
           
           if(res.status){
               this.sceneLists = res.rows;
@@ -258,13 +361,11 @@ export default {
     openAddDialog(){
         this.addSceneDialogVisible = true;
         this.btnTag = 'add';
-        this.addMotionFormReset();
-        this.getParameters();
+        this.addSceneFormReset();        
     },
 
     getParameters(){
         $http.get('/coron-web/sceneParameter/getAll').then(res => {
-            console.log("全部场景",res);
             if(res.status){
                 this.parameters = res.entry;
             }
@@ -272,17 +373,29 @@ export default {
     },
 
     parameterChange(){
-        console.log(this.checkedParameters);
-    },
+        this.selectedParameters = [];
+        this.selectedParameterNamesZH =[];
+        this.selectedParameterNamesEN =[];
+        this.selectedParameterNamesJP =[];
+        this.parameters.forEach((value,i) => {
+                
+            if(this.checkedParameters.includes(value.id)){
+                this.selectedParameters.push(value);
+                this.selectedParameterNamesZH.push(value.namePojo.zh);
+                this.selectedParameterNamesEN.push(value.namePojo.en);
+                this.selectedParameterNamesJP.push(value.namePojo.jp);
+            }
 
+        });
+    },
     insertParameter(item,lang){
-        console.log(item);
+
         if(lang == 'zh'){
-            this.addSceneForm.corpusZH += item.valuePojo.zh;
+            this.addSceneForm.corpusZH += item.namePojo.zh;
         } else if (lang == 'jp'){
-            this.addSceneForm.corpusJP += item.valuePojo.zh;
+            this.addSceneForm.corpusJP += item.namePojo.jp;
         } else if (lang == 'en'){
-            this.addSceneForm.corpusEN += item.valuePojo.en;
+            this.addSceneForm.corpusEN += item.namePojo.en;
         }
         
     },
@@ -290,20 +403,41 @@ export default {
     addSence() {
 
       const senceData = {
-          titlePojo:{},
-          parametersPojo:[],
-          corpusPojo:{},
-          sceneCasePojo:{}        
-      };      
-
-      $http.post('/coron-web/robotMotion/add',senceData).then(res => {          
+          titlePojo:{
+              zh:this.addSceneForm.sceneNameZH,
+              en:this.addSceneForm.sceneNameEN,
+              jp:this.addSceneForm.sceneNameJP
+          },
+          parametersPojo:this.selectedParameters,
+          corpusPojo:{
+            zh:{
+                webValue:this.addSceneForm.corpusZH,
+                value:this.corpusValueZH
+            },
+            en:{
+                webValue:this.addSceneForm.corpusEN,
+                value:this.corpusValueEN
+            },
+            jp:{
+                webValue:this.addSceneForm.corpusJP,
+                value:this.corpusValueJP
+            }
+          },
+          sceneCasePojo:{
+              zh:this.addSceneForm.sceneCaseZH,
+              en:this.addSceneForm.sceneCaseEN,
+              jp:this.addSceneForm.sceneCaseJP
+          }        
+      };
+      $http.post('/coron-web/scene/add',senceData).then(res => {          
+          
           if(res.status){
               this.$message({
                   type:'success',
                   message:this.$t('motion.addSuccess')
               })
-              this.getRobotMotionList();
-              this.addMotionFormReset();
+              this.getSceneList();              
+              
           } else {
               this.$message({
                   type:'error',
@@ -318,7 +452,7 @@ export default {
     },
 
     addValidate(){
-        this.$refs['addMotionForm'].validate((valid) => {
+        this.$refs['addSceneForm'].validate((valid) => {
 
             if (valid) {
             
@@ -338,32 +472,71 @@ export default {
           
     },
 
-
-
     updateMotion(item){
         this.btnTag = 'update';
-        this.addMotionDialogVisible = true;        
+        this.addSceneDialogVisible = true;
         this.midddleObj = item;
-        this.addMotionForm.motionCode = item.motionCode;
-        this.addMotionForm.motionNameZH = item.motionNamePojo.zh;
-        this.addMotionForm.motionNameEN = item.motionNamePojo.en;
-        this.addMotionForm.motionNameJP = item.motionNamePojo.jp;
+        console.log(item);
+        this.addSceneForm.sceneNameZH = item.titlePojo.zh;
+        this.addSceneForm.sceneNameEN = item.titlePojo.en;
+        this.addSceneForm.sceneNameJP = item.titlePojo.jp;  
+        this.addSceneForm.corpusZH = item.corpusPojo.zh.webValue;
+        this.addSceneForm.corpusEN = item.corpusPojo.en.webValue;
+        this.addSceneForm.corpusJP = item.corpusPojo.jp.webValue;
+        this.addSceneForm.sceneCaseZH = item.sceneCasePojo.zh;
+        this.addSceneForm.sceneCaseJP = item.sceneCasePojo.jp;
+        this.addSceneForm.sceneCaseEN = item.sceneCasePojo.en;
+        this.checkedParameters = [];
+        if(item.parametersPojo && item.parametersPojo[0]){
+            item.parametersPojo.forEach((value,i) => {
+                this.checkedParameters.push(value.id);
+            })
+        }
+        this.parameterChange();
+
     },
 
+    regxReplace(){
 
-    updateMotiontPost(){
+        var str = "你好,{amount}";
+        //查找所有{} 之间的内容
+        var regx = "/\{(.| )+?\}/gim";
+        str.replace(regx,`<span>测试</span>`);
+
+    },
+
+    updateScenePost(){
 
         const updateData = {
-            motionId:this.midddleObj.motionId,
-            motionCode: this.addMotionForm.motionCode,
-            motionNamePojo: {
-                zh:this.addMotionForm.motionNameZH,
-                en:this.addMotionForm.motionNameEN,
-                jp:this.addMotionForm.motionNameJP
-            }            
+            id:this.midddleObj.id,
+            titlePojo:{
+                zh:this.addSceneForm.sceneNameZH,
+                en:this.addSceneForm.sceneNameEN,
+                jp:this.addSceneForm.sceneNameJP
+            },
+            parametersPojo:this.selectedParameters,
+            corpusPojo:{
+                zh:{
+                    webValue:this.addSceneForm.corpusZH,
+                    value:this.corpusValueZH
+                },
+                en:{
+                    webValue:this.addSceneForm.corpusEN,
+                    value:this.corpusValueEN
+                },
+                jp:{
+                    webValue:this.addSceneForm.corpusJP,
+                    value:this.corpusValueJP
+                }
+            },
+            sceneCasePojo:{
+                zh:this.addSceneForm.sceneCaseZH,
+                en:this.addSceneForm.sceneCaseEN,
+                jp:this.addSceneForm.sceneCaseJP
+            }                
         };
 
-        $http.post('/coron-web/robotMotion/update',updateData).then(res => {            
+        $http.post('/coron-web/scene/update',updateData).then(res => {            
             
             if(res.status){
                 this.$message({
@@ -371,8 +544,9 @@ export default {
                     message:this.$t('motion.updateSuccess')
                 });
 
-                this.addMotionDialogVisible = false;
-                this.getRobotMotionList();
+                this.addSceneDialogVisible = false;
+                this.getSceneList();
+                this.addSceneFormReset();
             } else {
                 this.$message({
                     type:'error',
@@ -380,23 +554,21 @@ export default {
                 });
             }
 
-
-            this.addMotionDialogVisible = false;
-
+            this.addSceneDialogVisible = false;
 
         })
     },
 
     handleCurrentChange(page) {            
-        this.getRobotMotionList();
+        this.getSceneList();
     },
 
     updateValidate(){
-        this.$refs['addMotionForm'].validate((valid) => {
+        this.$refs['addSceneForm'].validate((valid) => {
 
             if (valid) {
             
-                this.updateMotiontPost();
+                this.updateScenePost();
 
             } else {
             
@@ -412,10 +584,10 @@ export default {
 
     },
 
-    delMotion(item){
+    delScene(item){
 
-        $http.post('/coron-web/robotMotion/delete',{
-            motionId:item.motionId
+        $http.post('/coron-web/scene/delete',{
+            id:item.id
         }).then(res => {
 
             if(res.status){
@@ -424,7 +596,7 @@ export default {
                     type:'success',
                     message:this.$t('tips.message.delSuccess')
                 });
-                this.getRobotMotionList();
+                this.getSceneList();
 
             } else {
                 this.$message({
@@ -440,13 +612,14 @@ export default {
     },
 
     confirmDel(item){
+
         this.$confirm(this.$t('motion.sureDel'),this.$t('tips.message.hint'),{
             confirmButtonText:this.$t('tips.message.ok'),
             cancelButtonText:this.$t('tips.message.cancel'),
             type:'warning',
         }).then( () => {
             
-            this.delMotion(item);
+            this.delScene(item);
 
         }).catch(() => {
             this.$message({
@@ -456,12 +629,18 @@ export default {
         })
     },
 
-    addMotionFormReset(){
+    addSceneFormReset(){
 
-        // this.addMotionForm.motionCode = "";        
-        // this.addMotionForm.motionNameZH = "";
-        // this.addMotionForm.motionNameJP = "";
-        // this.addMotionForm.motionNameEN = "";
+        this.addSceneForm.sceneNameZH = "";
+        this.addSceneForm.sceneNameEN = "";
+        this.addSceneForm.sceneNameJP = "";        
+        this.addSceneForm.corpusZH = "";
+        this.addSceneForm.corpusEN = "";
+        this.addSceneForm.corpusJP = "";
+        this.addSceneForm.sceneCaseZH = "";
+        this.addSceneForm.sceneCaseJP = "";
+        this.addSceneForm.sceneCaseEN = "";
+        this.checkedParameters = [];
         
     }
   }
@@ -478,5 +657,13 @@ export default {
 .monrion-info p {
   margin: 5px 0;
   line-height: 30px;
+}
+.corpusShow {
+    padding-left: 10px;
+    line-height: 20px;
+    height: 50px;
+}
+.corpusShow .el-tag {
+    margin-left: 0;
 }
 </style>

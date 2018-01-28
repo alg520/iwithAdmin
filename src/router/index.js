@@ -14,6 +14,7 @@ import Shopinfo from "@/components/shop/info";
 import Shoporder from "@/components/shop/order";
 import Orderdetail from "@/components/shop/orderDetail";
 import Advertising from "@/components/shop/advertising";
+import ShopRobotReply from "@/components/shop/robotReply";
 
 import Operation from "@/components/operation/operation";
 import Shopmanage from "@/components/operation/shopmanage";
@@ -360,6 +361,17 @@ const router = new Router({
                 breadNav:[
                   { name: "商家管理", path: "" },
                   { name: "广告管理", path: "" }                  
+                ]
+              }
+            },
+            {
+              path:"robotreply",
+              component: ShopRobotReply,
+              meta:{
+                requireAuth:true,
+                breadNav:[
+                  { name: "商家管理", path: "" },
+                  { name: "场景回复管理", path: "" }                  
                 ]
               }
             }
