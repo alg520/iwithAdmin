@@ -949,7 +949,7 @@ export default {
 
                     if (item.itemAttrId == item2) {
                         //选中的数据结构  {itemAttrId:'',name:{zh:'',jp:'',en:''}}                        
-                        self.productForm.attrGlist.push({ itemAttrId: item2, name: { zh: item.attrNameObject.zh, jp: item.attrNameObject.jp, en: item.attrNameObject.en } });
+                        self.productForm.attrGlist.push({ attrId: item2, name: { zh: item.attrNameObject.zh, jp: item.attrNameObject.jp, en: item.attrNameObject.en } });
                     }
                 })
 
