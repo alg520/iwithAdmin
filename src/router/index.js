@@ -34,6 +34,7 @@ import SNmanage from "@/components/operation/snmanage";
 import Translate from "@/components/operation/translate";
 import Motion from "@/components/operation/motion";
 import RobotReply from "@/components/operation/robotReply";
+import sceneParam from "@/components/operation/sceneParam";
 
 
 import ItemList from "@/components/products/list/itemList";
@@ -296,6 +297,18 @@ const router = new Router({
                 breadNav: [
                   { name: "开发者管理", path: "" },
                   { name: "动作管理", path: "" }                  
+                ]
+              }
+            },
+            {
+              path: "sceneparam",
+              name: "sceneparam",
+              component: sceneParam,
+              meta: {
+                requireAuth: true,
+                breadNav: [
+                  { name: "开发者管理", path: "" },
+                  { name: "场景参数管理", path: "" }                  
                 ]
               }
             },

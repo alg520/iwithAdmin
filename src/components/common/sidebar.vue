@@ -57,6 +57,7 @@
                 <el-menu-item index="/operation/sn">{{$t('sidebar.snget')}}</el-menu-item>
                 <el-menu-item index="/operation/snmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/motion"> 动作管理 </el-menu-item>
+                <el-menu-item index="/operation/sceneparam"> 场景参数管理 </el-menu-item>
                 <el-menu-item index="/operation/robotreply"> 场景管理 </el-menu-item>
             </el-submenu>
         </el-menu>

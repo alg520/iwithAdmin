@@ -1,5 +1,5 @@
 <template>
-    <div class="monrion-info">
+    <div class="motion-info">
         <el-form :inline="true">
             <el-form-item>
                 <el-button type="primary" @click="openAddDialog()"> {{$t('scene.add')}} </el-button>
@@ -705,13 +705,13 @@ export default {
 </script>
 
 <style scoped>
-.monrion-info {
+.motion-info {
   padding: 10px 15px;
   background: #fff;
   text-align: center;
 }
 
-.monrion-info p {
+.motion-info p {
   margin: 5px 0;
   line-height: 30px;
 }

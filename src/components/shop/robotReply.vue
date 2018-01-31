@@ -1,5 +1,5 @@
 <template>
-    <div class="monrion-info">        
+    <div class="motion-info">        
         <div style="text-align:left; padding:10px 0;">
             <el-switch
                 v-model="switchValue"
@@ -624,13 +624,13 @@ export default {
 </script>
 
 <style scoped>
-.monrion-info {
+.motion-info {
   padding: 10px 15px;
   background: #fff;
   text-align: center;
 }
 
-.monrion-info p {
+.motion-info p {
   margin: 5px 0;
   line-height: 30px;
 }
