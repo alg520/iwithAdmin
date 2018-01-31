@@ -560,6 +560,7 @@
     "name":"场景名称",
     "parameter":"场景参数",
     "corpus":"默认语料",
+    "useCorpus":"当前语料",
     "operator":"操作人",
     "updatetime":"更新时间",
     "nameZH":"中文场景名称",

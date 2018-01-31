@@ -8,7 +8,7 @@
         <el-table :data="sceneLists" border style="width: 100%; text-align:center;">      
             <el-table-column prop="id" :label="$t('scene.id')" width="180">
             </el-table-column>            
-            <el-table-column prop="title" :label="$t('scene.name')" width="180">
+            <el-table-column prop="title" :label="$t('scene.name')" align="left" width="180">
                 <template scope="scope">
                     <span>中：{{scope.row.titlePojo.zh}}</span>
                     <br>
@@ -28,11 +28,37 @@
                     </el-tag>                    
                 </template>
             </el-table-column>
-            <el-table-column prop="sceneCasePojo" :label="$t('scene.corpus')" width="180">
+            <el-table-column prop="sceneCasePojo" :label="$t('scene.case')" align="left" min-width="280">
                 <template scope="scope">
                     <p>中：{{scope.row.sceneCasePojo.zh}}</p>
                     <p>日：{{scope.row.sceneCasePojo.jp}}</p>
                     <p>英：{{scope.row.sceneCasePojo.en}}</p>
+                </template>                
+            </el-table-column>
+            <el-table-column prop="corpusPojo" :label="$t('scene.corpus')" align="left" min-width="280">
+                <template scope="scope">
+                    <div v-if="scope.row.parametersPojo.length == 0">
+                        <p>
+                            中：<span v-html="scope.row.corpusPojo.zh.webText">{{scope.row.corpusPojo.zh.webText}}</span>
+                        </p>
+                        <p>
+                            日：<span v-html="scope.row.corpusPojo.jp.webText">{{scope.row.corpusPojo.jp.webText}}</span>
+                        </p>
+                        <p>
+                            英：<span v-html="scope.row.corpusPojo.en.webText">{{scope.row.corpusPojo.en.webText}}</span>
+                        </p>
+                    </div>
+                    <div v-else>
+                        <p>
+                            中：<span v-html="scope.row.corpusPojo.zh.webValue">{{scope.row.corpusPojo.zh.webValue}}</span>
+                        </p>
+                        <p>
+                            日：<span v-html="scope.row.corpusPojo.jp.webValue">{{scope.row.corpusPojo.jp.webValue}}</span>
+                        </p>
+                        <p>
+                            英：<span v-html="scope.row.corpusPojo.en.webValue">{{scope.row.corpusPojo.en.webValue}}</span>
+                        </p>
+                    </div>
                 </template>                
             </el-table-column> 
             <!-- <el-table-column prop="userUpdatedPojo" :label="$t('scene.operator')" width="180">                
@@ -121,7 +147,7 @@
                 </el-form-item>
 
                 <el-form-item prop="corpusEN">
-                    <p>                        
+                    <p>
                         <el-button
                         v-for="parameter in selectedParameters"
                         :key="parameter.id"
@@ -200,15 +226,15 @@ export default {
         ],
         sceneNameEN:[
             { required:true , message:"请输入英文场景名称", trigger:'blur'}
-        ],        
+        ],
         corpusZH:[
             { required:true , message:"请输入中文语料", trigger:'blur'}
         ],
         corpusJP:[
-            { required:true , message:"请输入中文语料", trigger:'blur'}
+            { required:true , message:"请输入日文语料", trigger:'blur'}
         ],
         corpusEN:[
-            { required:true , message:"请输入中文语料", trigger:'blur'}
+            { required:true , message:"请输入英文语料", trigger:'blur'}
         ],
         sceneCaseZH:[
             { required:true , message:"请输入中文案例", trigger:'blur'}
@@ -242,33 +268,44 @@ export default {
       'addSceneForm.corpusZH':function(val){
         let regex,
             corpus = val;
-        //需要反向的把name 值替换成value 再提交
-        this.selectedParameters.forEach((item,i) => {
+        
+        if(this.selectedParameters.length == 0){
+            this.corpusValueZH = val;
+            this.corpusNameZH = val;
+        } else {
+            //需要反向的把name 值替换成value 再提交
+            this.selectedParameters.forEach((item,i) => {
 
-            var regex2 = new RegExp(item.namePojo.zh,'gim');
-            var value2 = corpus.match(regex2);
-            if(value2 && value2[0]){
-                var rpValue = value2[0];
-                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.zh);
-                this.corpusValueZH = corpus;
-            }
-            
-        })
+                var regex2 = new RegExp(item.namePojo.zh,'gim');
+                var value2 = corpus.match(regex2);
+                if(value2 && value2[0]){
+                    var rpValue = value2[0];
+                    corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.zh);
+                    this.corpusValueZH = corpus;
+                } else {
+                    this.corpusValueZH = corpus;
+                }
+                
+            })
 
-        this.selectedParameterNamesZH.forEach((elem,i) => {
-            
-            //var regex = new RegExp(`(${elem})`,'gim');
-            regex = new RegExp(elem,'gim');                 
-            var value = val.match(regex);
-            if(value && value[0]){
-                var strValue = value[0];
-                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
-                this.corpusNameZH = val;
-            } else {
-                this.corpusNameZH = val;
-            }
-            
-        });
+            this.selectedParameterNamesZH.forEach((elem,i) => {
+                
+                //var regex = new RegExp(`(${elem})`,'gim');
+                //规定val 输入的时候参数必须在{}中
+                regex = new RegExp(`{${elem}}`,'gim');            
+                var value = val.match(regex);
+                
+                if(value && value[0]){
+                    var strValue = value[0].substring(value[0].indexOf('{')+1,value[0].lastIndexOf('}'));                
+                    val = val.replace(new RegExp(value[0],'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                    this.corpusNameZH = val;
+                } else {
+                    this.corpusNameZH = val;
+                }
+                
+            });
+        }
+        
  
         //var value = val.match(/\{(.|\\n)+?\}/gim);
 
@@ -276,64 +313,80 @@ export default {
       'addSceneForm.corpusJP':function(val){
           let regex,
             corpus = val;
-        //需要反向的把name 值替换成value 再提交
-        this.selectedParameters.forEach((item,i) => {
+        
+        if(this.selectedParameters.length == 0){
+            this.corpusValueJP = val;
+            this.corpusNameJP = val;
+        } else {
+            //需要反向的把name 值替换成value 再提交
+            this.selectedParameters.forEach((item,i) => {
 
-            var regex2 = new RegExp(item.namePojo.jp,'gim');
-            var value2 = corpus.match(regex2);
-            if(value2 && value2[0]){
-                var rpValue = value2[0];
-                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.jp);
-                this.corpusValueJP = corpus;
-            }
-            
-        })
+                var regex2 = new RegExp(item.namePojo.jp,'gim');
+                var value2 = corpus.match(regex2);
+                if(value2 && value2[0]){
+                    var rpValue = value2[0];
+                    corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.jp);
+                    this.corpusValueJP = corpus;
+                } else {
+                    this.corpusValueJP = corpus;
+                }
+                
+            })
 
-        this.selectedParameterNamesJP.forEach((elem,i) => {
-            
-            //var regex = new RegExp(`(${elem})`,'gim');
-            regex = new RegExp(elem,'gim');          
-            var value = val.match(regex);
-            if(value && value[0]){
-                var strValue = value[0];
-                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
-                this.corpusNameJP = val;
-            } else {
-                this.corpusNameJP = val;
-            }
-            
-        });
+            this.selectedParameterNamesJP.forEach((elem,i) => {
+                
+                //var regex = new RegExp(`(${elem})`,'gim');
+                regex = new RegExp(`{${elem}}`,'gim');          
+                var value = val.match(regex);
+                if(value && value[0]){
+                    var strValue = value[0].substring(value[0].indexOf('{')+1,value[0].lastIndexOf('}'));                
+                    val = val.replace(new RegExp(value[0],'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                    this.corpusNameJP = val;
+                } else {
+                    this.corpusNameJP = val;
+                }
+                
+            });
+        }
       },
       'addSceneForm.corpusEN':function(val){
           let regex,
             corpus = val;
-        //需要反向的把name 值替换成value 再提交
-        this.selectedParameters.forEach((item,i) => {
+        
+        if(this.selectedParameters.length == 0){
+            this.corpusValueEN = val;
+            this.corpusNameEN = val;
+        } else {
+            //需要反向的把name 值替换成value 再提交
+            this.selectedParameters.forEach((item,i) => {
 
-            var regex2 = new RegExp(item.namePojo.en,'gim');
-            var value2 = corpus.match(regex2);
-            if(value2 && value2[0]){
-                var rpValue = value2[0];
-                corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.en);
-                this.corpusValueEN = corpus;
-            }
-            
-        })
+                var regex2 = new RegExp(item.namePojo.en,'gim');
+                var value2 = corpus.match(regex2);
+                if(value2 && value2[0]){
+                    var rpValue = value2[0];
+                    corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.en);
+                    this.corpusValueEN = corpus;
+                } else {
+                    this.corpusValueEN = corpus;
+                }
+                
+            })
 
-        this.selectedParameterNamesEN.forEach((elem,i) => {
-            
-            //var regex = new RegExp(`(${elem})`,'gim');
-            regex = new RegExp(elem,'gim');                    
-            var value = val.match(regex);
-            if(value && value[0]){
-                var strValue = value[0];
-                val = val.replace(new RegExp(strValue,'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
-                this.corpusNameEN = val;
-            } else {
-                this.corpusNameEN = val;
-            }
-            
-        });
+            this.selectedParameterNamesEN.forEach((elem,i) => {
+                
+                //var regex = new RegExp(`(${elem})`,'gim');
+                regex = new RegExp(`{${elem}}`,'gim');                    
+                var value = val.match(regex);
+                if(value && value[0]){
+                    var strValue = value[0].substring(value[0].indexOf('{')+1,value[0].lastIndexOf('}'));                
+                    val = val.replace(new RegExp(value[0],'gim'),`<span class="el-tag el-tag--danger"><span class="el-select__tags-text">${strValue}</span></span>`);
+                    this.corpusNameEN = val;
+                } else {
+                    this.corpusNameEN = val;
+                }
+                
+            });
+        }
       }
 
   },
@@ -391,11 +444,11 @@ export default {
     insertParameter(item,lang){
 
         if(lang == 'zh'){
-            this.addSceneForm.corpusZH += item.namePojo.zh;
+            this.addSceneForm.corpusZH += `{${item.namePojo.zh}}`;
         } else if (lang == 'jp'){
-            this.addSceneForm.corpusJP += item.namePojo.jp;
+            this.addSceneForm.corpusJP += `{${item.namePojo.jp}}`;
         } else if (lang == 'en'){
-            this.addSceneForm.corpusEN += item.namePojo.en;
+            this.addSceneForm.corpusEN += `{${item.namePojo.en}}`;
         }
         
     },
@@ -411,15 +464,18 @@ export default {
           parametersPojo:this.selectedParameters,
           corpusPojo:{
             zh:{
-                webValue:this.addSceneForm.corpusZH,
+                webText:this.addSceneForm.corpusZH,
+                webValue:this.corpusNameZH,
                 value:this.corpusValueZH
             },
             en:{
-                webValue:this.addSceneForm.corpusEN,
+                webText:this.addSceneForm.corpusEN,
+                webValue:this.corpusNameEN,
                 value:this.corpusValueEN
             },
             jp:{
-                webValue:this.addSceneForm.corpusJP,
+                webText:this.addSceneForm.corpusJP,
+                webValue:this.corpusNameJP,
                 value:this.corpusValueJP
             }
           },
@@ -480,9 +536,9 @@ export default {
         this.addSceneForm.sceneNameZH = item.titlePojo.zh;
         this.addSceneForm.sceneNameEN = item.titlePojo.en;
         this.addSceneForm.sceneNameJP = item.titlePojo.jp;  
-        this.addSceneForm.corpusZH = item.corpusPojo.zh.webValue;
-        this.addSceneForm.corpusEN = item.corpusPojo.en.webValue;
-        this.addSceneForm.corpusJP = item.corpusPojo.jp.webValue;
+        this.addSceneForm.corpusZH = item.corpusPojo.zh.webText;
+        this.addSceneForm.corpusEN = item.corpusPojo.en.webText;
+        this.addSceneForm.corpusJP = item.corpusPojo.jp.webText;
         this.addSceneForm.sceneCaseZH = item.sceneCasePojo.zh;
         this.addSceneForm.sceneCaseJP = item.sceneCasePojo.jp;
         this.addSceneForm.sceneCaseEN = item.sceneCasePojo.en;
@@ -517,15 +573,18 @@ export default {
             parametersPojo:this.selectedParameters,
             corpusPojo:{
                 zh:{
-                    webValue:this.addSceneForm.corpusZH,
+                    webText:this.addSceneForm.corpusZH,
+                    webValue:this.corpusNameZH,
                     value:this.corpusValueZH
                 },
                 en:{
-                    webValue:this.addSceneForm.corpusEN,
+                    webText:this.addSceneForm.corpusEN,
+                    webValue:this.corpusNameEN,
                     value:this.corpusValueEN
                 },
                 jp:{
-                    webValue:this.addSceneForm.corpusJP,
+                    webText:this.addSceneForm.corpusJP,
+                    webValue:this.corpusNameJP,
                     value:this.corpusValueJP
                 }
             },
@@ -607,8 +666,6 @@ export default {
         
       })
 
-
-
     },
 
     confirmDel(item){
@@ -623,8 +680,8 @@ export default {
 
         }).catch(() => {
             this.$message({
-            type:'info',
-            message:this.$t('tips.message.canceled')
+                type:'info',
+                message:this.$t('tips.message.canceled')
             });
         })
     },

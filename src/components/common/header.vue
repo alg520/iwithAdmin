@@ -128,7 +128,7 @@ export default {
         Vue.config.lang = Lockr.get("LANGUAGE");
     },
     created(){
-        console.log("langs:",LANGS);
+        
         Vue.config.lang = Cookies.get('LANGUAGE');
 
         getLoginUser().then(res => {
@@ -145,6 +145,10 @@ export default {
                 if(res.status){
                     Cookies.remove('Token');
                     Cookies.remove('TY');
+                    Cookies.remove('LANGUAGE');
+                    Cookies.remove('SHOPLANGUAGE');
+                    Cookies.remove('_CUSTOMIZEMESSAGE');
+                    Cookies.remove('_UNAME');                    
                     this.$router.push({
                         path:'/loginIn'
                     });
