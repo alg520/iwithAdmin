@@ -86,7 +86,7 @@
                     </div>
                 </template>                
             </el-table-column>
-            <el-table-column prop="sceneCasePojo" label="默认案例" align="left" min-width="280">
+            <el-table-column prop="sceneCasePojo" :label="$t('scene.case')" align="left" min-width="280">
                 <template scope="scope">
                     <p v-if="_LANGUAGE == 0">{{scope.row.sceneCasePojo.zh}}</p>
                     <p v-if="_LANGUAGE == 2">{{scope.row.sceneCasePojo.jp}}</p>
@@ -136,7 +136,7 @@
                     <p v-if="_LANGUAGE == 2"> <span v-html="defaultCorpusJP">{{defaultCorpusJP}}</span></p>
                 </el-form-item>                
 
-                <el-form-item label="个性化语料" prop="customCorpusZH" v-if="_LANGUAGE == 0">
+                <el-form-item :label="$t('scene.customCorpus')" prop="customCorpusZH" v-if="_LANGUAGE == 0">
                     <p>
                         <el-button
                         v-for="parameter in selectedParameters"
@@ -147,7 +147,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusZH" placeholder="请输入中文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusZH" :placeholder="this.$t('placeholder.customCorpusZH')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameZH">{{corpusNameZH}}</div>
@@ -166,7 +166,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusJP" placeholder="请输入日文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusJP" :placeholder="this.$t('placeholder.customCorpusJP')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameJP">{{corpusNameJP}}</div>
@@ -185,7 +185,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusEN" placeholder="请输入英文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:3,maxRows:5}" v-model="addSceneForm.customCorpusEN" :placeholder="this.$t('placeholder.customCorpusEN')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameEN">{{corpusNameEN}}</div>
@@ -240,13 +240,13 @@ export default {
       },
       addSceneFormRules: {
         customCorpusZH:[
-            { required:true , message:"请输入中文自定义语料", trigger:'blur'}
+            { required:true , message:this.$t('placeholder.customCorpusZH'), trigger:'blur'}
         ],
         customCorpusJP:[
-            { required:true , message:"请输入日文自定义语料", trigger:'blur'}
+            { required:true , message:this.$t('placeholder.customCorpusJP'), trigger:'blur'}
         ],
         customCorpusEN:[
-            { required:true , message:"请输入英文自定义语料", trigger:'blur'}
+            { required:true , message:this.$t('placeholder.customCorpusEN'), trigger:'blur'}
         ]
       },
       midddleObj:{},
@@ -297,7 +297,7 @@ export default {
                     var rpValue = value2[0];                    
                     corpus = corpus.replace(new RegExp(rpValue,'gim'),item.valuePojo.zh);
                     this.corpusValueZH = corpus;
-                    console.log("坚果",this.corpusValueZH);
+                    
                 } else {
                     this.corpusValueZH = corpus;
                 }
@@ -441,7 +441,7 @@ export default {
             if(res.status){
                 this.$message({
                     type:'success',
-                    message:"操作成功"
+                    message:this.$t('tips.message.updateSuccess')
                 })
             }else {
                 this.$message({
@@ -486,7 +486,7 @@ export default {
         this.defaultCorpusJP = item.parametersPojo.length == 0 ? item.defaultCorpusPojo.jp.webText:item.defaultCorpusPojo.jp.webValue;
 
         if(item.corpusPojo){
-            console.log("哈哈哈",item.corpusPojo.zh.webText);
+            
             this.addSceneForm.customCorpusZH = item.corpusPojo.zh.webText;
             this.addSceneForm.customCorpusEN = item.corpusPojo.en.webText;
             this.addSceneForm.customCorpusJP = item.corpusPojo.jp.webText;
@@ -570,7 +570,7 @@ export default {
             if(res.status){
                 this.$message({
                     type:'success',
-                    message:this.$t('motion.updateSuccess')
+                    message:this.$t('tips.message.updateSuccess')
                 });
 
                 this.addSceneDialogVisible = false;

@@ -7,11 +7,7 @@
     </el-form>
     <el-table :data="sceneParamLists" border style="width: 100%; text-align:center;">
         <el-table-column prop="id" :label="$t('scene.id')" width="180" sortable>
-        </el-table-column>
-        <el-table-column prop="gmtCreated" label="创建时间" width="180">
-        </el-table-column>
-        <el-table-column prop="gmtUpdated" label="更新时间" width="180">
-        </el-table-column>
+        </el-table-column>       
         <el-table-column prop="gmtUpdated" align="left" label="参数名称">
             <template scope="scope">
                 <p>中：<span>{{scope.row.namePojo.zh}}</span></p>
@@ -26,6 +22,10 @@
                 <p>英：<span>{{scope.row.valuePojo.en}}</span></p>
             </template>
         </el-table-column>
+         <el-table-column prop="gmtCreated" label="创建时间" width="180">
+        </el-table-column>
+        <el-table-column prop="gmtUpdated" label="更新时间" width="180">
+        </el-table-column>
         <el-table-column :label="$t('_global.action')" width="180" fixed="right">
                 <template scope="scope">
                     <el-button type="primary" size="small" @click="openUpdateDialog(scope.row)">{{$t('_global.edit')}}</el-button>
@@ -34,7 +34,7 @@
             </el-table-column>
     </el-table>
 
-    <el-dialog :title=" btnTag == 'add' ? $t('scene.add'):$t('scene.update')" :visible.sync="addSceneParamDialogVisible" class="addDialog" size="small">
+    <el-dialog :title=" btnTag == 'add' ? '添加场景参数':'修改场景参数'" :visible.sync="addSceneParamDialogVisible" class="addDialog" size="small">
             <el-form :model="addSceneParamForm" :rules="addSceneFormRules" ref="addSceneParamForm" label-width="150px">                
 
                 <el-form-item label="中文参数名称" prop="nameZH">
@@ -139,8 +139,7 @@ export default {
                         message: "添加成功"
                     });
                     this.getAllParameters();
-                    this.resetForm();
-                    
+                    this.resetForm(); 
                 }
             })
         },

@@ -6,13 +6,13 @@
             </el-form-item>
         </el-form>
         <el-table :data="sceneLists" border style="width: 100%; text-align:center;">      
-            <el-table-column prop="id" :label="$t('scene.id')" width="180">
+            <el-table-column prop="id" :label="$t('scene.id')" fixed="left" width="180">
             </el-table-column>            
             <el-table-column prop="title" :label="$t('scene.name')" align="left" width="180">
                 <template scope="scope">
                     <span>中：{{scope.row.titlePojo.zh}}</span>
                     <br>
-                    <span>英：{{scope.row.titlePojo.en}}</span>
+                    <span>en：{{scope.row.titlePojo.en}}</span>
                     <br>
                     <span>日：{{scope.row.titlePojo.jp}}</span>
                 </template>
@@ -32,7 +32,7 @@
                 <template scope="scope">
                     <p>中：{{scope.row.sceneCasePojo.zh}}</p>
                     <p>日：{{scope.row.sceneCasePojo.jp}}</p>
-                    <p>英：{{scope.row.sceneCasePojo.en}}</p>
+                    <p>en：{{scope.row.sceneCasePojo.en}}</p>
                 </template>                
             </el-table-column>
             <el-table-column prop="corpusPojo" :label="$t('scene.corpus')" align="left" min-width="280">
@@ -45,7 +45,7 @@
                             日：<span v-html="scope.row.corpusPojo.jp.webText">{{scope.row.corpusPojo.jp.webText}}</span>
                         </p>
                         <p>
-                            英：<span v-html="scope.row.corpusPojo.en.webText">{{scope.row.corpusPojo.en.webText}}</span>
+                            en：<span v-html="scope.row.corpusPojo.en.webText">{{scope.row.corpusPojo.en.webText}}</span>
                         </p>
                     </div>
                     <div v-else>
@@ -56,7 +56,7 @@
                             日：<span v-html="scope.row.corpusPojo.jp.webValue">{{scope.row.corpusPojo.jp.webValue}}</span>
                         </p>
                         <p>
-                            英：<span v-html="scope.row.corpusPojo.en.webValue">{{scope.row.corpusPojo.en.webValue}}</span>
+                            en：<span v-html="scope.row.corpusPojo.en.webValue">{{scope.row.corpusPojo.en.webValue}}</span>
                         </p>
                     </div>
                 </template>                
@@ -82,22 +82,22 @@
             <el-form :model="addSceneForm" :rules="addSceneFormRules" ref="addSceneForm" label-width="150px">                
 
                 <el-form-item :label="$t('scene.nameZH')" prop="sceneNameZH">
-                    <el-input type="text" v-model="addSceneForm.sceneNameZH" placeholder="请输入中文场景名称"></el-input>
+                    <el-input type="text" v-model="addSceneForm.sceneNameZH" :placeholder="$t('placeholder.sceneNameZH')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('scene.nameJP')" prop="sceneNameJP">
-                    <el-input type="text" v-model="addSceneForm.sceneNameJP" placeholder="请输入日文场景名称"></el-input>
+                    <el-input type="text" v-model="addSceneForm.sceneNameJP" :placeholder="$t('placeholder.sceneNameJP')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('scene.nameEN')" prop="sceneNameEN">
-                    <el-input type="text" v-model="addSceneForm.sceneNameEN" placeholder="请输入英文场景名称"></el-input>
+                    <el-input type="text" v-model="addSceneForm.sceneNameEN" :placeholder="$t('placeholder.sceneNameEN')"></el-input>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.parameterList')" prop="parameters">
+                <el-form-item :label="$t('scene.parameterList')">
                     <el-select
                     v-model="checkedParameters"
                     multiple
-                    placeholder="请选择场景参数"
+                    :placeholder="$t('placeholder.sceneParam')"
                     @change="parameterChange()">
                         <el-option
                         v-for="parameter in parameters"
@@ -119,7 +119,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusZH" placeholder="请输入中文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusZH" :placeholder="$t('placeholder.corpusZH')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameZH">{{corpusNameZH}}</div>
@@ -138,7 +138,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusJP" placeholder="请输入日文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusJP" :placeholder="$t('placeholder.corpusJP')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameJP">{{corpusNameJP}}</div>
@@ -157,7 +157,7 @@
                     </p>
                     <el-row>
                       <el-col :span="10">
-                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusEN" placeholder="请输入英文语料"></el-input>
+                          <el-input type="textarea" :autosize="{minRows:2,maxRows:3}" v-model="addSceneForm.corpusEN" :placeholder="$t('placeholder.corpusEN')"></el-input>
                       </el-col>
                       <el-col :span="14">
                           <div class="corpusShow" v-html="corpusNameEN">{{corpusNameEN}}</div>
@@ -166,15 +166,19 @@
                 </el-form-item>
 
                 <el-form-item :label="$t('scene.case')" prop="sceneCaseZH">
-                    <el-input v-model="addSceneForm.sceneCaseZH" type="textarea" placeholder="请输入中文案例">                        
+                    <el-input v-model="addSceneForm.sceneCaseZH" type="textarea" :placeholder="$t('placeholder.sceneCaseZH')">
+                    </el-input>                    
+                </el-form-item>
+
+                <el-form-item prop="sceneCaseJP">
+                    <el-input v-model="addSceneForm.sceneCaseJP" type="textarea" :placeholder="$t('placeholder.sceneCaseJP')">                        
                     </el-input>
-                    <p></p>
-                    <el-input v-model="addSceneForm.sceneCaseJP" type="textarea" placeholder="请输入日文案例">                        
+                </el-form-item>
+
+                <el-form-item prop="sceneCaseEN">
+                    <el-input v-model="addSceneForm.sceneCaseEN" type="textarea" :placeholder="$t('placeholder.sceneCaseEN')">                        
                     </el-input>
-                    <p></p>
-                    <el-input v-model="addSceneForm.sceneCaseEN" type="textarea" placeholder="请输入英文案例">                        
-                    </el-input>
-                </el-form-item>                
+                </el-form-item>
                 
                 <el-form-item>
                     <el-button v-if="btnTag == 'add'" type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
@@ -219,31 +223,31 @@ export default {
       },
       addSceneFormRules: {
         sceneNameZH:[
-            { required:true , message:"请输入中文场景名称", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.nameZH'), trigger:'blur'}
         ],
         sceneNameJP:[
-            { required:true , message:"请输入日文场景名称", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.nameJP'), trigger:'blur'}
         ],
         sceneNameEN:[
-            { required:true , message:"请输入英文场景名称", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.nameEN'), trigger:'blur'}
         ],
         corpusZH:[
-            { required:true , message:"请输入中文语料", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.corpusZH'), trigger:'blur'}
         ],
         corpusJP:[
-            { required:true , message:"请输入日文语料", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.corpusJP'), trigger:'blur'}
         ],
         corpusEN:[
-            { required:true , message:"请输入英文语料", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.corpusEN'), trigger:'blur'}
         ],
         sceneCaseZH:[
-            { required:true , message:"请输入中文案例", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.sceneCaseZH'), trigger:'blur'}
         ],
         sceneCaseJP:[
-            { required:true , message:"请输入日文案例", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.sceneCaseJP'), trigger:'blur'}
         ],
         sceneCaseEN:[
-            { required:true , message:"请输入英文案例", trigger:'blur'}
+            { required:true , message:this.$t('scene.rules.sceneCaseEN'), trigger:'blur'}
         ]
       },
       midddleObj:{},
@@ -276,7 +280,7 @@ export default {
             //需要反向的把name 值替换成value 再提交
             this.selectedParameters.forEach((item,i) => {
 
-                var regex2 = new RegExp(item.namePojo.zh,'gim');
+                var regex2 = new RegExp(`{${item.namePojo.zh}}`,'gim');
                 var value2 = corpus.match(regex2);
                 if(value2 && value2[0]){
                     var rpValue = value2[0];
@@ -289,8 +293,7 @@ export default {
             })
 
             this.selectedParameterNamesZH.forEach((elem,i) => {
-                
-                //var regex = new RegExp(`(${elem})`,'gim');
+                                
                 //规定val 输入的时候参数必须在{}中
                 regex = new RegExp(`{${elem}}`,'gim');            
                 var value = val.match(regex);
@@ -321,7 +324,7 @@ export default {
             //需要反向的把name 值替换成value 再提交
             this.selectedParameters.forEach((item,i) => {
 
-                var regex2 = new RegExp(item.namePojo.jp,'gim');
+                var regex2 = new RegExp(`{${item.namePojo.jp}}`,'gim');
                 var value2 = corpus.match(regex2);
                 if(value2 && value2[0]){
                     var rpValue = value2[0];
@@ -334,8 +337,7 @@ export default {
             })
 
             this.selectedParameterNamesJP.forEach((elem,i) => {
-                
-                //var regex = new RegExp(`(${elem})`,'gim');
+                                
                 regex = new RegExp(`{${elem}}`,'gim');          
                 var value = val.match(regex);
                 if(value && value[0]){
@@ -360,7 +362,7 @@ export default {
             //需要反向的把name 值替换成value 再提交
             this.selectedParameters.forEach((item,i) => {
 
-                var regex2 = new RegExp(item.namePojo.en,'gim');
+                var regex2 = new RegExp(`{${item.namePojo.en}}`,'gim');
                 var value2 = corpus.match(regex2);
                 if(value2 && value2[0]){
                     var rpValue = value2[0];
@@ -373,8 +375,7 @@ export default {
             })
 
             this.selectedParameterNamesEN.forEach((elem,i) => {
-                
-                //var regex = new RegExp(`(${elem})`,'gim');
+                                
                 regex = new RegExp(`{${elem}}`,'gim');                    
                 var value = val.match(regex);
                 if(value && value[0]){
@@ -553,12 +554,10 @@ export default {
     },
 
     regxReplace(){
-
         var str = "你好,{amount}";
         //查找所有{} 之间的内容
         var regx = "/\{(.| )+?\}/gim";
         str.replace(regx,`<span>测试</span>`);
-
     },
 
     updateScenePost(){
