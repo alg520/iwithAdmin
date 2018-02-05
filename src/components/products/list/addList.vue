@@ -881,6 +881,7 @@ export default {
                 seq: 0,
                 busiType: 1
             };
+            //console.log("添加参数", JSON.stringify(addParams));
 
             this.$refs['productForm'].validate((valid) => {
 

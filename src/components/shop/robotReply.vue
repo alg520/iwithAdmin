@@ -6,9 +6,15 @@
                 on-color="#13ce66"
                 off-color="#ff4949" @change="toggleScene()">
             </el-switch>            
-            <span :style="{ color: switchValue ? '#13CE66':'#FF4949'}">{{switchValue ? '已开启':'已关闭'}}</span>
-            <span>
+            <span :style="{ color: switchValue ? '#13CE66':'#FF4949'}">{{switchValue ? $t('_global.on'):$t('_global.off')}}</span>
+            <span v-if="_LANGUAGE == 0">
                 （注：开启状态时按个性化语料回复，未编辑的按默认语料回复；关闭状态则统一按默认语料回复）
+            </span>
+            <span v-if="_LANGUAGE == 1">
+                （Note: Reply with individualized corpus in open state; with default corpus in closed state and no edition state）
+            </span>
+            <span v-if="_LANGUAGE == 2">
+                （注意：状態はオンにする時は、ロボットがカスタマイズコーパスによって返事します。編集していない場合は、デフォルトコーパスによって返事します。状態はオフにする時は、デフォルトコーパスによって返事します）
             </span>
         </div>
         <el-table :data="sceneLists" border style="width: 100%; text-align:center;">      
@@ -261,10 +267,10 @@ export default {
       corpusValueJP:""
     };
   },
-  created() {
-    this.getLoginInfo();
+  created() {    
     this.getSceneList();
-    this.getParameters();      
+    this.getParameters();
+    this.getShopInfoById();
   },
   computed: {
     
@@ -406,11 +412,13 @@ export default {
   },
   methods: {
 
-      getLoginInfo(){
-          $http.get('/coron-web/getLoginUser',{}).then(res => {
-              if(res.status){
-                  this.switchValue = res.entry.shop.customizeMessage;
-              }              
+      getShopInfoById(){
+          $http.get('/coron-web/shop/getById',{
+              id:6
+          }).then(res => {
+              if(res.status){                  
+                  this.switchValue = res.entry.customizeMessage;
+              }
           })
       },
     getSceneList() {
@@ -442,7 +450,8 @@ export default {
                 this.$message({
                     type:'success',
                     message:this.$t('tips.message.updateSuccess')
-                })
+                });
+                this.getShopInfoById();
             }else {
                 this.$message({
                     type:'error',
