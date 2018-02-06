@@ -148,7 +148,8 @@ export default {
                     Cookies.remove('LANGUAGE');
                     Cookies.remove('SHOPLANGUAGE');
                     Cookies.remove('_CUSTOMIZEMESSAGE');
-                    Cookies.remove('_UNAME');                    
+                    Cookies.remove('_UNAME');
+                    Cookies.remove('SHOPID');
                     this.$router.push({
                         path:'/loginIn'
                     });

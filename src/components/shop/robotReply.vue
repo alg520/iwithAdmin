@@ -279,6 +279,9 @@ export default {
     },
     _LANGUAGE(){
         return Cookies.get('SHOPLANGUAGE');
+    },
+    _SHOPID(){
+        return Cookies.get('SHOPID');
     }
 
   },
@@ -411,10 +414,9 @@ export default {
 
   },
   methods: {
-
       getShopInfoById(){
           $http.get('/coron-web/shop/getById',{
-              id:6
+              id:this._SHOPID
           }).then(res => {
               if(res.status){                  
                   this.switchValue = res.entry.customizeMessage;

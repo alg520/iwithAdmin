@@ -14,11 +14,11 @@
             
             <!-- v-if="authType == 3" -->
             <el-submenu index="2" v-if="authType == 3">
-                <template slot="title">               
+                <template slot="title">
                     <span class="sb-icon"><i class="iconfont icon-tian"></i></span>
-                    <span class="sb-cn">{{$t('sidebar.introducemanage')}}</span>                 
+                    <span class="sb-cn">{{$t('sidebar.introducemanage')}}</span>
                 </template>
-                <el-menu-item index="/introduce">{{$t('sidebar.introducemanage')}}</el-menu-item>                     
+                <el-menu-item index="/introduce">{{$t('sidebar.introducemanage')}}</el-menu-item>
             </el-submenu>
 
             <!-- v-if="authType == 3" -->

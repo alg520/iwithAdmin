@@ -190,9 +190,10 @@ export default {
                     if(res.entry.userType == 3 || res.entry.userType == 4){                        
                         
                         let language = res.entry.shop.language;
+                        let _SHOPID = res.entry.shop.id;
                         if(language == 0){
                             Lockr.set("LANGUAGE", 'zh-cn');
-                            Cookies.set('LANGUAGE', 'zh-cn');
+                            Cookies.set('LANGUAGE', 'zh-cn');                            
                             Vue.config.lang = 'zh-cn';
                         } else if(language == 1){
                             Lockr.set("LANGUAGE", 'en-us');
@@ -204,6 +205,7 @@ export default {
                             Vue.config.lang = 'ja';
                         }
                         Cookies.set('SHOPLANGUAGE', language);
+                        Cookies.set('SHOPID', _SHOPID);
                         Lockr.set("SHOPLANGUAGE", language);
                     } else {
 
