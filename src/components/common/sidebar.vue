@@ -30,7 +30,7 @@
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
                 <el-menu-item index="/shop/advertising"> 广告管理 </el-menu-item>
-                <el-menu-item index="/shop/robotreply"> 场景回复管理 </el-menu-item>
+                <el-menu-item v-if="_LANGUAGE == 0" index="/shop/robotreply"> 场景回复管理 </el-menu-item>
             </el-submenu>
             <!-- v-if="authType == 1 || authType == 2" -->
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
@@ -39,11 +39,7 @@
                     <span class="sb-cn">{{$t('sidebar.operationmanage')}}</span>
                 </template>
                 <el-menu-item index="/operation/shopmanage">{{$t('sidebar.shopmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/ordermanage">{{$t('sidebar.ordermanage')}}</el-menu-item>
-                <!-- <el-menu-item index="/operation/robot">{{$t('sidebar.dancemanage')}}</el-menu-item>
-                <el-menu-item index="/operation/otamanage">{{$t('sidebar.otamanage')}}</el-menu-item>
-                <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/sn">{{$t('sidebar.snmanage')}}</el-menu-item> -->
+                <el-menu-item index="/operation/ordermanage">{{$t('sidebar.ordermanage')}}</el-menu-item>                
             </el-submenu>
             <!-- v-if="authType == 7" -->
             <el-submenu index="5" v-if="authType == 7">
@@ -63,38 +59,42 @@
     </div>
 </template>
 <script>
-import $http from '../../utils/http'
-import { getLoginUser } from '../../api/user'
-    export default {
-        data(){
-            return {
-                authType:''
-            }
+import $http from '../../utils/http';
+import { getLoginUser } from '../../api/user';
+import Cookies from 'js-cookie';
+export default {
+    data(){
+        return {
+            authType:''
+        }
+    },
+    computed:{
+        onRoutes(){
+            return this.$route.path.replace('/','');
         },
-        computed:{
-            onRoutes(){
-                return this.$route.path.replace('/','');
-            }
-        },
-        created(){
-            this.getLoginUserInfo();            
-        },
-        methods:{
-            //获取登录信息
-            getLoginUserInfo(){
-                getLoginUser().then( res => {
-                    if(res.status){                        
-                        this.authType = res.entry.userType;
-                    } else {
-                        this.$router.push({
-                            path:'/loginIn'
-                        });
-                    }
+        _LANGUAGE(){
+            return Cookies.get('SHOPLANGUAGE');
+        }
+    },
+    created(){
+        this.getLoginUserInfo();
+    },
+    methods:{
+        //获取登录信息
+        getLoginUserInfo(){
+            getLoginUser().then( res => {
+                if(res.status){                        
+                    this.authType = res.entry.userType;
+                } else {
+                    this.$router.push({
+                        path:'/loginIn'
+                    });
+                }
 
-                })
-            }
+            })
         }
     }
+}
 </script>
 <style scoped>
     .sidebar{

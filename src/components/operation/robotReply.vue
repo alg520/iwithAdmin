@@ -11,10 +11,10 @@
             <el-table-column prop="title" :label="$t('scene.name')" align="left" width="180">
                 <template scope="scope">
                     <span>中：{{scope.row.titlePojo.zh}}</span>
-                    <br>
+                    <!-- <br>
                     <span>en：{{scope.row.titlePojo.en}}</span>
                     <br>
-                    <span>日：{{scope.row.titlePojo.jp}}</span>
+                    <span>日：{{scope.row.titlePojo.jp}}</span> -->
                 </template>
             </el-table-column>            
             <el-table-column prop="parametersPojo" :label="$t('scene.parameter')" min-width="280">
@@ -31,8 +31,8 @@
             <el-table-column prop="sceneCasePojo" :label="$t('scene.case')" align="left" min-width="280">
                 <template scope="scope">
                     <p>中：{{scope.row.sceneCasePojo.zh}}</p>
-                    <p>日：{{scope.row.sceneCasePojo.jp}}</p>
-                    <p>en：{{scope.row.sceneCasePojo.en}}</p>
+                    <!-- <p>日：{{scope.row.sceneCasePojo.jp}}</p>
+                    <p>en：{{scope.row.sceneCasePojo.en}}</p> -->
                 </template>                
             </el-table-column>
             <el-table-column prop="corpusPojo" :label="$t('scene.corpus')" align="left" min-width="280">
@@ -41,23 +41,23 @@
                         <p>
                             中：<span v-html="scope.row.corpusPojo.zh.webText">{{scope.row.corpusPojo.zh.webText}}</span>
                         </p>
-                        <p>
+                        <!-- <p>
                             日：<span v-html="scope.row.corpusPojo.jp.webText">{{scope.row.corpusPojo.jp.webText}}</span>
                         </p>
                         <p>
                             en：<span v-html="scope.row.corpusPojo.en.webText">{{scope.row.corpusPojo.en.webText}}</span>
-                        </p>
+                        </p> -->
                     </div>
                     <div v-else>
                         <p>
                             中：<span v-html="scope.row.corpusPojo.zh.webValue">{{scope.row.corpusPojo.zh.webValue}}</span>
                         </p>
-                        <p>
+                        <!-- <p>
                             日：<span v-html="scope.row.corpusPojo.jp.webValue">{{scope.row.corpusPojo.jp.webValue}}</span>
                         </p>
                         <p>
                             en：<span v-html="scope.row.corpusPojo.en.webValue">{{scope.row.corpusPojo.en.webValue}}</span>
-                        </p>
+                        </p> -->
                     </div>
                 </template>                
             </el-table-column> 
@@ -85,13 +85,13 @@
                     <el-input type="text" v-model="addSceneForm.sceneNameZH" :placeholder="$t('placeholder.sceneNameZH')"></el-input>
                 </el-form-item>
 
-                <el-form-item :label="$t('scene.nameJP')" prop="sceneNameJP">
+                <!-- <el-form-item :label="$t('scene.nameJP')" prop="sceneNameJP">
                     <el-input type="text" v-model="addSceneForm.sceneNameJP" :placeholder="$t('placeholder.sceneNameJP')"></el-input>
                 </el-form-item>
 
                 <el-form-item :label="$t('scene.nameEN')" prop="sceneNameEN">
                     <el-input type="text" v-model="addSceneForm.sceneNameEN" :placeholder="$t('placeholder.sceneNameEN')"></el-input>
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item :label="$t('scene.parameterList')">
                     <el-select
@@ -127,7 +127,7 @@
                     </el-row>                    
                 </el-form-item>
 
-                <el-form-item prop="corpusJP">
+                <!-- <el-form-item prop="corpusJP">
                     <p>                       
                         <el-button 
                         v-for="parameter in selectedParameters"
@@ -163,14 +163,14 @@
                           <div class="corpusShow" v-html="corpusNameEN">{{corpusNameEN}}</div>
                       </el-col>
                     </el-row>
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item :label="$t('scene.case')" prop="sceneCaseZH">
                     <el-input v-model="addSceneForm.sceneCaseZH" type="textarea" :placeholder="$t('placeholder.sceneCaseZH')">
                     </el-input>                    
                 </el-form-item>
 
-                <el-form-item prop="sceneCaseJP">
+                <!-- <el-form-item prop="sceneCaseJP">
                     <el-input v-model="addSceneForm.sceneCaseJP" type="textarea" :placeholder="$t('placeholder.sceneCaseJP')">                        
                     </el-input>
                 </el-form-item>
@@ -178,7 +178,7 @@
                 <el-form-item prop="sceneCaseEN">
                     <el-input v-model="addSceneForm.sceneCaseEN" type="textarea" :placeholder="$t('placeholder.sceneCaseEN')">                        
                     </el-input>
-                </el-form-item>
+                </el-form-item> -->
                 
                 <el-form-item>
                     <el-button v-if="btnTag == 'add'" type="primary" @click="addValidate()">{{$t('_global.confirm')}}</el-button>
@@ -456,7 +456,7 @@ export default {
 
     addSence() {
 
-      const senceData = {
+      const sceneData = {
           titlePojo:{
               zh:this.addSceneForm.sceneNameZH,
               en:this.addSceneForm.sceneNameEN,
@@ -486,7 +486,7 @@ export default {
               jp:this.addSceneForm.sceneCaseJP
           }        
       };
-      $http.post('/coron-web/scene/add',senceData).then(res => {          
+      $http.post('/coron-web/scene/add',sceneData).then(res => {          
           
           if(res.status){
               this.$message({
