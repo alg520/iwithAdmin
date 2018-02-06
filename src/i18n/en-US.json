@@ -122,7 +122,11 @@
     "infomanage":"Info Management",
     "devmanage":"Development",
     "snget":"GET SN",
-    "snmanage":"SN Management"
+    "snmanage":"SN Management",
+    "motionmanage":"Action Management",
+    "advertmanage":"Advertising Management",
+    "scenereplymanage":"Scene reply",
+    "scenemanage":"Scene Management"
   },
   "products": {
     "edit":"Edit",

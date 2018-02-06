@@ -122,7 +122,11 @@
     "infomanage":"信息管理",
     "devmanage":"开发管理",
     "snget":"SN获取",
-    "snmanage":"SN管理"
+    "snmanage":"SN管理",
+    "motionmanage":"动作管理",
+    "advertmanage":"广告管理",
+    "scenereplymanage":"场景回复管理",
+    "scenemanage":"场景管理"
   },
   "products": {
     "edit":"编辑",

@@ -122,7 +122,11 @@
     "infomanage":"情報管理",
     "devmanage":"開発管理",
     "snget":"SNかちとる",
-    "snmanage":"SN管理"
+    "snmanage":"SN管理",
+    "motionmanage":"アクション管理",
+    "advertmanage":"広告管理",
+    "scenereplymanage":"シーン応答管理",
+    "scenemanage":"シーン管理"
   },
   "products": {
     "edit":"編集",

@@ -29,8 +29,8 @@
                 </template>
                 <el-menu-item index="/shop/info">{{$t('sidebar.infomanage')}}</el-menu-item>
                 <el-menu-item index="/shop/order">{{$t('sidebar.ordermanage')}}</el-menu-item>
-                <el-menu-item index="/shop/advertising"> 广告管理 </el-menu-item>
-                <el-menu-item v-if="_LANGUAGE == 0" index="/shop/robotreply"> 场景回复管理 </el-menu-item>
+                <el-menu-item index="/shop/advertising"> {{$t('sidebar.advertmanage')}} </el-menu-item>
+                <el-menu-item v-if="_LANGUAGE == 0" index="/shop/robotreply"> {{$t('sidebar.scenereplymanage')}} </el-menu-item>
             </el-submenu>
             <!-- v-if="authType == 1 || authType == 2" -->
             <el-submenu index="4" v-if="authType == 1 || authType == 2">
@@ -52,8 +52,8 @@
                 <el-menu-item index="/operation/apkmanage">{{$t('sidebar.apkmanage')}}</el-menu-item>
                 <el-menu-item index="/operation/sn">{{$t('sidebar.snget')}}</el-menu-item>
                 <el-menu-item index="/operation/snmanage">{{$t('sidebar.snmanage')}}</el-menu-item>
-                <el-menu-item index="/operation/motion"> 动作管理 </el-menu-item>                
-                <el-menu-item index="/operation/robotreply"> 场景管理 </el-menu-item>
+                <el-menu-item index="/operation/motion"> {{$t('sidebar.motionmanage')}} </el-menu-item>                
+                <el-menu-item index="/operation/robotreply"> {{$t('sidebar.scenemanage')}} </el-menu-item>
             </el-submenu>
         </el-menu>
     </div>
