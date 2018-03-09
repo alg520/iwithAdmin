@@ -33,7 +33,8 @@
     "newpwd":"Please enter the new password",
     "must":"Please enter the required field",
     "length":"Length is between 6-12 characters",
-    "numLetter":"Please enter number and letter"
+    "numLetter":"Please enter number and letter",
+    "numType":"The price must be positive"
   },
   "placeholder":{
     "itemNo":"Please enter dish NO.",

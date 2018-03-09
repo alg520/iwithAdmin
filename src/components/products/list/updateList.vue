@@ -72,10 +72,10 @@
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.price')" prop="originPrice">                                        
-                                        <el-input v-model="productForm.originPrice" type="number" :placeholder="$t('placeholder.price')"></el-input>
+                                        <el-input v-model="productForm.originPrice" type="number" min="0" :placeholder="$t('placeholder.price')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.offprice')" prop="discountPrice" v-if="productForm.itemType != 3">
-                                        <el-input v-model="productForm.discountPrice" :placeholder="$t('placeholder.offprice')"></el-input>
+                                        <el-input v-model="productForm.discountPrice" min="0" :placeholder="$t('placeholder.offprice')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.tag')">
                                         <el-tag :key="tag" type="primary" v-for="tag in itemTags" :closable="true" :close-transition="false" @close="itemTagClose(tag)">
@@ -370,6 +370,14 @@ import Cookies from 'js-cookie';
 import {baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
+        var validateNum = (rule,value,callback) => {
+            
+            if(value !='' && value <= 0){
+                callback(new Error(this.$t('rules.numType')));                                
+            }else {
+                callback();
+            }
+        };
         return {            
             activeName: 'first',
             imageUrl: '',
@@ -471,9 +479,13 @@ export default {
                 ],
                 itemName: [
                     { required: true, message: this.$t('tips.rules.itemName'), trigger: 'blur' }
-                ],
+                ],                
                 originPrice: [
-                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'change' }
+                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'blur' },
+                    { validator: validateNum , trigger:'blur'}
+                ],
+                discountPrice: [                    
+                    { validator: validateNum , trigger:'blur'}
                 ],
                 itemType: [
                     { required: true, message: this.$t('tips.rules.itemType'), trigger: 'change' }

@@ -80,12 +80,12 @@
                                         </el-table>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.price')" prop="originPrice">
-                                        <el-input v-model="productForm.originPrice" type="number" :placeholder="$t('placeholder.price')"></el-input>
+                                        <el-input v-model="productForm.originPrice" type="number" min="0" :placeholder="$t('placeholder.price')"></el-input>
                                     </el-form-item>
                                     <el-form-item :label="$t('products.addItemPage.offprice')" prop="discountPrice" v-if="productForm.itemType != 3">
-                                        <el-input v-model="productForm.discountPrice" type="number" :placeholder="$t('placeholder.offprice')"></el-input>
+                                        <el-input v-model="productForm.discountPrice" type="number" min="0" :placeholder="$t('placeholder.offprice')"></el-input>
                                     </el-form-item>
-                                    <el-form-item :label="$t('products.addItemPage.tag')" prop="discountPrice">
+                                    <el-form-item :label="$t('products.addItemPage.tag')" prop="itemTags">
                                         <el-tag :key="tag" type="primary" v-for="tag in itemTags" :closable="true" :close-transition="false" @close="itemTagClose(tag)">
                                             {{tag}}
                                         </el-tag>
@@ -384,6 +384,15 @@ import getLanguage from '../../../utils/sysLanguage.js';
 import { baiduTranslate, returnTransArray } from '../../../utils/translate.js';
 export default {
     data() {
+        //校验输入的值必须大于0
+        var validateNum = (rule,value,callback) => {
+            
+            if(value !='' && value <= 0){
+                callback(new Error(this.$t('rules.numType')));                
+            }else {
+                callback();
+            }
+        };
         return {            
             activeName: 'first',
             imageUrl: '',
@@ -486,7 +495,11 @@ export default {
                     { required: true, message: this.$t('tips.rules.itemName'), trigger: 'blur' }
                 ],
                 originPrice: [
-                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'blur' }
+                    { required: true, message: this.$t('tips.rules.originPrice'), trigger: 'blur' },
+                    { validator: validateNum , trigger:'blur'}
+                ],
+                discountPrice: [                    
+                    { validator: validateNum , trigger:'blur'}
                 ],
                 itemType: [
                     { required: true, message: this.$t('tips.rules.itemType'), trigger: 'change' }
@@ -882,7 +895,7 @@ export default {
                 busiType: 1
             };
             //console.log("添加参数", JSON.stringify(addParams));
-
+ 
             this.$refs['productForm'].validate((valid) => {
 
                 if(valid){
@@ -1085,9 +1098,7 @@ export default {
         addSetmealList() {
             var self = this;
             self.setmealGroup = [];
-
-            console.log("LENGTH",self.selectedSetmeals.length);
-
+            
             if(self.selectedSetmeals.length > 1 && self.selectedSetmeals.length < 11){
                 
                 self.setmealList = [];

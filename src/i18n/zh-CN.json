@@ -33,7 +33,8 @@
     "newpwd":"请输入新密码",
     "must":"请输入必填字段",
     "length":"长度在 6 到 12 个字符",
-    "numLetter":"请输入数字加字母"
+    "numLetter":"请输入数字加字母",
+    "numType":"价格要为正数"
   },
   "placeholder":{
     "itemNo":"请输入菜品编号",
